@@ -1,0 +1,8 @@
+{
+  "mappings": {
+
+    "net/ironf/overheated/mixin/boilerDataMixin": {
+      "com.simibubi.create.content.fluids.tank.BoilerData$evaluate": "com.simibubi.create.content.fluids.tank.BoilerData$evaluate"
+    }
+  }
+}
