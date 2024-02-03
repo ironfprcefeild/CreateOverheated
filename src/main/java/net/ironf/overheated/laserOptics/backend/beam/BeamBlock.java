@@ -37,5 +37,4 @@ public class BeamBlock extends Block implements IBE<BeamBlockEntity> {
     public BlockEntityType<? extends BeamBlockEntity> getBlockEntityType() {
         return AllBlockEntities.BEAM.get();
     }
-    //TODO register and reference BE-Type for laser
 }

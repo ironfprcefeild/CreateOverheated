@@ -104,6 +104,7 @@ public abstract class LaserGenerator extends SmartBlockEntity {
 
 
     public boolean isTransparent(BlockState toTest) {
+        return false;
     }
 
     public int getExplosionResistance(BlockState toTest){

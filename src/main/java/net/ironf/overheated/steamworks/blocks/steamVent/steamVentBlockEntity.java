@@ -106,7 +106,7 @@ public class steamVentBlockEntity extends SmartBlockEntity {
                         );
                     } else {
                         setFluid(new FluidStack(
-                                AllSteamFluids.getSteamFromPressure((int) (Math.floor((double) boiler.activeHeat / 6) + 1)),
+                                AllSteamFluids.getSteamFromValues((int) (Math.floor((double) boiler.activeHeat / 6) + 1),0),
                                 getFluidStack().getAmount() + 1)
                         );
                     }

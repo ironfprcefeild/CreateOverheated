@@ -1,21 +1,31 @@
 package net.ironf.overheated;
 
+import com.simibubi.create.content.kinetics.base.HalfShaftInstance;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.beam.BeamBlockEntity;
 import net.ironf.overheated.laserOptics.backend.beam.laserCyst.LaserCystBlockEntity;
-import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
-import net.ironf.overheated.steamworks.blocks.turbine.multiblock.turbineBlockEntity;
-import net.ironf.overheated.steamworks.blocks.turbine.turbineInterface.turbineInterfaceBlockEntity;
-import net.ironf.overheated.steamworks.blocks.turbine.turbineShaft.turbineShaftBlockEntity;
-import net.ironf.overheated.steamworks.blocks.turbine.turbineVent.turbineVentBlockEntity;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineCenter.turbineCenterBlockEntity;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
 public class AllBlockEntities {
 
+    //Turbine
+    public static final BlockEntityEntry<turbineCenterBlockEntity> TURBINE_CENTER = REGISTRATE
+            .blockEntity("turbine_center", turbineCenterBlockEntity::new)
+            .validBlocks(AllBlocks.TURBINE_CENTER)
+            .register();
+    public static final BlockEntityEntry<turbineEndBlockEntity> TURBINE_END = REGISTRATE
+            .blockEntity("turbine_end", turbineEndBlockEntity::new)
+            .instance(() -> HalfShaftInstance::new, false)
+            .renderer(() -> turbineEndRenderer::new)
+            .validBlocks(AllBlocks.TURBINE_END)
+            .register();
 
     //Steam vent
 
@@ -24,29 +34,6 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.STEAM_VENT)
             .register();
 
-    //Turbine
-    public static final BlockEntityEntry<turbineBlockEntity> TURBINE = REGISTRATE
-            .blockEntity("turbine", turbineBlockEntity::new)
-            .validBlocks(AllBlocks.TURBINE)
-            .register();
-
-
-    //Turbine Shaft
-    public static final BlockEntityEntry<turbineShaftBlockEntity> TURBINE_SHAFT = REGISTRATE
-            .blockEntity("turbine_shaft", turbineShaftBlockEntity::new)
-            .validBlocks(AllBlocks.TURBINE_SHAFT)
-            .register();
-    //Turbine Vent
-    public static final BlockEntityEntry<turbineVentBlockEntity> TURBINE_VENT = REGISTRATE
-            .blockEntity("turbine_vent", turbineVentBlockEntity::new)
-            .validBlocks(AllBlocks.TURBINE_VENT)
-            .register();
-
-    //Turbine Interface
-    public static final BlockEntityEntry<turbineInterfaceBlockEntity> TURBINE_INTERFACE = REGISTRATE
-            .blockEntity("turbine_interface", turbineInterfaceBlockEntity::new)
-            .validBlocks(AllBlocks.TURBINE_INTERFACE)
-            .register();
 
     //Laser Beam
     public static final BlockEntityEntry<BeamBlockEntity> BEAM = REGISTRATE
