@@ -17,12 +17,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(com.simibubi.create.content.fluids.tank.BoilerData.class)
 public class boilerDataMixin {
-    @Shadow
+
     public int attachedEngines;
-    @Shadow
+
     public int attachedWhistles;
 
-    @Shadow
     public boolean needsHeatLevelUpdate;
     public boolean evaluate(FluidTankBlockEntity controller) {
         BlockPos controllerPos = controller.getBlockPos();

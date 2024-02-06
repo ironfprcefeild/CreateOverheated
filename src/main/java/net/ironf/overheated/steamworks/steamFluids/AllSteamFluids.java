@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import static com.simibubi.create.Create.REGISTRATE;
+import static net.ironf.overheated.Overheated.REGISTRATE;
 
 public class AllSteamFluids {
 
@@ -84,19 +84,23 @@ public class AllSteamFluids {
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
     public static VirtualFluid[][] Steams;
 
-
-
-    public static void register(){
+    public static void prepareSteamArray(){
         Steams = new VirtualFluid[][]{
                 {DISTILLED_WATER.get(),DISTILLED_WATER.get(),DISTILLED_WATER.get(),DISTILLED_WATER.get()},
                 {STEAM_LOW.get(), HEATED_STEAM_LOW.get(), SUPERHEATED_STEAM_LOW.get(), OVERHEATED_STEAM_LOW.get()},
                 {STEAM_MID.get(),HEATED_STEAM_MID.get(),SUPERHEATED_STEAM_MID.get(),OVERHEATED_STEAM_MID.get()},
                 {STEAM_HIGH.get(),HEATED_STEAM_HIGH.get(),SUPERHEATED_STEAM_HIGH.get(),OVERHEATED_STEAM_HIGH.get()},
                 {STEAM_INSANE.get(),HEATED_STEAM_INSANE.get(),SUPERHEATED_STEAM_INSANE.get(),OVERHEATED_STEAM_INSANE.get()}
-                };
+        };
+    }
 
+
+
+    public static void register(){
 
     }
+
+
 
     //Helper Functions
 

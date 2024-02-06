@@ -1,8 +1,13 @@
 package net.ironf.overheated;
 
+import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
+import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.ironf.overheated.util.OLogger;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +36,7 @@ public class Overheated
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get()
                 .getModEventBus();
+        modEventBus.addListener(Overheated::init);
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
@@ -38,16 +44,28 @@ public class Overheated
 
         //CTOR
         AllCreativeModeTabs.init();
+        AllFluids.register();
         AllItems.register();
         AllBlocks.register();
         AllBlockEntities.register();
-        AllFluids.register();
+
 
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
+    public static void postRegisterSetup(){
+
+    }
+
+
+    public static void init(final FMLCommonSetupEvent event)
     {
 
+        event.enqueueWork(() -> {
+            AllSteamFluids.prepareSteamArray();
+            BlazeCrucibleBlockEntity.addToBoilerHeaters();
+            DiodeHeaters.registerDefaults();
+            LOGGER.info("We did stuff silly billy");
+        });
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

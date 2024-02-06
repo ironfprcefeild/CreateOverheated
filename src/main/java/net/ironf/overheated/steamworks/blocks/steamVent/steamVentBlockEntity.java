@@ -1,6 +1,7 @@
 package net.ironf.overheated.steamworks.blocks.steamVent;
 
 import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock;
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.VirtualFluid;
 import com.simibubi.create.content.fluids.tank.BoilerData;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
@@ -11,6 +12,7 @@ import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +28,7 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class steamVentBlockEntity extends SmartBlockEntity {
+public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public steamVentBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         source = new WeakReference<>(null);
@@ -88,7 +90,7 @@ public class steamVentBlockEntity extends SmartBlockEntity {
 
     //Doing Things
 
-    int processingTicks = 200;
+    int processingTicks = 75;
 
     @Override
     public void tick() {
@@ -110,7 +112,7 @@ public class steamVentBlockEntity extends SmartBlockEntity {
                                 getFluidStack().getAmount() + 1)
                         );
                     }
-                    processingTicks = 200;
+                    processingTicks = 75;
                 }
             }
         }
@@ -129,4 +131,9 @@ public class steamVentBlockEntity extends SmartBlockEntity {
         this.processingTicks = tag.getInt("processing_ticks");
     }
 
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        return true;
+    }
 }

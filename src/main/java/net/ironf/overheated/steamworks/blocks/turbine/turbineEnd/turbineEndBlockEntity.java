@@ -1,17 +1,18 @@
 package net.ironf.overheated.steamworks.blocks.turbine.turbineEnd;
 
-import com.mojang.datafixers.TypeRewriteRule;
-import com.simibubi.create.content.kinetics.BlockStressValues;
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import net.ironf.overheated.AllBlockEntities;
-import net.ironf.overheated.steamworks.blocks.turbine.turbineCenter.turbineCenterBlockEntity;
+import com.simibubi.create.foundation.utility.Iterate;
+import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class turbineEndBlockEntity extends GeneratingKineticBlockEntity {
+public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
     public turbineEndBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -33,94 +34,140 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity {
     //Kinetics
     @Override
     public float getGeneratedSpeed() {
-        return thisSpinsDrain == 0 ? 0 : thisSpinsDrain + 40;
+        return convertToDirection(thisSpinsDrain != 0 ? thisSpinsDrain + 40 : 0, getBlockState().getValue(turbineEndBlock.FACING));
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = (float) thisSpinsDrain;
+        float capacity = (float) thisSpinsDrain * 128;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
 
+    //todo fix the constantly updating issue
+
     //Doing Things
 
-    public int timeTillNextPacket = 200;
-    public int timeLeftSpinning = 0;
+    public int processingTicks = 300;
     public int thisSpinsDrain = 0;
+    public String displayData = "";
+
+
+
     @Override
     public void tick() {
+        if (!level.isClientSide && !reActivateSource) {
+            processingTicks--;
+            Overheated.LOGGER.info(String.valueOf(processingTicks));
+            if (processingTicks < 1) {
+                processingTicks = 300;
+                checkTurbine();
+            }
+        }
         super.tick();
-        //If 200 ticks has passed, then check if we have steam in the tank, then run the packet.
-        if (timeTillNextPacket == 0) {
-            int steamPressure = AllSteamFluids.getSteamPressure(getFluidStack());
-            if (steamPressure > 0) {
-                BlockEntity Facing = getFacedBE(getMyState());
-                //We are facing a turbine, so we should send down a packet
-                if (Facing != null && Facing.getType() == AllBlockEntities.TURBINE_CENTER.get()) {
-                    ((turbineCenterBlockEntity) Facing).progressSteamPacket(getBlockPos(),steamPressure, 0, 0);
+    }
+
+    public void checkTurbine(){
+        Overheated.LOGGER.info("Mr dipshit banana time");
+
+        BlockPos origin = getBlockPos();
+        int radius = 999;
+        Direction turbineDirection = getBlockState().getValue(BlockStateProperties.FACING).getOpposite();
+
+        //Go back through turbine, the 13 limits the length of a turbine to 12
+        int i = 0;
+        while (i < 13){
+            i++;
+            BlockPos bp = origin.relative(turbineDirection,i);
+            BlockState check = level.getBlockState(bp);
+            //If its not a turbine center, check to see if it's a fluid tank, otherwise break and set drain to 0
+            if (!AllBlocks.TURBINE_CENTER.has(check)){
+                if (com.simibubi.create.AllBlocks.FLUID_TANK.has(check)){
+                    ////Update Turbine Generation, we met a fluid tank so it's a complete turbine
+                    FluidTankBlockEntity intakeTank = ((FluidTankBlockEntity) level.getBlockEntity(bp)).getControllerBE();
+                    int pressureLevel = AllSteamFluids.getSteamPressure(intakeTank.getTankInventory().getFluid());
+                    int turbineSize = i * radius;
+                    int drain = turbineSize * 2;
+                    Overheated.LOGGER.info("Pressure: " + pressureLevel);
+                    Overheated.LOGGER.info("Size: " + turbineSize);
+                    Overheated.LOGGER.info("Drain: " + drain);
+
+                    //if any of theese are true, the turbine is invalid or has stopped operating, so we set the drain to 0 and break
+                    if (
+                            //The intake tank doesn't have enough fluid for the drain
+                            intakeTank.getTankInventory().getFluid().getAmount() < drain
+                            //The pressure of the steam in the tank is too low (so it's not steam or distilled water)
+                            || 1 > pressureLevel
+                            //This block doesn't have enough space to store the steam that will be added to it
+                            || capacity - tank.getPrimaryHandler().getFluid().getAmount() < drain){
+                        Overheated.LOGGER.info("Drain set to 0");
+                        thisSpinsDrain = 0;
+                        //reActivateSource = true;
+                        return;
+                    }
+
+                    //Drain the intake tank
+                    intakeTank.getTankInventory().drain(drain, IFluidHandler.FluidAction.EXECUTE);
+                    //Fill this tank
+                    tank.getPrimaryHandler().setFluid(new FluidStack(AllSteamFluids.getSteamFromValues(pressureLevel - 1,0),getFluidStack().getAmount() + drain));
+                    //Update Drain value
+                    thisSpinsDrain = drain;
+                    //Indicate to reactivate
+                    reActivateSource = true;
+
+                    //Break out of loop, no need to check further blocks
+                    return;
                 }
-                timeTillNextPacket = 200;
-            } else {
-                timeTillNextPacket--;
-            }
-        }
-        if (timeLeftSpinning != 0){
-            timeLeftSpinning--;
-            if (timeLeftSpinning == 0){
+                //If its any block besides a turbine, even if we ended early or reached a fluid tank then we stop the search
                 thisSpinsDrain = 0;
-            }
-        }
-    }
-
-    public void handleEndOfPacket(BlockPos startPoint,int pressureLevel, int radius, int turbineNumber){
-        //Find turbine size
-        int turbineSize = radius * turbineNumber;
-
-        //Drain origin block
-        BlockEntity origin = level.getBlockEntity(startPoint);
-        if (origin != null && origin.getType() == AllBlockEntities.TURBINE_END.get()){
-            FluidStack drainedFluid = ((turbineEndBlockEntity) origin).tank.getPrimaryHandler().drain(turbineSize * 2, IFluidHandler.FluidAction.EXECUTE);
-            boolean shouldRotate = (drainedFluid.getAmount() >= turbineSize * 2);
-
-            //prepare to generate SU
-            if (shouldRotate) {
-                timeLeftSpinning = 205;
-                thisSpinsDrain = drainedFluid.getAmount();
-
-                //Fill with steam of lower pressure level
-                int fillTankToo = Math.min(8000,drainedFluid.getAmount() + tank.getPrimaryHandler().getFluid().getAmount());
-                tank.getPrimaryHandler().setFluid(new FluidStack(AllSteamFluids.getSteamFromValues(pressureLevel,0),fillTankToo));
-
+                reActivateSource = true;
+                return;
             } else {
-                //refund the steam we took from the origin
-                ((turbineEndBlockEntity) origin).setFluid(new FluidStack(AllSteamFluids.getSteamFromValues(pressureLevel,0),drainedFluid.getAmount()));
+                //We are at an extension so just update radius
+                radius = Math.min(radius,getRadiusOfCenterAt(bp));
             }
-
         }
 
+
     }
 
-    public BlockEntity getFacedBE(BlockState myState){
-        return (level.getBlockEntity(getBlockPos().relative(myState.getValue(BlockStateProperties.HORIZONTAL_FACING))));
+    public int getRadiusOfCenterAt(BlockPos checkAt) {
+        int radiusRating = 1;
+
+        //Find blockpos of cardinally adjacent blocks
+        for (Direction d : Iterate.directions) {
+            BlockPos bp = checkAt.relative(d);
+            if (AllBlocks.TURBINE_EXTENSION.has(level.getBlockState(bp))) {
+                radiusRating += 0.25;
+                for (Direction d2 : Iterate.directions) {
+                    if (AllBlocks.TURBINE_EXTENSION.has(level.getBlockState(bp.relative(d).relative(d2)))) {
+                        radiusRating += 0.25;
+                    }
+                }
+            }
+        }
+        return radiusRating;
     }
 
-    public BlockState getMyState(){
-        return level.getBlockState(getBlockPos());
+
+    public void initialize() {
+        super.initialize();
+        this.sendData();
+        if (!this.hasSource() || this.getGeneratedSpeed() > this.getTheoreticalSpeed()) {
+            this.updateGeneratedRotation();
+        }
     }
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        tag.putInt("processing_ticks",this.timeTillNextPacket);
-        tag.putInt("duration",this.timeLeftSpinning);
+        tag.putInt("processing_ticks",this.processingTicks);
         tag.putInt("recent_drain",this.thisSpinsDrain);
     }
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        this.timeTillNextPacket = tag.getInt("processing_ticks");
-        this.timeLeftSpinning = tag.getInt("duration");
+        this.processingTicks = tag.getInt("processing_ticks");
         this.thisSpinsDrain = tag.getInt("recent_drain");
 
     }
@@ -129,9 +176,11 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity {
     public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
     public SmartFluidTankBehaviour tank;
 
+    public static int capacity = 8000;
+
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 8000));
+        behaviours.add(tank = SmartFluidTankBehaviour.single(this, capacity));
     }
 
     @Override
@@ -157,5 +206,14 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity {
     }
     public FluidStack getFluidStack() {
         return this.tank.getPrimaryHandler().getFluid();
+    }
+
+    //Goggles
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        tooltip.add(Component.literal(displayData));
+        return true;
     }
 }

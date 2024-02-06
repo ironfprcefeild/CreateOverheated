@@ -3,11 +3,8 @@ package net.ironf.overheated;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.laserOptics.backend.beam.BeamBlock;
-import net.ironf.overheated.laserOptics.backend.beam.laserCyst.LaserCystBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
-import net.ironf.overheated.steamworks.blocks.turbine.turbineCenter.turbineCenterBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MaterialColor;
@@ -36,8 +33,8 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
-    public static final BlockEntry<turbineCenterBlock> TURBINE_CENTER = REGISTRATE
-            .block("turbine_center", turbineCenterBlock::new)
+    public static final BlockEntry<Block> TURBINE_CENTER = REGISTRATE
+            .block("turbine_center", Block::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
@@ -52,19 +49,6 @@ public class AllBlocks {
 
     //// Lazer Optics
 
-    //Beam
-    public static final BlockEntry<BeamBlock> BEAM = REGISTRATE
-            .block("laser_beam", BeamBlock::new)
-            .initialProperties(SharedProperties::stone)
-            .properties(p -> p.color(MaterialColor.METAL))
-            .register();
-
-    //Cyst
-    public static final BlockEntry<LaserCystBlock> LASER_CYST = REGISTRATE
-            .block("laser_beam", LaserCystBlock::new)
-            .initialProperties(SharedProperties::stone)
-            .properties(p -> p.color(MaterialColor.METAL))
-            .register();
     //Blaze Crucible
 
     public static final BlockEntry<BlazeCrucibleBlock> BLAZE_CRUCIBLE = REGISTRATE
