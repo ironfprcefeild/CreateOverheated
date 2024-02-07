@@ -4,6 +4,7 @@ import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.utility.LangBuilder;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
@@ -86,4 +87,7 @@ public class Overheated
 
         }
     }
+
+    //Util
+    public static LangBuilder lang = new LangBuilder(MODID);
 }

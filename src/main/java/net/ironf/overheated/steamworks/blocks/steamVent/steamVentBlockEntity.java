@@ -122,13 +122,15 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        tag.putInt("processing_ticks",this.processingTicks);
+        this.processingTicks = tag.getInt("processing_ticks");
+
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        this.processingTicks = tag.getInt("processing_ticks");
+        tag.putInt("processing_ticks",this.processingTicks);
+
     }
 
     @Override

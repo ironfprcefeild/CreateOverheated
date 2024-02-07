@@ -1,4 +1,16 @@
 {
-  "coverheated.turbine.radius": "Turbine Radius",
-  "coverheated.turbine.size": "Turbine Size"
+  "coverheated.turbine.info_header": "--- Turbine Info ---",
+  "coverheated.turbine.radius": "Radius:",
+  "coverheated.turbine.length": "Length:",
+  "coverheated.turbine.drain.amount": "Drain Amount:",
+  "coverheated.turbine.drain.rate": "Draining",
+  "coverheated.turbine.drain.every_tick": "mb every tick",
+  "coverheated.turbine.error": "!!! Turbine Invalid, See Below !!!",
+  "coverheated.turbine.intake.low": "Intake is low on steam, increase input",
+  "coverheated.turbine.intake.low_pressure": "Intake steam is too low pressure or not steam at all ",
+  "coverheated.turbine.outtake.full": "This block needs to have steam pumped out of it",
+  "coverheated.turbine.no_intake": "No intake tank found"
+
+
+
 }
