@@ -2,6 +2,7 @@ package net.ironf.overheated;
 
 import com.simibubi.create.content.kinetics.base.HalfShaftInstance;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
@@ -33,6 +34,11 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.BLAZE_CRUCIBLE)
             .register();
 
+    //Laser Diode
+    public static final BlockEntityEntry<DiodeBlockEntity> DIODE = REGISTRATE
+            .blockEntity("diode", DiodeBlockEntity::new)
+            .validBlocks(AllBlocks.DIODE)
+            .register();
     public static void register(){
 
     }

@@ -3,6 +3,7 @@ package net.ironf.overheated;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
@@ -53,6 +54,13 @@ public class AllBlocks {
 
     public static final BlockEntry<BlazeCrucibleBlock> BLAZE_CRUCIBLE = REGISTRATE
             .block("blaze_crucible", BlazeCrucibleBlock::new)
+            .initialProperties(SharedProperties::netheriteMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<DiodeBlock> DIODE = REGISTRATE
+            .block("blaze_crucible", DiodeBlock::new)
             .initialProperties(SharedProperties::netheriteMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()

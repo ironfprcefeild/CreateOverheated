@@ -7,7 +7,9 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.LangBuilder;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
+import net.ironf.overheated.laserOptics.Diode.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.ironf.overheated.util.OLogger;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +67,8 @@ public class Overheated
             AllSteamFluids.prepareSteamArray();
             BlazeCrucibleBlockEntity.addToBoilerHeaters();
             DiodeHeaters.registerDefaults();
-            LOGGER.info("We did stuff silly billy");
+            mirrorRegister.registerDefaults();
+            LOGGER.info("...OVERHEATING...");
         });
     }
 
@@ -73,7 +76,9 @@ public class Overheated
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-
+        LOGGER.info("Overheated is preparing the Laser Coolant Helpers");
+        LaserCoolingHandler.setLevel(event.getServer().overworld());
+        LaserCoolingHandler.generateHandler();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
