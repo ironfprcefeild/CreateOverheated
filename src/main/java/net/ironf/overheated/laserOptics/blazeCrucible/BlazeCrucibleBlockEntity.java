@@ -3,7 +3,10 @@ package net.ironf.overheated.laserOptics.blazeCrucible;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,10 +16,17 @@ import java.util.Objects;
 
 import static com.simibubi.create.content.fluids.tank.BoilerHeaters.registerHeater;
 
-public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
+public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaserAbsorber {
 
     public int timeHeated = 0;
-    public int heatLevel = 1;
+    public int heatLevel = 0;
+
+    @Override
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
+        timeHeated = 15;
+        heatLevel = beamHeat.useUpToOverHeat();
+        return true;
+    }
 
     public void setTimeHeated(int timeHeated) {
         this.timeHeated = timeHeated;

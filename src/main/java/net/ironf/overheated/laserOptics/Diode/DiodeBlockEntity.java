@@ -32,8 +32,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
-public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable {
+public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         setLazyTickRate(5);
@@ -54,6 +55,16 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         if (Math.abs(getSpeed()) > coolantConsumptionTicks){
             coolantConsumptionTicks = 258;
             tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+        }
+        //Lower and reset timers for hitting lasers
+        for (int i = 0; i != 6; i++){
+            int t = hittingTimers[i];
+            if (t != 0){
+                t--;
+                if (t == 0){
+                    hittingLasers[i] = HeatData.empty();
+                }
+            }
         }
     }
 
@@ -90,6 +101,10 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         Direction continueIn = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         BlockPos continueAt = getBlockPos();
         for (int t = 0; t < Math.min(16,destructiveness) + 16; t++){
+            if (laserHeat.getTotalHeat() < 1){
+                //Laser isout of heat, so we gotta jumpy away
+                break;
+            }
             continueAt = continueAt.relative(continueIn);
             BlockState hitState = level.getBlockState(continueAt);
             continueIn = mirrorRegister.doReflection(continueIn,level,continueAt,hitState);
@@ -113,8 +128,21 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
     }
 
+    public HeatData[] hittingLasers = {HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty()};
+    public int[] hittingTimers = {0,0,0,0,0,0};
+    public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
+    @Override
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
+        if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
+            hittingLasers[inputHelper.get(incoming)] = beamHeat;
+            hittingTimers[inputHelper.get(incoming)] = 6;
+        }
+        return false;
+    }
+
     private void addEffectCloud(BlockPos continueAt) {
     }
+
 
     //This method looks for all diode heaters within 1 block
     public HeatData findHeat(){
@@ -129,7 +157,9 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 }
             }
         }
+
         track.Volatility = 0;
+        track = HeatData.mergeHeats(HeatData.mergeHeats(hittingLasers),track);
         return track;
     }
 
@@ -172,6 +202,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         activeInefficiency = tag.getBoolean("inefficient");
         heatToLow = tag.getBoolean("heat_too_low");
         coolantConsumptionTicks = tag.getInt("consumption_ticks");
+        hittingTimers = tag.getIntArray("hitting_timers");
+        hittingLasers = HeatData.readHeatDataArray(tag,"incoming_heat");
     }
 
     @Override
@@ -181,6 +213,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         tag.putBoolean("inefficient",activeInefficiency);
         tag.putBoolean("heat_too_low",heatToLow);
         tag.putInt("consumption_ticks",coolantConsumptionTicks);
+        tag.putIntArray("hitting_timers",hittingTimers);
+        HeatData.writeHeadDataArray(tag,hittingLasers,"incoming_heat");
     }
 
     //Goggles

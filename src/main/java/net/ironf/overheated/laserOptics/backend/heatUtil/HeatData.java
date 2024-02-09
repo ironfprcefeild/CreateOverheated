@@ -20,7 +20,11 @@ public class HeatData {
     }
 
     public static HeatData mergeHeats(HeatData a, HeatData b){
-        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat, (a.Volatility + b.Volatility) / 2);
+        int volMod = 0;
+        if (a.Volatility == 0 || b.Volatility == 0){
+            volMod++;
+        }
+        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat, (a.Volatility + b.Volatility) / (2-volMod));
     }
 
     public static HeatData mergeHeats(HeatData[] h){
@@ -28,13 +32,17 @@ public class HeatData {
         int o = 0;
         int s = 0;
         int v = 0;
+        int ignoreInMerge = 0;
         for (HeatData hd : h){
             he += hd.Heat;
             o += hd.OverHeat;
             s += hd.SuperHeat;
+            if (hd.Volatility == 0){
+                ignoreInMerge++;
+            }
             v += hd.Volatility;
         }
-        return new HeatData(he,o,s,(v / h.length));
+        return new HeatData(he,o,s,(v / (h.length - ignoreInMerge)));
     }
 
     public int getTotalHeat(){
@@ -100,19 +108,38 @@ public class HeatData {
     }
 
     //Read Wrtie stuff
-    public static void writeTag(CompoundTag tag, HeatData write){
-        tag.putInt("hdheat",write.Heat);
-        tag.putInt("hdsuperheat",write.SuperHeat);
-        tag.putInt("hdoverheat",write.OverHeat);
-        tag.putInt("hdv",write.Volatility);
+    public static void writeTag(CompoundTag tag, HeatData write, String s){
+        tag.putInt(s +"hdheat",write.Heat);
+        tag.putInt(s +"hdsuperheat",write.SuperHeat);
+        tag.putInt(s+"hdoverheat",write.OverHeat);
+        tag.putInt(s+"hdv",write.Volatility);
     }
 
-    public static HeatData readTag(CompoundTag tag){
+    public static HeatData readTag(CompoundTag tag, String s){
         return new HeatData(
-                tag.getInt("hdheat"),
-                tag.getInt("hdsuperheat"),
-                tag.getInt("hdoverheat"),
-                tag.getInt("hdv")
+                tag.getInt(s+"hdheat"),
+                tag.getInt(s+"hdsuperheat"),
+                tag.getInt(s+"hdoverheat"),
+                tag.getInt(s+"hdv")
         );
     }
+
+
+
+    public static void writeHeadDataArray(CompoundTag tag, HeatData[] write, String s){
+        int i = 0;
+        tag.putInt(s+"hdarraylength",write.length);
+        for (HeatData hd : write){
+            writeTag(tag,hd,i+s);
+        }
+    }
+
+    public static HeatData[] readHeatDataArray(CompoundTag tag, String s){
+        HeatData[] toReturn = new HeatData[tag.getInt(s+"hdarraylength")];
+        for(int i = 0; i != toReturn.length; i++){
+            toReturn[i] = readTag(tag,i+s);
+        }
+        return toReturn;
+    }
+
 }
