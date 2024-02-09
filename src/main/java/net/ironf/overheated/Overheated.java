@@ -1,17 +1,14 @@
 package net.ironf.overheated;
 
-import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.LangBuilder;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
-import net.ironf.overheated.laserOptics.Diode.LaserCoolingHandler;
+import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
-import net.ironf.overheated.util.OLogger;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;

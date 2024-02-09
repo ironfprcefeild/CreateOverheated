@@ -1,6 +1,7 @@
 package net.ironf.overheated.laserOptics.Diode;
 
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -14,9 +15,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraftforge.common.property.Properties;
 
-public class DiodeBlock extends Block implements IBE<DiodeBlockEntity> {
+public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, ICogWheel {
     public DiodeBlock(Properties properties) {
         super(properties);
     }
@@ -47,5 +50,10 @@ public class DiodeBlock extends Block implements IBE<DiodeBlockEntity> {
     @Override
     public BlockEntityType<? extends DiodeBlockEntity> getBlockEntityType() {
         return AllBlockEntities.DIODE.get();
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(FACING).getAxis();
     }
 }

@@ -21,7 +21,7 @@ public class AllBlocks {
     ////Steam Works
     public static final BlockEntry<steamVentBlock> STEAM_VENT = REGISTRATE
             .block("steam_vent", steamVentBlock::new)
-            .initialProperties(SharedProperties::stone)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
@@ -29,21 +29,21 @@ public class AllBlocks {
     //Turbine
     public static final BlockEntry<Block> TURBINE_EXTENSION = REGISTRATE
             .block("turbine_extension", Block::new)
-            .initialProperties(SharedProperties::stone)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
 
     public static final BlockEntry<Block> TURBINE_CENTER = REGISTRATE
             .block("turbine_center", Block::new)
-            .initialProperties(SharedProperties::stone)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
 
     public static final BlockEntry<turbineEndBlock> TURBINE_END = REGISTRATE
             .block("turbine_end", turbineEndBlock::new)
-            .initialProperties(SharedProperties::stone)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
@@ -54,13 +54,22 @@ public class AllBlocks {
 
     public static final BlockEntry<BlazeCrucibleBlock> BLAZE_CRUCIBLE = REGISTRATE
             .block("blaze_crucible", BlazeCrucibleBlock::new)
-            .initialProperties(SharedProperties::netheriteMetal)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
 
+    //Diode
     public static final BlockEntry<DiodeBlock> DIODE = REGISTRATE
-            .block("blaze_crucible", DiodeBlock::new)
+            .block("diode", DiodeBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
+    //Anti-Laser Plating
+    public static final BlockEntry<Block> ANTI_LASER_PLATING = REGISTRATE
+            .block("anti_laser_plating", Block::new)
             .initialProperties(SharedProperties::netheriteMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()

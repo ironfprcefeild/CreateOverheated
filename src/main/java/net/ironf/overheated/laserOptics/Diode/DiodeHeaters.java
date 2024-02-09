@@ -39,6 +39,11 @@ public class DiodeHeaters {
         return HeatData.empty();
     }
 
+    public static HeatData getActiveHeat(Level level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        return getActiveHeat(level, pos, state);
+    }
+
     public static void registerDefaults() {
         registerHeater(AllBlocks.BLAZE_BURNER.get(), (level, pos, state) -> {
             BlazeBurnerBlock.HeatLevel value = state.getValue(BlazeBurnerBlock.HEAT_LEVEL);
@@ -46,10 +51,10 @@ public class DiodeHeaters {
                 return HeatData.empty();
             }
             if (value == BlazeBurnerBlock.HeatLevel.SEETHING) {
-                return new HeatData(0,1,0,10);
+                return new HeatData(0,1,0,0);
             }
             if (value.isAtLeast(BlazeBurnerBlock.HeatLevel.FADING)) {
-                return new HeatData(1,0,0,5);
+                return new HeatData(1,0,0,0);
             }
             return HeatData.empty();
         });
@@ -57,7 +62,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.FURNACE, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(3,0,0,8);
+                return new HeatData(3,0,0,0);
             }
             return HeatData.empty();
         });
@@ -65,7 +70,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.BLAST_FURNACE, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(6,0,0,16);
+                return new HeatData(6,0,0,0);
             }
             return HeatData.empty();
         });
@@ -73,7 +78,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.SMOKER, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(6,0,0,16);
+                return new HeatData(6,0,0,0);
             }
             return HeatData.empty();
         });

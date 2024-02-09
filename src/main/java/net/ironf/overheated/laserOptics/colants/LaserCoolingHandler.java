@@ -1,4 +1,4 @@
-package net.ironf.overheated.laserOptics.Diode;
+package net.ironf.overheated.laserOptics.colants;
 
 import net.ironf.overheated.Overheated;
 import net.minecraft.server.packs.resources.ResourceManager;

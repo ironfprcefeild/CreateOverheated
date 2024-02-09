@@ -1,5 +1,6 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
@@ -31,6 +32,16 @@ public class mirrorRegister {
         }
 
         return incoming;
+    }
+
+    public static boolean isMirror(BlockState state){
+        return  MIRRORS.get(state.getBlock()) != null;
+    }
+
+
+
+    public static Direction doReflection(Direction incoming, Level level, BlockPos pos) {
+        return doReflection(incoming,level,pos,level.getBlockState(pos));
     }
 
     public static void registerDefaults(){

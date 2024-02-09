@@ -23,7 +23,7 @@ public class HeatData {
         return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat, (a.Volatility + b.Volatility) / 2);
     }
 
-    public static HeatData mergeHeats(HeatData... h){
+    public static HeatData mergeHeats(HeatData[] h){
         int he = 0;
         int o = 0;
         int s = 0;

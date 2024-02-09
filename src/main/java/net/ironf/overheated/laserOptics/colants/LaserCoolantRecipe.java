@@ -1,7 +1,6 @@
-package net.ironf.overheated.laserOptics.Diode;
+package net.ironf.overheated.laserOptics.colants;
 
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Decoder;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
 import net.minecraft.network.FriendlyByteBuf;

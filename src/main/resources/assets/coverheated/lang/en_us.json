@@ -11,5 +11,8 @@
   "coverheated.turbine.outtake.full": "This block needs to have steam pumped out of it",
   "coverheated.turbine.no_intake": "No intake tank found",
   "coverheated.diode.needs_clearance.one": "This Diode is too close to another Diode",
-  "coverheated.diode.needs_clearance.two": "After fixing, Wrench this Diode to update it"
+  "coverheated.diode.needs_clearance.two": "After fixing, Wrench this Diode to update it",
+  "coverheated.diode.heat_limited": "This laser is spinning too slow, or has to low quality coolant, to fire all of its heat",
+  "coverheated.diode.no_heat": "Less than 1 Heat would be transferred by this laser"
+
 }

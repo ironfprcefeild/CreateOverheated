@@ -1,12 +1,20 @@
 package net.ironf.overheated.laserOptics.Diode;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
+import com.simibubi.create.foundation.render.CachedBufferer;
+import com.simibubi.create.foundation.render.SuperByteBuffer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class DiodeBlockEntityRenderer implements BlockEntityRenderer<DiodeBlockEntity> {
+public class DiodeBlockEntityRenderer extends KineticBlockEntityRenderer<DiodeBlockEntity> {
+
+    public DiodeBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
+
     @Override
-    public void render(DiodeBlockEntity sourceBE, float F, PoseStack poseStack, MultiBufferSource bufferSource, int p_112311_, int p_112312_) {
-
+    protected SuperByteBuffer getRotatedModel(DiodeBlockEntity be, BlockState state) {
+        return CachedBufferer.partial(AllPartialModels.ARM_COG, state);
     }
 }

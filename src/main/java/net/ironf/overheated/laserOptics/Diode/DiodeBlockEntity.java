@@ -2,48 +2,135 @@ package net.ironf.overheated.laserOptics.Diode;
 
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlockEntities;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
+import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
-public class DiodeBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IWrenchable {
+public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        setLazyTickRate(5);
     }
 
 
     //Doing stuff
     public boolean hasClearance = false;
-
-    //This list holds the points that we turn in the laser beam, which is enough to infer rendering in the render
-    List<Long> renderTurns = new ArrayList<>();
+    boolean activeInefficiency = false;
+    boolean heatToLow = false;
+    int coolantConsumptionTicks = 258;
 
     //Laser is updated every tick
     @Override
     public void tick() {
         super.tick();
+        //This should drain fluid based on the speed
+        if (Math.abs(getSpeed()) > coolantConsumptionTicks){
+            coolantConsumptionTicks = 258;
+            tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+        }
+    }
 
+
+    @Override
+    public void lazyTick() {
+        super.lazyTick();
+        HeatData laserHeat = findHeat();
+
+        //Cap heat based on RPM. The boolean is used to determine goggle display
+        int heatCap = (int) Math.min(Math.abs(getSpeed()), LaserCoolingHandler.heatHandler.get(getFluidStack()));
+        if (laserHeat.getTotalHeat() > heatCap) {
+            activeInefficiency = true;
+            while (laserHeat.getTotalHeat() > heatCap) {
+                laserHeat.useUpToOverHeat();
+            }
+        } else {
+            activeInefficiency = false;
+        }
+        //If heat is too low, break out
+        if (laserHeat.getTotalHeat() < 1){
+            heatToLow = true;
+            return;
+        } else {
+            heatToLow = false;
+        }
+
+        //Set Volatility
+        laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(getFluidStack());
+        int destructiveness = laserHeat.Volatility + laserHeat.getTotalHeat();
+
+        //Propogate Laser
+        //32 Limits the lasers length, its also limited by the heat of the laser
+        Direction continueIn = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        BlockPos continueAt = getBlockPos();
+        for (int t = 0; t < Math.min(16,destructiveness) + 16; t++){
+            continueAt = continueAt.relative(continueIn);
+            BlockState hitState = level.getBlockState(continueAt);
+            continueIn = mirrorRegister.doReflection(continueIn,level,continueAt,hitState);
+            addEffectCloud(continueAt);
+            //Dont do anything if its air
+            if (!hitState.isAir()) {
+                if (AllBlocks.ANTI_LASER_PLATING.has(hitState)) {
+                    //Anti laser plating, cant be destroyed, so we just break here
+                    break;
+                } else if (!mirrorRegister.isMirror(hitState)){
+                    //Dont do anything if a mirror, otherwise check for laser absorbers
+                    BlockEntity hitBE = level.getBlockEntity(continueAt);
+                    if (hitBE instanceof ILaserAbsorber){
+                        if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn,laserHeat)){
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void addEffectCloud(BlockPos continueAt) {
+    }
+
+    //This method looks for all diode heaters within 1 block
+    public HeatData findHeat(){
+        HeatData track = HeatData.empty();
+        for (int x = -1; x != 2; x++){
+            for (int y = -1; y != 2; y++){
+                for (int z = -1; z != 2; z++){
+                    if (x == 0 && y == 0 && z == 0){
+                        continue;
+                    }
+                    track = HeatData.mergeHeats(track, DiodeHeaters.getActiveHeat(level,getBlockPos().offset(x,y,z)));
+                }
+            }
+        }
+        track.Volatility = 0;
+        return track;
     }
 
     //This method looks for all diodes within 2 blocks, the area in which they could disrupt diodes clearance. It also invalidates those diodes
@@ -51,7 +138,7 @@ public class DiodeBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         for (int x = -2; x != 3; x++){
             for (int y = -2; y != 3; y++){
                 for (int z = -2; z != 3; z++) {
-                    if (x == 0 && y == 0) {
+                    if (x == 0 && y == 0 && z == 0) {
                         continue;
                     }
                     BlockEntity test = level.getBlockEntity(getBlockPos().offset(x,y,z));
@@ -68,14 +155,12 @@ public class DiodeBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         hasClearance = false;
     }
 
-    public void markTurnToRender(BlockPos toMark){
-        renderTurns.add(toMark.asLong());
-    }
 
     @Override
     public void initialize() {
         super.initialize();
         testForClearance();
+        setLazyTickRate(5);
     }
 
     //Data Writing
@@ -84,26 +169,34 @@ public class DiodeBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         hasClearance = tag.getBoolean("has_clearance");
-        long[] rawTurns = (tag.getLongArray("render_turns"));
-        for (long l : rawTurns){
-            renderTurns.add(l);
-        }
+        activeInefficiency = tag.getBoolean("inefficient");
+        heatToLow = tag.getBoolean("heat_too_low");
+        coolantConsumptionTicks = tag.getInt("consumption_ticks");
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         tag.putBoolean("has_clearance",hasClearance);
-        tag.putLongArray("render_turns",renderTurns);
+        tag.putBoolean("inefficient",activeInefficiency);
+        tag.putBoolean("heat_too_low",heatToLow);
+        tag.putInt("consumption_ticks",coolantConsumptionTicks);
     }
 
     //Goggles
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         if (!hasClearance){
-            tooltip.add(Component.translatable("coverheated.diode.needs_clearance"));
+            tooltip.add(Component.translatable("coverheated.diode.needs_clearance_one"));
+            tooltip.add(Component.translatable("coverheated.diode.needs_clearance_two"));
+        }
+        if (activeInefficiency){
+            tooltip.add(Component.translatable("coverheated.diode.heat_limited"));
+        }
+        if (heatToLow){
+            tooltip.add(Component.translatable("coverheated.diode.no_heat"));
         }
         return true;
     }
@@ -155,4 +248,12 @@ public class DiodeBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         return this.tank.getPrimaryHandler().getFluid();
     }
 
+    //Kinetics
+
+    @Override
+    public float calculateStressApplied() {
+        float impact = 8f;
+        this.lastStressApplied = impact;
+        return impact;
+    }
 }
