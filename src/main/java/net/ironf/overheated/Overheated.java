@@ -8,6 +8,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,13 +34,9 @@ public class Overheated
     {
 
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
-
-        IEventBus modEventBus = FMLJavaModLoadingContext.get()
-                .getModEventBus();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(Overheated::init);
-
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-
         REGISTRATE.registerEventListeners(modEventBus);
 
         //CTOR
@@ -48,8 +45,9 @@ public class Overheated
         AllItems.register();
         AllBlocks.register();
         AllBlockEntities.register();
+        AllRecipes.register(modEventBus);
 
-
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static void postRegisterSetup(){
@@ -73,7 +71,7 @@ public class Overheated
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-        LOGGER.info("Overheated is preparing the Laser Coolant Helpers");
+        LOGGER.info("Overheated is running on the server");
         LaserCoolingHandler.setLevel(event.getServer().overworld());
         LaserCoolingHandler.generateHandler();
     }

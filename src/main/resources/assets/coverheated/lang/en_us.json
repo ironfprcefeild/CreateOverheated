@@ -10,9 +10,12 @@
   "coverheated.turbine.intake.low_pressure": "Intake steam is too low pressure or not steam at all ",
   "coverheated.turbine.outtake.full": "This block needs to have steam pumped out of it",
   "coverheated.turbine.no_intake": "No intake tank found",
-  "coverheated.diode.needs_clearance.one": "This Diode is too close to another Diode",
-  "coverheated.diode.needs_clearance.two": "After fixing, Wrench this Diode to update it",
+  "coverheated.diode.needs_clearance_one": "This Diode is too close to another Diode",
+  "coverheated.diode.needs_clearance_two": "After fixing, Wrench this Diode to update it",
   "coverheated.diode.heat_limited": "This laser is spinning too slow, or has to low quality coolant, to fire all of its heat",
-  "coverheated.diode.no_heat": "Less than 1 Heat would be transferred by this laser"
-
+  "coverheated.diode.no_heat": "Less than 1 Heat would be transferred by this laser, increase RPM or add Coolant",
+  "coverheated.diode.no_coolant": "This laser has no coolant and will not operate",
+  "coverheated.diode.input_heat": "Inputted Heat: ",
+  "coverheated.diode.input_superheat": "Inputted Superheat: ",
+  "coverheated.diode.input_overheat": "Inputted Overheat: "
 }

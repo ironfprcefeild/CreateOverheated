@@ -35,8 +35,7 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         Direction face = pContext.getClickedFace();
         if (face.getAxis() == Direction.Axis.Y) {
-            face = pContext.getHorizontalDirection()
-                    .getOpposite();
+            face = pContext.getHorizontalDirection();
         }
         return super.getStateForPlacement(pContext).setValue(FACING, face.getOpposite());
     }

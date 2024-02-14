@@ -1,17 +1,28 @@
 package net.ironf.overheated.steamworks.steamFluids;
 
+import com.drmangotea.createindustry.CreateTFMG;
+import com.simibubi.create.AllFluids;
+import com.simibubi.create.AllTags;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.VirtualFluid;
+import com.simibubi.create.infrastructure.config.AllConfigs;
+import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.FluidEntry;
+import com.tterrag.registrate.util.nullness.NonnullType;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import static com.drmangotea.createindustry.registry.TFMGFluids.COOLING_FLUID_FLOW_RL;
+import static com.drmangotea.createindustry.registry.TFMGFluids.COOLING_FLUID_STILL_RL;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
 public class AllSteamFluids {
+
 
     public static final FluidEntry<VirtualFluid> DISTILLED_WATER = REGISTRATE.virtualFluid("distilled_water")
             .lang("Distilled Water")
@@ -82,7 +93,7 @@ public class AllSteamFluids {
             .register();
 
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
-    public static VirtualFluid[][] Steams;
+    public static @NonnullType VirtualFluid[][] Steams;
 
     public static void prepareSteamArray(){
         Steams = new VirtualFluid[][]{

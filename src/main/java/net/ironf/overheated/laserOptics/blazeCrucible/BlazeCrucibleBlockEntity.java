@@ -3,6 +3,7 @@ package net.ironf.overheated.laserOptics.blazeCrucible;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
         timeHeated = 15;
         heatLevel = beamHeat.useUpToOverHeat();
+        Overheated.LOGGER.info("Crucible absorbing laser");
         return true;
     }
 

@@ -54,7 +54,11 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     public int thisSpinsDrain = 0;
     public List<Component> displayData = new ArrayList<>();
 
-
+    boolean turbineTooSmall = false;
+    boolean turbineIntakeLow = false;
+    boolean turbineIntakePressureLow = false;
+    boolean outtakeFull = false;
+    boolean noIntake = false;
 
 
 
@@ -67,7 +71,11 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
 
 
     public void checkTurbine(){
-
+        turbineTooSmall = false;
+        turbineIntakeLow = false;
+        turbineIntakePressureLow = false;
+        outtakeFull = false;
+        noIntake = false;
         BlockPos origin = getBlockPos();
         int radius = 999;
         Direction turbineDirection = getBlockState().getValue(BlockStateProperties.FACING).getOpposite();
@@ -89,17 +97,16 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
 
                    if (drain < 1){
                         //The turbine does not have a high enough drain to operate, too teeny weeny
-                       setInvalidDisplayInfo("turbine.too_small");
+                       turbineTooSmall = true;
                     } else if (intakeTank.getTankInventory().getFluid().getAmount() < drain){
                         //The intake tank doesn't have enough fluid for the drain
-                       setInvalidDisplayInfo("turbine.intake.low");
+                       turbineIntakeLow = true;
                     } else if(1 > pressureLevel){
                         //The pressure of the fluid in the intake is not high enough to run a turbine
-                       setInvalidDisplayInfo("turbine.intake.low_pressure");
+                       turbineIntakePressureLow = true;
                     } else if (capacity - tank.getPrimaryHandler().getFluid().getAmount() < drain){
                         //The outtakes tank is full and cannot accept more
-                        setInvalidDisplayInfo("turbine.outtake_full");
-
+                        outtakeFull = true;
                     } else {
                         //Drain the intake tank
                         intakeTank.getTankInventory().drain(drain, IFluidHandler.FluidAction.EXECUTE);
@@ -119,7 +126,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 //This code is also reached when any of the big conditions are true
                 thisSpinsDrain = 0;
                 reActivateSource = true;
-                setInvalidDisplayInfo("turbine.no_intake");
+                noIntake = true;
                 return;
             } else {
                 //We are at an extension so just update radius
@@ -158,10 +165,6 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         }
     }
 
-    public void setInvalidDisplayInfo(String key){
-        displayData.clear();
-        displayData.add(lang.translate("turbine.error").text(System.lineSeparator()).translate(key).component());
-    }
 
 
 
@@ -228,7 +231,19 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-        tooltip.addAll(displayData);
+        if (turbineIntakePressureLow){
+            tooltip.add(lang.translate("turbine.intake.low_pressure").component());
+        } else if (turbineIntakeLow){
+            tooltip.add(lang.translate("turbine.intake.low").component());
+        } else if(turbineTooSmall){
+            tooltip.add(lang.translate("turbine.too_small").component());
+        } else if (outtakeFull){
+            tooltip.add(lang.translate("turbine.outtake_full").component());
+        } else if (noIntake){
+            tooltip.add(lang.translate("turbine.no_intake").component());
+        } else {
+            tooltip.addAll(displayData);
+        }
         return true;
     }
 }

@@ -20,11 +20,9 @@ public class HeatData {
     }
 
     public static HeatData mergeHeats(HeatData a, HeatData b){
-        int volMod = 0;
-        if (a.Volatility == 0 || b.Volatility == 0){
-            volMod++;
-        }
-        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat, (a.Volatility + b.Volatility) / (2-volMod));
+
+        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat,
+                (a.Volatility + b.Volatility) / ((a.Volatility == 0 || b.Volatility == 0) ? 1 : 2));
     }
 
     public static HeatData mergeHeats(HeatData[] h){
@@ -42,7 +40,7 @@ public class HeatData {
             }
             v += hd.Volatility;
         }
-        return new HeatData(he,o,s,(v / (h.length - ignoreInMerge)));
+        return new HeatData(he,o,s,(v / (h.length - ignoreInMerge + 1)));
     }
 
     public int getTotalHeat(){
