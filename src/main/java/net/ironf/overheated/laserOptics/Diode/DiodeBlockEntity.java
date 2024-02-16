@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlockEntities;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
@@ -18,7 +19,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,7 +30,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -111,9 +110,10 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             //Set Volatility
             laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(fluids.getFluid());
             int range = laserHeat.Volatility + laserHeat.getTotalHeat();
+            int freeBreaks = 0;
             recentHeat = laserHeat;
             //Propogate Laser
-            //32 Limits the lasers length, its also limited by the heat of the laser
+            //16 Limits the lasers length, its also limited by the heat of the laser
             Direction continueIn = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
             BlockPos continueAt = getBlockPos();
             for (int t = 0; t < Math.min(16, range) + 16; t++) {
@@ -127,25 +127,27 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 addEffectCloud(continueAt);
                 //Dont do anything if its air besides rendering
                 if (!hitState.isAir()) {
-                    if (AllBlocks.ANTI_LASER_PLATING.has(hitState)) {
-                        //Anti laser plating, cant be destroyed, so we just break here
+                    if (AllBlocks.ANTI_LASER_PLATING.has(hitState) || Blocks.BEDROCK == hitState.getBlock()) {
+                        //Anti laser plating or bedrock, cant be destroyed, so we just break here
                         break;
                     } else if (!mirrorRegister.isMirror(hitState)) {
                         //Dont do anything if a mirror, otherwise check for laser absorbers
                         BlockEntity hitBE = level.getBlockEntity(continueAt);
                         if (hitBE instanceof ILaserAbsorber) {
                             if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat)) {
+                                //This is letting the laser contiune if absorb laser tells us too, otherwise we break
                                 break;
                             }
-                        }
-                    } else {
-                        //We are at a normal block, so lets break it!
-                        if (canBreakState(hitState)){
-                            hitState.getBlock().destroy(level,continueAt,hitState);
-                            breakingCounter = 0;
-                            break;
-                        } else if (breakingCounter < 8192){
+                        } else {
+                            //This isnt a laser absorber or a mirror, so we can do normal block stuff
+                            //We are at a normal block, so lets break it!
                             breakingCounter = breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat());
+                            if (canBreak(hitState)) {
+                                level.destroyBlock(continueAt,true);
+                                breakingCounter = 0;
+                            }
+                            Overheated.LOGGER.info(String.valueOf(breakingCounter));
+                            break;
                         }
                     }
                 } else {
@@ -161,16 +163,20 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     private void markForEffectCloud(BlockPos continueAt) {
         RandomSource rand = level.random;
         double x = continueAt.getX() + rand.nextDouble();
-        double y = continueAt.getY() + 0.25;
+        double y = continueAt.getY() + rand.nextDouble();
         double z = continueAt.getZ() + rand.nextDouble();
         double vx = rand.nextDouble() * 0.04 - 0.02;
-        double vy = 0.1;
+        double vy = -0.2;
         double vz = rand.nextDouble() * 0.04 - 0.02;
-        level.addParticle(ParticleTypes.ANGRY_VILLAGER, x, y, z, vx, vy, vz);
+        level.addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
     }
 
-    private boolean canBreakState(BlockState hitState){
-        return  (hitState.getBlock().defaultDestroyTime() * 5) < breakingCounter;
+
+
+
+    public boolean canBreak(BlockState hitState){
+        return (hitState.getBlock().defaultDestroyTime() * 2.5) < breakingCounter;
+
     }
 
     public HeatData[] hittingLasers = {HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty()};
@@ -178,7 +184,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
-        if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
+        ILaserAbsorber.super.absorbLaser(incoming,beamHeat);
+        if (getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) != incoming.getOpposite()) {
             hittingLasers[inputHelper.get(incoming)] = beamHeat;
             hittingTimers[inputHelper.get(incoming)] = 6;
         }
@@ -283,11 +290,13 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         }
         if (noCoolant){
             tooltip.add(Component.translatable("coverheated.diode.no_coolant"));
+        } else {
+            tooltip.add(lang.translate("diode.input_heat").component().append(String.valueOf(recentHeat.Heat)));
+            tooltip.add(lang.translate("diode.input_superheat").component().append(String.valueOf(recentHeat.SuperHeat)));
+            tooltip.add(lang.translate("diode.input_overheat").component().append(String.valueOf(recentHeat.OverHeat)));
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-        tooltip.add(lang.translate("diode.input_heat").component().append(String.valueOf(recentHeat.Heat)));
-        tooltip.add(lang.translate("diode.input_superheat").component().append(String.valueOf(recentHeat.SuperHeat)));
-        tooltip.add(lang.translate("diode.input_overheat").component().append(String.valueOf(recentHeat.OverHeat)));
+
 
 
         return true;

@@ -1,5 +1,6 @@
 package net.ironf.overheated.laserOptics.blazeCrucible;
 
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
@@ -26,22 +27,49 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
         timeHeated = 15;
         heatLevel = beamHeat.useUpToOverHeat();
-        Overheated.LOGGER.info("Crucible absorbing laser");
+        updateBlockState();
         return true;
     }
 
-    public void setTimeHeated(int timeHeated) {
-        this.timeHeated = timeHeated;
-    }
-
-    public void heat(int time, int level){
-        this.timeHeated = time;
-        this.heatLevel = level;
-    }
     @Override
     public void tick() {
         super.tick();
-        this.timeHeated--;
+        if (timeHeated > 0) {
+            this.timeHeated--;
+        } else {
+            heatLevel = 0;
+            updateBlockState();
+        }
+    }
+
+    public void updateBlockState() {
+        setBlockHeat(getHeatLevel());
+    }
+
+    protected void setBlockHeat(BlazeBurnerBlock.HeatLevel heat) {
+        BlazeBurnerBlock.HeatLevel inBlockState = getHeatLevelFromBlock();
+        if (inBlockState == heat)
+            return;
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(BlazeBurnerBlock.HEAT_LEVEL, heat));
+        notifyUpdate();
+    }
+
+    public BlazeBurnerBlock.HeatLevel getHeatLevelFromBlock() {
+        return BlazeBurnerBlock.getHeatLevelOf(getBlockState());
+    }
+
+    protected BlazeBurnerBlock.HeatLevel getHeatLevel() {
+        BlazeBurnerBlock.HeatLevel level = BlazeBurnerBlock.HeatLevel.SMOULDERING;
+        if (timeHeated > 0) {
+            if (heatLevel > 1){
+                //Superheated
+                level = BlazeBurnerBlock.HeatLevel.SEETHING;
+            } else {
+                //Heated
+                level = BlazeBurnerBlock.HeatLevel.KINDLED;
+            }
+        }
+        return level;
     }
 
     public BlazeCrucibleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
