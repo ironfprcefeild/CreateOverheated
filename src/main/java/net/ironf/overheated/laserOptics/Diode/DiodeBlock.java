@@ -25,7 +25,7 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
     }
 
     //Block State
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder.add(FACING));
@@ -34,10 +34,7 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         Direction face = pContext.getClickedFace();
-        if (face.getAxis() == Direction.Axis.Y) {
-            face = pContext.getHorizontalDirection();
-        }
-        return super.getStateForPlacement(pContext).setValue(FACING, face.getOpposite());
+        return super.getStateForPlacement(pContext).setValue(FACING, face);
     }
 
     //BE

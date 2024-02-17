@@ -5,6 +5,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
+import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
@@ -74,6 +75,15 @@ public class AllBlocks {
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
+
+    //Mirrors
+    public static final BlockEntry<mirrorBlock> BASIC_MIRROR = REGISTRATE
+            .block("basic_mirror", mirrorBlock::new)
+            .initialProperties(SharedProperties::netheriteMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
     public static void register(){
 
     }

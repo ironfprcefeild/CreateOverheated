@@ -110,11 +110,10 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             //Set Volatility
             laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(fluids.getFluid());
             int range = laserHeat.Volatility + laserHeat.getTotalHeat();
-            int freeBreaks = 0;
             recentHeat = laserHeat;
             //Propogate Laser
             //16 Limits the lasers length, its also limited by the heat of the laser
-            Direction continueIn = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+            Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
             BlockPos continueAt = getBlockPos();
             for (int t = 0; t < Math.min(16, range) + 16; t++) {
                 if (laserHeat.getTotalHeat() < 1) {
@@ -146,7 +145,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                                 level.destroyBlock(continueAt,true);
                                 breakingCounter = 0;
                             }
-                            Overheated.LOGGER.info(String.valueOf(breakingCounter));
                             break;
                         }
                     }
@@ -185,7 +183,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
         ILaserAbsorber.super.absorbLaser(incoming,beamHeat);
-        if (getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) != incoming.getOpposite()) {
+        if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
             hittingLasers[inputHelper.get(incoming)] = beamHeat;
             hittingTimers[inputHelper.get(incoming)] = 6;
         }
@@ -290,10 +288,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         }
         if (noCoolant){
             tooltip.add(Component.translatable("coverheated.diode.no_coolant"));
-        } else {
-            tooltip.add(lang.translate("diode.input_heat").component().append(String.valueOf(recentHeat.Heat)));
-            tooltip.add(lang.translate("diode.input_superheat").component().append(String.valueOf(recentHeat.SuperHeat)));
-            tooltip.add(lang.translate("diode.input_overheat").component().append(String.valueOf(recentHeat.OverHeat)));
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
 

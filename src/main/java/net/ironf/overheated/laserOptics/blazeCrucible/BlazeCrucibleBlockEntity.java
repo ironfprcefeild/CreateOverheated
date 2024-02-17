@@ -22,24 +22,32 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
 
     public int timeHeated = 0;
     public int heatLevel = 0;
+    public boolean needsStateUpdate = true;
 
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
+        int newHeat = beamHeat.useUpToOverHeat();
+        if (heatLevel != newHeat){
+            needsStateUpdate = true;
+        }
+        heatLevel = newHeat;
         timeHeated = 15;
-        heatLevel = beamHeat.useUpToOverHeat();
-        updateBlockState();
         return true;
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (needsStateUpdate){
+            updateBlockState();
+        }
         if (timeHeated > 0) {
             this.timeHeated--;
         } else {
             heatLevel = 0;
-            updateBlockState();
+            needsStateUpdate = true;
         }
+
     }
 
     public void updateBlockState() {
@@ -85,6 +93,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         tag.putInt("timeHeated",this.timeHeated);
+        needsStateUpdate = true;
     }
 
     @Override
@@ -109,5 +118,9 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
         });
     }
 
-
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        needsStateUpdate = true;
+    }
 }
