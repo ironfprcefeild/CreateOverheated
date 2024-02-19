@@ -3,6 +3,7 @@ package net.ironf.overheated.laserOptics.mirrors;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
+import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
@@ -50,14 +51,24 @@ public class mirrorRegister {
     public static void registerDefaults(){
         registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state) -> {
             Direction facing = state.getValue(BlockStateProperties.FACING);
-            if (incoming.getAxis() == facing.getAxis())
+            Direction.Axis facingAxis = facing.getAxis();
+            Direction.Axis incomingAxis = incoming.getAxis();
+            if (facingAxis == incomingAxis){
                 return incoming;
+            }
+            for (Direction.Axis d : Iterate.axes){
+                if (d != facingAxis && d != incomingAxis){
+                    return Direction.fromAxisAndDirection(d,incoming.getAxisDirection().opposite());
+                }
+            }
+            return incoming;
 
-            return incoming.getClockWise(facing.getAxis());
         });
     }
 
     public interface Reflector {
         Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state);
     }
+
+
 }

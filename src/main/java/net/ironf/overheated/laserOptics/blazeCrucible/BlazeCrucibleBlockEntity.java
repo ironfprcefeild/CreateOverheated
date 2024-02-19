@@ -40,6 +40,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
         super.tick();
         if (needsStateUpdate){
             updateBlockState();
+            needsStateUpdate = false;
         }
         if (timeHeated > 0) {
             this.timeHeated--;
@@ -47,14 +48,13 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
             heatLevel = 0;
             needsStateUpdate = true;
         }
-
     }
 
     public void updateBlockState() {
         setBlockHeat(getHeatLevel());
     }
 
-    protected void setBlockHeat(BlazeBurnerBlock.HeatLevel heat) {
+    public void setBlockHeat(BlazeBurnerBlock.HeatLevel heat) {
         BlazeBurnerBlock.HeatLevel inBlockState = getHeatLevelFromBlock();
         if (inBlockState == heat)
             return;
@@ -92,14 +92,14 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        tag.putInt("timeHeated",this.timeHeated);
-        needsStateUpdate = true;
+        this.timeHeated = tag.getInt("timeHeated");
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        this.timeHeated = tag.getInt("timeHeated");
+        tag.putInt("timeHeated",this.timeHeated);
+        needsStateUpdate = true;
     }
 
     public static void addToBoilerHeaters(){
