@@ -83,6 +83,8 @@ public class DiodeHeaters {
             return HeatData.empty();
         });
 
+        //registerHeater(Blocks.COMMAND_BLOCK, (level, pos, state) -> new HeatData(0,0,1,0));
+
 
 
     }

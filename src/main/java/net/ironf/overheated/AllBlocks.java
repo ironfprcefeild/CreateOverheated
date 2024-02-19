@@ -79,7 +79,22 @@ public class AllBlocks {
     //Mirrors
     public static final BlockEntry<mirrorBlock> BASIC_MIRROR = REGISTRATE
             .block("basic_mirror", mirrorBlock::new)
-            .initialProperties(SharedProperties::netheriteMetal)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
+    //Dimmers
+    public static final BlockEntry<Block> SUPERHEAT_DIMMER = REGISTRATE
+            .block("superheat_dimmer", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<Block> OVERHEAT_DIMMER = REGISTRATE
+            .block("overheat_dimmer", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();

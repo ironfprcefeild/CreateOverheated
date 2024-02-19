@@ -29,10 +29,10 @@ public class mirrorRegister {
         MIRRORS.register(block,reflector);
     }
 
-    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state) {
+    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData heatData) {
         Reflector mirror = MIRRORS.get(state.getBlock());
         if (mirror != null) {
-            return mirror.doReflection(incoming,level, pos, state);
+            return mirror.doReflection(incoming,level, pos, state,heatData);
         }
 
         return incoming;
@@ -44,12 +44,12 @@ public class mirrorRegister {
 
 
 
-    public static Direction doReflection(Direction incoming, Level level, BlockPos pos) {
-        return doReflection(incoming,level,pos,level.getBlockState(pos));
+    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, HeatData heatData) {
+        return doReflection(incoming,level,pos,level.getBlockState(pos),heatData);
     }
 
     public static void registerDefaults(){
-        registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state) -> {
+        registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state, heat) -> {
             Direction facing = state.getValue(BlockStateProperties.FACING);
             Direction.Axis facingAxis = facing.getAxis();
             Direction.Axis incomingAxis = incoming.getAxis();
@@ -58,16 +58,24 @@ public class mirrorRegister {
             }
             for (Direction.Axis d : Iterate.axes){
                 if (d != facingAxis && d != incomingAxis){
-                    return Direction.fromAxisAndDirection(d,incoming.getAxisDirection().opposite());
+                    return Direction.fromAxisAndDirection(d,facing.getAxisDirection());
                 }
             }
             return incoming;
 
         });
+        registerReflector(AllBlocks.SUPERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
+            heat.collapseSuperHeat(1);
+            return incoming;
+        });
+        registerReflector(AllBlocks.OVERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
+            heat.collapseOverHeat(1);
+            return incoming;
+        });
     }
 
     public interface Reflector {
-        Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state);
+        Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData passingData);
     }
 
 

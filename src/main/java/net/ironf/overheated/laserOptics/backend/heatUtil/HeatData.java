@@ -82,6 +82,18 @@ public class HeatData {
         this.SuperHeat = 0;
     }
 
+    public void collapseOverHeat(int amount) {
+        int detracted = Math.min(amount, this.OverHeat);
+        this.SuperHeat = detracted * 4;
+        this.OverHeat = this.OverHeat - detracted;
+    }
+
+    public void collapseSuperHeat(int amount){
+        int detracted = Math.min(amount, this.SuperHeat);
+        this.Heat = detracted * 4;
+        this.SuperHeat = this.SuperHeat - detracted;
+    }
+
     public void collapseAllHeat(){
         collapseOverHeat();
         collapseSuperHeat();

@@ -110,7 +110,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             //Set Volatility
             laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(fluids.getFluid());
             int range = laserHeat.Volatility + laserHeat.getTotalHeat();
-            recentHeat = laserHeat;
             //Propogate Laser
             //16 Limits the lasers length, its also limited by the heat of the laser
             Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
@@ -122,7 +121,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 }
                 continueAt = continueAt.relative(continueIn);
                 BlockState hitState = level.getBlockState(continueAt);
-                continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState);
+                continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
                 addEffectCloud(continueAt);
                 //Dont do anything if its air besides rendering
                 if (!hitState.isAir()) {
@@ -297,16 +296,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     }
 
 
-    //Wrenchable
-
-    //Wrenching the diode will retest for clearance
-    @Override
-    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        if (!hasClearance){
-            testForClearance();
-        }
-        return InteractionResult.SUCCESS;
-    }
 
 
     //Fluids
