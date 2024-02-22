@@ -40,7 +40,7 @@ public class HeatData {
             }
             v += hd.Volatility;
         }
-        return new HeatData(he,o,s,(v / (h.length - ignoreInMerge + 1)));
+        return new HeatData(he,s,o,(v / (h.length - ignoreInMerge + 1)));
     }
 
     public int getTotalHeat(){

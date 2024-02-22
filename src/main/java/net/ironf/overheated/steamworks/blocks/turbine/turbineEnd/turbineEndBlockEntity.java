@@ -38,7 +38,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     //Kinetics
     @Override
     public float getGeneratedSpeed() {
-        return convertToDirection(thisSpinsDrain != 0 ? thisSpinsDrain + 16 : 0, getBlockState().getValue(turbineEndBlock.FACING));
+        return convertToDirection(Math.min(256,thisSpinsDrain != 0 ? thisSpinsDrain + 16 : 0), getBlockState().getValue(turbineEndBlock.FACING));
     }
 
     @Override
@@ -52,15 +52,14 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     //Doing Things
 
     public int thisSpinsDrain = 0;
-    public List<Component> displayData = new ArrayList<>();
-
     boolean turbineTooSmall = false;
     boolean turbineIntakeLow = false;
     boolean turbineIntakePressureLow = false;
     boolean outtakeFull = false;
     boolean noIntake = false;
-
-
+    boolean tooLong = false;
+    int recentLength;
+    int recentRadius;
 
     @Override
     public void lazyTick() {
@@ -76,12 +75,13 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         turbineIntakePressureLow = false;
         outtakeFull = false;
         noIntake = false;
+        tooLong = false;
         BlockPos origin = getBlockPos();
         int radius = 999;
         Direction turbineDirection = getBlockState().getValue(BlockStateProperties.FACING).getOpposite();
-        //Go back through turbine, the 13 limits the length of a turbine to 12
+        //Go back through turbine, the 12 limits the length of a turbine to 12
         int i = 0;
-        while (i < 13){
+        while (i < 12){
             i++;
             BlockPos bp = origin.relative(turbineDirection,i);
             BlockState check = level.getBlockState(bp);
@@ -92,6 +92,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                     FluidTankBlockEntity intakeTank = ((FluidTankBlockEntity) level.getBlockEntity(bp)).getControllerBE();
                     int pressureLevel = AllSteamFluids.getSteamPressure(intakeTank.getTankInventory().getFluid());
                     int drain = i * radius * 2;
+
                     //if any of theese are true, the turbine is invalid or has stopped operating, so we set the drain to 0 and break
 
 
@@ -117,7 +118,8 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                         //Indicate to reactivate
                         reActivateSource = true;
                         //update display
-                        setDisplayInfo(radius,i,drain);
+                        recentLength = i;
+                        recentRadius = radius;
                         //Break out of loop, no need to check further blocks
                         return;
                     }
@@ -133,6 +135,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 radius = Math.min(radius,getRadiusOfCenterAt(bp));
             }
         }
+        tooLong = true;
     }
 
     public int getRadiusOfCenterAt(BlockPos checkAt) {
@@ -150,20 +153,9 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 }
             }
         }
-        return radiusRating;
+        return Math.min(radiusRating,12);
     }
 
-    //For operating status
-    public void setDisplayInfo(int radius, int length, int drain){
-        displayData.clear();
-        displayData.add(lang.translate("turbine.radius").text(String.valueOf(radius)).component());
-        displayData.add(lang.translate("turbine.length").text(String.valueOf(length)).component());
-        displayData.add(lang.translate("turbine.drain.amount").text(String.valueOf(drain)).component());
-        double drainPerTick = (Math.ceil((double) drain / 300));
-        if (drainPerTick > 1) {
-            displayData.add(lang.translate("turbine.drain.rate").space().text(String.valueOf(drainPerTick)).space().translate("turbine.drain.every_tick").component());
-        }
-    }
 
 
 
@@ -181,11 +173,16 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         this.thisSpinsDrain = tag.getInt("recent_drain");
+        this.recentLength = tag.getInt("recent_length");
+        this.recentRadius = tag.getInt("recent_radius");
+
     }
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         tag.putInt("recent_drain",this.thisSpinsDrain);
+        tag.putInt("recent_length",this.recentLength);
+        tag.putInt("recent_radius",this.recentRadius);
 
     }
 
@@ -232,17 +229,28 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         if (turbineIntakePressureLow){
-            tooltip.add(lang.translate("turbine.intake.low_pressure").component());
+            tooltip.add(Component.translatable("coverheated.turbine.intake.low_pressure"));
         } else if (turbineIntakeLow){
-            tooltip.add(lang.translate("turbine.intake.low").component());
+            tooltip.add(Component.translatable("coverheated.turbine.intake.low"));
         } else if(turbineTooSmall){
-            tooltip.add(lang.translate("turbine.too_small").component());
+            tooltip.add(Component.translatable("coverheated.turbine.too_small"));
         } else if (outtakeFull){
-            tooltip.add(lang.translate("turbine.outtake_full").component());
-        } else if (noIntake){
-            tooltip.add(lang.translate("turbine.no_intake").component());
+            tooltip.add(Component.translatable("coverheated.turbine.outtake_full"));
+        } else if (noIntake) {
+            tooltip.add(Component.translatable("coverheated.turbine.no_intake"));
+        } else if (tooLong){
+            tooltip.add(Component.translatable("coverheated.turbine.too_long"));
         } else {
-            tooltip.addAll(displayData);
+            tooltip.add(Component.translatable("coverheated.turbine.info_header"));
+            tooltip.add(Component.translatable("coverheated.turbine.length").append(String.valueOf(recentLength)));
+            tooltip.add(Component.translatable("coverheated.turbine.radius").append(String.valueOf(recentRadius)));
+            if (isPlayerSneaking) {
+                int Drain = recentLength * 2 * recentRadius;
+                tooltip.add(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain.in")).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")));
+                tooltip.add(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 4)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")));
+            } else {
+                tooltip.add(Component.translatable("coverheated.gui.crouch_for_more_info"));
+            }
         }
         return true;
     }

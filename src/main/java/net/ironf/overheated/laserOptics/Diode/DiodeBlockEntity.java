@@ -84,12 +84,15 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     @Override
     public void lazyTick() {
         super.lazyTick();
-        HeatData laserHeat = findHeat();
+        if (!hasClearance)
+            return;
+
 
         //Cap heat based on RPM. The boolean is used to determine goggle display
         FluidStack fluids = getFluidStack();
         if (!fluids.isEmpty() && LaserCoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
             noCoolant = false;
+            HeatData laserHeat = findHeat();
             int heatCap = (int) Math.min(Math.abs(getSpeed()), LaserCoolingHandler.heatHandler.get(fluids.getFluid()));
             if (laserHeat.getTotalHeat() > heatCap) {
                 activeInefficiency = true;
@@ -106,7 +109,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             } else {
                 heatToLow = false;
             }
-
+            recentHeat = laserHeat;
             //Set Volatility
             laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(fluids.getFluid());
             int range = laserHeat.Volatility + laserHeat.getTotalHeat();
@@ -165,7 +168,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         double vx = rand.nextDouble() * 0.04 - 0.02;
         double vy = -0.2;
         double vz = rand.nextDouble() * 0.04 - 0.02;
-        level.addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
+        level.addParticle(ParticleTypes.FLAME, x, y, z, vx, vy, vz);
     }
 
 
@@ -289,7 +292,15 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             tooltip.add(Component.translatable("coverheated.diode.no_coolant"));
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-
+        if (recentHeat != HeatData.empty()){
+            tooltip.add(Component.literal(" "));
+            tooltip.add(Component.translatable("coverheated.heat").append(String.valueOf(recentHeat.Heat)));
+            tooltip.add(Component.translatable("coverheated.superheat").append(String.valueOf(recentHeat.SuperHeat)));
+            tooltip.add(Component.translatable("coverheated.overheat").append(String.valueOf(recentHeat.OverHeat)));
+            tooltip.add(Component.translatable("coverheated.laser_power").append(String.valueOf(Math.min(recentHeat.Volatility, recentHeat.getTotalHeat()))));
+        } else {
+            tooltip.add(Component.translatable("coverheated.no_heat"));
+        }
 
 
         return true;

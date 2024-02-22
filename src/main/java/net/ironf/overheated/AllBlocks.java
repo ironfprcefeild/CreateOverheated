@@ -6,6 +6,7 @@ import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
+import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
@@ -94,6 +95,13 @@ public class AllBlocks {
 
     public static final BlockEntry<Block> OVERHEAT_DIMMER = REGISTRATE
             .block("overheat_dimmer", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+    //Thermometer
+    public static final BlockEntry<ThermometerBlock> THERMOMETER = REGISTRATE
+            .block("thermometer", ThermometerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()

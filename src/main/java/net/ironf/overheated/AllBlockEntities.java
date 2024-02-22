@@ -6,6 +6,8 @@ import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
@@ -42,6 +44,11 @@ public class AllBlockEntities {
             .instance(() -> DiodeCogInstance::new)
             .renderer(() -> DiodeBlockEntityRenderer::new)
             .validBlocks(AllBlocks.DIODE)
+            .register();
+    //Thermometer
+    public static final BlockEntityEntry<ThermometerBlockEntity> THERMOMETER = REGISTRATE
+            .blockEntity("thermometer", ThermometerBlockEntity::new)
+            .validBlocks(AllBlocks.THERMOMETER)
             .register();
     public static void register(){
 
