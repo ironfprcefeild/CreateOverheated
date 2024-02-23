@@ -168,7 +168,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         double vx = rand.nextDouble() * 0.04 - 0.02;
         double vy = -0.2;
         double vz = rand.nextDouble() * 0.04 - 0.02;
-        level.addParticle(ParticleTypes.FLAME, x, y, z, vx, vy, vz);
+        level.addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
     }
 
 
@@ -347,7 +347,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
     @Override
     public float calculateStressApplied() {
-        float impact = 8f;
+        float impact = 4f;
         this.lastStressApplied = impact;
         return impact;
     }

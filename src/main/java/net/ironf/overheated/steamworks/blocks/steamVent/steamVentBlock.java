@@ -1,14 +1,18 @@
 package net.ironf.overheated.steamworks.blocks.steamVent;
 
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -20,7 +24,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import static net.ironf.overheated.AllBlockEntities.STEAM_VENT;
 
 
-public class steamVentBlock extends Block implements IBE<steamVentBlockEntity> {
+public class steamVentBlock extends Block implements IBE<steamVentBlockEntity>, IWrenchable {
 
 
     public steamVentBlock(Properties properties) {
@@ -93,5 +97,18 @@ public class steamVentBlock extends Block implements IBE<steamVentBlockEntity> {
         return STEAM_VENT.get();
     }
 
+    //Wrenching
 
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        BlockEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
+        if (be.getType() == getBlockEntityType()){
+            ((steamVentBlockEntity) be).toggleMode();
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+
+        }
+    }
 }

@@ -99,7 +99,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         if (tank != null) {
             BoilerData boiler = tank.boiler;
             if (boiler.isActive() && boiler.attachedEngines <= boiler.activeHeat) {
-                processingTicks--;
+                processingTicks = processingTicks - (distillationMode ? 12 : 1);
                 if (processingTicks < 1) {
                     if (boiler.isPassive()){
                         setFluid(new FluidStack(
@@ -108,7 +108,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
                         );
                     } else {
                         setFluid(new FluidStack(
-                                AllSteamFluids.getSteamFromValues((int) (Math.floor((double) boiler.activeHeat / 6) + 1),0),
+                                AllSteamFluids.getSteamFromValues(distillationMode ? 0 : ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),0),
                                 getFluidStack().getAmount() + 1)
                         );
                     }
@@ -123,19 +123,26 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         this.processingTicks = tag.getInt("processing_ticks");
-
+        this.distillationMode = tag.getBoolean("mode");
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         tag.putInt("processing_ticks",this.processingTicks);
-
+        tag.putBoolean("mode",this.distillationMode);
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(Component.translatable(distillationMode ? "coverheated.steam_vent.distilling" : "coverheated.steam_vent.not_distilling"));
+        tooltip.add(Component.translatable("coverheated.steam_vent.wrench"));
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         return true;
+    }
+
+    boolean distillationMode = false;
+    public void toggleMode() {
+        distillationMode = !distillationMode;
     }
 }

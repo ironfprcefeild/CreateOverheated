@@ -24,12 +24,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
-import static net.ironf.overheated.Overheated.lang;
-
-public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation, ILaserAbsorber {
+public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
     public turbineEndBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         setLazyTickRate(300);
@@ -153,7 +150,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 }
             }
         }
-        return Math.min(radiusRating,12);
+        return Math.max(radiusRating-1,1);
     }
 
 
