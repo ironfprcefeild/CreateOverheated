@@ -4,11 +4,11 @@ import net.minecraft.nbt.CompoundTag;
 
 //This is the class used to transfer heat data, but also has a static mergeheat function
 public class HeatData {
-    public int Heat;
-    public int SuperHeat;
-    public int OverHeat;
-    public int Volatility;
-    public HeatData(int Heat, int SuperHeat, int OverHeat, int Volatility){
+    public float Heat;
+    public float SuperHeat;
+    public float OverHeat;
+    public float Volatility;
+    public HeatData(float Heat, float SuperHeat, float OverHeat, float Volatility){
         this.Heat = Heat;
         this.SuperHeat = SuperHeat;
         this.OverHeat = OverHeat;
@@ -43,7 +43,7 @@ public class HeatData {
         return new HeatData(he,s,o,(v / (h.length - ignoreInMerge + 1)));
     }
 
-    public int getTotalHeat(){
+    public float getTotalHeat(){
         return this.Heat + this.SuperHeat * 4 + this.OverHeat * 16;
     }
 
@@ -83,13 +83,13 @@ public class HeatData {
     }
 
     public void collapseOverHeat(int amount) {
-        int detracted = Math.min(amount, this.OverHeat);
+        float detracted = Math.min(amount, this.OverHeat);
         this.SuperHeat = detracted * 4;
         this.OverHeat = this.OverHeat - detracted;
     }
 
     public void collapseSuperHeat(int amount){
-        int detracted = Math.min(amount, this.SuperHeat);
+        float detracted = Math.min(amount, this.SuperHeat);
         this.Heat = detracted * 4;
         this.SuperHeat = this.SuperHeat - detracted;
     }
@@ -119,18 +119,18 @@ public class HeatData {
 
     //Read Wrtie stuff
     public static void writeTag(CompoundTag tag, HeatData write, String s){
-        tag.putInt(s +"hdheat",write.Heat);
-        tag.putInt(s +"hdsuperheat",write.SuperHeat);
-        tag.putInt(s+"hdoverheat",write.OverHeat);
-        tag.putInt(s+"hdv",write.Volatility);
+        tag.putFloat(s +"hdheat",write.Heat);
+        tag.putFloat(s +"hdsuperheat",write.SuperHeat);
+        tag.putFloat(s+"hdoverheat",write.OverHeat);
+        tag.putFloat(s+"hdv",write.Volatility);
     }
 
     public static HeatData readTag(CompoundTag tag, String s){
         return new HeatData(
-                tag.getInt(s+"hdheat"),
-                tag.getInt(s+"hdsuperheat"),
-                tag.getInt(s+"hdoverheat"),
-                tag.getInt(s+"hdv")
+                tag.getFloat(s+"hdheat"),
+                tag.getFloat(s+"hdsuperheat"),
+                tag.getFloat(s+"hdoverheat"),
+                tag.getFloat(s+"hdv")
         );
     }
 

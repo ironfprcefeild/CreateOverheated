@@ -20,12 +20,15 @@
   "coverheated.diode.needs_clearance_one": "This Diode is too close to another Diode",
   "coverheated.diode.needs_clearance_two": "After fixing, Wrench this Diode to update it",
   "coverheated.diode.heat_limited": "This laser is spinning too slow, or has to low quality coolant, to fire all of its heat",
-  "coverheated.diode.no_heat": "Less than 1 Heat would be transferred by this laser, increase RPM or add Coolant",
+  "coverheated.diode.no_heat": "No Heat would be transferred by this laser, increase RPM or add Coolant",
   "coverheated.diode.no_coolant": "This laser has no coolant and will not operate",
-  "coverheated.heat": "Heat: ",
-  "coverheated.superheat": "Superheat: ",
-  "coverheated.overheat": "Overheat: ",
-  "coverheated.no_heat": "No Heat",
-  "coverheated.laser_power": "Power: "
-
+  "coverheated.tooltip.heat": "Heat: ",
+  "coverheated.tooltip.superheat": "Superheat: ",
+  "coverheated.tooltip.overheat": "Overheat: ",
+  "coverheated.tooltip.no_heat": "No Heat",
+  "coverheated.tooltip.heat_info": "Heat Info",
+  "coverheated.tooltip.laser_power": "Power: ",
+  "coverheated.solar_panel.updating": "Updating In ",
+  "coverheated.solar_panel.ticks": " Ticks",
+  "coverheated.solar_panel.absorbed_heat": "Absorbed Heat: "
 }

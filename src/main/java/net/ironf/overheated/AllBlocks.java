@@ -6,6 +6,7 @@ import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
+import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
@@ -102,6 +103,13 @@ public class AllBlocks {
     //Thermometer
     public static final BlockEntry<ThermometerBlock> THERMOMETER = REGISTRATE
             .block("thermometer", ThermometerBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+    //Solar Panel
+    public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
+            .block("solar_panel", SolarPanelBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()

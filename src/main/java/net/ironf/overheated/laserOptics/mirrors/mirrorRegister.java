@@ -51,18 +51,10 @@ public class mirrorRegister {
     public static void registerDefaults(){
         registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state, heat) -> {
             Direction facing = state.getValue(BlockStateProperties.FACING);
-            Direction.Axis facingAxis = facing.getAxis();
-            Direction.Axis incomingAxis = incoming.getAxis();
-            if (facingAxis == incomingAxis){
+            if (facing.getAxis() == incoming.getAxis()){
                 return incoming;
             }
-            for (Direction.Axis d : Iterate.axes){
-                if (d != facingAxis && d != incomingAxis){
-                    return Direction.fromAxisAndDirection(d,facing.getAxisDirection());
-                }
-            }
-            return incoming;
-
+            return Direction.fromAxisAndDirection(findOtherAxis(incoming.getAxis(),facing.getAxis()),facing.getAxisDirection());
         });
         registerReflector(AllBlocks.SUPERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
             heat.collapseSuperHeat(1);
@@ -78,5 +70,49 @@ public class mirrorRegister {
         Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData passingData);
     }
 
+    public static Direction.Axis findOtherAxis(Direction.Axis a, Direction.Axis b){
+        switch (a) {
+            case X -> {
+                switch (b) {
+                    case X -> {
+                        return Direction.Axis.X;
+                    }
+                    case Y -> {
+                        return Direction.Axis.Z;
+                    }
+                    case Z -> {
+                        return Direction.Axis.Y;
+                    }
+                }
+            }
+            case Y -> {
+                switch (b) {
+                    case X -> {
+                        return Direction.Axis.Z;
+                    }
+                    case Y -> {
+                        return Direction.Axis.Y;
+                    }
+                    case Z -> {
+                        return Direction.Axis.X;
+                    }
+                }
+            }
+            case Z -> {
+                switch (b) {
+                    case X -> {
+                        return Direction.Axis.Y;
+                    }
+                    case Y -> {
+                        return Direction.Axis.X;
+                    }
+                    case Z -> {
+                        return Direction.Axis.Z;
+                    }
+                }
+            }
+        }
+        return a;
+    }
 
 }

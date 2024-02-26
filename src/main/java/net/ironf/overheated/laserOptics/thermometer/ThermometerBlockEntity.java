@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
     public ThermometerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -45,14 +45,7 @@ public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAb
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        if (lastRead != HeatData.empty()){
-            tooltip.add(Component.literal(" "));
-            tooltip.add(Component.translatable("coverheated.heat").append(String.valueOf(lastRead.Heat)));
-            tooltip.add(Component.translatable("coverheated.superheat").append(String.valueOf(lastRead.SuperHeat)));
-            tooltip.add(Component.translatable("coverheated.overheat").append(String.valueOf(lastRead.OverHeat)));
-        } else {
-            tooltip.add(Component.translatable("coverheated.no_heat"));
-        }
+        GoggleHelper.heatTooltip(tooltip,lastRead);
         return true;
     }
 }

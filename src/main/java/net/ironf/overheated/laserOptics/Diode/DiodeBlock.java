@@ -1,9 +1,11 @@
 package net.ironf.overheated.laserOptics.Diode;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlockEntities;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -16,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import org.jetbrains.annotations.Nullable;
 
 public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, ICogWheel, IWrenchable {
     public DiodeBlock(Properties properties) {
@@ -29,10 +32,30 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
         super.createBlockStateDefinition(pBuilder.add(FACING));
     }
 
+    @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        Direction face = pContext.getClickedFace();
-        return super.getStateForPlacement(pContext).setValue(FACING, face);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+    }
+
+    public Direction getPreferredFacing(BlockPlaceContext context) {
+        Direction prefferedSide = null;
+        for (Direction side : Iterate.directions) {
+            BlockState blockState = context.getLevel()
+                    .getBlockState(context.getClickedPos()
+                            .relative(side));
+            if (blockState.getBlock() instanceof IRotate) {
+                if (((IRotate) blockState.getBlock()).hasShaftTowards(context.getLevel(), context.getClickedPos()
+                        .relative(side), blockState, side.getOpposite()))
+                    if (prefferedSide != null && prefferedSide.getAxis() != side.getAxis()) {
+                        prefferedSide = null;
+                        break;
+                    } else {
+                        prefferedSide = side;
+                    }
+            }
+        }
+        return prefferedSide;
     }
 
     //BE

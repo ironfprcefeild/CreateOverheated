@@ -1,6 +1,8 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +27,8 @@ public class mirrorBlock extends Block implements IWrenchable {
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return super.getStateForPlacement(pContext).setValue(FACING, pContext.getPlayer().isCrouching() ? pContext.getClickedFace().getOpposite() : pContext.getClickedFace());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
     }
+
 }

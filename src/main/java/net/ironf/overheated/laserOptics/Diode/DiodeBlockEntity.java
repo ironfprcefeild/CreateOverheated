@@ -7,9 +7,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlockEntities;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.minecraft.core.BlockPos;
@@ -18,8 +18,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-
-import static net.ironf.overheated.Overheated.lang;
 
 public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -103,16 +99,18 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 activeInefficiency = false;
             }
             //If heat is too low, break out
-            if (laserHeat.getTotalHeat() < 1) {
+            if (laserHeat.getTotalHeat() < 0) {
                 heatToLow = true;
                 return;
             } else {
                 heatToLow = false;
             }
-            recentHeat = laserHeat;
             //Set Volatility
-            laserHeat.Volatility = LaserCoolingHandler.volatilityHandler.get(fluids.getFluid());
-            int range = laserHeat.Volatility + laserHeat.getTotalHeat();
+
+            laserHeat.Volatility = Math.min(laserHeat.getTotalHeat(), LaserCoolingHandler.volatilityHandler.get(fluids.getFluid()));
+            int range = (int) Math.ceil(laserHeat.Volatility + laserHeat.getTotalHeat());
+            //Update recent heat
+            recentHeat = laserHeat;
             //Propogate Laser
             //16 Limits the lasers length, its also limited by the heat of the laser
             Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
@@ -142,7 +140,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         } else {
                             //This isnt a laser absorber or a mirror, so we can do normal block stuff
                             //We are at a normal block, so lets break it!
-                            breakingCounter = breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat());
+                            breakingCounter = (int) (breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
                             if (canBreak(hitState)) {
                                 level.destroyBlock(continueAt,true);
                                 breakingCounter = 0;
@@ -277,31 +275,33 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        tooltip.add(Component.literal(""));
+        boolean heatDisplay = true;
         if (!hasClearance){
             tooltip.add(Component.translatable("coverheated.diode.needs_clearance_one"));
             tooltip.add(Component.translatable("coverheated.diode.needs_clearance_two"));
+            heatDisplay = false;
+
         }
         if (activeInefficiency){
             tooltip.add(Component.translatable("coverheated.diode.heat_limited"));
+            heatDisplay = false;
         }
         if (heatToLow){
             tooltip.add(Component.translatable("coverheated.diode.no_heat"));
+            heatDisplay = false;
         }
         if (noCoolant){
             tooltip.add(Component.translatable("coverheated.diode.no_coolant"));
+            heatDisplay = false;
         }
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-        if (recentHeat != HeatData.empty()){
-            tooltip.add(Component.literal(" "));
-            tooltip.add(Component.translatable("coverheated.heat").append(String.valueOf(recentHeat.Heat)));
-            tooltip.add(Component.translatable("coverheated.superheat").append(String.valueOf(recentHeat.SuperHeat)));
-            tooltip.add(Component.translatable("coverheated.overheat").append(String.valueOf(recentHeat.OverHeat)));
-            tooltip.add(Component.translatable("coverheated.laser_power").append(String.valueOf(Math.min(recentHeat.Volatility, recentHeat.getTotalHeat()))));
+        if (heatDisplay){
+            GoggleHelper.heatTooltip(tooltip,recentHeat);
         } else {
-            tooltip.add(Component.translatable("coverheated.no_heat"));
+            GoggleHelper.heatTooltip(tooltip,HeatData.empty());
         }
-
 
         return true;
     }
