@@ -32,13 +32,11 @@ public class GoggleHelper {
         int displayUpToLevel = (h.Heat > 0 ? 1 : 0) + (h.SuperHeat > 0 ? 2 : 0) + (h.OverHeat > 0 ? 4 : 0);
         if (displayUpToLevel == 0) {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.no_heat")
-                    .withStyle(GRAY)));
+                    .withStyle(GRAY),1));
         } else {
-            if (displayUpToLevel >= 1) {
-                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
-                        .append(easyFloat(h.Heat))
-                        .withStyle(ChatFormatting.RED), 1));
-            }
+            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
+                    .append(easyFloat(h.Heat))
+                    .withStyle(ChatFormatting.RED), 1));
             if (displayUpToLevel >= 2) {
                 tooltip.add(addIndent(Component.translatable("coverheated.tooltip.superheat")
                         .append(easyFloat(h.SuperHeat))

@@ -26,10 +26,10 @@ public class HeatData {
     }
 
     public static HeatData mergeHeats(HeatData[] h){
-        int he = 0;
-        int o = 0;
-        int s = 0;
-        int v = 0;
+        float he = 0;
+        float o = 0;
+        float s = 0;
+        float v = 0;
         int ignoreInMerge = 0;
         for (HeatData hd : h){
             he += hd.Heat;

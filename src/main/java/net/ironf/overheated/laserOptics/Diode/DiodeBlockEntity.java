@@ -35,6 +35,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+
 public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -276,24 +278,24 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal(""));
         boolean heatDisplay = true;
         if (!hasClearance){
-            tooltip.add(Component.translatable("coverheated.diode.needs_clearance_one"));
-            tooltip.add(Component.translatable("coverheated.diode.needs_clearance_two"));
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.needs_clearance_one")));
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.needs_clearance_two")));
             heatDisplay = false;
 
         }
         if (activeInefficiency){
-            tooltip.add(Component.translatable("coverheated.diode.heat_limited"));
-            heatDisplay = false;
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.heat_limited_one")));
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.heat_limited_two")));
+
         }
         if (heatToLow){
-            tooltip.add(Component.translatable("coverheated.diode.no_heat"));
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.no_heat")));
             heatDisplay = false;
         }
         if (noCoolant){
-            tooltip.add(Component.translatable("coverheated.diode.no_coolant"));
+            tooltip.add(addIndent(Component.translatable("coverheated.diode.no_coolant")));
             heatDisplay = false;
         }
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);

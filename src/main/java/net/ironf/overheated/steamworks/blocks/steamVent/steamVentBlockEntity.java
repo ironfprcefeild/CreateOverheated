@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+
 public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public steamVentBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -90,16 +92,16 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     //Doing Things
 
-    int processingTicks = 75;
-
+    float processingTicks = 75;
+    boolean isSlow = false;
     @Override
     public void tick() {
         super.tick();
         FluidTankBlockEntity tank = getTank();
         if (tank != null) {
             BoilerData boiler = tank.boiler;
-            if (boiler.isActive() && boiler.attachedEngines <= boiler.activeHeat) {
-                processingTicks = processingTicks - (distillationMode ? 12 : 1);
+            if (boiler.isActive()) {
+                processingTicks = processingTicks - ((distillationMode ? 12 : 1));
                 if (processingTicks < 1) {
                     if (boiler.isPassive()){
                         setFluid(new FluidStack(
@@ -112,7 +114,9 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
                                 getFluidStack().getAmount() + 1)
                         );
                     }
-                    processingTicks = 75;
+                    processingTicks = 75 + boiler.attachedEngines - boiler.activeHeat * 5;
+                    isSlow = processingTicks != 75;
+
                 }
             }
         }
@@ -122,21 +126,27 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        this.processingTicks = tag.getInt("processing_ticks");
+        this.processingTicks = tag.getFloat("processing_ticks");
         this.distillationMode = tag.getBoolean("mode");
+        this.isSlow = tag.getBoolean("is_slow");
+
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        tag.putInt("processing_ticks",this.processingTicks);
+        tag.putFloat("processing_ticks",this.processingTicks);
         tag.putBoolean("mode",this.distillationMode);
+        tag.putBoolean("is_slow",this.isSlow);
+
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.translatable(distillationMode ? "coverheated.steam_vent.distilling" : "coverheated.steam_vent.not_distilling"));
-        tooltip.add(Component.translatable("coverheated.steam_vent.wrench"));
+        tooltip.add(addIndent(Component.translatable(distillationMode ? "coverheated.steam_vent.distilling" : "coverheated.steam_vent.not_distilling")));
+        tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.wrench")));
+        tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.slow")));
+
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         return true;
     }

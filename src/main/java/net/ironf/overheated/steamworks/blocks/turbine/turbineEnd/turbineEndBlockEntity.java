@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,12 +36,12 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     //Kinetics
     @Override
     public float getGeneratedSpeed() {
-        return convertToDirection(Math.min(256,thisSpinsDrain != 0 ? thisSpinsDrain + 16 : 0), getBlockState().getValue(turbineEndBlock.FACING));
+        return convertToDirection(Math.min(256,thisSpinsDrain), getBlockState().getValue(turbineEndBlock.FACING));
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = (float) thisSpinsDrain * 16;
+        float capacity = 4096;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -226,27 +227,30 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         if (turbineIntakePressureLow){
-            tooltip.add(Component.translatable("coverheated.turbine.intake.low_pressure"));
+            tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.turbine.intake.low_pressure"))));
         } else if (turbineIntakeLow){
-            tooltip.add(Component.translatable("coverheated.turbine.intake.low"));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.intake.low")));
         } else if(turbineTooSmall){
-            tooltip.add(Component.translatable("coverheated.turbine.too_small"));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.too_small")));
         } else if (outtakeFull){
-            tooltip.add(Component.translatable("coverheated.turbine.outtake_full"));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.outtake_full")));
         } else if (noIntake) {
-            tooltip.add(Component.translatable("coverheated.turbine.no_intake"));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.no_intake")));
         } else if (tooLong){
-            tooltip.add(Component.translatable("coverheated.turbine.too_long"));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.too_long")));
         } else {
-            tooltip.add(Component.translatable("coverheated.turbine.info_header"));
-            tooltip.add(Component.translatable("coverheated.turbine.length").append(String.valueOf(recentLength)));
-            tooltip.add(Component.translatable("coverheated.turbine.radius").append(String.valueOf(recentRadius)));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.info_header")));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.length").append(String.valueOf(recentLength)),1));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.radius").append(String.valueOf(recentRadius)),1));
             if (isPlayerSneaking) {
                 int Drain = recentLength * 2 * recentRadius;
-                tooltip.add(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain.in")).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")));
-                tooltip.add(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 4)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")));
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain.in")).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")),1));
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 4)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")),1));
+                if (Drain > 256){
+                    tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"),1));
+                }
             } else {
-                tooltip.add(Component.translatable("coverheated.gui.crouch_for_more_info"));
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.gui.crouch_for_more_info"),1));
             }
         }
         return true;

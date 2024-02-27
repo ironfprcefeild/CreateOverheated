@@ -31,7 +31,7 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
         
     }
 
-    public int processingTicks = 300;
+    public int processingTicks = 5;
     public float recentReading = 0;
     
     @Override
@@ -50,26 +50,16 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
         //Gains 0.25 more if during the day
         //Gains 0.25 more if in hot biomes
         if (level.canSeeSky(getBlockPos().above())){
-            recentReading = 0.25f;
             if (level.getBiome(getBlockPos()).is(Tags.Biomes.IS_HOT)){
-                recentReading = (int) (recentReading + 0.25);
+                recentReading = 0.5f;
+            } else {
+                recentReading = 0.25f;
             }
-
-            //This bit of code is ripped from the daylight sensor. It makes NO sense but works
-            int i = level.getBrightness(LightLayer.SKY, getBlockPos()) - level.getSkyDarken();
-            if (i > 0) {
-                float f = level.getSunAngle(1.0F);
-                float f1 = f < (float)Math.PI ? 0.0F : ((float)Math.PI * 2F);
-                f += (f1 - f) * 0.2F;
-                i = Math.round((float)i * Mth.cos(f));
-                i = Mth.clamp(i, 0, 15);
-            }
-            if (i > 0){
-                recentReading = (recentReading + 0.25f);
+            if (level.getDayTime() < 13000) {
+                recentReading = recentReading + 0.25f;
             }
 
 
-            recentReading = Math.max( recentReading, 0);
         } else {
             recentReading = 0;
         }
@@ -96,11 +86,9 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal(""));
-
         GoggleHelper.heatTooltip(tooltip,getRecentReading(), HeatDisplayType.SUPPLYING);
         if (isPlayerSneaking) {
-            tooltip.add(Component.translatable("coverheated.solar_panel.updating").append(String.valueOf(processingTicks)).append(Component.translatable("coverheated.solar_panel.ticks")));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.solar_panel.updating").append(String.valueOf(processingTicks)).append(Component.translatable("coverheated.solar_panel.ticks"))));
         }
         return true;
     }
