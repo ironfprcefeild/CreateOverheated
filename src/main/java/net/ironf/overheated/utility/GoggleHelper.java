@@ -12,37 +12,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.ChatFormatting.GRAY;
+import static net.minecraft.ChatFormatting.WHITE;
 
 public class GoggleHelper {
 
-    public static void heatTooltip(List<Component> tooltip, HeatData h){
 
 
-        if (h != HeatData.empty()) {
-            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat_info")
-                    .withStyle(GRAY)));
-            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
-                    .append(easyFloat(h.Heat))
-                    .withStyle(ChatFormatting.RED),1));
-            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.superheat")
-                    .append(easyFloat(h.SuperHeat))
-                    .withStyle(ChatFormatting.RED),1));
-            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.overheat")
-                    .append(easyFloat(h.OverHeat))
-                    .withStyle(ChatFormatting.RED),1));
-            tooltip.add(addIndent(Component.translatable("coverheated.tooltip.laser_power")
-                    .append(easyFloat(h.Volatility))
-                    .withStyle(ChatFormatting.RED),1));
+    public static void heatTooltip(List<Component> tooltip, HeatData h, HeatDisplayType hdt ){
+        String heatDisplayKey = "coverheated.tooltip.display_type." + switch (hdt){
+            case EMIT -> "emit";
+            case ABSORB -> "absorb";
+            case READING -> "reading";
+            case SUPPLYING -> "supplying";
+        };
 
-
-
-        } else {
+        tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat_info")
+                .append(Component.translatable(heatDisplayKey))
+                .withStyle(WHITE)));
+        int displayUpToLevel = (h.Heat > 0 ? 1 : 0) + (h.SuperHeat > 0 ? 2 : 0) + (h.OverHeat > 0 ? 4 : 0);
+        if (displayUpToLevel == 0) {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.no_heat")
                     .withStyle(GRAY)));
+        } else {
+            if (displayUpToLevel >= 1) {
+                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
+                        .append(easyFloat(h.Heat))
+                        .withStyle(ChatFormatting.RED), 1));
+            }
+            if (displayUpToLevel >= 2) {
+                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.superheat")
+                        .append(easyFloat(h.SuperHeat))
+                        .withStyle(ChatFormatting.RED), 1));
+            }
+            if (displayUpToLevel >= 4) {
+                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.overheat")
+                        .append(easyFloat(h.OverHeat))
+                        .withStyle(ChatFormatting.RED), 1));
+            }
+            if (displayUpToLevel > 0) {
+                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.laser_power")
+                        .append(easyFloat(h.Volatility))
+                        .withStyle(ChatFormatting.RED), 1));
+            }
         }
-
-
-
     }
 
 

@@ -28,6 +28,10 @@
   "coverheated.tooltip.no_heat": "No Heat",
   "coverheated.tooltip.heat_info": "Heat Info",
   "coverheated.tooltip.laser_power": "Power: ",
+  "coverheated.tooltip.display_type.emit": " (Emitting) ",
+  "coverheated.tooltip.display_type.reading": " (Reading) ",
+  "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
+  "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.solar_panel.updating": "Updating In ",
   "coverheated.solar_panel.ticks": " Ticks",
   "coverheated.solar_panel.absorbed_heat": "Absorbed Heat: "

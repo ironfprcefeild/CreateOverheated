@@ -12,6 +12,7 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
+import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -298,9 +299,9 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         if (heatDisplay){
-            GoggleHelper.heatTooltip(tooltip,recentHeat);
+            GoggleHelper.heatTooltip(tooltip,recentHeat, HeatDisplayType.EMIT);
         } else {
-            GoggleHelper.heatTooltip(tooltip,HeatData.empty());
+            GoggleHelper.heatTooltip(tooltip,HeatData.empty(),HeatDisplayType.EMIT);
         }
 
         return true;

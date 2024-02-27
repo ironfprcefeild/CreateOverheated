@@ -5,6 +5,8 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,8 +49,6 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
         //Returns 0 if it cant see the sky, if it can the running total starts at 0.25
         //Gains 0.25 more if during the day
         //Gains 0.25 more if in hot biomes
-        //Loses 0.25 if underwater
-        Overheated.LOGGER.info("trying to update the heat of a solar panel");
         if (level.canSeeSky(getBlockPos().above())){
             recentReading = 0.25f;
             if (level.getBiome(getBlockPos()).is(Tags.Biomes.IS_HOT)){
@@ -68,9 +68,6 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
                 recentReading = (recentReading + 0.25f);
             }
 
-            if (!level.canSeeSkyFromBelowWater(getBlockPos())){
-                //runningTotal = runningTotal - 0.25;
-            }
 
             recentReading = Math.max( recentReading, 0);
         } else {
@@ -100,7 +97,8 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal(""));
-        tooltip.add(Component.translatable("coverheated.solar_panel.absorbed_heat").append(String.valueOf(recentReading)));
+
+        GoggleHelper.heatTooltip(tooltip,getRecentReading(), HeatDisplayType.SUPPLYING);
         if (isPlayerSneaking) {
             tooltip.add(Component.translatable("coverheated.solar_panel.updating").append(String.valueOf(processingTicks)).append(Component.translatable("coverheated.solar_panel.ticks")));
         }
