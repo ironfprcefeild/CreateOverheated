@@ -38,25 +38,6 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
         return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
     }
 
-    public Direction getPreferredFacing(BlockPlaceContext context) {
-        Direction prefferedSide = null;
-        for (Direction side : Iterate.directions) {
-            BlockState blockState = context.getLevel()
-                    .getBlockState(context.getClickedPos()
-                            .relative(side));
-            if (blockState.getBlock() instanceof IRotate) {
-                if (((IRotate) blockState.getBlock()).hasShaftTowards(context.getLevel(), context.getClickedPos()
-                        .relative(side), blockState, side.getOpposite()))
-                    if (prefferedSide != null && prefferedSide.getAxis() != side.getAxis()) {
-                        prefferedSide = null;
-                        break;
-                    } else {
-                        prefferedSide = side;
-                    }
-            }
-        }
-        return prefferedSide;
-    }
 
     //BE
     @Override

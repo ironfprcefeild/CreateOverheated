@@ -8,6 +8,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
@@ -114,6 +115,15 @@ public class AllBlocks {
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
+
+    //Heat Sink
+    public static final BlockEntry<HeatSinkBlock> HEAT_SINK = REGISTRATE
+            .block("heat_sink", HeatSinkBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+
 
     public static void register(){
 

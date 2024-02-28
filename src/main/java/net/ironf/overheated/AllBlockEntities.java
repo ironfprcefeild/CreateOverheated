@@ -9,6 +9,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
+import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
@@ -55,6 +56,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<SolarPanelBlockEntity> SOLAR_PANEL = REGISTRATE
             .blockEntity("solar_panel", SolarPanelBlockEntity::new)
             .validBlocks(AllBlocks.SOLAR_PANEL)
+            .register();
+
+    //Heat Sink
+    public static final BlockEntityEntry<HeatSinkBlockEntity> HEAT_SINK = REGISTRATE
+            .blockEntity("heat_sink", HeatSinkBlockEntity::new)
+            .validBlocks(AllBlocks.HEAT_SINK)
             .register();
     public static void register(){
 
