@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 
 public interface HeatSinkHelper {
-    default int getHeatSunkenFrom(BlockPos pos, Level level){
-        int runningTotal = 0;
+    default float getHeatSunkenFrom(BlockPos pos, Level level){
+        float runningTotal = 0;
         for (Direction d : Iterate.directions){
             BlockPos check = pos.relative(d);
             BlockState state = level.getBlockState(check);

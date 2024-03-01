@@ -1,0 +1,7 @@
+{
+  "mappings": {
+    "net/ironf/overheated/mixin/airCurrentMixin": {
+      "findAffectedHandlers()z":"com/simibubi/create/content/kinetics/fan/AirCurrent"
+    }
+  }
+}

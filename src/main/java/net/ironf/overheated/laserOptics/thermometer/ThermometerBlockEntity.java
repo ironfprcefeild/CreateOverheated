@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
+public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAbsorber, IHaveGoggleInformation, HeatSinkHelper {
     public ThermometerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -47,6 +48,7 @@ public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAb
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         GoggleHelper.heatTooltip(tooltip,lastRead, HeatDisplayType.READING);
+        tooltip.add(Component.literal(String.valueOf(getHeatSunkenFrom(getBlockPos(),level))));
         return true;
     }
 }

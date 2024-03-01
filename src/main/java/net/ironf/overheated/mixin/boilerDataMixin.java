@@ -21,7 +21,6 @@ public class boilerDataMixin {
     public int attachedEngines;
 
     public int attachedWhistles;
-
     public boolean needsHeatLevelUpdate;
     public boolean evaluate(FluidTankBlockEntity controller) {
         BlockPos controllerPos = controller.getBlockPos();
