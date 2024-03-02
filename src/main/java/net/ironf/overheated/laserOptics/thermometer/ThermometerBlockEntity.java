@@ -8,6 +8,7 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -48,7 +49,12 @@ public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAb
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         GoggleHelper.heatTooltip(tooltip,lastRead, HeatDisplayType.READING);
-        tooltip.add(Component.literal(String.valueOf(getHeatSunkenFrom(getBlockPos(),level))));
+
+        float sunken = getHeatSunkenFrom(getBlockPos(),level);
+        if (sunken > 0) {
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.thermometer.total_sunken_heat").withStyle(ChatFormatting.WHITE)));
+            tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(sunken)).withStyle(ChatFormatting.AQUA), 1));
+        }
         return true;
     }
 }

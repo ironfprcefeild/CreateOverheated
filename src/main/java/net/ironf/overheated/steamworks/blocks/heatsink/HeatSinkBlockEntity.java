@@ -4,13 +4,17 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlockEntities;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
 
@@ -31,7 +35,7 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
     @Override
     public void tick() {
         super.tick();
-        if (timer >= 0){
+        if (timer <= 0){
             sunken = 0;
         } else {
             timer--;
@@ -55,18 +59,38 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
     }
 
     public float findSunken(){
-        return sunken;
+        return Math.abs(sunken);
     }
 
     @Override
-    public void update(float strength) {
+    public void update(float strength, Direction incoming) {
+        if (incoming.getAxis() == getBlockState().getValue(BlockStateProperties.AXIS)){
+            sunken = 0;
+            timer = 0;
+            return;
+        }
         sunken = strength;
         timer = 5;
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(GoggleHelper.addIndent(Component.literal(String.valueOf(findSunken())),1));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.heat_sink.airflow").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(findSunken())).withStyle(ChatFormatting.AQUA),1));
         return true;
+    }
+
+    @Override
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        sunken = tag.getFloat("sunken");
+        timer = tag.getInt("timer");
+    }
+
+    @Override
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
+        tag.putFloat("sunken",sunken);
+        tag.putInt("timer",timer);
     }
 }

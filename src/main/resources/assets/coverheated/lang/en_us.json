@@ -8,25 +8,33 @@
   "coverheated.turbine.drain.steam_vent.requires": "Requires ",
   "coverheated.turbine.drain.steam_vent.to_run": " Steam Vents to run",
   "coverheated.turbine.drain.too_much": "Your turbine is inefficient, any drain over 256 is no better than 256",
-
-  "coverheated.gui.crouch_for_more_info": "Crouch for more Info",
   "coverheated.turbine.error": "!!! Turbine Invalid, See Below !!!",
   "coverheated.turbine.intake.low": "Intake is low on steam, increase input",
   "coverheated.turbine.intake.low_pressure": "Intake steam is too low pressure or not steam at all ",
   "coverheated.turbine.outtake.full": "This block needs to have steam pumped out of it",
   "coverheated.turbine.no_intake": "No intake tank found",
   "coverheated.turbine.too_long": "Turbine Too Long",
+
   "coverheated.steam_vent.distilling": "Vent is making Distilled Water",
   "coverheated.steam_vent.not_distilling": "Vent is making Steam",
   "coverheated.steam_vent.wrench": "Wrench to change modes",
   "coverheated.steam_vent.slow": "Too many vents or engines on this boiler, vent is running slow",
+
   "coverheated.diode.needs_clearance_one": "This Diode is too close to another Diode",
   "coverheated.diode.needs_clearance_two": "After fixing, Wrench this Diode to update it",
   "coverheated.diode.heat_limited_one": "This diode is spinning too slow, or has to low quality coolant",
   "coverheated.diode.heat_limited_two": "To fire all of its heat",
-
   "coverheated.diode.no_heat": "No Heat would be transferred by this laser, increase RPM or add Coolant",
   "coverheated.diode.no_coolant": "This laser has no coolant and will not operate",
+
+  "coverheated.solar_panel.updating": "Updating In ",
+  "coverheated.solar_panel.ticks": " Ticks",
+  "coverheated.solar_panel.absorbed_heat": "Absorbed Heat: ",
+
+  "coverheated.heat_sink.airflow": "Airflow on Heat Sink",
+
+  "coverheated.thermometer.total_sunken_heat": "Total attached Heat Sink Airflow",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",
@@ -37,7 +45,5 @@
   "coverheated.tooltip.display_type.reading": " (Reading) ",
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
-  "coverheated.solar_panel.updating": "Updating In ",
-  "coverheated.solar_panel.ticks": " Ticks",
-  "coverheated.solar_panel.absorbed_heat": "Absorbed Heat: "
+  "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info"
 }

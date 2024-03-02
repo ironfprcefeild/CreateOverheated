@@ -2,6 +2,7 @@ package net.ironf.overheated.mixin;
 
 import com.simibubi.create.content.kinetics.fan.IAirCurrentSource;
 import com.simibubi.create.foundation.utility.Iterate;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.heatsink.IAirCurrentReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,11 +51,11 @@ public class airCurrentMixin {
             }
         }
     }
-    //This injection lets us tick out affected BEs
+    //This injection lets us tick our affected BEs
     @Inject(method = "tickAffectedHandlers", at = @At("HEAD"), remap = false)
     private void tickAffectedBlockEntities(CallbackInfo ci) {
         for (BlockEntity be : affectedBlockEntities){
-            ((IAirCurrentReader) be).update(source.getSpeed());
+            ((IAirCurrentReader) be).update(source.getSpeed(),source.getAirFlowDirection());
         }
     }
 

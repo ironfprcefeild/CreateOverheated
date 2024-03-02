@@ -120,7 +120,7 @@ public class AllBlocks {
     public static final BlockEntry<HeatSinkBlock> HEAT_SINK = REGISTRATE
             .block("heat_sink", HeatSinkBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.color(MaterialColor.METAL))
+            .properties(p -> p.color(MaterialColor.METAL).noOcclusion())
             .simpleItem()
             .register();
 
