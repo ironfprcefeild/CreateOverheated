@@ -35,6 +35,10 @@
 
   "coverheated.thermometer.total_sunken_heat": "Total attached Heat Sink Airflow",
 
+  "coverheated.pressure_chamber.crouch_for_chamber_info": "Crouch for Total Chamber Information",
+  "coverheated.pressure_chamber.steam.input:": "Taking In steam",
+  "coverheated.pressure_chamber.steam.output:": "Outputting steam",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",
@@ -46,4 +50,6 @@
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info"
+
+
 }
