@@ -10,6 +10,8 @@ import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
@@ -63,6 +65,27 @@ public class AllBlockEntities {
             .blockEntity("heat_sink", HeatSinkBlockEntity::new)
             .validBlocks(AllBlocks.HEAT_SINK)
             .register();
+
+    ///Pressure Chamber
+
+    //Core
+    public static final BlockEntityEntry<ChamberCoreBlockEntity> CHAMBER_CORE = REGISTRATE
+            .blockEntity("pressure_chamber_core", ChamberCoreBlockEntity::new)
+            .validBlocks(AllBlocks.CHAMBER_CORE)
+            .register();
+
+    //Steam
+    public static final BlockEntityEntry<ChamberSteamBlockEntity> CHAMBER_STEAM = REGISTRATE
+            .blockEntity("pressure_chamber_steam", ChamberSteamBlockEntity::new)
+            .validBlocks(AllBlocks.CHAMBER_STEAM)
+            .register();
+
+
+    //Item
+
+    //Laser
+
+    //Heatsink
     public static void register(){
 
     }

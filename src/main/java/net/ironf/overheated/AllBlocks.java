@@ -9,6 +9,8 @@ import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlock;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
@@ -124,6 +126,21 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
+    ////Pressure Chamber
+
+    //Core
+    public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
+            .block("pressure_chamber_core", ChamberCoreBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
+    public static final BlockEntry<ChamberSteamBlock> CHAMBER_STEAM = REGISTRATE
+            .block("pressure_chamber_steam", ChamberSteamBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
 
     public static void register(){
 
