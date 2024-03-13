@@ -1,5 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item;
 
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.logistics.vault.ItemVaultBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -10,6 +11,7 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.backend.
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class ChamberItemBlockEntity extends ChamberAdditionBlockEntity implements IChamberAdditionBlockEntity {
+public class ChamberItemBlockEntity extends ChamberAdditionBlockEntity implements IChamberAdditionBlockEntity, IHaveGoggleInformation {
     public ChamberItemBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -46,5 +48,10 @@ public class ChamberItemBlockEntity extends ChamberAdditionBlockEntity implement
         if (vault == null)
             return null;
         return vault.getControllerBE();
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        return typicalGoggles(tooltip,isPlayerSneaking);
     }
 }

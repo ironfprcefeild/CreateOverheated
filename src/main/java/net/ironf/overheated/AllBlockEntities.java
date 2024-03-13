@@ -7,9 +7,9 @@ import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
-import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
@@ -82,6 +82,10 @@ public class AllBlockEntities {
 
 
     //Item
+    public static final BlockEntityEntry<ChamberItemBlockEntity> CHAMBER_ITEM = REGISTRATE
+            .blockEntity("pressure_chamber_item", ChamberItemBlockEntity::new)
+            .validBlocks(AllBlocks.CHAMBER_ITEM)
+            .register();
 
     //Laser
 

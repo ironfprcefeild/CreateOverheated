@@ -2,6 +2,7 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber.additions.backend
 
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.foundation.block.IBE;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,11 +26,10 @@ public abstract class ChamberAdditionBlock extends Block {
 
     //Block State
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty WALL = BooleanProperty.create("wall");
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(FACING).add(WALL));
+        super.createBlockStateDefinition(pBuilder.add(FACING));
     }
 
     @Override
@@ -42,15 +42,7 @@ public abstract class ChamberAdditionBlock extends Block {
         Level level = pContext.getLevel();
         BlockPos clickedPos = pContext.getClickedPos();
         Direction face = pContext.getClickedFace();
-        boolean wall = true;
-        if (face.getAxis() == Direction.Axis.Y) {
-            face = pContext.getHorizontalDirection()
-                    .getOpposite();
-            wall = false;
-        }
-
-        BlockState state = super.getStateForPlacement(pContext).setValue(FACING, face.getOpposite())
-                .setValue(WALL, wall);
+        BlockState state = super.getStateForPlacement(pContext).setValue(FACING, face.getOpposite());
         if (!canSurvive(state, level, clickedPos))
             return null;
         return state;
@@ -58,14 +50,15 @@ public abstract class ChamberAdditionBlock extends Block {
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+        Overheated.LOGGER.info("detected placed addition");
         ChamberCoreBlock.updateChamberState(pState, pLevel, pPos.relative(getAttachedDirection(pState)));
     }
 
 
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        IBE.onRemove(pState, pLevel, pPos, pNewState);
         ChamberCoreBlock.updateChamberState(pState, pLevel, pPos.relative(getAttachedDirection(pState)));
+        IBE.onRemove(pState, pLevel, pPos, pNewState);
     }
 
     @Override
@@ -74,6 +67,6 @@ public abstract class ChamberAdditionBlock extends Block {
     }
 
     public static Direction getAttachedDirection(BlockState state) {
-        return state.getValue(WALL) ? state.getValue(FACING) : Direction.DOWN;
+        return state.getValue(FACING);
     }
 }

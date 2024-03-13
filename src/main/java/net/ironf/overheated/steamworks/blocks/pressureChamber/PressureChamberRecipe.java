@@ -17,19 +17,30 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class PressureChamberRecipe implements Recipe<SimpleContainer> {
+
+    //limitations with this method:
+    //If 1 item matches multiple tags in a recipe this can cause a lot of issues because the will both find the same item in the vault to sue
     @Override
     public boolean matches(SimpleContainer container, Level level) {
         if(level.isClientSide()) {
             return false;
         }
 
-        int slot = -1;
+        Overheated.LOGGER.info("Matching a chamber recipe");
+
+        //see if we have a good option for every ingredient
         for (Ingredient item : inputs){
-            slot++;
-            if (!item.test(container.getItem(slot))){
-                return false;
+            for (int slot = 0; slot < container.getContainerSize(); slot++){
+                if (item.test(container.getItem(slot))){
+                    //We found a match for this ingredient, so we can move on
+                    break;
+                }
+                //Continue our search for a match
             }
+            //We found no match for this ingredient, return false
+            return false;
         }
+        //We found matches for all ingredients, return true
         return true;
 
     }

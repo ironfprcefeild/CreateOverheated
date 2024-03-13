@@ -3,6 +3,7 @@
     "minecraft:copper_block",
     "minecraft:waxed_copper_block",
     "coverheated:pressure_chamber_steam",
-    "coverheated:pressure_chamber_item"
+    "coverheated:pressure_chamber_item",
+    "coverheated:pressure_chamber_core"
   ]
 }

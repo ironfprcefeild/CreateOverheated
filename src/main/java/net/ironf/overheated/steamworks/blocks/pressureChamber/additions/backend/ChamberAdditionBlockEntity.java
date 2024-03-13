@@ -23,26 +23,31 @@ public abstract class ChamberAdditionBlockEntity extends SmartBlockEntity implem
     public void initialize() {
         super.initialize();
         BlockPos pos = getBlockPos();
-        corePos = pos.relative(ChamberAdditionBlock.getAttachedDirection(level.getBlockState(pos)).getOpposite());
+        corePos = pos.relative(ChamberAdditionBlock.getAttachedDirection(level.getBlockState(pos)));
     }
 
-    @Override
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+    public boolean typicalGoggles(List<Component> tooltip, boolean isPlayerSneaking){
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.pressure_chamber.crouch_for_chamber_info")));
         if (isPlayerSneaking) {
-            ((ChamberCoreBlockEntity) level.getBlockEntity(corePos)).pullTooltip();
+            ((ChamberCoreBlockEntity) level.getBlockEntity(corePos)).pullTooltip(tooltip);
         } else {
             otherGoggleInfo(tooltip, false);
         }
 
         return true;
-
-
+    }
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        return typicalGoggles(tooltip,isPlayerSneaking);
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
+        if (corePos == null){
+            BlockPos pos = getBlockPos();
+            corePos = pos.relative(ChamberAdditionBlock.getAttachedDirection(level.getBlockState(pos)));
+        }
         tag.putLong("corepos",corePos.asLong());
     }
 

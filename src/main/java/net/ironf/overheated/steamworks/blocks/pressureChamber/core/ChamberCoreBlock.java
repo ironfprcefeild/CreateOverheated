@@ -28,6 +28,15 @@ public class ChamberCoreBlock extends Block implements IBE<ChamberCoreBlockEntit
         return AllBlockEntities.CHAMBER_CORE.get();
     }
 
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        ((ChamberCoreBlockEntity) pLevel.getBlockEntity(pPos)).removeAttachments();
+        IBE.onRemove(pState, pLevel, pPos, pNewState);
+    }
+
+
+
+
     public static boolean isCore(BlockState state) {
         return state.getBlock() instanceof ChamberCoreBlock;
     }

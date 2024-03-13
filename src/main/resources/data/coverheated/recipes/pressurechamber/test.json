@@ -1,0 +1,22 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "ingredients": [
+    {
+      "item": "create:asurine",
+      "count": 2
+    },
+    {
+      "item": "create:ochrum",
+      "count": 2
+    }
+  ],
+  "outputs": [
+    {
+      "item": "create:crimsite",
+      "count": 2
+    }
+  ],
+  "heat_added": 10,
+  "ticks_taken": 10,
+  "pressure": 2
+}
