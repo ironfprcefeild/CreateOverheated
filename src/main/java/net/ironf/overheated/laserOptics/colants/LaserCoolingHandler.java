@@ -24,6 +24,8 @@ public class LaserCoolingHandler implements ResourceManagerReloadListener {
             return;
         }
         Overheated.LOGGER.info("Generating Laser Coolant Recipe Helper");
+        heatHandler.clear();
+        volatilityHandler.clear();
         List<LaserCoolantRecipe> recipeList = createRecipeCollection();
         for (LaserCoolantRecipe r : recipeList){
             for (FluidStack f : r.getInput().getMatchingFluidStacks()){

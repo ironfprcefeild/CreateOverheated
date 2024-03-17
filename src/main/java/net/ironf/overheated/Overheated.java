@@ -1,7 +1,6 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.LangBuilder;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
@@ -9,6 +8,7 @@ import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.recipes.AllRecipes;
+import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,11 +60,11 @@ public class Overheated
     {
 
         event.enqueueWork(() -> {
+            LOGGER.info("...OVERHEATING...");
             AllSteamFluids.prepareSteamArray();
             BlazeCrucibleBlockEntity.addToBoilerHeaters();
             DiodeHeaters.registerDefaults();
             mirrorRegister.registerDefaults();
-            LOGGER.info("...OVERHEATING...");
         });
     }
 
@@ -75,6 +75,8 @@ public class Overheated
         LOGGER.info("Overheated is running on the server");
         LaserCoolingHandler.setLevel(event.getServer().overworld());
         LaserCoolingHandler.generateHandler();
+        CondensingRecipeHandler.setLevel(event.getServer().overworld());
+        CondensingRecipeHandler.generateHandler();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

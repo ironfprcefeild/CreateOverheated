@@ -98,21 +98,16 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         if (tank != null) {
             BoilerData boiler = tank.boiler;
             if (boiler.isActive()) {
-                processingTicks = processingTicks - ((distillationMode ? 12 : 1));
+                processingTicks = processingTicks - 1;
                 if (processingTicks < 1) {
-                    if (boiler.isPassive()){
-                        setFluid(new FluidStack(
-                                AllSteamFluids.DISTILLED_WATER.get(),
-                                getFluidStack().getAmount() + 1)
-                        );
-                    } else {
+                    if (!boiler.isPassive()){
                         setFluid(
                                 AllSteamFluids.getSteamFromValues(
-                                        distillationMode ? 0 : ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
+                                        ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
                                         0,
                                         getFluidStack().getAmount() + 1));
                     }
-                    processingTicks = 75 + boiler.attachedEngines - boiler.activeHeat * 5;
+                    processingTicks = 75 + (5 *(boiler.attachedEngines - boiler.activeHeat));
                     isSlow = processingTicks != 75;
 
                 }
@@ -125,7 +120,6 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         this.processingTicks = tag.getFloat("processing_ticks");
-        this.distillationMode = tag.getBoolean("mode");
         this.isSlow = tag.getBoolean("is_slow");
 
     }
@@ -134,23 +128,18 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
         tag.putFloat("processing_ticks",this.processingTicks);
-        tag.putBoolean("mode",this.distillationMode);
         tag.putBoolean("is_slow",this.isSlow);
 
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(addIndent(Component.translatable(distillationMode ? "coverheated.steam_vent.distilling" : "coverheated.steam_vent.not_distilling")));
-        tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.wrench")));
-        tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.slow")));
-
+        if (isSlow) {
+            tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.slow")));
+        }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         return true;
     }
 
-    boolean distillationMode = false;
-    public void toggleMode() {
-        distillationMode = !distillationMode;
-    }
+
 }

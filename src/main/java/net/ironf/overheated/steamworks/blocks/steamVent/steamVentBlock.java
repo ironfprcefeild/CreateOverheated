@@ -24,7 +24,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import static net.ironf.overheated.AllBlockEntities.STEAM_VENT;
 
 
-public class steamVentBlock extends Block implements IBE<steamVentBlockEntity>, IWrenchable {
+public class steamVentBlock extends Block implements IBE<steamVentBlockEntity> {
 
 
     public steamVentBlock(Properties properties) {
@@ -97,18 +97,4 @@ public class steamVentBlock extends Block implements IBE<steamVentBlockEntity>, 
         return STEAM_VENT.get();
     }
 
-    //Wrenching
-
-
-    @Override
-    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        BlockEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (be.getType() == getBlockEntityType()){
-            ((steamVentBlockEntity) be).toggleMode();
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.FAIL;
-
-        }
-    }
 }

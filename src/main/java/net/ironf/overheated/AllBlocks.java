@@ -8,6 +8,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlock;
@@ -57,7 +58,13 @@ public class AllBlocks {
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
-
+    //Condenser
+    public static final BlockEntry<CondenserBlock> CONDENSER = REGISTRATE
+            .block("condenser", CondenserBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.color(MaterialColor.METAL))
+            .simpleItem()
+            .register();
     //Steam
     public static final BlockEntry<SteamBlock> STEAM = REGISTRATE
             .block("steam", SteamBlock::new)

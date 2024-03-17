@@ -39,6 +39,9 @@
   "coverheated.pressure_chamber.steam.input": "Taking In steam",
   "coverheated.pressure_chamber.steam.output": "Outputting steam",
 
+  "coverheated.condenser.in_tank": "Input Tank",
+  "coverheated.condenser.out_tank": "Output Tank",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",

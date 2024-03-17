@@ -2,6 +2,8 @@ package net.ironf.overheated.steamworks.steamFluids;
 
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
+import net.ironf.overheated.Overheated;
+import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.steamworks.steamFluids.inWorldSteam.SteamFluidSource;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -18,6 +20,11 @@ public class AllSteamFluids {
 
 
 //TODO give the right fluid properties to distilled water
+
+    static {
+        Overheated.REGISTRATE.creativeModeTab(() -> AllCreativeModeTabs.OVERHEATED_TAB);
+    }
+
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
             REGISTRATE.standardFluid("distilled_water")
                     .lang("Distilled Water")
