@@ -14,7 +14,9 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.Ch
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
+import net.ironf.overheated.steamworks.steamFluids.inWorldSteam.SteamBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MaterialColor;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
@@ -26,6 +28,7 @@ public class AllBlocks {
         Overheated.REGISTRATE.creativeModeTab(() -> AllCreativeModeTabs.OVERHEATED_TAB);
     }
     ////Steam Works
+    //Steam Vent
     public static final BlockEntry<steamVentBlock> STEAM_VENT = REGISTRATE
             .block("steam_vent", steamVentBlock::new)
             .initialProperties(SharedProperties::copperMetal)
@@ -54,6 +57,18 @@ public class AllBlocks {
             .properties(p -> p.color(MaterialColor.METAL))
             .simpleItem()
             .register();
+
+    //Steam
+    public static final BlockEntry<SteamBlock> STEAM = REGISTRATE
+            .block("steam", SteamBlock::new)
+            .properties(p -> p.color(MaterialColor.COLOR_LIGHT_GRAY)
+                    .noOcclusion()
+                    .noCollission()
+                    .destroyTime(-1)
+                    .noLootTable())
+            .simpleItem()
+            .register();
+
 
     //// Lazer Optics
 

@@ -1,8 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.steamVent;
 
-import com.simibubi.create.content.decoration.steamWhistle.WhistleBlock;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.content.fluids.VirtualFluid;
 import com.simibubi.create.content.fluids.tank.BoilerData;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -16,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -109,10 +106,11 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
                                 getFluidStack().getAmount() + 1)
                         );
                     } else {
-                        setFluid(new FluidStack(
-                                AllSteamFluids.getSteamFromValues(distillationMode ? 0 : ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),0),
-                                getFluidStack().getAmount() + 1)
-                        );
+                        setFluid(
+                                AllSteamFluids.getSteamFromValues(
+                                        distillationMode ? 0 : ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
+                                        0,
+                                        getFluidStack().getAmount() + 1));
                     }
                     processingTicks = 75 + boiler.attachedEngines - boiler.activeHeat * 5;
                     isSlow = processingTicks != 75;

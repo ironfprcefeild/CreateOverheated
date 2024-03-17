@@ -1,14 +1,8 @@
 package net.ironf.overheated.steamworks.steamFluids;
 
-import com.drmangotea.createindustry.CreateTFMG;
-import com.simibubi.create.AllFluids;
-import com.simibubi.create.AllTags;
-import com.simibubi.create.Create;
-import com.simibubi.create.content.fluids.VirtualFluid;
-import com.simibubi.create.infrastructure.config.AllConfigs;
-import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
+import net.ironf.overheated.steamworks.steamFluids.inWorldSteam.SteamFluidSource;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -17,87 +11,64 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import static com.drmangotea.createindustry.registry.TFMGFluids.COOLING_FLUID_FLOW_RL;
-import static com.drmangotea.createindustry.registry.TFMGFluids.COOLING_FLUID_STILL_RL;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
 public class AllSteamFluids {
 
 
-    public static final FluidEntry<VirtualFluid> DISTILLED_WATER = REGISTRATE.virtualFluid("distilled_water")
-            .lang("Distilled Water")
-            .register();
-    public static final FluidEntry<VirtualFluid> STEAM_LOW = REGISTRATE.virtualFluid("steam_low")
-            .lang("Low Pressure Steam")
-            .register();
 
-    public static final FluidEntry<VirtualFluid> STEAM_MID = REGISTRATE.virtualFluid("steam_mid")
-            .lang("Medium Pressure Steam")
-            .register();
+//TODO give the right fluid properties to distilled water
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
+            REGISTRATE.standardFluid("distilled_water")
+                    .lang("Distilled Water")
+                    .properties(b -> b.density(1))
+                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
+                            .slopeFindDistance(3)
+                            .explosionResistance(100f)
+                            )
+                    .source(ForgeFlowingFluid.Source::new) // TODO: remove when Registrate fixes FluidBuilder
+                    .bucket()
+                    .build()
+                    .register();
 
-    public static final FluidEntry<VirtualFluid> STEAM_HIGH = REGISTRATE.virtualFluid("steam_high")
-            .lang("High Pressure Steam")
-            .register();
+    public static FluidEntry<ForgeFlowingFluid.Flowing> registerSteam(int PressureLevel, int HeatRating){
+        SteamFluidSource.nextPressureLevel = PressureLevel;
+        SteamFluidSource.nextHeatRating = HeatRating;
+        return REGISTRATE.standardFluid(heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1])
+                .properties(b -> b.supportsBoating(false).viscosity(0))
+                .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
+                .source(SteamFluidSource::new)
+                .noBucket()
+                .register();
 
-    public static final FluidEntry<VirtualFluid> STEAM_INSANE = REGISTRATE.virtualFluid("steam_insane")
-            .lang("Insane Pressure Steam")
-            .register();
+    }
 
-    public static final FluidEntry<VirtualFluid> HEATED_STEAM_LOW = REGISTRATE.virtualFluid("heated_steam_low")
-            .lang("Heated Low Pressure Steam")
-            .register();
+    public static final String[] pressureIDs = {"low","mid","high","insane"};
+    public static final String[] heatingIDs = {"","heated_","superheated_","overheated_"};
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_LOW = registerSteam(1,0);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_MID = registerSteam(2,0);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_HIGH = registerSteam(3,0);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_INSANE = registerSteam(4,0);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_LOW = registerSteam(1,1);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_MID = registerSteam(2,1);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_HIGH = registerSteam(3,1);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_INSANE = registerSteam(4,1);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_LOW = registerSteam(1,2);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_MID = registerSteam(2,2);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_HIGH = registerSteam(3,2);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_INSANE = registerSteam(4,2);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_LOW = registerSteam(1,3);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_MID = registerSteam(2,3);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_HIGH = registerSteam(3,3);
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_INSANE = registerSteam(4,3);
 
-    public static final FluidEntry<VirtualFluid> HEATED_STEAM_MID = REGISTRATE.virtualFluid("heated_steam_mid")
-            .lang("Heated Medium Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> HEATED_STEAM_HIGH = REGISTRATE.virtualFluid("heated_steam_high")
-            .lang("Heated High Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> HEATED_STEAM_INSANE = REGISTRATE.virtualFluid("heated_steam_insane")
-            .lang("Heated Insane Pressure Steam")
-            .register();
-
-
-    public static final FluidEntry<VirtualFluid> SUPERHEATED_STEAM_LOW = REGISTRATE.virtualFluid("superheated_steam_low")
-            .lang("Superheated Low Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> SUPERHEATED_STEAM_MID = REGISTRATE.virtualFluid("superheated_steam_mid")
-            .lang("Superheated Medium Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> SUPERHEATED_STEAM_HIGH = REGISTRATE.virtualFluid("superheated_steam_high")
-            .lang("Superheated High Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> SUPERHEATED_STEAM_INSANE = REGISTRATE.virtualFluid("superheated_steam_insane")
-            .lang("Superheated Insane Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> OVERHEATED_STEAM_LOW = REGISTRATE.virtualFluid("overheated_steam_low")
-            .lang("Overheated Low Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> OVERHEATED_STEAM_MID = REGISTRATE.virtualFluid("overheated_steam_mid")
-            .lang("Overheated Medium Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> OVERHEATED_STEAM_HIGH = REGISTRATE.virtualFluid("overheated_steam_high")
-            .lang("Overheated High Pressure Steam")
-            .register();
-
-    public static final FluidEntry<VirtualFluid> OVERHEATED_STEAM_INSANE = REGISTRATE.virtualFluid("overheated_steam_insane")
-            .lang("Overheated Insane Pressure Steam")
-            .register();
 
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
-    public static @NonnullType VirtualFluid[][] Steams;
+    public static @NonnullType Fluid[][] Steams;
 
     public static void prepareSteamArray(){
-        Steams = new VirtualFluid[][]{
-                {DISTILLED_WATER.get(),DISTILLED_WATER.get(),DISTILLED_WATER.get(),DISTILLED_WATER.get()},
+        Steams = new Fluid[][]{
+                {DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get()},
                 {STEAM_LOW.get(), HEATED_STEAM_LOW.get(), SUPERHEATED_STEAM_LOW.get(), OVERHEATED_STEAM_LOW.get()},
                 {STEAM_MID.get(),HEATED_STEAM_MID.get(),SUPERHEATED_STEAM_MID.get(),OVERHEATED_STEAM_MID.get()},
                 {STEAM_HIGH.get(),HEATED_STEAM_HIGH.get(),SUPERHEATED_STEAM_HIGH.get(),OVERHEATED_STEAM_HIGH.get()},
@@ -115,13 +86,13 @@ public class AllSteamFluids {
 
     //Helper Functions
 
-    public static VirtualFluid getSteamFromValues(int p, int h){
-        return Steams[Math.min(Math.max(p,0),4)][Math.min(Math.max(h,0),3)];
+    public static FluidStack getSteamFromValues(int p, int h, int stackSize){
+        return new FluidStack(Steams[Math.min(Math.max(p,0),4)][Math.min(Math.max(h,0),3)],stackSize);
     }
 
-    public static int getSteamPressure(VirtualFluid s){
+    public static int getSteamPressure(Fluid s){
         int p = 0;
-        for (VirtualFluid[] pressureLevel : Steams){
+        for (Fluid[] pressureLevel : Steams){
             if (Arrays.stream(pressureLevel).anyMatch(Predicate.isEqual(s))){
                 return p;
             }
@@ -130,12 +101,12 @@ public class AllSteamFluids {
         return 0;
     }
 
-    public static int getSteamHeat(VirtualFluid s){
+    public static int getSteamHeat(Fluid s){
         return getSteamHeat(s,getSteamPressure(s));
     }
-    public static int getSteamHeat(VirtualFluid s, int pressure){
+    public static int getSteamHeat(Fluid s, int pressure){
         int h = 0;
-        for (VirtualFluid heatLevel : Steams[pressure]){
+        for (Fluid heatLevel : Steams[pressure]){
             if (heatLevel.isSame(s)){
                 return h;
             }
@@ -148,7 +119,7 @@ public class AllSteamFluids {
         if (fluid instanceof EmptyFluid){
             return 0;
         }
-        return getSteamPressure((VirtualFluid) fluid);
+        return getSteamPressure(fluid);
     }
 
     public static int getSteamHeat(FluidStack s){
@@ -156,7 +127,7 @@ public class AllSteamFluids {
         if (fluid instanceof EmptyFluid){
             return 0;
         }
-        return getSteamHeat((VirtualFluid) fluid);
+        return getSteamHeat(fluid);
     }
 
 }
