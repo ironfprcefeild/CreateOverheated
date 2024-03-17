@@ -10,6 +10,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -29,7 +30,7 @@ public class Overheated
     public static final String MODID = "coverheated";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
+    public static final OverheatedRegistrate REGISTRATE = new OverheatedRegistrate(MODID);
     public Overheated()
     {
 
