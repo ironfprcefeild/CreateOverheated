@@ -1,4 +1,4 @@
-package net.ironf.overheated.utility.registration.gasses;
+package net.ironf.overheated.gasses;
 
 import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.core.BlockPos;
@@ -33,6 +33,11 @@ public class GasBlock extends Block {
     public static int setUpperTickDelay = 6;
     public static int setLowerTickDelay = 1;
 
+
+    public Boolean isHeavierThanAir() {
+        return heavierThanAir;
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -44,7 +49,7 @@ public class GasBlock extends Block {
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
         //TODO fix lag
         Direction randomShift =
-                randomSource.nextIntBetweenInclusive(0,shiftChance) == 4 || world.getBlockState(pos).isAir()
+                randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance || world.getBlockState(pos).isAir()
                         ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
                         : (heavierThanAir ? Direction.DOWN : Direction.UP);
 

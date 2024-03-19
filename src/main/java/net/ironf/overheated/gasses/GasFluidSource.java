@@ -1,4 +1,4 @@
-package net.ironf.overheated.utility.registration.gasses;
+package net.ironf.overheated.gasses;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.core.BlockPos;
