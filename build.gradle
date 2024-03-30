@@ -106,6 +106,9 @@ dependencies {
 
     //Create TFMG
     implementation fg.deobf("curse.maven:tfmg-693815:4902168")
+
+    //Jade
+    implementation fg.deobf("curse.maven:jade-324717:4800904")
 }
 
 mixin {
