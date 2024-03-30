@@ -24,20 +24,19 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
+    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
         return ItemStack.EMPTY;
     }
-
 
     @Override
     public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
         return true;
     }
 
-    public ItemStack getResultItem() {
+    @Override
+    public ItemStack getResultItem(RegistryAccess p_267052_) {
         return ItemStack.EMPTY;
     }
-
     @Override
     public ResourceLocation getId() {
         return id;

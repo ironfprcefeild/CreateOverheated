@@ -1,4 +1,8 @@
 {
+  "itemgroup.overheated.base": "Overheated",
+  "itemgroup.overheated.steam_buckets_tab": "Steam Buckets",
+
+
   "coverheated.turbine.info_header": "--- Turbine Info ---",
   "coverheated.turbine.radius": "Radius: ",
   "coverheated.turbine.length": "Length: ",

@@ -1,7 +1,6 @@
 package net.ironf.overheated.gasses;
 
 import com.simibubi.create.foundation.utility.Iterate;
-import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -10,8 +9,11 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +25,6 @@ public class GasBlock extends Block {
         this.upperTickDelay = upperTickDelay;
         this.lowerTickDelay = lowerTickDelay;
         this.direction = direction;
-        Overheated.LOGGER.info(String.valueOf(this.lowerTickDelay));
     }
 
 
@@ -33,24 +34,19 @@ public class GasBlock extends Block {
 
     protected final Direction direction;
 
-
-
-    public static int setShiftChance;
-    public static int setUpperTickDelay;
-    public static int setLowerTickDelay;
-    public static Direction setDirection;
-
+    //Block State
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        context.getLevel().scheduleTick(context.getClickedPos(), this,1);
+        Level level = context.getLevel();
+        level.scheduleTick(context.getClickedPos(), this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
         return defaultBlockState();
     }
 
     @Override
-    public void onPlace(BlockState p_60566_, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
-        super.onPlace(p_60566_, level, pos, p_60569_, p_60570_);
-        level.scheduleTick(pos, this,1);
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState other_state, boolean bool) {
+        super.onPlace(state, level, pos, other_state, bool);
+        level.scheduleTick(pos, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
     }
 
 
@@ -81,7 +77,7 @@ public class GasBlock extends Block {
             return;
         }
         world.setBlockAndUpdate(at, state);
-        world.scheduleTick(at, this,world.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
+        //world.scheduleTick(at, this,world.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
     }
 
     public void add(Level level, BlockPos at, BlockState state){
@@ -89,6 +85,6 @@ public class GasBlock extends Block {
             return;
         }
         level.setBlockAndUpdate(at, state);
-        level.scheduleTick(at, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
+        //level.scheduleTick(at, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
     }
 }

@@ -4,6 +4,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -43,15 +44,16 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
         super.tick();
         timer--;
         if (timer == 0){
+            Overheated.LOGGER.info("Updating condenser");
             timer = 3;
-            FluidStack testedStack = inTank.getPrimaryHandler().getFluid();
-            Fluid testedFluid = testedStack.getFluid();
+            FluidStack inStack = inTank.getPrimaryHandler().getFluid();
+            Fluid testedFluid = inStack.getRawFluid();
             if (condensingHandler.containsKey(testedFluid)){
                 CondensingPacket recipe = condensingHandler.get(testedFluid);
                 FluidStack outputFluid = outTank.getPrimaryHandler().getFluid();
-                if (testedStack.getAmount() >= recipe.inputAmount && (outputFluid.isEmpty() || outputFluid.getFluid() == recipe.output) && 1000 - outputFluid.getAmount() >= recipe.outputAmount){
+                if (inStack.getAmount() >= recipe.inputAmount && (outputFluid.isEmpty() || outputFluid.getRawFluid() == recipe.output) && 1000 - outputFluid.getAmount() >= recipe.outputAmount){
                     outTank.getPrimaryHandler().setFluid(new FluidStack(recipe.output,outputFluid.getAmount() + recipe.outputAmount));
-                    inTank.getPrimaryHandler().setFluid(new FluidStack(recipe.input,testedStack.getAmount() - recipe.inputAmount));
+                    inTank.getPrimaryHandler().setFluid(new FluidStack(recipe.input,inStack.getAmount() - recipe.inputAmount));
                 }
             }
         }
@@ -60,7 +62,7 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         behaviours.add(inTank = SmartFluidTankBehaviour.single(this, 1000));
-        behaviours.add(outTank = SmartFluidTankBehaviour.single(this, 1000));
+        behaviours.add(outTank = SmartFluidTankBehaviour.single(this, 1000).forbidInsertion());
 
     }
     @Override

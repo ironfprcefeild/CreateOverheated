@@ -3,6 +3,7 @@ package net.ironf.overheated.laserOptics.colants;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -15,13 +16,14 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class LaserCoolantRecipe implements Recipe<SimpleContainer> {
+
     @Override
     public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
+    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
         return ItemStack.EMPTY;
     }
 
@@ -31,7 +33,7 @@ public class LaserCoolantRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess p_267052_) {
         return ItemStack.EMPTY;
     }
 

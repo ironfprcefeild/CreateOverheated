@@ -119,7 +119,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
             BlockPos continueAt = getBlockPos();
             for (int t = 0; t < Math.min(16, range) + 16; t++) {
-                if (laserHeat.getTotalHeat() < 1) {
+                if (laserHeat.getTotalHeat() < 0.1) {
                     //Laser isout of heat, so we gotta jumpy away
                     break;
                 }

@@ -20,9 +20,9 @@ public class AllSteamFluids {
 
 
 
-
+    //I declare creative tabs twice so that distilled water doesn't end up in the steam buckets tab
     static {
-        Overheated.REGISTRATE.creativeModeTab(() -> AllCreativeModeTabs.OVERHEATED_TAB);
+        Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
@@ -33,12 +33,17 @@ public class AllSteamFluids {
                     .build()
                     .register();
 
+    static {
+        Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB);
+    }
+
+
     public static FluidEntry<ForgeFlowingFluid.Flowing> registerSteam(int PressureLevel, int HeatRating){
         String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1];
         return REGISTRATE.gas(name,GasFluidSource::new)
                 .register(REGISTRATE.gasBlock(name)
                         .shiftChance(4)
-                        .tickDelays(5,9)
+                        .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
                         .register());
     }

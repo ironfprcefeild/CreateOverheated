@@ -95,8 +95,10 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     //Create
-    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+
+    //Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
     //JEI
@@ -105,10 +107,10 @@ dependencies {
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
     //Create TFMG
-    implementation fg.deobf("curse.maven:tfmg-693815:4902168")
+    implementation fg.deobf("curse.maven:tfmg-693815:5079967")
 
     //Jade
-    implementation fg.deobf("curse.maven:jade-324717:4800904")
+    implementation fg.deobf("curse.maven:jade-324717:5072729")
 }
 
 mixin {

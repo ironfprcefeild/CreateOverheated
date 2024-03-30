@@ -97,20 +97,31 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         FluidTankBlockEntity tank = getTank();
         if (tank != null) {
             BoilerData boiler = tank.boiler;
-            if (boiler.activeHeat > 0 && !boiler.isPassive()) {
+            int tier = getActualHeat(boiler,tank);
+            if (tier > 0) {
                 processingTicks = processingTicks - 1;
                 if (processingTicks < 1) {
                     setFluid(
                             AllSteamFluids.getSteamFromValues(
-                                    ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
+                                    ((int) (Math.floor((double) (tier - 1) / 6) + 1)),
                                     0,
                                     getFluidStack().getAmount() + 1));
-                    processingTicks = 75 + (5 * (boiler.attachedEngines - boiler.activeHeat));
+                    processingTicks = 75 + Math.max(0,5 * (boiler.attachedEngines - tier));
                     isSlow = processingTicks != 75;
                 }
             }
         }
 
+    }
+
+    public int getActualHeat(BoilerData boiler, FluidTankBlockEntity controller) {
+        int forBoilerSize = boiler.getMaxHeatLevelForBoilerSize(controller.getTotalTankSize());
+        int forWaterSupply = boiler.getMaxHeatLevelForWaterSupply();
+        return Math.min(boiler.activeHeat, Math.min(forWaterSupply, forBoilerSize));
+    }
+
+    public int getActualHeat(FluidTankBlockEntity controller) {
+        return getActualHeat(controller.boiler,controller);
     }
 
     @Override

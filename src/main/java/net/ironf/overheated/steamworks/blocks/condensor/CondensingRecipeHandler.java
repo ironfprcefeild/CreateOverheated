@@ -24,8 +24,8 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         if (level == null){
             return;
         }
-        reloadHandler();
         Overheated.LOGGER.info("Generating Condensing Handler");
+        reloadHandler();
         for (int p = 1; p <= 4; p++){
             for (Fluid steam : AllSteamFluids.Steams[p]){
                 condensingHandler.put(steam,new CondensingPacket(steam,1,AllSteamFluids.DISTILLED_WATER.get(),p));

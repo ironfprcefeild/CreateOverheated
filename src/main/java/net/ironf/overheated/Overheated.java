@@ -41,8 +41,8 @@ public class Overheated
         REGISTRATE.registerEventListeners(modEventBus);
 
         //CTOR
-
-        AllCreativeModeTabs.init();
+        AllTags.init();
+        AllCreativeModeTabs.register(modEventBus);
         AllFluids.register();
         AllItems.register();
         AllBlocks.register();
@@ -60,6 +60,7 @@ public class Overheated
     public static void init(final FMLCommonSetupEvent event)
     {
         LOGGER.info("...OVERHEATING...");
+        LOGGER.info("Thank you for choosing Create: Overheated!");
         GasMapper.prepareGasBlockInfo();
         AllSteamFluids.prepareSteamArray();
         BlazeCrucibleBlockEntity.addToBoilerHeaters();

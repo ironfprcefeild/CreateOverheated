@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.ironf.overheated.Overheated;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -46,15 +47,16 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
+    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
     public NonNullList<Ingredient> getIngredients() {
         return inputs;
     }
 
     //This method should not be used for this multi-output recipe
-    @Override
-    public ItemStack assemble(SimpleContainer p_44001_) {
-        return ItemStack.EMPTY;
-    }
 
     @Override
     public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
@@ -63,7 +65,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
 
     //This method should not be used for this multi-output recipe
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess p_267052_) {
         return ItemStack.EMPTY;
     }
 
