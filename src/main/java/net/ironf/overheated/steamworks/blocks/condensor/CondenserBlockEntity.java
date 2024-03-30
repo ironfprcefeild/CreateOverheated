@@ -46,15 +46,12 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
             timer = 3;
             FluidStack testedStack = inTank.getPrimaryHandler().getFluid();
             Fluid testedFluid = testedStack.getFluid();
-            if (condensingPresentList.containsKey(testedFluid)){
-                int drainNeeded = condensingPresentList.get(testedFluid);
-                if (testedStack.getAmount() < drainNeeded)
-                    return;
-                FluidStack result = condensingHandler.get(new FluidStack(testedFluid,drainNeeded));
-                FluidStack inOut = outTank.getPrimaryHandler().getFluid();
-                if (inOut.isFluidEqual(result) || 1000 - inOut.getAmount() > drainNeeded){
-                    outTank.getPrimaryHandler().fill(result, IFluidHandler.FluidAction.EXECUTE);
-                    inTank.getPrimaryHandler().drain(drainNeeded, IFluidHandler.FluidAction.EXECUTE);
+            if (condensingHandler.containsKey(testedFluid)){
+                CondensingPacket recipe = condensingHandler.get(testedFluid);
+                FluidStack outputFluid = outTank.getPrimaryHandler().getFluid();
+                if (testedStack.getAmount() >= recipe.inputAmount && (outputFluid.isEmpty() || outputFluid.getFluid() == recipe.output) && 1000 - outputFluid.getAmount() >= recipe.outputAmount){
+                    outTank.getPrimaryHandler().setFluid(new FluidStack(recipe.output,outputFluid.getAmount() + recipe.outputAmount));
+                    inTank.getPrimaryHandler().setFluid(new FluidStack(recipe.input,testedStack.getAmount() - recipe.inputAmount));
                 }
             }
         }

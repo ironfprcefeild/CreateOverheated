@@ -2,19 +2,21 @@ package net.ironf.overheated.gasses;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.registries.RegistryObject;
 
-public class GasFluidSource extends ForgeFlowingFluid {
-    public BlockEntry<? extends GasBlock> createdBlock;
-    public static BlockEntry<? extends GasBlock> setGasBlock;
+public class GasFluidSource extends ForgeFlowingFluid.Flowing {
+
     public GasFluidSource(Properties properties) {
         super(properties);
-        createdBlock = setGasBlock;
     }
+
 
     @Override
     public boolean isSource(FluidState p_76140_) {
@@ -26,23 +28,24 @@ public class GasFluidSource extends ForgeFlowingFluid {
         return 8;
     }
 
-
-    public BlockState getCreatedBlockState(){
-        return createdBlock.get().defaultBlockState();
-    }
     @Override
     protected void spread(LevelAccessor levelAccessor, BlockPos pos, FluidState fluidState) {
         if (!fluidState.isEmpty()){
-            levelAccessor.setBlock(pos, getCreatedBlockState(), 3);
-            levelAccessor.scheduleTick(pos,createdBlock.get(),createdBlock.get().upperTickDelay);
+            RegistryObject<? extends GasBlock> gb = GasMapper.InvFluidGasMap.get(fluidState.getFluidType());
+            levelAccessor.setBlock(pos, gb.get().defaultBlockState(), 3);
+            levelAccessor.scheduleTick(pos,gb.get(),2);
         }
     }
 
     @Override
     public void tick(Level level, BlockPos pos, FluidState fluidState) {
         if (!fluidState.isEmpty()){
-            level.setBlock(pos, getCreatedBlockState(), 3);
-            level.scheduleTick(pos,createdBlock.get(),createdBlock.get().upperTickDelay);
+            RegistryObject<? extends GasBlock> gb = GasMapper.InvFluidGasMap.get(fluidState.getFluidType());
+            level.setBlock(pos, gb.get().defaultBlockState(), 3);
+            level.scheduleTick(pos,gb.get(),2);
         }
     }
+
+
+
 }

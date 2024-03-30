@@ -1,15 +1,15 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.foundation.utility.LangBuilder;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
-import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,6 +41,7 @@ public class Overheated
         REGISTRATE.registerEventListeners(modEventBus);
 
         //CTOR
+
         AllCreativeModeTabs.init();
         AllFluids.register();
         AllItems.register();
@@ -58,14 +59,12 @@ public class Overheated
 
     public static void init(final FMLCommonSetupEvent event)
     {
-
-        event.enqueueWork(() -> {
-            LOGGER.info("...OVERHEATING...");
-            AllSteamFluids.prepareSteamArray();
-            BlazeCrucibleBlockEntity.addToBoilerHeaters();
-            DiodeHeaters.registerDefaults();
-            mirrorRegister.registerDefaults();
-        });
+        LOGGER.info("...OVERHEATING...");
+        GasMapper.prepareGasBlockInfo();
+        AllSteamFluids.prepareSteamArray();
+        BlazeCrucibleBlockEntity.addToBoilerHeaters();
+        DiodeHeaters.registerDefaults();
+        mirrorRegister.registerDefaults();
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -91,6 +90,4 @@ public class Overheated
         }
     }
 
-    //Util
-    public static LangBuilder lang = new LangBuilder(MODID);
 }

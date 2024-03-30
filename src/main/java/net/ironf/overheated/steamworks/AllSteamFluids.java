@@ -1,10 +1,11 @@
-package net.ironf.overheated.steamworks.steamFluids;
+package net.ironf.overheated.steamworks;
 
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.steamworks.steamFluids.inWorldSteam.SteamFluidSource;
+import net.ironf.overheated.gasses.GasFluidSource;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,7 +20,6 @@ public class AllSteamFluids {
 
 
 
-//TODO give the right fluid properties to distilled water
 
     static {
         Overheated.REGISTRATE.creativeModeTab(() -> AllCreativeModeTabs.OVERHEATED_TAB);
@@ -28,26 +28,19 @@ public class AllSteamFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
             REGISTRATE.standardFluid("distilled_water")
                     .lang("Distilled Water")
-                    .properties(b -> b.density(1))
-                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
-                            .slopeFindDistance(3)
-                            .explosionResistance(100f)
-                            )
-                    .source(ForgeFlowingFluid.Source::new) // TODO: remove when Registrate fixes FluidBuilder
+                    .source(ForgeFlowingFluid.Source::new)
                     .bucket()
                     .build()
                     .register();
 
     public static FluidEntry<ForgeFlowingFluid.Flowing> registerSteam(int PressureLevel, int HeatRating){
-        SteamFluidSource.nextPressureLevel = PressureLevel;
-        SteamFluidSource.nextHeatRating = HeatRating;
-        return REGISTRATE.standardFluid(heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1])
-                .properties(b -> b.supportsBoating(false).viscosity(0))
-                .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
-                .source(SteamFluidSource::new)
-                .noBucket()
-                .register();
-
+        String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1];
+        return REGISTRATE.gas(name,GasFluidSource::new)
+                .register(REGISTRATE.gasBlock(name)
+                        .shiftChance(4)
+                        .tickDelays(5,9)
+                        .defaultFlow(Direction.UP)
+                        .register());
     }
 
     public static final String[] pressureIDs = {"low","mid","high","insane"};
@@ -74,6 +67,7 @@ public class AllSteamFluids {
     public static @NonnullType Fluid[][] Steams;
 
     public static void prepareSteamArray(){
+        Overheated.LOGGER.info("Preparing Steam Utility Array");
         Steams = new Fluid[][]{
                 {DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get()},
                 {STEAM_LOW.get(), HEATED_STEAM_LOW.get(), SUPERHEATED_STEAM_LOW.get(), OVERHEATED_STEAM_LOW.get()},

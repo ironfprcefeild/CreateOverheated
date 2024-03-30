@@ -1,20 +1,19 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CondensingRecipeHandler implements ResourceManagerReloadListener {
     //Maps each fluid to its output considering stack size
-    public static HashMap<FluidStack,FluidStack> condensingHandler = new HashMap<>();
+    public static HashMap<Fluid, CondensingPacket> condensingHandler = new HashMap<>();
     //Maps each fluid present to input needed to perform recipe
     public static HashMap<Fluid,Integer> condensingPresentList = new HashMap<>();
     public static Level level = null;
@@ -29,7 +28,7 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         Overheated.LOGGER.info("Generating Condensing Handler");
         for (int p = 1; p <= 4; p++){
             for (Fluid steam : AllSteamFluids.Steams[p]){
-                condensingHandler.put(new FluidStack(steam,1),new FluidStack(AllSteamFluids.DISTILLED_WATER.get(),p));
+                condensingHandler.put(steam,new CondensingPacket(steam,1,AllSteamFluids.DISTILLED_WATER.get(),p));
                 condensingPresentList.put(steam,1);
             }
         }
@@ -43,8 +42,7 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         List<CondenserRecipe> recipeList = createRecipeCollection();
         for (CondenserRecipe r : recipeList){
             for (FluidStack f : r.getInput().getMatchingFluidStacks()){
-
-                condensingHandler.put(f,r.getOutput());
+                condensingHandler.put(f.getFluid(),new CondensingPacket(f,r.getOutput()));
                 condensingPresentList.put(f.getFluid(),f.getAmount());
             }
         }

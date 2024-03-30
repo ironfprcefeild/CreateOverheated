@@ -6,7 +6,7 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -97,19 +97,16 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         FluidTankBlockEntity tank = getTank();
         if (tank != null) {
             BoilerData boiler = tank.boiler;
-            if (boiler.isActive()) {
+            if (boiler.activeHeat > 0 && !boiler.isPassive()) {
                 processingTicks = processingTicks - 1;
                 if (processingTicks < 1) {
-                    if (!boiler.isPassive()){
-                        setFluid(
-                                AllSteamFluids.getSteamFromValues(
-                                        ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
-                                        0,
-                                        getFluidStack().getAmount() + 1));
-                    }
-                    processingTicks = 75 + (5 *(boiler.attachedEngines - boiler.activeHeat));
+                    setFluid(
+                            AllSteamFluids.getSteamFromValues(
+                                    ((int) (Math.floor((double) (boiler.activeHeat - 1) / 6) + 1)),
+                                    0,
+                                    getFluidStack().getAmount() + 1));
+                    processingTicks = 75 + (5 * (boiler.attachedEngines - boiler.activeHeat));
                     isSlow = processingTicks != 75;
-
                 }
             }
         }

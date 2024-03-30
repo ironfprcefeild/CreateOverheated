@@ -1,6 +1,7 @@
 package net.ironf.overheated.gasses;
 
 import com.simibubi.create.foundation.utility.Iterate;
+import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -9,34 +10,35 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GasBlock extends Block {
-    public GasBlock(Properties p) {
+    public GasBlock(Properties p, int shiftChance, int lowerTickDelay, int upperTickDelay, Direction direction) {
         super(p);
-        heavierThanAir = setHeavierThanAir;
-        shiftChance = setShiftChance;
-        upperTickDelay = setUpperTickDelay;
-        lowerTickDelay = setLowerTickDelay;
+        this.shiftChance = shiftChance;
+        this.upperTickDelay = upperTickDelay;
+        this.lowerTickDelay = lowerTickDelay;
+        this.direction = direction;
+        Overheated.LOGGER.info(String.valueOf(this.lowerTickDelay));
     }
 
-    public Boolean heavierThanAir;
-    public int shiftChance;
-    public int upperTickDelay;
-    public int lowerTickDelay;
 
-    public static Boolean setHeavierThanAir = true;
-    public static int setShiftChance = 4;
-    public static int setUpperTickDelay = 6;
-    public static int setLowerTickDelay = 1;
+    protected final int shiftChance;
+    protected final int upperTickDelay;
+    protected final int lowerTickDelay;
+
+    protected final Direction direction;
 
 
-    public Boolean isHeavierThanAir() {
-        return heavierThanAir;
-    }
+
+    public static int setShiftChance;
+    public static int setUpperTickDelay;
+    public static int setLowerTickDelay;
+    public static Direction setDirection;
 
     @Nullable
     @Override
@@ -46,17 +48,22 @@ public class GasBlock extends Block {
     }
 
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        //TODO fix lag
-        Direction randomShift =
-                randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance || world.getBlockState(pos).isAir()
-                        ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
-                        : (heavierThanAir ? Direction.DOWN : Direction.UP);
+    public void onPlace(BlockState p_60566_, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
+        super.onPlace(p_60566_, level, pos, p_60569_, p_60570_);
+        level.scheduleTick(pos, this,1);
+    }
 
+
+    @Override
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
+        Direction randomShift =
+                randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
+                        ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
+                        : direction;
         BlockPos target = pos.relative(randomShift);
-        BlockState targetState = world.getBlockState(target);
         if (world.isInWorldBounds(target)) {
-            if (targetState.isAir()) {
+            BlockState targetState = world.getBlockState(target);
+            if (targetState == Blocks.AIR.defaultBlockState()) {
                 add(world, target,world.getBlockState(pos));
                 world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {

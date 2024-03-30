@@ -7,8 +7,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
-import net.ironf.overheated.steamworks.steamFluids.AllSteamFluids;
+import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
