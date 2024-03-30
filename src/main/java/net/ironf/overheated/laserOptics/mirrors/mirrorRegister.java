@@ -5,6 +5,7 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
 import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
@@ -49,6 +50,8 @@ public class mirrorRegister {
     }
 
     public static void registerDefaults(){
+        Overheated.LOGGER.info("Registering Default Thermal Mirrors");
+
         registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state, heat) -> {
             Direction facing = state.getValue(BlockStateProperties.FACING);
             if (facing.getAxis() == incoming.getAxis()){

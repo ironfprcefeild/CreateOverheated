@@ -3,6 +3,7 @@ package net.ironf.overheated.laserOptics.Diode;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -47,6 +48,7 @@ public class DiodeHeaters {
     }
 
     public static void registerDefaults() {
+        Overheated.LOGGER.info("Registering Default Diode Heaters");
         registerHeater(AllBlocks.BLAZE_BURNER.get(), (level, pos, state) -> {
             BlazeBurnerBlock.HeatLevel value = state.getValue(BlazeBurnerBlock.HEAT_LEVEL);
             if (value == BlazeBurnerBlock.HeatLevel.NONE) {

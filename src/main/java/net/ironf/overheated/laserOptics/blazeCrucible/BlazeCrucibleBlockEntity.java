@@ -103,6 +103,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     }
 
     public static void addToBoilerHeaters(){
+        Overheated.LOGGER.info("Adding the Blaze Crucible to Boiler Heaters");
         registerHeater(AllBlocks.BLAZE_CRUCIBLE.getId(), (level, pos, state) -> {
             try {
                 BlazeCrucibleBlockEntity crucible = ((BlazeCrucibleBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));
