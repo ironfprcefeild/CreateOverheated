@@ -10,6 +10,7 @@ import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
+import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
@@ -62,9 +63,45 @@ public class AllBlocks {
             .properties(p -> p)
             .simpleItem()
             .register();
+    //Heat Sink
+    public static final BlockEntry<HeatSinkBlock> HEAT_SINK = REGISTRATE
+            .block("heat_sink", HeatSinkBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.noOcclusion())
+            .simpleItem()
+            .register();
 
+    //Pressure Chamber
 
-    //// Lazer Optics
+    public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
+            .block("pressure_chamber_core", ChamberCoreBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+    public static final BlockEntry<ChamberSteamBlock> CHAMBER_STEAM = REGISTRATE
+            .block("pressure_chamber_steam", ChamberSteamBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+    public static final BlockEntry<ChamberItemBlock> CHAMBER_ITEM = REGISTRATE
+            .block("pressure_chamber_item", ChamberItemBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
+    ///Deposits
+    //Impact Drill
+    public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
+            .block("impact_drill", ImpactDrillBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
+    //// Laser Optics
 
     //Blaze Crucible
 
@@ -128,34 +165,7 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
-    //Heat Sink
-    public static final BlockEntry<HeatSinkBlock> HEAT_SINK = REGISTRATE
-            .block("heat_sink", HeatSinkBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion())
-            .simpleItem()
-            .register();
 
-    ////Pressure Chamber
-
-    public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
-            .block("pressure_chamber_core", ChamberCoreBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .simpleItem()
-            .register();
-    public static final BlockEntry<ChamberSteamBlock> CHAMBER_STEAM = REGISTRATE
-            .block("pressure_chamber_steam", ChamberSteamBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .simpleItem()
-            .register();
-    public static final BlockEntry<ChamberItemBlock> CHAMBER_ITEM = REGISTRATE
-            .block("pressure_chamber_item", ChamberItemBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .simpleItem()
-            .register();
 
     public static void register(){
 

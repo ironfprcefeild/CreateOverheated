@@ -4,13 +4,14 @@ import com.mojang.logging.LogUtils;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
-import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.recipes.AllRecipes;
-import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
+import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -38,9 +39,11 @@ public class Overheated
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(Overheated::init);
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-        REGISTRATE.registerEventListeners(modEventBus);
+
+        MinecraftForge.EVENT_BUS.register(this);
 
         //CTOR
+        REGISTRATE.registerEventListeners(modEventBus);
         AllTags.init();
         AllCreativeModeTabs.register(modEventBus);
         AllFluids.register();
@@ -48,8 +51,9 @@ public class Overheated
         AllBlocks.register();
         AllBlockEntities.register();
         AllRecipes.register(modEventBus);
+        AllFeatures.register();
 
-        MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     public static void postRegisterSetup(){

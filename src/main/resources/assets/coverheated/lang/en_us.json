@@ -46,6 +46,17 @@
   "coverheated.condenser.in_tank": "Input Tank",
   "coverheated.condenser.out_tank": "Output Tank",
 
+  "coverheated.impact_drill.torque": "Current Drill Torque ",
+  "coverheated.impact_drill.airflow": "Airflow On Drill",
+  "coverheated.impact_drill.heat": "Drill Heating ",
+  "coverheated.impact_drill.limit_info": "Based off of Current Airflow and heating, torque is limited to: ",
+  "coverheated.impact_drill.gaining_torque": "This Drill is gaining ",
+  "coverheated.impact_drill.torque_per_sec": " Torque per second",
+  "coverheated.impact_drill.torque_too_low_1": "This Drill has too low Torque to mine right now",
+  "coverheated.impact_drill.torque_too_low_2": " Torque is needed",
+  "coverheated.impact_drill.heat_too_low_1": "This Drill has too low Heat to mine right now",
+  "coverheated.impact_drill.heat_too_low_2": " Heat is needed",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",

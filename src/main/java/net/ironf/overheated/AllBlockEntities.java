@@ -10,6 +10,7 @@ import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
+import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
@@ -71,6 +72,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<CondenserBlockEntity> CONDENSER = REGISTRATE
             .blockEntity("condenser", CondenserBlockEntity::new)
             .validBlocks(AllBlocks.CONDENSER)
+            .register();
+
+    //Impact Drill
+    public static final BlockEntityEntry<ImpactDrillBlockEntity> IMPACT_DRILL = REGISTRATE
+            .blockEntity("impact_drill", ImpactDrillBlockEntity::new)
+            .validBlocks(AllBlocks.IMPACT_DRILL)
             .register();
 
     ///Pressure Chamber

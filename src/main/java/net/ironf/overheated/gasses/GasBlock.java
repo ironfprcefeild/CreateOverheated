@@ -1,6 +1,7 @@
 package net.ironf.overheated.gasses;
 
 import com.simibubi.create.foundation.utility.Iterate;
+import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,7 @@ public class GasBlock extends Block {
 
     protected final Direction direction;
 
-    //Block State
+    /*
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -42,6 +43,8 @@ public class GasBlock extends Block {
         level.scheduleTick(context.getClickedPos(), this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
         return defaultBlockState();
     }
+
+     */
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState other_state, boolean bool) {
@@ -60,7 +63,7 @@ public class GasBlock extends Block {
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (targetState == Blocks.AIR.defaultBlockState()) {
-                add(world, target,world.getBlockState(pos));
+                world.setBlockAndUpdate(target, world.getBlockState(pos));
                 world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
@@ -69,22 +72,5 @@ public class GasBlock extends Block {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
 
-    }
-
-    //Use theese method to add steam to the world
-    public void add(ServerLevel world, BlockPos at, BlockState state){
-        if (!world.isLoaded(at)){
-            return;
-        }
-        world.setBlockAndUpdate(at, state);
-        //world.scheduleTick(at, this,world.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
-    }
-
-    public void add(Level level, BlockPos at, BlockState state){
-        if (!level.isLoaded(at)){
-            return;
-        }
-        level.setBlockAndUpdate(at, state);
-        //level.scheduleTick(at, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay), TickPriority.LOW);
     }
 }

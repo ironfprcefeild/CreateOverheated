@@ -50,7 +50,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     boolean heatToLow = false;
     boolean noCoolant = false;
     int coolantConsumptionTicks = 258;
-    int breakingCounter = 0;
+    double breakingCounter = 0;
 
     HeatData recentHeat = HeatData.empty();
 
@@ -67,6 +67,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             coolantConsumptionTicks--;
         }
 
+
         //Lower and reset timers for hitting lasers
         for (int i = 0; i != 6; i++){
             int t = hittingTimers[i];
@@ -79,10 +80,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         }
     }
 
-
-    @Override
-    public void lazyTick() {
-        super.lazyTick();
+    public void fireLaser(){
         if (!hasClearance)
             return;
 
@@ -143,10 +141,11 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         } else {
                             //This isnt a laser absorber or a mirror, so we can do normal block stuff
                             //We are at a normal block, so lets break it!
-                            breakingCounter = (int) (breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
-                            if (canBreak(hitState)) {
+                            breakingCounter = (breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
+                            double counterNeeded = hitState.getBlock().defaultDestroyTime() * 2.5;
+                            if (counterNeeded < breakingCounter) {
                                 level.destroyBlock(continueAt,true);
-                                breakingCounter = 0;
+                                breakingCounter = breakingCounter - counterNeeded;
                             }
                             break;
                         }
@@ -159,6 +158,12 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         } else {
             noCoolant = true;
         }
+    }
+
+    @Override
+    public void lazyTick() {
+        super.lazyTick();
+        fireLaser();
     }
 
     private void markForEffectCloud(BlockPos continueAt) {
@@ -257,7 +262,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         activeInefficiency = tag.getBoolean("inefficient");
         heatToLow = tag.getBoolean("heat_too_low");
         coolantConsumptionTicks = tag.getInt("consumption_ticks");
-        breakingCounter = tag.getInt("break_counter");
+        breakingCounter = tag.getDouble("break_counter");
         hittingTimers = tag.getIntArray("hitting_timers");
         hittingLasers = HeatData.readHeatDataArray(tag,"incoming_heat");
     }
@@ -269,7 +274,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         tag.putBoolean("inefficient",activeInefficiency);
         tag.putBoolean("heat_too_low",heatToLow);
         tag.putInt("consumption_ticks",coolantConsumptionTicks);
-        tag.putInt("break_counter",breakingCounter);
+        tag.putDouble("break_counter",breakingCounter);
         tag.putIntArray("hitting_timers",hittingTimers);
         HeatData.writeHeadDataArray(tag,hittingLasers,"incoming_heat");
     }

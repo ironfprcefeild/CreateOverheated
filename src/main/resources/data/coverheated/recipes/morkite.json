@@ -1,0 +1,12 @@
+{
+  "type": "coverheated:impact_drilling",
+
+  "input":{
+    "item": "create:asurine"
+  },
+  "output": {
+    "fluid": "coverheated:morkite",
+    "amount": 1
+  },
+  "minimum_torque": 16
+}

@@ -1,12 +1,15 @@
 package net.ironf.overheated.utility.registration;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.builders.FluidBuilder;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +20,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -32,8 +37,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.logging.Logger;
 
+import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.GasMap;
 import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
 
@@ -44,11 +49,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
     public static final DeferredRegister<FluidType> GAS_FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Overheated.MODID);
     public static final DeferredRegister<Fluid> GAS_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Overheated.MODID);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Overheated.MODID);
+
     @Override
     public CreateRegistrate registerEventListeners(IEventBus bus) {
         GAS_BLOCKS.register(bus);
         GAS_FLUID_TYPES.register(bus);
         GAS_FLUIDS.register(bus);
+        FEATURES.register(bus);
         return super.registerEventListeners(bus);
     }
 
@@ -191,8 +199,57 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .noLootTable(),shiftChance,lowerTickDelay,upperTickDelay,direction)));
 
         }
+    }
 
 
+    ///Deposits
+
+    public depositFeatureBuilder depositFeature(String name){
+        return new depositFeatureBuilder(name, this);
+    }
+
+    public static class depositFeatureBuilder {
+        String Name;
+        BlockEntry<Block> Block;
+
+        BlockEntry<Block> EncasedBlock;
+        int frequency;
+        int sizeLower;
+        int sizeUpper;
+        OverheatedRegistrate Parent;
+        public depositFeatureBuilder(String name, OverheatedRegistrate parent){
+            Name = name;
+            Parent = parent;
+            frequency = 64;
+            sizeLower = 8;
+            sizeUpper = 16;
+        }
+
+        public depositFeatureBuilder Frequency(int passChance){
+            frequency = passChance;
+            return this;
+        }
+
+        public depositFeatureBuilder Size(int lowerBound, int upperBound){
+            sizeLower = lowerBound;
+            sizeUpper = upperBound;
+            return this;
+        }
+
+
+        public depositFeatureBuilder makeBlock(BlockEntry<Block> b){
+            Block = b;
+            return this;
+        }
+        public depositFeatureBuilder makeEncasedBlock(BlockEntry<Block> b){
+            EncasedBlock = b;
+            return this;
+        }
+        public RegistryObject<BedrockDepositFeature> register(){
+            return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, Block, EncasedBlock));
+        }
 
     }
+
+
 }
