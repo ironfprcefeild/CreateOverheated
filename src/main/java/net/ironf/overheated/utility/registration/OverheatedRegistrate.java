@@ -70,19 +70,29 @@ public class OverheatedRegistrate extends CreateRegistrate {
         NonNullFunction<ForgeFlowingFluid.Properties, T> Factory;
 
 
+        int density;
+
         public gasEntry(String name, OverheatedRegistrate parent, NonNullFunction<ForgeFlowingFluid.Properties, T> factory){
             Name = name;
             Parent = parent;
             Factory = factory;
+            density = -1;
             object(Name);
         }
+
+        public gasEntry<T,GB> Density(int d){
+            this.density = d;
+            return this;
+        }
+
+
 
         public FluidEntry<ForgeFlowingFluid.Flowing> register(RegistryObject<? extends  GasBlock> gasBlock){
             FluidBuilder.FluidTypeFactory fluidType = getFluidFactory(
                     gasBlock,
-                    p -> p.supportsBoating(false).viscosity(0).density(1));
+                    p -> p.supportsBoating(false).viscosity(0).density(density));
             FluidEntry<ForgeFlowingFluid.Flowing> completed = Parent.fluid(Name, fluidType)
-                    .properties(b -> b.supportsBoating(false).viscosity(0).density(1))
+                    .properties(b -> b.supportsBoating(false).viscosity(0).density(density))
                     .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
                     .source(Factory)
                     .bucket()
@@ -105,6 +115,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return true;
                         }
 
+
+
                         @Override
                         public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
                             level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
@@ -116,6 +128,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             Overheated.LOGGER.info("Getting block for fluid state");
                             return gasBlock.get().defaultBlockState();
                         }
+
 
                         @Override
                         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -192,9 +205,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     Name,
                     useAlt ? altFactory :
                     (() -> new GasBlock(
-                    BlockBehaviour.Properties.copy(Blocks.AIR)
+                    BlockBehaviour.Properties.of()
                             .noOcclusion()
                             .noCollission()
+                            .replaceable()
                             .destroyTime(-1)
                             .noLootTable(),shiftChance,lowerTickDelay,upperTickDelay,direction)));
 
@@ -216,6 +230,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         int frequency;
         int sizeLower;
         int sizeUpper;
+
         OverheatedRegistrate Parent;
         public depositFeatureBuilder(String name, OverheatedRegistrate parent){
             Name = name;
@@ -223,6 +238,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             frequency = 64;
             sizeLower = 8;
             sizeUpper = 16;
+
         }
 
         public depositFeatureBuilder Frequency(int passChance){
@@ -237,6 +253,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
 
+
         public depositFeatureBuilder makeBlock(BlockEntry<Block> b){
             Block = b;
             return this;
@@ -246,7 +263,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
         public RegistryObject<BedrockDepositFeature> register(){
-            return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, Block, EncasedBlock));
+            return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency,Block, EncasedBlock));
         }
 
     }

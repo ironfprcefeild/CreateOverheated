@@ -3,6 +3,8 @@ package net.ironf.overheated;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
+import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
@@ -92,10 +94,19 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
+
     ///Deposits
     //Impact Drill
     public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
             .block("impact_drill", ImpactDrillBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
+    //Gas Hood
+    public static final BlockEntry<GasHoodBlock> GAS_HOOD = REGISTRATE
+            .block("gas_hood", GasHoodBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()

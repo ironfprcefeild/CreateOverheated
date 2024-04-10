@@ -1,6 +1,7 @@
 package net.ironf.overheated.worldgen.bedrockDeposits;
 
 import com.mojang.serialization.Codec;
+import com.simibubi.create.foundation.utility.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +11,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+
+import java.util.ArrayList;
 
 public class BedrockDepositFeature extends Feature<NoneFeatureConfiguration> {
 
@@ -26,6 +29,7 @@ public class BedrockDepositFeature extends Feature<NoneFeatureConfiguration> {
     public final int sizeUpper;
     public final int frequency;
 
+
     public final BlockEntry<? extends Block> block;
     public final BlockEntry<? extends Block> encasedBlock;
 
@@ -35,24 +39,37 @@ public class BedrockDepositFeature extends Feature<NoneFeatureConfiguration> {
         if (rand.nextIntBetweenInclusive(0, frequency) == frequency){
             BlockPos pos = context.origin();
             WorldGenLevel level = context.level();
-            level.setBlock(pos,block.getDefaultState(),2);
             int size = rand.nextIntBetweenInclusive(sizeLower,sizeUpper);
+            ArrayList<BlockPos> metBlocks = new ArrayList<>(size);
+            ArrayList<BlockPos> availableBlocks = new ArrayList<>();
+
             for(int i = 0; i < size; ++i) {
-                pos = pos.relative(depositDirections[rand.nextIntBetweenInclusive(0,3)]);
                 level.setBlock(pos,block.getDefaultState(),2);
                 BlockPos upTower = pos;
-                for (int u = 0; u < size / 2.5; u++){
+
+                //Create Tower
+                for (int u = rand.nextIntBetweenInclusive(size, size * 3); u > 0; u--){
                     upTower = upTower.above();
                     level.setBlock(upTower,encasedBlock.getDefaultState(),2);
+
                 }
+                //Update Availability
+                metBlocks.add(pos);
+                for (Direction d : Iterate.horizontalDirections){
+                    availableBlocks.add(pos.relative(d));
+                }
+                availableBlocks.removeAll(metBlocks);
+
+                //Select New Block
+                pos = availableBlocks.get(rand.nextIntBetweenInclusive(0,availableBlocks.size() - 1));
             }
+
             return true;
         } else {
             return false;
         }
     }
 
-    public static Direction[] depositDirections = {Direction.EAST,Direction.WEST,Direction.NORTH,Direction.EAST};
 
 
 }

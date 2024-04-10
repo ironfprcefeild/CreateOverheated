@@ -2,6 +2,7 @@ package net.ironf.overheated;
 
 import com.simibubi.create.content.kinetics.base.HalfShaftInstance;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
@@ -78,6 +79,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<ImpactDrillBlockEntity> IMPACT_DRILL = REGISTRATE
             .blockEntity("impact_drill", ImpactDrillBlockEntity::new)
             .validBlocks(AllBlocks.IMPACT_DRILL)
+            .register();
+
+    //GasHood
+    public static final BlockEntityEntry<GasHoodBlockEntity> GAS_HOOD = REGISTRATE
+            .blockEntity("gas_hood", GasHoodBlockEntity::new)
+            .validBlocks(AllBlocks.GAS_HOOD)
             .register();
 
     ///Pressure Chamber

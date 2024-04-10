@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
@@ -188,22 +189,19 @@ public class AllCreativeModeTabs {
         private static Function<Item, CreativeModeTab.TabVisibility> makeVisibilityFunc() {
             Map<Item, CreativeModeTab.TabVisibility> visibilities = new Reference2ObjectOpenHashMap<>();
 
+
             //!!!!// Add visibility functions for certain items, controlling in what tabs it can  be found (like search tab only)
             Map<ItemProviderEntry<?>, CreativeModeTab.TabVisibility> simpleVisibilities = Map.of(
             );
+
 
             simpleVisibilities.forEach((entry, factory) -> {
                 visibilities.put(entry.asItem(), factory);
             });
 
 
-
             //!!!// Larger looping functions should be put below for dyed item sets or edge cases as too not clutter the creative mode tab
-            for (int p = 1; p <= 4; p++) {
-                for (Fluid steam : AllSteamFluids.Steams[p]) {
-                    visibilities.put(steam.getBucket(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-                }
-            }
+
 
             return item -> {
                 CreativeModeTab.TabVisibility visibility = visibilities.get(item);

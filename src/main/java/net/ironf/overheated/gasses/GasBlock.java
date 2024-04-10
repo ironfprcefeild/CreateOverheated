@@ -35,16 +35,6 @@ public class GasBlock extends Block {
 
     protected final Direction direction;
 
-    /*
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
-        level.scheduleTick(context.getClickedPos(), this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
-        return defaultBlockState();
-    }
-
-     */
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState other_state, boolean bool) {
@@ -55,6 +45,9 @@ public class GasBlock extends Block {
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
+
+
+
         Direction randomShift =
                 randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
                         ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
@@ -71,6 +64,7 @@ public class GasBlock extends Block {
         } else {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
+
 
     }
 }
