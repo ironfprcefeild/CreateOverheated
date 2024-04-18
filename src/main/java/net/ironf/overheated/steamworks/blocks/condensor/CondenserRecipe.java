@@ -51,6 +51,14 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
         return output;
     }
 
+    public Float getAddTemp() {
+        return addTemp;
+    }
+
+    public Float getMinTemp() {
+        return minTemp;
+    }
+
     public static class Type implements RecipeType<CondenserRecipe> {
         private Type() {
         }
@@ -73,12 +81,16 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
     private final FluidIngredient input;
 
     private final FluidStack output;
+    private final Float minTemp;
+    private final Float addTemp;
 
 
-    public CondenserRecipe(ResourceLocation id, FluidIngredient input, FluidStack output) {
+    public CondenserRecipe(ResourceLocation id, FluidIngredient input, FluidStack output, Float minTemp, Float addTemp) {
         this.id = id;
         this.input = input;
         this.output = output;
+        this.minTemp = minTemp;
+        this.addTemp = addTemp;
     }
 
 
@@ -92,26 +104,38 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
         public CondenserRecipe fromJson(ResourceLocation id, JsonObject pSerializedRecipe) {
             FluidIngredient fluid = FluidIngredient.deserialize(GsonHelper.getAsJsonObject(pSerializedRecipe,"input"));
             FluidStack output = FluidIngredient.deserialize(GsonHelper.getAsJsonObject(pSerializedRecipe,"output")).getMatchingFluidStacks().get(0);
-            return new CondenserRecipe(id,fluid,output);
+            float minTemp = 0;
+            if (pSerializedRecipe.has("minQuality")){
+                minTemp = -GsonHelper.getAsFloat(pSerializedRecipe,"minQuality");
+            } else if (pSerializedRecipe.has("minTemp")){
+                minTemp = GsonHelper.getAsFloat(pSerializedRecipe,"minTemp");
+            }
+            return new CondenserRecipe(id,fluid,output, minTemp, GsonHelper.getAsFloat(pSerializedRecipe,"addTemp"));
         }
 
         /*
             Read/Write Order
             1. Fluid Ingredeint
             2. Fluidstack Output
+            3. minTemp
+            4. addTemp
         */
 
         @Override
         public CondenserRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             FluidIngredient fluid = FluidIngredient.read(buf);
             FluidStack output = FluidStack.readFromPacket(buf);
-            return new CondenserRecipe(id, fluid, output);
+            float minTemp = buf.readFloat();
+            float addTemp = buf.readFloat();
+            return new CondenserRecipe(id, fluid, output, minTemp, addTemp);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, CondenserRecipe recipe) {
             recipe.input.write(buf);
             recipe.output.writeToPacket(buf);
+            buf.writeFloat(recipe.minTemp);
+            buf.writeFloat(recipe.addTemp);
         }
     }
 }

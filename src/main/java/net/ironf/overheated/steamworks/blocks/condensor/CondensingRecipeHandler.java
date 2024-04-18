@@ -13,9 +13,11 @@ import java.util.List;
 
 public class CondensingRecipeHandler implements ResourceManagerReloadListener {
     //Maps each fluid to its output considering stack size
-    public static HashMap<Fluid, CondensingPacket> condensingHandler = new HashMap<>();
-    //Maps each fluid present to input needed to perform recipe
-    public static HashMap<Fluid,Integer> condensingPresentList = new HashMap<>();
+    public static HashMap<Fluid, FluidStack> condensingHandler = new HashMap<>();
+    public static HashMap<Fluid, Float> condensingMinTempHandler = new HashMap<>();
+    public static HashMap<Fluid, Float> condensingAddTempHandler = new HashMap<>();
+
+
     public static Level level = null;
     public static void setLevel(Level level) {
         CondensingRecipeHandler.level = level;
@@ -25,28 +27,26 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
             return;
         }
         Overheated.LOGGER.info("Generating Condensing Handler");
-        reloadHandler();
+        condensingHandler.clear();
+        condensingAddTempHandler.clear();
+        condensingMinTempHandler.clear();
+        List<CondenserRecipe> recipeList = createRecipeCollection();
+        for (CondenserRecipe r : recipeList){
+            for (FluidStack f : r.getInput().getMatchingFluidStacks()){
+                condensingHandler.put(f.getFluid(),r.getOutput());
+                condensingMinTempHandler.put(f.getFluid(),r.getMinTemp());
+                condensingAddTempHandler.put(f.getFluid(),r.getAddTemp());
+            }
+        }
         for (int p = 1; p <= 4; p++){
             for (Fluid steam : AllSteamFluids.Steams[p]){
-                condensingHandler.put(steam,new CondensingPacket(steam,1,AllSteamFluids.DISTILLED_WATER.get(),p));
-                condensingPresentList.put(steam,1);
+                condensingHandler.put(steam,new FluidStack(AllSteamFluids.DISTILLED_WATER.get(),p));
+                condensingAddTempHandler.put(steam,16f);
+                condensingMinTempHandler.put(steam,0f);
             }
         }
     }
 
-    public static void reloadHandler(){
-        if (level == null){
-            return;
-        }
-        condensingHandler.clear();
-        List<CondenserRecipe> recipeList = createRecipeCollection();
-        for (CondenserRecipe r : recipeList){
-            for (FluidStack f : r.getInput().getMatchingFluidStacks()){
-                condensingHandler.put(f.getFluid(),new CondensingPacket(f,r.getOutput()));
-                condensingPresentList.put(f.getFluid(),f.getAmount());
-            }
-        }
-    }
 
     public static List<CondenserRecipe> createRecipeCollection(){
         return level.getRecipeManager().getAllRecipesFor(CondenserRecipe.Type.INSTANCE);
@@ -54,6 +54,6 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        reloadHandler();
+        generateHandler();
     }
 }
