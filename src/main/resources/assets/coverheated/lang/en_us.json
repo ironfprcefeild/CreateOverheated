@@ -43,13 +43,10 @@
   "coverheated.pressure_chamber.steam.input": "Taking In steam",
   "coverheated.pressure_chamber.steam.output": "Outputting steam",
 
-  "coverheated.condenser.in_tank": "Input Tank",
-  "coverheated.condenser.out_tank": "Output Tank",
-
   "coverheated.impact_drill.torque": "Current Drill Torque ",
   "coverheated.impact_drill.airflow": "Airflow On Drill",
   "coverheated.impact_drill.heat": "Drill Heating ",
-  "coverheated.impact_drill.limit_info": "Based off of Current Airflow and heating, torque is limited to: ",
+  "coverheated.impact_drill.limit_info": "Based off of Current Airflow and Heating, torque is limited to: ",
   "coverheated.impact_drill.gaining_torque": "This Drill is gaining ",
   "coverheated.impact_drill.torque_per_sec": " Torque per second",
   "coverheated.impact_drill.torque_too_low_1": "This Drill has too low Torque to mine right now",
@@ -67,7 +64,10 @@
   "coverheated.tooltip.display_type.reading": " (Reading) ",
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
-  "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info"
+  "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
+
+  "coverheated.condenser.heat": "Condenser Temperature",
+  "coverheated.condenser.coolant": "Minimum Temperature based on Coolant: "
 
 
 }

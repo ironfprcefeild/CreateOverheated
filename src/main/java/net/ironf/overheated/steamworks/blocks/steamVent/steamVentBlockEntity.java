@@ -99,8 +99,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
             BoilerData boiler = tank.boiler;
             int tier = getActualHeat(boiler,tank);
             if (tier > 0) {
-                processingTicks = processingTicks - 1;
-                if (processingTicks < 1) {
+                if (processingTicks-- < 1) {
                     setFluid(
                             AllSteamFluids.getSteamFromValues(
                                     ((int) (Math.floor((double) (tier - 1) / 6) + 1)),

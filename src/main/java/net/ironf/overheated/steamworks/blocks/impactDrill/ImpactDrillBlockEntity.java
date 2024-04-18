@@ -77,16 +77,17 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
     float currentTorque = 0;
     float currentHeating = 0;
     float lastHeatSink = 0;
-    int tickTimer = 10;
+    int tickTimer = 16;
     int laserTimer = 50;
 
     int lastPressure = 0;
 
+    //Each imapact drill takes about 4 steam vents to run :)
     @Override
     public void tick() {
         super.tick();
         if (tickTimer-- == 0) {
-            tickTimer = 10;
+            tickTimer = 16;
             lastHeatSink = getHeatSunkenFrom(getBlockPos(), level);
             extractionTick();
         }
@@ -101,7 +102,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
 
         //Get some stuff
         FluidStack contained = tank.getPrimaryHandler().getFluid();
-        if (contained.getAmount() < 10) {
+        if (contained.getAmount() < 16) {
             return;
         }
         int pressure = AllSteamFluids.getSteamPressure(contained.getFluid());
@@ -109,7 +110,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         //Ask if fluid is usable
         if (pressure > 0) {
             //Drain some stuff
-            tank.getPrimaryHandler().drain(10, IFluidHandler.FluidAction.EXECUTE);
+            tank.getPrimaryHandler().drain(16, IFluidHandler.FluidAction.EXECUTE);
 
             //Update some values
             currentTorque += (pressure * torqueMultiplier());
