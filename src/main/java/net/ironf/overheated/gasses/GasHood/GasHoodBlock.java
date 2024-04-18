@@ -29,7 +29,7 @@ public class GasHoodBlock extends Block implements IBE<GasHoodBlockEntity> {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return super.getStateForPlacement(pContext).setValue(FACING, pContext.getNearestLookingVerticalDirection());
+        return super.getStateForPlacement(pContext).setValue(FACING, pContext.getNearestLookingVerticalDirection().getOpposite());
     }
 
 

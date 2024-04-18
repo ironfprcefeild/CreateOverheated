@@ -33,7 +33,6 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
 
     }
 
-    public WeakReference<FluidTankBlockEntity> source;
     public FluidTankBlockEntity getTank() {
         BlockEntity be = level.getBlockEntity(worldPosition.relative(GasHoodBlock.getAttachedDirection(getBlockState()).getOpposite()));
         if (be instanceof FluidTankBlockEntity){
@@ -49,19 +48,20 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
     public void tick() {
         super.tick();
         if (timer-- <= 0){
-            timer = 10;
+            timer = 8;
             BlockPos mypos = getBlockPos();
             Direction faced = GasHoodBlock.getAttachedDirection(getBlockState());
             BlockState testedState = level.getBlockState(mypos.relative(faced));
             if (testedState != Blocks.AIR.defaultBlockState() && RawGasMap.containsKey(testedState)){
-                Overheated.LOGGER.info("Trying to absorb gas");
                 BlockEntity be = level.getBlockEntity(mypos.relative(faced.getOpposite()));
-                if (!(be instanceof FluidTankBlockEntity))
+                if (!(be instanceof FluidTankBlockEntity)) {
                     return;
+                }
                 FluidTankBlockEntity tank = ((FluidTankBlockEntity) be).getControllerBE();
                 ForgeFlowingFluid.Flowing gas = RawGasMap.get(testedState).get();
-                if (tank.getTankInventory().fill(new FluidStack(gas,1000), IFluidHandler.FluidAction.SIMULATE) < 1000)
+                if (tank.getTankInventory().fill(new FluidStack(gas,1000), IFluidHandler.FluidAction.SIMULATE) != 1000){
                     return;
+                }
                 tank.getTankInventory().fill(new FluidStack(gas,1000), IFluidHandler.FluidAction.EXECUTE);
                 level.setBlockAndUpdate(mypos.relative(faced), Blocks.AIR.defaultBlockState());
             }
