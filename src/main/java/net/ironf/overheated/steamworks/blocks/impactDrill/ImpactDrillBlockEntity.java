@@ -48,7 +48,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000));
+        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 600));
     }
 
     @Override
@@ -77,17 +77,17 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
     float currentTorque = 0;
     float currentHeating = 0;
     float lastHeatSink = 0;
-    int tickTimer = 16;
+    int tickTimer = 20;
     int laserTimer = 50;
 
     int lastPressure = 0;
 
-    //Each imapact drill takes about 4 steam vents to run :)
+    //Each imapact drill takes about 2 steam vents to run :)
     @Override
     public void tick() {
         super.tick();
         if (tickTimer-- == 0) {
-            tickTimer = 16;
+            tickTimer = 20;
             lastHeatSink = getHeatSunkenFrom(getBlockPos(), level);
             extractionTick();
         }
@@ -102,7 +102,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
 
         //Get some stuff
         FluidStack contained = tank.getPrimaryHandler().getFluid();
-        if (contained.getAmount() < 16) {
+        if (contained.getAmount() < 300) {
             return;
         }
         int pressure = AllSteamFluids.getSteamPressure(contained.getFluid());
@@ -110,7 +110,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         //Ask if fluid is usable
         if (pressure > 0) {
             //Drain some stuff
-            tank.getPrimaryHandler().drain(16, IFluidHandler.FluidAction.EXECUTE);
+            tank.getPrimaryHandler().drain(300, IFluidHandler.FluidAction.EXECUTE);
 
             //Update some values
             currentTorque += (pressure * torqueMultiplier());
@@ -188,7 +188,10 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         tooltip.add(addIndent(Component.literal(easyFloat(lastHeatSink)).withStyle(ChatFormatting.AQUA), 1));
         tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.heat").append(easyFloat(currentHeating)).withStyle(ChatFormatting.RED)));
         if (isPlayerSneaking){
-            tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.limit_info").append(easyFloat(torqueLimit()))));
+            tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.extra_info")));
+            tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.limit_info").append(easyFloat(torqueLimit())),1));
+            tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.multiplier_info").append(easyFloat(torqueMultiplier())),1));
+
         } else {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info")));
         }

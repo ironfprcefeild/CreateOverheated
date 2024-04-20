@@ -44,6 +44,7 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
     int coolantMetaTimer = 8;
     float Heat;
     float coolantTemp;
+    //Each condenser, when operating at perfect efficiency, uses about 1 Steam Vent
     @Override
     public void tick() {
         super.tick();
@@ -68,7 +69,7 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
 
             coolantTemp = LaserCoolingHandler.heatHandler.containsKey(getFluid()) ? -LaserCoolingHandler.heatHandler.get(getFluid()) : 0;
-            Heat = Math.max(coolantTemp,Heat - ((getHeatSunkenFrom(getBlockPos(),level)) / 32));
+            Heat = Math.max(coolantTemp,Heat - ((getHeatSunkenFrom(getBlockPos(),level)) / 16));
             if (coolantMetaTimer-- == 0) {
                 tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
                 coolantMetaTimer = 8;

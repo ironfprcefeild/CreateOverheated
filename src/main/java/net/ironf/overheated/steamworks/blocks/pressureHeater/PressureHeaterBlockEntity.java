@@ -4,10 +4,8 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -60,9 +57,9 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
                 recentReading = new HeatData(readHeat == 1 ? outputAmount : 0, readHeat == 2 ? outputAmount : 0, readHeat == 3 ? outputAmount : 0, 5f);
                 if (!useAllSteam){
                     if (output != null)
-                        output.fill(AllSteamFluids.getSteamFromValues(pressure,0,1), IFluidHandler.FluidAction.EXECUTE);
+                        output.fill(AllSteamFluids.getSteamFromValues(pressure,0,10), IFluidHandler.FluidAction.EXECUTE);
                 }
-                input.drain(1, IFluidHandler.FluidAction.EXECUTE);
+                input.drain(10, IFluidHandler.FluidAction.EXECUTE);
             } else {
                 recentReading = HeatData.empty();
             }

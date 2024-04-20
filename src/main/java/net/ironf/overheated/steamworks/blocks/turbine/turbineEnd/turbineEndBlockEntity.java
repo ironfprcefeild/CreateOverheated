@@ -35,7 +35,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     //Kinetics
     @Override
     public float getGeneratedSpeed() {
-        return convertToDirection(Math.min(256,thisSpinsDrain), getBlockState().getValue(turbineEndBlock.FACING));
+        return convertToDirection(Math.min(256,thisSpinsDrain / 10), getBlockState().getValue(turbineEndBlock.FACING));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                     ////Update Turbine Generation, we met a fluid tank so it's a complete turbine
                     FluidTankBlockEntity intakeTank = ((FluidTankBlockEntity) level.getBlockEntity(bp)).getControllerBE();
                     int pressureLevel = AllSteamFluids.getSteamPressure(intakeTank.getTankInventory().getFluid());
-                    int drain = i * radius * 2;
+                    int drain = i * radius * 20;
 
                     //if any of theese are true, the turbine is invalid or has stopped operating, so we set the drain to 0 and break
 
@@ -242,10 +242,10 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.length").append(String.valueOf(recentLength)),1));
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.radius").append(String.valueOf(recentRadius)),1));
             if (isPlayerSneaking) {
-                int Drain = recentLength * 2 * recentRadius;
+                int Drain = recentLength * 20 * recentRadius;
                 tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain.in")).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")),1));
-                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 4)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")),1));
-                if (Drain > 256){
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 40)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")),1));
+                if (Drain > 2560){
                     tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"),1));
                 }
             } else {
