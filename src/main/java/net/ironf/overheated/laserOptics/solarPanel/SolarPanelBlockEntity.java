@@ -37,11 +37,9 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
     @Override
     public void tick() {
         super.tick();
-        if (processingTicks < 1){
+        if (processingTicks-- < 1){
             processingTicks = 300;
             updateHeat();
-        } else {
-            processingTicks--;
         }
     }
 
@@ -58,8 +56,6 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
             if (level.getDayTime() < 13000) {
                 recentReading = recentReading + 0.25f;
             }
-
-
         } else {
             recentReading = 0;
         }

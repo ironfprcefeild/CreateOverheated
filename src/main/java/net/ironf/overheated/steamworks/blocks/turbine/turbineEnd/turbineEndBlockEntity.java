@@ -249,7 +249,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                     tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"),1));
                 }
             } else {
-                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.gui.crouch_for_more_info"),1));
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));
             }
         }
         return true;

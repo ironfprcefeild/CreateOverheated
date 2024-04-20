@@ -52,8 +52,7 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
             //Get above tank
             IFluidTank above = getTank(Direction.UP);
-            if (above == null)
-                return;
+            if (above == null) return;
             //Get fluid above the tank, return if the fluid cannot be condensed
             FluidStack input = above.getFluid();
             if (condensingHandler.containsKey(input.getFluid()) && condensingMinTempHandler.get(input.getFluid()) >= Heat) {
@@ -62,11 +61,10 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
                 IFluidTank below = getTank(Direction.DOWN);
                 if (below == null) return;
 
-                if (below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) <= 0)
-                    return;
+                if (below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) <= 0) return;
+                Heat = Heat + condensingAddTempHandler.get(input.getFluid());
                 below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                 above.drain(1, IFluidHandler.FluidAction.EXECUTE);
-                Heat = Heat + condensingAddTempHandler.get(input.getFluid());
             }
 
             coolantTemp = LaserCoolingHandler.heatHandler.containsKey(getFluid()) ? -LaserCoolingHandler.heatHandler.get(getFluid()) : 0;

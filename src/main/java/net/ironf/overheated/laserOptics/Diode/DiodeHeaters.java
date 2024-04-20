@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.utility.AttachedRegistry;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -94,6 +95,14 @@ public class DiodeHeaters {
             }
             return HeatData.empty();
         }));
+
+        registerHeater(net.ironf.overheated.AllBlocks.PRESSURE_HEATER.get(), (((level, pos, state) -> {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof PressureHeaterBlockEntity){
+                return ((PressureHeaterBlockEntity) be).getRecentReading();
+            }
+            return HeatData.empty();
+        })));
 
         //registerHeater(Blocks.COMMAND_BLOCK, (level, pos, state) -> new HeatData(0,0,1,0));
 

@@ -125,7 +125,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
                         @Override
                         public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
-                            Overheated.LOGGER.info("Getting block for fluid state");
                             return gasBlock.get().defaultBlockState();
                         }
 

@@ -16,6 +16,7 @@ import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
+import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
@@ -107,6 +108,14 @@ public class AllBlocks {
     //Gas Hood
     public static final BlockEntry<GasHoodBlock> GAS_HOOD = REGISTRATE
             .block("gas_hood", GasHoodBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
+    //Pressure Heater
+    public static final BlockEntry<PressureHeaterBlock> PRESSURE_HEATER= REGISTRATE
+            .block("pressure_heater", PressureHeaterBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()

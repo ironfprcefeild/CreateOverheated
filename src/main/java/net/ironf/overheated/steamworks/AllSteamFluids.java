@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.Predicate;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
@@ -74,11 +75,11 @@ public class AllSteamFluids {
     public static void prepareSteamArray(){
         Overheated.LOGGER.info("Preparing Steam Utility Array");
         Steams = new Fluid[][]{
-                {DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get(), DISTILLED_WATER.get()},
-                {STEAM_LOW.get(), HEATED_STEAM_LOW.get(), SUPERHEATED_STEAM_LOW.get(), OVERHEATED_STEAM_LOW.get()},
-                {STEAM_MID.get(),HEATED_STEAM_MID.get(),SUPERHEATED_STEAM_MID.get(),OVERHEATED_STEAM_MID.get()},
-                {STEAM_HIGH.get(),HEATED_STEAM_HIGH.get(),SUPERHEATED_STEAM_HIGH.get(),OVERHEATED_STEAM_HIGH.get()},
-                {STEAM_INSANE.get(),HEATED_STEAM_INSANE.get(),SUPERHEATED_STEAM_INSANE.get(),OVERHEATED_STEAM_INSANE.get()}
+                {DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource()},
+                {STEAM_LOW.get().getSource(), HEATED_STEAM_LOW.get().getSource(), SUPERHEATED_STEAM_LOW.get().getSource(), OVERHEATED_STEAM_LOW.get().getSource()},
+                {STEAM_MID.get().getSource(),HEATED_STEAM_MID.get().getSource(),SUPERHEATED_STEAM_MID.get().getSource(),OVERHEATED_STEAM_MID.get().getSource()},
+                {STEAM_HIGH.get().getSource(),HEATED_STEAM_HIGH.get().getSource(),SUPERHEATED_STEAM_HIGH.get().getSource(),OVERHEATED_STEAM_HIGH.get().getSource()},
+                {STEAM_INSANE.get().getSource(),HEATED_STEAM_INSANE.get().getSource(),SUPERHEATED_STEAM_INSANE.get().getSource(),OVERHEATED_STEAM_INSANE.get().getSource()}
         };
     }
 
@@ -108,15 +109,15 @@ public class AllSteamFluids {
     }
 
     public static int getSteamHeat(Fluid s){
-        return getSteamHeat(s,getSteamPressure(s));
-    }
-    public static int getSteamHeat(Fluid s, int pressure){
         int h = 0;
-        for (Fluid heatLevel : Steams[pressure]){
-            if (heatLevel.isSame(s)){
-                return h;
+        for (Fluid[] steamLevel : Steams) {
+            for (Fluid steam : steamLevel) {
+                if (steam == s) {
+                    return h;
+                }
+                h++;
             }
-            h++;
+            h = 0;
         }
         return 0;
     }

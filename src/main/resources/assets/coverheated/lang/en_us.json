@@ -67,7 +67,13 @@
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
 
   "coverheated.condenser.heat": "Condenser Temperature",
-  "coverheated.condenser.coolant": "Minimum Temperature based on Coolant: "
+  "coverheated.condenser.coolant": "Minimum Temperature based on Coolant: ",
+
+  "coverheated.pressure_heater.mode.use": "Using Steam Pressure",
+  "coverheated.pressure_heater.mode.return": "Returning Cold Steam",
+  "coverheated.pressure_heater.mode.change": "Wrench to Change Modes",
+  "coverheated.turbine.too_small": "Turbien is too Small, add Centers or Extensions",
+  "coverheated.turbine.outtake_full": "Turbine Outtake is full, add a Pump or increase its speed."
 
 
 }

@@ -78,5 +78,9 @@ public class GoggleHelper {
     public static Component addIndent(Component prep){
         return addIndent(prep,0);
     }
+    public static Component addIndent(String key){
+        return addIndent(Component.translatable(key),0);
+    }
+
 }
 

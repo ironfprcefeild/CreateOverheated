@@ -15,6 +15,7 @@ import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
@@ -85,6 +86,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<GasHoodBlockEntity> GAS_HOOD = REGISTRATE
             .blockEntity("gas_hood", GasHoodBlockEntity::new)
             .validBlocks(AllBlocks.GAS_HOOD)
+            .register();
+
+    //Pressure Heater
+    public static final BlockEntityEntry<PressureHeaterBlockEntity> PRESSURE_HEATER = REGISTRATE
+            .blockEntity("pressure_heater", PressureHeaterBlockEntity::new)
+            .validBlocks(AllBlocks.PRESSURE_HEATER)
             .register();
 
     ///Pressure Chamber
