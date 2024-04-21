@@ -95,11 +95,16 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
-
-    ///Deposits
     //Impact Drill
     public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
             .block("impact_drill", ImpactDrillBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<Block> IMPACT_TUBING = REGISTRATE
+            .block("impact_tubing", Block::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()

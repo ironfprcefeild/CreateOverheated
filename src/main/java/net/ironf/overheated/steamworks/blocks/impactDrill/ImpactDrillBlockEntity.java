@@ -4,6 +4,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
@@ -17,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -125,12 +127,31 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
                 ImpactDrillRecipe recipe = orecipe.get();
 
                 //We have the torque and the gas fits
-                if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded() && level.getBlockState(myPos.above()) == Blocks.AIR.defaultBlockState()) {
+                if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded()) {
+                    BlockPos output = getOutputPos();
+                    if (output == null)
+                        return;
                     currentTorque = currentTorque - recipe.getTorqueImpact();
-                    level.setBlockAndUpdate(myPos.above(), GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
+                    level.setBlockAndUpdate(output, GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
                 }
             }
         }
+    }
+
+    //Returns valid gas output based on impact tubing, returns null if one was unable to be found
+    private BlockPos getOutputPos() {
+        BlockPos atPos = getBlockPos().above();
+        while (true) {
+            BlockState atState = level.getBlockState(atPos);
+            if (atState == Blocks.AIR.defaultBlockState()) {
+                return atPos;
+            } else if (atState == AllBlocks.IMPACT_TUBING.getDefaultState()) {
+                atPos = atPos.above();
+            } else {
+                return null;
+            }
+        }
+
     }
 
     public float torqueMultiplier() {

@@ -92,8 +92,4 @@ public class ChamberSteamBlockEntity extends ChamberAdditionBlockEntity implemen
 
     }
 
-    @Override
-    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        return typicalGoggles(tooltip,isPlayerSneaking);
-    }
 }
