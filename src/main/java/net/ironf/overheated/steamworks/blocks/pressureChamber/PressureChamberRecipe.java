@@ -2,7 +2,9 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,40 +12,114 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PressureChamberRecipe implements Recipe<SimpleContainer> {
 
-    //limitations with this method:
-    //If 1 item matches multiple tags in a recipe this can cause a lot of issues because the will both find the same item in the vault to sue
+
     @Override
     public boolean matches(SimpleContainer container, Level level) {
-        if(level.isClientSide()) {
+
+        return false;
+    }
+    //IF simulate is true, returns true if recipe is valid for the chamber
+    //IF simulate is false, returns true if recipe is valid for the chamber, but also will execute the recipe
+    //IF set timer is true, and the recipe would return true, the chambers timer will be set
+    public boolean testRecipe(ChamberCoreBlockEntity chamber, boolean fullSimulate, boolean setTimer){
+        //Get input items
+        IItemHandler availableItems = chamber.getInputItems();
+        if (availableItems == null)
             return false;
-        }
+        Overheated.LOGGER.info("Items Found");
+        //Check if pressure is high enough and enough steam is in the chamber
+        int pressure = chamber.getPressure();
+        if (pressure < SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken)
+            return false;
+        Overheated.LOGGER.info("Steam");
+        //Check if Heat is high enough
+        float heat = chamber.getHeating();
+        float heatRating = chamber.getHeatRating();
+        if (heat < laserHeat || heatRating < minimumHeatRating)
+            return false;
+        Overheated.LOGGER.info("Heat");
+        //Make a list to store outputs eventually.
 
-        Overheated.LOGGER.info("Matching a chamber recipe");
-
-        //see if we have a good option for every ingredient
-        for (Ingredient item : inputs){
-            for (int slot = 0; slot < container.getContainerSize(); slot++){
-                if (item.test(container.getItem(slot))){
-                    //We found a match for this ingredient, so we can move on
-                    break;
+        List<ItemStack> recipeOutputItems = new ArrayList<>();
+        //Simulate it first, and then do it again if all goes well
+        for (boolean simulate : Iterate.trueAndFalse) {
+            //If we are doing a full simulate, we should not actually extract anything, so return on the second lap.
+            //Reaching this point on a full simulate mean that the recipe matches and we can return true
+            if (!simulate && fullSimulate) {
+                if (setTimer){
+                    //Set timer, this code shouldn't be activated if the recipe doesn't match
+                    Overheated.LOGGER.info("Timer Set");
+                    chamber.setTimer(ticksTaken + 1);
                 }
-                //Continue our search for a match
+                return true;
             }
-            //We found no match for this ingredient, return false
-            return false;
-        }
-        //We found matches for all ingredients, return true
-        return true;
+            //Get some information
+            int[] extractedItemsFromSlot = new int[availableItems.getSlots()];
+            List<Ingredient> ingredients = new LinkedList<>(getIngredients());
 
+            //Loop through each ingredient
+            Ingredients:
+            for (Ingredient ingredient : ingredients) {
+                //Loop through every slot for each ingredient
+                for (int slot = 0; slot < availableItems.getSlots(); slot++) {
+                    //If the checked slot has less or the same items as the extracted items from that slot, continue and check the next slot.
+                    //But only if simulating. If not simulating, see if the slot matches the ingredient.
+                    if (simulate && availableItems.getStackInSlot(slot).getCount() <= extractedItemsFromSlot[slot])
+                        continue;
+                    ItemStack extracted = availableItems.extractItem(slot, 1, true);
+                    //Item does not match, check next slot
+                    if (!ingredient.test(extracted))
+                        continue;
+                    if (!simulate)
+                        //ACTUALLY FOR REAL extract the item because we are not simulating
+                        availableItems.extractItem(slot, 1, false);
+                    //Mark an extracted item
+                    extractedItemsFromSlot[slot]++;
+                    //Check next ingredient
+                    continue Ingredients;
+                }
+
+                // something wasn't found, return false, recipe does not match
+                Overheated.LOGGER.info("Correct Items Not Found");
+                return false;
+            }
+
+            //If we reached this point on the simulate lap, the recipe is all good without considering fitting the outputs. So we need to add the outputs to the list
+            if (simulate) {
+                recipeOutputItems.addAll(getOutputs());
+            }
+
+            //The accepts outputs method will add the items if simulate is false, meaning this will add the items on the second lap and complete the recipe
+            if (!chamber.acceptOutputs(recipeOutputItems,simulate))
+                return false;
+            Overheated.LOGGER.info("Items Added");
+
+            if (!simulate){
+                //Add heat
+                chamber.addHeat(heatAdded);
+            }
+
+
+        }
+        if (setTimer){
+            //Set timer, this code shouldn't be activated if the recipe doesn't match
+            Overheated.LOGGER.info("Timer Set");
+            chamber.setTimer(ticksTaken + 1);
+        }
+
+        //Everything is good, recipe was executed if we're doing a full simulate, return true.
+        return true;
     }
 
     @Override
@@ -96,6 +172,8 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     private final float laserHeat;
     private final float heatAdded;
     private final int ticksTaken;
+    private final int minimumHeatRating;
+    private final Ingredient catalyst;
     private final NonNullList<Ingredient> inputs;
     private final NonNullList<ItemStack> outputs;
 
@@ -115,13 +193,18 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     public float getHeatAdded() {
         return heatAdded;
     }
+    public Ingredient getCatalyst(){
+        return catalyst;
+    }
 
-    public PressureChamberRecipe(ResourceLocation id, int steamPressure, float laserHeat, float heatAdded, int ticksTaken, NonNullList<Ingredient> inputs, NonNullList<ItemStack> outputs) {
+    public PressureChamberRecipe(ResourceLocation id, int steamPressure, float laserHeat, float heatAdded, int ticksTaken, int minimumHeatRating, Ingredient catalyst, NonNullList<Ingredient> inputs, NonNullList<ItemStack> outputs) {
         this.id = id;
         this.SteamPressure = steamPressure;
         this.laserHeat = laserHeat;
         this.heatAdded = heatAdded;
         this.ticksTaken = ticksTaken;
+        this.minimumHeatRating = minimumHeatRating;
+        this.catalyst = catalyst;
         this.inputs = inputs;
         this.outputs = outputs;
     }
@@ -147,11 +230,17 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                 outputs.set(i,Ingredient.fromJson(itemStacks.get(i)).getItems()[0]);
             }
 
+
+            int minHeatRate = SerializedRecipe.has("overheat") ? 3 : (SerializedRecipe.has("superheat") ? 2 : 0);
+
             return new PressureChamberRecipe(id,
                     GsonHelper.getAsInt(SerializedRecipe,"pressure"),
                     (SerializedRecipe.has("laser_heat") ? GsonHelper.getAsFloat(SerializedRecipe, "laser_heat") : 0),
                     GsonHelper.getAsFloat(SerializedRecipe,"heat_added"),
                     GsonHelper.getAsInt(SerializedRecipe,"ticks_taken"),
+                    minHeatRate,
+                    null,
+                    //Ingredient.fromJson(GsonHelper.getAsJsonObject(SerializedRecipe,"catalyst")),
                     inputs,
                     outputs);
 
@@ -167,6 +256,8 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             6     Laser Heat
             7     Added Heat
             8     Ticks Taken
+            9     Heat Rate
+            10    Catalyst
          */
         @Override
         public @Nullable PressureChamberRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
@@ -178,7 +269,8 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             for (int i = 0; i < outputs.size(); i++) {
                 outputs.set(i, buf.readItem());
             }
-            return new PressureChamberRecipe(id,buf.readInt(),buf.readFloat(),buf.readFloat(),buf.readInt(),inputs,outputs);
+            return new PressureChamberRecipe(id,buf.readInt(),buf.readFloat(),buf.readFloat(),buf.readInt(), buf.readInt(),null, //Ingredient.fromNetwork(buf)
+                    inputs,outputs);
         }
 
         @Override
@@ -194,6 +286,10 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             buf.writeFloat(recipe.laserHeat);
             buf.writeFloat(recipe.heatAdded);
             buf.writeInt(recipe.ticksTaken);
+            buf.writeInt(recipe.minimumHeatRating);
+            //recipe.getCatalyst().toNetwork(buf);
         }
     }
+
+
 }

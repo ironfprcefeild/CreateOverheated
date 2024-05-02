@@ -2,8 +2,14 @@
   "values": [
     "minecraft:copper_block",
     "minecraft:waxed_copper_block",
-    "coverheated:pressure_chamber_steam",
-    "coverheated:pressure_chamber_item",
-    "coverheated:pressure_chamber_core"
+    "coverheated:laser_film",
+    "coverheated:pressure_chamber_meter",
+    "coverheated:pressure_chamber_heat_sink",
+    "coverheated:pressure_chamber_core",
+    "create:mechanical_pump",
+    "create:fluid_pipe",
+    "create:encased_fluid_pipe",
+    "create:glass_fluid_pipe",
+    "create:smart_chute"
   ]
 }

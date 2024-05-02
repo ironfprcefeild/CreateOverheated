@@ -67,6 +67,7 @@ public class mirrorRegister {
             heat.collapseOverHeat(1);
             return incoming;
         });
+        registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));
     }
 
     public interface Reflector {

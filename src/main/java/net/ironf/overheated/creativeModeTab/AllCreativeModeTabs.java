@@ -132,8 +132,6 @@ public class AllCreativeModeTabs {
             //!!!!// Put some items before others
             Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = Map.of(
                     AllBlocks.SUPERHEAT_DIMMER,AllBlocks.OVERHEAT_DIMMER,
-                    AllBlocks.CHAMBER_CORE,AllBlocks.CHAMBER_ITEM,
-                    AllBlocks.CHAMBER_ITEM,AllBlocks.CHAMBER_STEAM,
                     AllBlocks.DIODE,AllBlocks.BLAZE_CRUCIBLE,
                     AllBlocks.TURBINE_CENTER, AllBlocks.TURBINE_END,
                     AllBlocks.TURBINE_END,AllBlocks.TURBINE_CENTER

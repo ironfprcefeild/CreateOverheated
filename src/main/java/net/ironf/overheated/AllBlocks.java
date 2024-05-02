@@ -4,7 +4,6 @@ import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
-import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
@@ -13,8 +12,6 @@ import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
-import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.item.ChamberItemBlock;
-import net.ironf.overheated.steamworks.blocks.pressureChamber.additions.steam.ChamberSteamBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
@@ -82,18 +79,14 @@ public class AllBlocks {
             .properties(p -> p)
             .simpleItem()
             .register();
-    public static final BlockEntry<ChamberSteamBlock> CHAMBER_STEAM = REGISTRATE
-            .block("pressure_chamber_steam", ChamberSteamBlock::new)
+    public static final BlockEntry<Block> CHAMBER_HEAT_SINK = REGISTRATE
+            .block("pressure_chamber_heat_sink", Block::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()
             .register();
-    public static final BlockEntry<ChamberItemBlock> CHAMBER_ITEM = REGISTRATE
-            .block("pressure_chamber_item", ChamberItemBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .simpleItem()
-            .register();
+
+
 
     //Impact Drill
     public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
@@ -144,6 +137,15 @@ public class AllBlocks {
             .properties(p -> p)
             .simpleItem()
             .register();
+
+    //Laser Film
+    public static final BlockEntry<Block> LASER_FILM = REGISTRATE
+            .block("laser_film", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
+
 
     //Anti-Laser Plating
     public static final BlockEntry<Block> ANTI_LASER_PLATING = REGISTRATE
