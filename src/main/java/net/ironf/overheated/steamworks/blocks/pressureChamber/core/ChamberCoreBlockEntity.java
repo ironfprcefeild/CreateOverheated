@@ -95,8 +95,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     //Add items to the chamber, or simulate it, returning true if it worked.
-    //Iteams are being consume dbut not removed
-    //TODO current bug ^^
     public boolean acceptOutputs(List<ItemStack> recipeOutputItems, boolean simulate) {
         //Loops through items tacks
         for (ItemStack itemStack : recipeOutputItems) {
@@ -115,6 +113,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     //The total heat coming from inputted lasers
     public float currentHeating = 0;
     public int currentHeatRating = 0;
+    public HeatData laserHeat = HeatData.empty();
     public int currentPressure = 0;
     public float currentAirflow = 0;
     public int laserTimer = 0;
@@ -124,6 +123,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
 
         //Burn through steam, if steam could not be transferred do not move valid timer. The method also updates current pressure
         boolean steamUsed = handleSteam();
+        steamUsed = true;
         //Validity Check & Start new recipe if needed
         if (validTimer-- <= 0 && steamUsed){
             Overheated.LOGGER.info("1");
@@ -135,6 +135,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                 }
             } else {
                 //Cancel recipe if invalid
+                Overheated.LOGGER.info("Recipe Canceled Chamber Invalid");
                 cancelRecipe();
             }
         } else if (!steamUsed){
@@ -148,13 +149,14 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         } else {
             currentHeatRating = 0;
             currentHeating = 0;
+            laserHeat = HeatData.empty();
         }
 
         //Handle Heat
         if (chamberHeat > 1024){
             causeExplode();
         }
-        chamberHeat = Math.min(chamberHeat - (currentAirflow / 256), 0);
+        chamberHeat = Math.max(chamberHeat - (currentAirflow / 256), 0);
         //Recipe Timer
 
         //1 indicates the recipe is done, so call finish recipe
@@ -173,14 +175,13 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     private void cancelRecipe() {
         recipeTimer = 0;
         currentRecipe = null;
-        Overheated.LOGGER.info("Recipe Canceled");
+
     }
 
     //Returns true if steam was transferable
     private boolean handleSteam(){
         currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
-        Overheated.LOGGER.info("Pressure" + currentPressure);
-        if (currentPressure >= 0 && InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1){
+        if (currentPressure >= 0 && InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() >= 1){
             InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
@@ -195,6 +196,8 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                 recipe -> {
                     ((PressureChamberRecipe) recipe).testRecipe(this, false, false);
                     currentRecipe = null;});
+        //Trigger another validity check, possible starting another recipe if the recipe delay is shorter than the validity check delay
+        validTimer = 0;
     }
 
     public ResourceLocation currentRecipe;
@@ -214,8 +217,10 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                 for (int z = -1; z < 2; z++) {
                     BlockPos lookAt = getBlockPos().offset(x, y, z);
                     BlockState state = level.getBlockState(lookAt);
-                    if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state))
+                    if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
+                        Overheated.LOGGER.info("Mismatch at: " + lookAt);
                         return false;
+                    }
                     if (Math.abs(x) + Math.abs(y) + Math.abs(z) == 1 && state == AllBlocks.CHAMBER_HEAT_SINK.getDefaultState()){
                         for (Direction d : Iterate.directions){
                             currentAirflow += getHeatSunkenFrom(lookAt.relative(d),level);
@@ -230,7 +235,8 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
 
     private void causeExplode() {
         BlockPos pos = getBlockPos();
-        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),15f, Level.ExplosionInteraction.TNT);
+        currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
+        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),4f * currentPressure, Level.ExplosionInteraction.TNT);
     }
 
     public void addHeat(float heatAdded) {
@@ -241,7 +247,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
 
-    //TODO make these methods work
     public float getHeating() {
         return currentHeating;
     }
@@ -250,10 +255,15 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         return currentHeatRating;
     }
 
+    public HeatData getLaserHeat() {
+        return laserHeat;
+    }
+
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
         currentHeatRating = beamHeat.OverHeat >= 1 ? 3 : (beamHeat.SuperHeat >= 1 ? 2 : 1);
         currentHeating = beamHeat.getTotalHeat();
+        laserHeat = beamHeat;
         laserTimer = 60;
         return false;
     }
@@ -278,6 +288,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         laserTimer = tag.getInt("laserTimer");
         currentAirflow = tag.getFloat("currentAirflow");
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
+        laserHeat = HeatData.readTag(tag,"laserHeat");
     }
 
 
@@ -293,6 +304,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         tag.putInt("heatRating",currentHeatRating);
         tag.putFloat("currentAirflow",currentAirflow);
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
+        HeatData.writeTag(tag,laserHeat,"laserHeat");
 
     }
 }

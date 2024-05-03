@@ -12,7 +12,9 @@
       "count": 4
     }
   ],
-  "heat_added": 256,
+  "heat_added": 32,
   "ticks_taken": 20,
-  "pressure": 2
+  "pressure": 2,
+  "superheat": 3,
+  "laser_heat": 3
 }

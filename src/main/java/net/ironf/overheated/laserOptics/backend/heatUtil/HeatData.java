@@ -98,6 +98,11 @@ public class HeatData {
         collapseOverHeat();
         collapseSuperHeat();
     }
+
+    //Gets the amount of heat of a level greater than or equal to the specified level, not considering collapsing
+    public float getHeatOfLevel(int heatLevel){
+        return  (heatLevel == 1 ? this.Heat + this.SuperHeat + this.OverHeat : (heatLevel == 2 ? this.SuperHeat + this.OverHeat : this.OverHeat));
+    }
     //Combines Heat, moving them up levels
 
     public void combineHeat(){
@@ -117,7 +122,10 @@ public class HeatData {
         combineSuperHeat();
     }
 
-    //Read Wrtie stuff
+    //Read Write stuff
+    public void writeTag(CompoundTag tag, String s){
+        HeatData.writeTag(tag,this,s);
+    }
     public static void writeTag(CompoundTag tag, HeatData write, String s){
         tag.putFloat(s +"hdheat",write.Heat);
         tag.putFloat(s +"hdsuperheat",write.SuperHeat);

@@ -44,9 +44,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             return false;
         Overheated.LOGGER.info("Steam");
         //Check if Heat is high enough
-        float heat = chamber.getHeating();
-        float heatRating = chamber.getHeatRating();
-        if (heat < laserHeat || heatRating < minimumHeatRating)
+        if (!(chamber.getLaserHeat().getHeatOfLevel(minimumHeatRating) >= laserHeat))
             return false;
         Overheated.LOGGER.info("Heat");
         //Make a list to store outputs eventually.
