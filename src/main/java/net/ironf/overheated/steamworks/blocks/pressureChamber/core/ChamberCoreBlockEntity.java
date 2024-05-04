@@ -122,14 +122,13 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     public void tick() {
 
         //Burn through steam, if steam could not be transferred do not move valid timer. The method also updates current pressure
-        boolean steamUsed = handleSteam();
-        steamUsed = true;
+        handleSteam();
         //Validity Check & Start new recipe if needed
-        if (validTimer-- <= 0 && steamUsed){
+        if (validTimer-- <= 0){
             Overheated.LOGGER.info("1");
             validTimer = 50;
             if (checkForValidity()) {
-                Overheated.LOGGER.info("2");
+                Overheated.LOGGER.info("2, reading pressure of " + currentPressure);
                 if (recipeTimer == 0) {
                     startNewRecipe();
                 }
@@ -138,9 +137,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                 Overheated.LOGGER.info("Recipe Canceled Chamber Invalid");
                 cancelRecipe();
             }
-        } else if (!steamUsed){
-            //Cancel recipe if no steam
-            cancelRecipe();
         }
 
         //Laser Check
@@ -153,7 +149,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         }
 
         //Handle Heat
-        if (chamberHeat > 1024){
+        if (chamberHeat * Math.max(0,currentPressure-1) > 2048){
             causeExplode();
         }
         chamberHeat = Math.max(chamberHeat - (currentAirflow / 256), 0);
@@ -179,13 +175,9 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     //Returns true if steam was transferable
-    private boolean handleSteam(){
+    private void handleSteam(){
         currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
-        if (currentPressure >= 0 && InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() >= 1){
-            InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
-            return true;
-        }
-        return false;
+        InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
     }
 
     private void finishRecipe() {
