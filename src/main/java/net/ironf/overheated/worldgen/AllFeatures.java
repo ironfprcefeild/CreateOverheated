@@ -14,6 +14,7 @@ public class AllFeatures {
     public static final RegistryObject<BedrockDepositFeature> morkite = REGISTRATE.depositFeature("morkite_deposit")
             .Frequency(2)
             .Size(10,20)
+            .BorderSize(3)
             .makeBlock(AllBlocks.ANTI_LASER_PLATING)
             .makeEncasedBlock(com.simibubi.create.AllBlocks.DEEPSLATE_ZINC_ORE).register();
 

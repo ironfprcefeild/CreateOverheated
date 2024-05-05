@@ -1,7 +1,6 @@
 package net.ironf.overheated.utility.registration;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
@@ -13,11 +12,11 @@ import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -38,7 +37,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.GasMap;
 import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
 
@@ -229,6 +227,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         int frequency;
         int sizeLower;
         int sizeUpper;
+        int borderSize;
+        towerSizeGetter getter;
 
         OverheatedRegistrate Parent;
         public depositFeatureBuilder(String name, OverheatedRegistrate parent){
@@ -237,11 +237,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
             frequency = 64;
             sizeLower = 8;
             sizeUpper = 16;
-
+            borderSize = 3;
+            getter = (size, isTower, rand) -> isTower ?  rand.nextIntBetweenInclusive(size, size * 2) : rand.nextIntBetweenInclusive(size + 5, size * 3);
         }
 
-        public depositFeatureBuilder Frequency(int passChance){
-            frequency = passChance;
+        public depositFeatureBuilder Frequency(int chunksPerDeposit){
+            frequency = chunksPerDeposit;
             return this;
         }
 
@@ -251,8 +252,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-
-
         public depositFeatureBuilder makeBlock(BlockEntry<Block> b){
             Block = b;
             return this;
@@ -261,11 +260,26 @@ public class OverheatedRegistrate extends CreateRegistrate {
             EncasedBlock = b;
             return this;
         }
+
+        public depositFeatureBuilder BorderSize(int BorderSize){
+            this.borderSize = BorderSize;
+            return this;
+        }
+
+        //The function is a functionalInterface which takes in the current rand source and size of a generated deposit and returns a number for how tall a pillar
+        //Above that deposit (made of the encased block) should be. It should be random,
+        public depositFeatureBuilder TowerSizeGenerator(towerSizeGetter function){
+            this.getter = function;
+            return this;
+        }
+
         public RegistryObject<BedrockDepositFeature> register(){
-            return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency,Block, EncasedBlock));
+            return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, getter, borderSize, Block, EncasedBlock));
         }
 
     }
 
-
+    public interface towerSizeGetter{
+        int get(int size, boolean isEdgeTower, RandomSource rand);
+    }
 }
