@@ -9,6 +9,7 @@ import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
+import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -221,9 +222,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     public static class depositFeatureBuilder {
         String Name;
-        BlockEntry<Block> Block;
+        BlockEntry<? extends Block> Block;
 
-        BlockEntry<Block> EncasedBlock;
+        BlockEntry<? extends Block> EncasedBlock;
         int frequency;
         int sizeLower;
         int sizeUpper;
@@ -252,11 +253,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public depositFeatureBuilder makeBlock(BlockEntry<Block> b){
+        public depositFeatureBuilder makeBlock(BlockEntry<? extends Block> b){
             Block = b;
             return this;
         }
-        public depositFeatureBuilder makeEncasedBlock(BlockEntry<Block> b){
+        public depositFeatureBuilder makeEncasedBlock(BlockEntry<? extends Block> b){
             EncasedBlock = b;
             return this;
         }
@@ -281,5 +282,68 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     public interface towerSizeGetter{
         int get(int size, boolean isEdgeTower, RandomSource rand);
+    }
+
+    ///Deposits
+
+    public saltCaveFeatureBuilder saltCaveFeature(String name){
+        return new saltCaveFeatureBuilder(name, this);
+    }
+
+    public static class saltCaveFeatureBuilder {
+        String Name;
+        BlockEntry<? extends Block> Block;
+        BlockEntry<? extends Block> CrystalBlock;
+        int frequency;
+        int sizeLower;
+        int sizeUpper;
+        int shellHeight;
+
+        float crystalFrequency;
+        OverheatedRegistrate Parent;
+        public saltCaveFeatureBuilder(String name, OverheatedRegistrate parent){
+            Name = name;
+            Parent = parent;
+            frequency = 64;
+            sizeLower = 40;
+            sizeUpper = 50;
+            crystalFrequency = 0.25f;
+            shellHeight = 4;
+        }
+
+        public saltCaveFeatureBuilder Frequency(int chunksPerDeposit){
+            frequency = chunksPerDeposit;
+            return this;
+        }
+
+        public saltCaveFeatureBuilder Size(int lowerBound, int upperBound){
+            sizeLower = lowerBound;
+            sizeUpper = upperBound;
+            return this;
+        }
+
+        public saltCaveFeatureBuilder makeShellBlock(BlockEntry<? extends Block> b){
+            Block = b;
+            return this;
+        }
+        public saltCaveFeatureBuilder makeCrystalBlock(BlockEntry<? extends Block> b){
+            CrystalBlock = b;
+            return this;
+        }
+
+        public saltCaveFeatureBuilder shellHeight(int shellHeight){
+            this.shellHeight = shellHeight;
+            return this;
+        }
+
+        public saltCaveFeatureBuilder crystalFrequency(int frequency){
+            this.crystalFrequency = frequency;
+            return this;
+        }
+
+        public RegistryObject<SaltCaveFeature> register(){
+            return FEATURES.register(Name,() -> new SaltCaveFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, crystalFrequency, shellHeight, CrystalBlock, Block));
+        }
+
     }
 }
