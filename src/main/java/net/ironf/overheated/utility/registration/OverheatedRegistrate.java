@@ -298,6 +298,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         int sizeLower;
         int sizeUpper;
         int shellHeight;
+        int crystalSizeLower;
+        int crystalSizeUpper;
 
         float crystalFrequency;
         OverheatedRegistrate Parent;
@@ -309,6 +311,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
             sizeUpper = 50;
             crystalFrequency = 0.25f;
             shellHeight = 4;
+            crystalSizeLower = 3;
+            crystalSizeUpper = 10;
         }
 
         public saltCaveFeatureBuilder Frequency(int chunksPerDeposit){
@@ -332,17 +336,23 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
         public saltCaveFeatureBuilder shellHeight(int shellHeight){
-            this.shellHeight = shellHeight;
+            this.shellHeight = (int) (double) (shellHeight / 2);
             return this;
         }
 
-        public saltCaveFeatureBuilder crystalFrequency(int frequency){
+        public saltCaveFeatureBuilder crystalFrequency(float frequency){
             this.crystalFrequency = frequency;
             return this;
         }
 
+        public saltCaveFeatureBuilder crystalSizes(int lower, int upper){
+            this.crystalSizeUpper = upper;
+            this.crystalSizeLower = lower;
+            return this;
+        }
+
         public RegistryObject<SaltCaveFeature> register(){
-            return FEATURES.register(Name,() -> new SaltCaveFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, crystalFrequency, shellHeight, CrystalBlock, Block));
+            return FEATURES.register(Name,() -> new SaltCaveFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, crystalFrequency, shellHeight, crystalSizeUpper, crystalSizeLower, CrystalBlock, Block));
         }
 
     }

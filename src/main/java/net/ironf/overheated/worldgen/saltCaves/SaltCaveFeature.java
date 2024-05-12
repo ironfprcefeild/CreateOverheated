@@ -18,13 +18,15 @@ import java.util.ArrayList;
 
 public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
 
-    public SaltCaveFeature(Codec<NoneFeatureConfiguration> codec, int sizeLower, int sizeUpper, int frequency, float crystalFrequency, int shellHeight, BlockEntry<? extends Block> crystalBlock, BlockEntry<? extends Block> shellBlock) {
+    public SaltCaveFeature(Codec<NoneFeatureConfiguration> codec, int sizeLower, int sizeUpper, int frequency, float crystalFrequency, int shellHeight, int crystalSizeUpper, int crystalSizeLower, BlockEntry<? extends Block> crystalBlock, BlockEntry<? extends Block> shellBlock) {
         super(codec);
         this.sizeLower = sizeLower;
         this.sizeUpper = sizeUpper;
         this.frequency = frequency;
         this.crystalFrequency = crystalFrequency;
         this.shellHeight = shellHeight;
+        this.crystalSizeUpper = crystalSizeUpper;
+        this.crystalSizeLower = crystalSizeLower;
         this.crystalBlock = crystalBlock;
         this.shellBlock = shellBlock;
     }
@@ -34,6 +36,8 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
     public final int frequency;
     public final float crystalFrequency;
     public final int shellHeight;
+    public final int crystalSizeUpper;
+    public final int crystalSizeLower;
 
     public final BlockEntry<? extends Block> crystalBlock;
     public final BlockEntry<? extends Block> shellBlock;
@@ -64,18 +68,14 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
             for(int i = 0; i < size; i++) {
                 //Add Blocks
                 level.setBlock(pos, shellBlock.getDefaultState(), 2);
-                if (rand.nextFloat() < crystalFrequency){
-                    crystalOrigins.add(pos);
-                }
                 BlockPos upperBlock = pos.relative(Direction.UP,shellHeight*2 - 1);
                 level.setBlock(upperBlock,shellBlock.getDefaultState(),2);
-                if (rand.nextFloat() < crystalFrequency){
-                    crystalOrigins.add(pos);
-                }
+                crystalOrigins.add(pos);
+                crystalOrigins.add(upperBlock);
 
                 //Carve
                 BlockPos upTower = pos;
-                for (int u = (shellHeight -1) * 2 + 1; u > 0; u--){
+                for (int u = (shellHeight -1) * 2; u > 0; u--){
                     upTower = upTower.above();
                     level.setBlock(upTower, Blocks.AIR.defaultBlockState(),2);
                 }
@@ -100,20 +100,14 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
                     //Add Blocks
                     BlockPos lowerBlock = bPos.relative(Direction.UP,o);
                     level.setBlock(lowerBlock, shellBlock.getDefaultState(), 2);
-                    if (rand.nextFloat() < crystalFrequency){
-                        crystalOrigins.add(lowerBlock);
-                    }
-
-
                     BlockPos upperBlock = bPos.relative(Direction.UP,shellHeight*2).relative(Direction.DOWN,o + 1);
                     level.setBlock(upperBlock,shellBlock.getDefaultState(),2);
-                    if (rand.nextFloat() < crystalFrequency){
-                        crystalOrigins.add(upperBlock);
-                    }
+                    crystalOrigins.add(lowerBlock);
+                    crystalOrigins.add(upperBlock);
 
                     //Carve
                     BlockPos upTower = lowerBlock;
-                    for (int u = (shellHeight-o) * 2 - 1; u > 0; u--){
+                    for (int u = (shellHeight-o-1) * 2; u > 0; u--){
                         upTower = upTower.above();
                         level.setBlock(upTower, Blocks.AIR.defaultBlockState(),2);
                     }
@@ -123,14 +117,38 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
                     for (Direction d : Iterate.horizontalDirections) {
                         nextBlocks.add(bPos.relative(d));
                     }
-                    nextBlocks.removeAll(metBlocks);
                 }
+                nextBlocks.removeAll(metBlocks);
                 currentBlocks = nextBlocks;
                 nextBlocks = new ArrayList<>();
             }
 
 
-            //Add Crystals
+            ////Add Crystals
+
+            //Find Sprout-able Blocks
+            ArrayList<vectorPos> crystalSprouts = new ArrayList<>();
+            for (BlockPos crystal : crystalOrigins){
+                for (Direction d : Iterate.directions){
+                    crystalSprouts.add(new vectorPos(crystal,d));
+                }
+            }
+
+            //Add crystals
+            float startingSize = crystalSprouts.size();
+            float addedCrystals = 0f;
+            while (crystalFrequency > (addedCrystals/startingSize)){
+                vectorPos currentCrystal = crystalSprouts.get(rand.nextIntBetweenInclusive(0,crystalSprouts.size() - 1));
+                BlockPos crystalTower = currentCrystal.pos;
+                for (int u = rand.nextIntBetweenInclusive(crystalSizeLower, crystalSizeUpper); u > 0; u--){
+                    crystalTower = crystalTower.relative(currentCrystal.direction);
+                    if (!level.getBlockState(crystalTower).isAir()){
+                        break;
+                    }
+                    level.setBlock(crystalTower, crystalBlock.getDefaultState(),2);
+                }
+                addedCrystals++;
+            }
 
             return true;
         } else {
@@ -138,6 +156,14 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
         }
     }
 
+    public static class vectorPos{
+        public BlockPos pos;
+        public Direction direction;
+        public vectorPos(BlockPos pos, Direction direction){
+            this.pos = pos;
+            this.direction =direction;
+        }
+    }
 
 
 }

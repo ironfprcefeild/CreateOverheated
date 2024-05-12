@@ -26,9 +26,11 @@ public class AllFeatures {
     public static final RegistryObject<SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
             .Frequency(2)
             .Size(40,50)
-            .shellHeight(6)
+            .shellHeight(12)
             .makeCrystalBlock(com.simibubi.create.AllBlocks.RAW_ZINC_BLOCK)
             .makeShellBlock(com.simibubi.create.AllBlocks.ROSE_QUARTZ_BLOCK)
+            .crystalFrequency(0.1f)
+            .crystalSizes(3,10)
             .register();
 
 }
