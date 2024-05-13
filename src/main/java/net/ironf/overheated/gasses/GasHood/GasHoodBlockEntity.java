@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -58,7 +59,7 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
                     return;
                 }
                 FluidTankBlockEntity tank = ((FluidTankBlockEntity) be).getControllerBE();
-                ForgeFlowingFluid.Flowing gas = RawGasMap.get(testedState).get();
+                Fluid gas = RawGasMap.get(testedState).get().getSource();
                 if (tank.getTankInventory().fill(new FluidStack(gas,1000), IFluidHandler.FluidAction.SIMULATE) != 1000){
                     return;
                 }

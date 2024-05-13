@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PressureHeaterBlock extends Block implements IBE<PressureHeaterBlockEntity>, IWrenchable {
+public class PressureHeaterBlock extends Block implements IBE<PressureHeaterBlockEntity> {
     public PressureHeaterBlock(Properties p) {
         super(p);
     }
@@ -24,9 +24,4 @@ public class PressureHeaterBlock extends Block implements IBE<PressureHeaterBloc
         return AllBlockEntities.PRESSURE_HEATER.get();
     }
 
-    @Override
-    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        ((PressureHeaterBlockEntity) context.getLevel().getBlockEntity(context.getClickedPos())).switchModes();
-        return IWrenchable.super.onWrenched(state, context);
-    }
 }

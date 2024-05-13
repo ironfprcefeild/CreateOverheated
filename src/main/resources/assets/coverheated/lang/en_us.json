@@ -64,6 +64,10 @@
   "coverheated.pressure_heater.mode.return": "Returning Cold Steam",
   "coverheated.pressure_heater.mode.change": "Wrench to Change Modes",
 
+  "coverheated.geothermal.heating.none":"Not above a Geothermal Vent",
+  "coverheated.geothermal.heating.heated":"Providing Heated Steam",
+  "coverheated.geothermal.heating.superheated":"Providing Superheated Steam",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",
@@ -76,4 +80,6 @@
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
   "coverheated.chamber.meter.no_chamber": "This Meter is not associated with any Pressure Chamber"
+
+
 }

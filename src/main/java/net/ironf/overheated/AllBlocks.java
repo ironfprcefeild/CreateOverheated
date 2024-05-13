@@ -10,6 +10,7 @@ import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
+import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
@@ -17,6 +18,7 @@ import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -192,6 +194,25 @@ public class AllBlocks {
             .simpleItem()
             .register();
 
+    //Geothermal Vents
+    public static final BlockEntry<Block> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<Block> SUPERHEATED_VENT = REGISTRATE.block("superheated_geothermal_vent", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE
+            .block("geothermal_interface", GeothermalInterfaceBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .register();
 
 
     public static void register(){

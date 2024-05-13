@@ -10,6 +10,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
+import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
@@ -86,6 +87,11 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.GAS_HOOD)
             .register();
 
+    //Geothermal Interface
+    public static final BlockEntityEntry<GeothermalInterfaceBlockEntity> GEOTHERMAL_INTERFACE = REGISTRATE
+            .blockEntity("geothermal_interface", GeothermalInterfaceBlockEntity::new)
+            .validBlocks(AllBlocks.GEOTHERMAL_INTERFACE)
+            .register();
     //Pressure Heater
     public static final BlockEntityEntry<PressureHeaterBlockEntity> PRESSURE_HEATER = REGISTRATE
             .blockEntity("pressure_heater", PressureHeaterBlockEntity::new)
