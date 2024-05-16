@@ -91,6 +91,13 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
 
     public IFluidTank getTank(Direction in){
         BlockEntity be = level.getBlockEntity(getBlockPos().relative(in));
+        if (be instanceof  FluidTankBlockEntity){
+            FluidTankBlockEntity tank = ((FluidTankBlockEntity) be);
+            if (tank.getControllerBE() != null){
+                return tank.getControllerBE().getTankInventory();
+            }
+            return null;
+        }
         return be instanceof FluidTankBlockEntity ? ((FluidTankBlockEntity) be).getControllerBE().getTankInventory() : null;
     }
 

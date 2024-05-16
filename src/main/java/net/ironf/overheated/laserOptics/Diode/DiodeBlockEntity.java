@@ -142,7 +142,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                             //This isnt a laser absorber or a mirror, so we can do normal block stuff
                             //We are at a normal block, so lets break it!
                             breakingCounter = (breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
-                            double counterNeeded = hitState.getBlock().defaultDestroyTime() * 2.5;
+                            double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
                             if (counterNeeded < breakingCounter) {
                                 level.destroyBlock(continueAt,true);
                                 breakingCounter = breakingCounter - counterNeeded;
