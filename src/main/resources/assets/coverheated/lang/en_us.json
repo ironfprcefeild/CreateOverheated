@@ -79,7 +79,10 @@
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
-  "coverheated.chamber.meter.no_chamber": "This Meter is not associated with any Pressure Chamber"
+  "coverheated.chamber.meter.no_chamber": "This Meter is not associated with any Pressure Chamber",
 
+  "coverheated.jei.cooling.recipe_category": "Cooling",
+  "coverheated.jei.cooling.quality": "Quality",
+  "coverheated.jei.cooling.power": "Power"
 
 }

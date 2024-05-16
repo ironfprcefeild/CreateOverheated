@@ -13,6 +13,7 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -93,6 +94,8 @@ public class Overheated
             // Some client setup code
 
         }
+
+
     }
 
 }
