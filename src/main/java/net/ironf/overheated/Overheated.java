@@ -12,6 +12,7 @@ import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,8 +49,8 @@ public class Overheated
         AllTags.init();
         AllCreativeModeTabs.register(modEventBus);
         AllFluids.register();
-        AllItems.register();
         AllBlocks.register();
+        AllItems.register();
         AllBlockEntities.register();
         AllRecipes.register(modEventBus);
         AllFeatures.register();
@@ -57,9 +58,6 @@ public class Overheated
 
     }
 
-    public static void postRegisterSetup(){
-
-    }
 
 
     public static void init(final FMLCommonSetupEvent event)
@@ -97,5 +95,10 @@ public class Overheated
 
 
     }
+
+    public static ResourceLocation asResource(String path) {
+        return new ResourceLocation(MODID, path);
+    }
+
 
 }

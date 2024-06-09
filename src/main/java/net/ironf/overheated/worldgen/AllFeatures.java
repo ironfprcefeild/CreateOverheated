@@ -24,11 +24,11 @@ public class AllFeatures {
             .makeEncasedBlock(com.simibubi.create.AllBlocks.DEEPSLATE_ZINC_ORE).register();
 
     public static final RegistryObject<SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
-            .Frequency(2)
+            .Frequency(128)
             .Size(40,50)
             .shellHeight(12)
-            .makeCrystalBlock(com.simibubi.create.AllBlocks.RAW_ZINC_BLOCK)
-            .makeShellBlock(com.simibubi.create.AllBlocks.ROSE_QUARTZ_BLOCK)
+            .makeCrystalBlock(AllBlocks.WHITE_SALT_CRYSTAL)
+            .makeShellBlock(AllBlocks.WHITE_SALT_BLOCK)
             .crystalFrequency(0.1f)
             .crystalSizes(3,10)
             .register();

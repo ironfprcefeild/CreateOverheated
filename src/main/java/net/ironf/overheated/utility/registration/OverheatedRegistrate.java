@@ -1,15 +1,25 @@
 package net.ironf.overheated.utility.registration;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.simibubi.create.AllFluids;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.builders.FluidBuilder;
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -32,12 +42,15 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static net.ironf.overheated.gasses.GasMapper.GasMap;
 import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
 
@@ -67,8 +80,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         String Name;
         OverheatedRegistrate Parent;
         NonNullFunction<ForgeFlowingFluid.Properties, T> Factory;
-
-
+        String blockTextureOver;
         int density;
 
         public gasEntry(String name, OverheatedRegistrate parent, NonNullFunction<ForgeFlowingFluid.Properties, T> factory){
@@ -76,6 +88,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             Parent = parent;
             Factory = factory;
             density = -1;
+            blockTextureOver = null;
             object(Name);
         }
 
@@ -84,70 +97,81 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
+        public gasEntry<T,GB> GasTextures(String location){
+            this.blockTextureOver = location;
+            return this;
+        }
+
+        public gasEntry<T,GB> basicTexturing(){
+            return this.GasTextures(Name);
+        }
 
 
         public FluidEntry<ForgeFlowingFluid.Flowing> register(RegistryObject<? extends  GasBlock> gasBlock){
             FluidBuilder.FluidTypeFactory fluidType = getFluidFactory(
                     gasBlock,
-                    p -> p.supportsBoating(false).viscosity(0).density(density));
+                    p -> p.supportsBoating(false).viscosity(0).density(density),
+                    blockTextureOver == null ? null : new ResourceLocation(Parent.getModid(),blockTextureOver));
             FluidEntry<ForgeFlowingFluid.Flowing> completed = Parent.fluid(Name, fluidType)
                     .properties(b -> b.supportsBoating(false).viscosity(0).density(density))
                     .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
                     .source(Factory)
                     .bucket()
                     .build()
+                    .block()
+                    .blockstate(blockTextureOver == null ? simpleCubeAll("block/" + Name) : simpleGasAll(blockTextureOver))
+                    .build()
                     .register();
             GasMap.put(gasBlock,completed);
             InvGasMap.put(completed,gasBlock);
             return completed;
         }
-        public FluidBuilder.FluidTypeFactory getFluidFactory(RegistryObject<? extends GasBlock> gasBlock, UnaryOperator<FluidType.Properties> operator) {
-            FluidBuilder.FluidTypeFactory factory =
-                    (FluidType.Properties properties, ResourceLocation Still_RL, ResourceLocation Flowing_RL) ->
-                    (new FluidType(operator.apply(FluidType.Properties.create())) {
-                        private final ResourceLocation stillTexture = Still_RL;
-                        private final ResourceLocation flowingTexture = Flowing_RL;
-                        public final RegistryObject<? extends GasBlock> createdBlock = gasBlock;
 
-                        @Override
-                        public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-                            return true;
-                        }
+        public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> simpleGasAll(String path) {
+            return (c, p) -> p.simpleBlock(c.get(), p.models().cubeAll(c.getName(), p.modLoc("gas/" + path)));
+        }
 
+        public FluidBuilder.FluidTypeFactory getFluidFactory(RegistryObject<? extends GasBlock> gasBlock, UnaryOperator<FluidType.Properties> operator, ResourceLocation overRL) {
+        FluidBuilder.FluidTypeFactory factory =
+                (FluidType.Properties properties, ResourceLocation Still_RL, ResourceLocation Flowing_RL) ->
+                (new FluidType(operator.apply(FluidType.Properties.create())) {
+                    private final ResourceLocation stillTexture = overRL == null ? Still_RL : overRL;
+                    private final ResourceLocation flowingTexture = overRL == null ? Flowing_RL : overRL;
+                    public final RegistryObject<? extends GasBlock> createdBlock = gasBlock;
 
+                    @Override
+                    public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
+                        return true;
+                    }
+                    @Override
+                    public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
+                        level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
+                        level.scheduleTick(pos,createdBlock.get(),2, TickPriority.LOW);
+                    }
+                    @Override
+                    public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
+                        return gasBlock.get().defaultBlockState();
+                    }
+                    @Override
+                    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                        consumer.accept(new IClientFluidTypeExtensions() {
+                            @Override
+                            public ResourceLocation getStillTexture() {
+                                return stillTexture;
+                            }
 
-                        @Override
-                        public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
-                            level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
-                            level.scheduleTick(pos,createdBlock.get(),2, TickPriority.LOW);
-                        }
+                            @Override
+                            public ResourceLocation getFlowingTexture() {
+                                return flowingTexture;
+                            }
 
-                        @Override
-                        public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
-                            return gasBlock.get().defaultBlockState();
-                        }
-
-
-                        @Override
-                        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                            consumer.accept(new IClientFluidTypeExtensions() {
-                                @Override
-                                public ResourceLocation getStillTexture() {
-                                    return stillTexture;
-                                }
-
-                                @Override
-                                public ResourceLocation getFlowingTexture() {
-                                    return flowingTexture;
-                                }
-
-                                @Override
-                                public ResourceLocation getOverlayTexture() {
-                                    return getFlowingTexture();
-                                }
-                            });
-                        }
-                    });
+                            @Override
+                            public ResourceLocation getOverlayTexture() {
+                                return getFlowingTexture();
+                            }
+                        });
+                    }
+                });
             return factory;
         }
     }
@@ -284,7 +308,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         int get(int size, boolean isEdgeTower, RandomSource rand);
     }
 
-    ///Deposits
+    ///Salt Caves
 
     public saltCaveFeatureBuilder saltCaveFeature(String name){
         return new saltCaveFeatureBuilder(name, this);
@@ -353,6 +377,124 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         public RegistryObject<SaltCaveFeature> register(){
             return FEATURES.register(Name,() -> new SaltCaveFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, crystalFrequency, shellHeight, crystalSizeUpper, crystalSizeLower, CrystalBlock, Block));
+        }
+
+    }
+
+    //Fluid Classes, theese are barley modified code from creates all fluids made to be more usable and less private
+    public static abstract class TintedFluidType extends FluidType {
+
+        protected static final int NO_TINT = 0xffffffff;
+        private ResourceLocation stillTexture;
+        private ResourceLocation flowingTexture;
+
+
+        public TintedFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+            super(properties);
+            this.stillTexture = stillTexture;
+            this.flowingTexture = flowingTexture;
+        }
+
+        @Override
+        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+            consumer.accept(new IClientFluidTypeExtensions() {
+
+                @Override
+                public ResourceLocation getStillTexture() {
+                    return stillTexture;
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture() {
+                    return flowingTexture;
+                }
+
+                @Override
+                public int getTintColor(FluidStack stack) {
+                    return TintedFluidType.this.getTintColor(stack);
+                }
+
+                @Override
+                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                    return TintedFluidType.this.getTintColor(state, getter, pos);
+                }
+
+                @Override
+                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                    Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
+                    return customFogColor == null ? fluidFogColor : customFogColor;
+                }
+
+                @Override
+                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
+                    float modifier = TintedFluidType.this.getFogDistanceModifier();
+                    float baseWaterFog = 96.0f;
+                    if (modifier != 1f) {
+                        RenderSystem.setShaderFogShape(FogShape.CYLINDER);
+                        RenderSystem.setShaderFogStart(-8);
+                        RenderSystem.setShaderFogEnd(baseWaterFog * modifier);
+                    }
+                }
+
+            });
+        }
+
+        protected abstract int getTintColor(FluidStack stack);
+
+        protected abstract int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos);
+
+        protected Vector3f getCustomFogColor() {
+            return null;
+        }
+
+        protected float getFogDistanceModifier() {
+            return 1f;
+        }
+
+    }
+
+    public static class SolidRenderedPlaceableFluidType extends TintedFluidType {
+
+        private Vector3f fogColor;
+        private Supplier<Float> fogDistance;
+
+        public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
+            return (p, s, f) -> {
+                SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, s, f);
+                fluidType.fogColor = new Color(fogColor, false).asVectorF();
+                fluidType.fogDistance = fogDistance;
+                return fluidType;
+            };
+        }
+
+        private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture,
+                                                ResourceLocation flowingTexture) {
+            super(properties, stillTexture, flowingTexture);
+        }
+
+        @Override
+        protected int getTintColor(FluidStack stack) {
+            return NO_TINT;
+        }
+
+        /*
+         * Removing alpha from tint prevents optifine from forcibly applying biome
+         * colors to modded fluids (this workaround only works for fluids in the solid
+         * render layer)
+         */
+        @Override
+        public int getTintColor(FluidState state, BlockAndTintGetter world, BlockPos pos) {
+            return 0x00ffffff;
+        }
+
+        @Override
+        protected Vector3f getCustomFogColor() {
+            return fogColor;
+        }
+
+        @Override
+        protected float getFogDistanceModifier() {
+            return fogDistance.get();
         }
 
     }
