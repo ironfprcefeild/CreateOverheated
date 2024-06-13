@@ -57,14 +57,12 @@ public class DiodeBlock extends KineticBlock implements IBE<DiodeBlockEntity>, I
 
     //Wrenchable
 
-    //Wrenching the diode will retest for clearance
+    //Wrenching the diode will retest for clearance or change modes
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        BlockEntity diode = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (diode.getType() == AllBlockEntities.DIODE.get()) {
-            if (!((DiodeBlockEntity) diode).hasClearance) {
-                ((DiodeBlockEntity) diode).testForClearance();
-            }
+        BlockEntity BE = context.getLevel().getBlockEntity(context.getClickedPos());
+        if (BE instanceof DiodeBlockEntity diode) {
+            diode.wrench();
             return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.FAIL;

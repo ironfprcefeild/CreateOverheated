@@ -34,14 +34,7 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
 
     }
 
-    public FluidTankBlockEntity getTank() {
-        BlockEntity be = level.getBlockEntity(worldPosition.relative(GasHoodBlock.getAttachedDirection(getBlockState()).getOpposite()));
-        if (be instanceof FluidTankBlockEntity){
-            return ((FluidTankBlockEntity) be).getControllerBE();
-        } else {
-            return null;
-        }
-    }
+
 
     public int timer = 10;
 

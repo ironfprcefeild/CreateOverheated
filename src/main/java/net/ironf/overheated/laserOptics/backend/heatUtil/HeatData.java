@@ -173,8 +173,8 @@ public class HeatData {
     public static void writeTag(CompoundTag tag, HeatData write, String s){
         tag.putFloat(s +"hdheat",write.Heat);
         tag.putFloat(s +"hdsuperheat",write.SuperHeat);
-        tag.putFloat(s+"hdoverheat",write.OverHeat);
-        tag.putFloat(s+"hdv",write.Volatility);
+        tag.putFloat(s +"hdoverheat",write.OverHeat);
+        tag.putFloat(s +"hdv",write.Volatility);
     }
 
     public static HeatData readTag(CompoundTag tag, String s){

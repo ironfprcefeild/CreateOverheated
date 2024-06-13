@@ -30,7 +30,9 @@
   "coverheated.diode.heat_limited_one": "This diode is spinning too slow, or has to low quality coolant",
   "coverheated.diode.heat_limited_two": "To fire all of its heat",
   "coverheated.diode.no_heat": "No Heat would be transferred by this laser, increase RPM or add Coolant",
-  "coverheated.diode.no_coolant": "This laser has no coolant and will not operate",
+  "coverheated.diode.no_coolant": "This diode has no coolant and will not operate",
+  "coverheated.diode.mode.relay": "Diode is adding heat to incoming laser, to exit relay mode, wrench the Diode",
+  "coverheated.diode.mode.normal": "Diode is generating a new laser, to enter relay mode, wrench the Diode",
 
   "coverheated.solar_panel.updating": "Updating In ",
   "coverheated.solar_panel.ticks": " Ticks",
