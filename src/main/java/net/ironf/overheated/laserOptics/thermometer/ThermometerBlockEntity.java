@@ -30,8 +30,8 @@ public class ThermometerBlockEntity extends SmartBlockEntity implements ILaserAb
     HeatData lastRead = HeatData.empty();
     int timer = 0;
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
-        lastRead = beamHeat;
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
+        lastRead = beamHeat.copyMe();
         timer = 20;
         return true;
     }

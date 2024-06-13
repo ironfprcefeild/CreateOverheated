@@ -252,7 +252,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
         currentHeatRating = beamHeat.OverHeat >= 1 ? 3 : (beamHeat.SuperHeat >= 1 ? 2 : 1);
         currentHeating = beamHeat.getTotalHeat();
         laserHeat = beamHeat;

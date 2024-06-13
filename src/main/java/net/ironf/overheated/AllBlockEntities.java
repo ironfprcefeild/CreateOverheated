@@ -7,6 +7,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
@@ -51,6 +52,12 @@ public class AllBlockEntities {
             .instance(() -> DiodeCogInstance::new)
             .renderer(() -> DiodeBlockEntityRenderer::new)
             .validBlocks(AllBlocks.DIODE)
+            .register();
+
+    //Split Mirror
+    public static final BlockEntityEntry<SplitMirrorBlockEntity> SPLIT_MIRROR = REGISTRATE
+            .blockEntity("split_mirror", SplitMirrorBlockEntity::new)
+            .validBlocks(AllBlocks.SPLIT_MIRROR)
             .register();
     //Thermometer
     public static final BlockEntityEntry<ThermometerBlockEntity> THERMOMETER = REGISTRATE

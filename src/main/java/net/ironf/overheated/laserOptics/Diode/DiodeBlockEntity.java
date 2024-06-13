@@ -117,13 +117,13 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             laserHeat.Volatility = Math.min(laserHeat.getTotalHeat(), LaserCoolingHandler.volatilityHandler.get(fluids.getFluid()));
             int range = (int) Math.ceil(laserHeat.Volatility + laserHeat.getTotalHeat());
             //Update recent heat
-            recentHeat = laserHeat;
-            //Propogate Laser
-            //16 Limits the lasers length, its also limited by the heat of the laser
+            recentHeat = laserHeat.copyMe();
+            //Propagate Laser
+            //32 Limits the lasers length, it's also limited by the heat of the laser
             Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
             BlockPos continueAt = getBlockPos();
             BlockPos currentOrigin = continueAt.relative(continueIn);
-            for (int t = 0; t < Math.min(16, range) + 16; t++) {
+            for (int t = 0; t < Math.min(32, range) + 16; t++) {
                 if (laserHeat.getTotalHeat() < 0.1) {
                     //Laser isout of heat, so we gotta jumpy away
                     break;
@@ -140,8 +140,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         //Dont do anything if a mirror, otherwise check for laser absorbers
                         BlockEntity hitBE = level.getBlockEntity(continueAt);
                         if (hitBE instanceof ILaserAbsorber) {
-                            if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat)) {
-                                //This is letting the laser contiune if absorb laser tells us too, otherwise we break
+                            if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,t)) {
+                                //This is letting the laser continue if absorb laser tells us too, otherwise we break
                                 break;
                             }
                         } else {
@@ -210,8 +210,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     public int[] hittingTimers = {0,0,0,0,0,0};
     public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
-        ILaserAbsorber.super.absorbLaser(incoming,beamHeat);
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
         if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
             hittingLasers[inputHelper.get(incoming)] = beamHeat;
             hittingTimers[inputHelper.get(incoming)] = 6;

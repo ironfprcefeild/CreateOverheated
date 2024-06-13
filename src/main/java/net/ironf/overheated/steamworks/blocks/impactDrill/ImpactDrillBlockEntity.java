@@ -164,7 +164,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
         currentHeating = Math.min(beamHeat.getTotalHeat(),16);
         laserTimer = 30;
         return false;

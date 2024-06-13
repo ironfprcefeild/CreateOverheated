@@ -10,6 +10,7 @@ import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
+import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
@@ -250,6 +251,15 @@ public class AllBlocks {
     //Mirrors
     public static final BlockEntry<mirrorBlock> BASIC_MIRROR = REGISTRATE
             .block("basic_mirror", mirrorBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .simpleItem()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+    public static final BlockEntry<SplitMirrorBlock> SPLIT_MIRROR = REGISTRATE
+            .block("split_mirror", SplitMirrorBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()

@@ -15,6 +15,9 @@ public class HeatData {
         this.Volatility = Volatility;
     }
 
+    public HeatData copyMe(){
+        return new HeatData(this.Heat,this.SuperHeat,this.OverHeat,this.Volatility);
+    }
     public static HeatData empty(){
         return new HeatData(0,0,0,0);
     }
@@ -50,14 +53,21 @@ public class HeatData {
     //Use methods return an int corresponding to heat level consumed
     //0 : none used, 1 : heat used, 2 : super heat used, 3: overheat used
     public int useHeat(){
-        if (this.Heat > 0){
+        return useHeat(1);
+    }
+    public int useHeat(float comparison){
+        if (this.Heat >= comparison){
             this.Heat--;
             return 1;
         }
         return 0;
     }
     public int useUpToSuperheat(){
-        if (this.SuperHeat > 0){
+        return useUpToSuperheat(1);
+    }
+
+    public int useUpToSuperheat(float comparison){
+        if (this.SuperHeat >= comparison){
             this.SuperHeat--;
             return 2;
         }
@@ -65,12 +75,20 @@ public class HeatData {
     }
 
     public int useUpToOverHeat(){
-        if (this.OverHeat > 0){
+        return useUpToOverHeat(1);
+    }
+
+    public int useUpToOverHeat(float comparison){
+        if (this.OverHeat >= comparison){
             this.OverHeat--;
             return 3;
         }
-        return useUpToSuperheat();
+        return useUpToSuperheat(comparison);
     }
+
+    //TODO make a cap heat method for use in the diode because the use up to methods are different
+
+
     //Theese methods collapse a heat level into the heat level below.
     public void collapseOverHeat() {
         this.SuperHeat = this.OverHeat * 4;
