@@ -27,6 +27,7 @@ import java.util.List;
 
 import static net.ironf.overheated.steamworks.AllSteamFluids.DISTILLED_WATER;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
 public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public GeothermalInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -34,6 +35,8 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
     }
 
     int timer = 75;
+    int SteamBuildup = 4;
+
     String heatingStatus = "none";
     @Override
     public void tick() {
@@ -46,11 +49,15 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
             boolean superHeated = below == AllBlocks.SUPERHEATED_VENT.getDefaultState();
             //Not above a superheated vent, check to make sure we are at least above a heated one
             if (!superHeated && below != AllBlocks.HEATED_VENT.getDefaultState()) {
-                Overheated.LOGGER.info("Not Heated");
                 return;
             }
             //Updates heating status,
             heatingStatus = superHeated ? "superheated" : "heated";
+            //Build up Steam
+            SteamBuildup += (superHeated ? 8 : 6);
+            if (SteamBuildup < 1000){
+                return;
+            }
             BlockPos above = getBlockPos().above();
             if (tank.getPrimaryHandler().getFluid().getFluid() == DISTILLED_WATER.get().getSource() && tank.getPrimaryHandler().getFluidAmount() >= 1000 && level.getBlockState(above) == Blocks.AIR.defaultBlockState()){
                 tank.getPrimaryHandler().drain(1000, IFluidHandler.FluidAction.EXECUTE);
@@ -108,6 +115,7 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         tooltip.add(addIndent(Component.translatable("coverheated.geothermal.heating." + heatingStatus).withStyle(ChatFormatting.RED)));
+        tooltip.add(addIndent(Component.translatable("coverheated.geothermal.steam_buildup").append(String.valueOf(SteamBuildup + "/1000")).withStyle(ChatFormatting.WHITE)));
         return true;
     }
 

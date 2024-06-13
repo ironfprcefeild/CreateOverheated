@@ -67,6 +67,7 @@
   "coverheated.geothermal.heating.none":"Not above a Geothermal Vent",
   "coverheated.geothermal.heating.heated":"Providing Heated Steam",
   "coverheated.geothermal.heating.superheated":"Providing Superheated Steam",
+  "coverheated.geothermal.steam_buildup": "Steam Buildup: ",
 
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
