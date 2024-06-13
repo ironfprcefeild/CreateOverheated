@@ -86,7 +86,6 @@ public class HeatData {
         return useUpToSuperheat(comparison);
     }
 
-    //TODO make a cap heat method for use in the diode because the use up to methods are different
 
 
     //Theese methods collapse a heat level into the heat level below.
