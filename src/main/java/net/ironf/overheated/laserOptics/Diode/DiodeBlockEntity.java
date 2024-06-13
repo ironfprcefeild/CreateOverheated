@@ -43,7 +43,7 @@ import java.util.Map;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
+public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, ILaserAbsorber {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         setLazyTickRate(5);
@@ -75,6 +75,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
 
         //Lower and reset timers for hitting lasers
+
         for (int i = 0; i != 6; i++){
             int t = hittingTimers[i];
             if (t != 0){
@@ -84,6 +85,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 }
             }
         }
+
+
     }
 
     public void fireLaser(){
@@ -96,12 +99,10 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         if (!fluids.isEmpty() && LaserCoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
             noCoolant = false;
             HeatData laserHeat = findHeat();
-            int heatCap = (int) Math.min(Math.abs(getSpeed()), LaserCoolingHandler.heatHandler.get(fluids.getFluid()));
+            float heatCap = Math.min(Math.abs(getSpeed()), LaserCoolingHandler.heatHandler.get(fluids.getFluid()));
             if (laserHeat.getTotalHeat() > heatCap) {
                 activeInefficiency = true;
-                while (laserHeat.getTotalHeat() > heatCap) {
-                    laserHeat.useUpToOverHeat();
-                }
+                laserHeat.capHeat(heatCap);
             } else {
                 activeInefficiency = false;
             }
@@ -113,7 +114,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 heatToLow = false;
             }
             //Set Volatility
-
             laserHeat.Volatility = Math.min(laserHeat.getTotalHeat(), LaserCoolingHandler.volatilityHandler.get(fluids.getFluid()));
             int range = (int) Math.ceil(laserHeat.Volatility + laserHeat.getTotalHeat());
             //Update recent heat
@@ -209,6 +209,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     public HeatData[] hittingLasers = {HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty()};
     public int[] hittingTimers = {0,0,0,0,0,0};
     public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
+
+
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
         if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
@@ -217,6 +219,8 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         }
         return false;
     }
+
+
 
 
 

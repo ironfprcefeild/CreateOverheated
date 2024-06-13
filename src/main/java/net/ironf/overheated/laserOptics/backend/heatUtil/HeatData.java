@@ -116,6 +116,33 @@ public class HeatData {
         collapseSuperHeat();
     }
 
+    public void capHeat(float cap){
+        float assignableHeat = Math.min(getTotalHeat(),cap);
+        HeatData original = copyMe();
+
+        float assignedOverHeats = 0;
+        while (assignedOverHeats <= original.OverHeat && assignableHeat >= 16){
+            assignableHeat = assignableHeat - 16;
+            assignedOverHeats++;
+        }
+        float assignedSuperHeats = 0;
+        while (assignedSuperHeats <= original.SuperHeat && assignableHeat >= 4){
+            assignableHeat = assignableHeat - 4;
+            assignedSuperHeats++;
+        }
+        float assignedHeats = 0;
+        while (assignedHeats <= original.Heat && assignableHeat >= 1){
+            assignableHeat = assignableHeat - 1;
+            assignedHeats++;
+        }
+
+        //Refactor heat data (also add in any remaining fractional parts)
+        this.OverHeat = assignedOverHeats;
+        this.SuperHeat = assignedSuperHeats;
+        this.Heat = assignedHeats + assignableHeat;
+
+    }
+
     //Gets the amount of heat of a level greater than or equal to the specified level, not considering collapsing
     public float getHeatOfLevel(int heatLevel){
         return  (heatLevel == 1 ? this.Heat + this.SuperHeat + this.OverHeat : (heatLevel == 2 ? this.SuperHeat + this.OverHeat : this.OverHeat));

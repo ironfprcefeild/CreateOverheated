@@ -1,5 +1,6 @@
 package net.ironf.overheated.laserOptics.mirrors.splitMirror;
 
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
@@ -28,20 +29,23 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
 
     }
 
+
     @Override
     public boolean absorbLaser(Direction incoming, HeatData beamHeat, int distance) {
         Direction imFacing = getBlockState().getValue(SplitMirrorBlock.FACING);
         //Laser not coming through input
-        if (imFacing != incoming.getOpposite()){
+        if (imFacing != incoming.getOpposite()) {
             return false;
         }
-        HeatData Heat = new HeatData(beamHeat.Heat / 2, beamHeat.SuperHeat / 2, beamHeat.OverHeat /2, beamHeat.Volatility / 2);
-        fireLaser(Heat.copyMe(),Direction.UP,0,distance / 2);
-        fireLaser(Heat.copyMe(),Direction.DOWN,1,distance / 2);
+        HeatData Heat = new HeatData(beamHeat.Heat / 2, beamHeat.SuperHeat / 2, beamHeat.OverHeat / 2, beamHeat.Volatility / 2);
+        fireLaser(Heat.copyMe(), Direction.UP, 0, distance / 2);
+        fireLaser(Heat.copyMe(), Direction.DOWN, 1, distance / 2);
+
         return false;
     }
 
     public double[] breakingCounters = {0,0};
+
     //Assumes all conditions of the diode are met
     public void fireLaser(HeatData laserHeat, Direction initialDirection, int usedCounter, int distancePenalty){
         //If heat is too low, break out

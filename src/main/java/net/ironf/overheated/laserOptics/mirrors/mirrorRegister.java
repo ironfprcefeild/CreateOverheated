@@ -60,11 +60,21 @@ public class mirrorRegister {
             return Direction.fromAxisAndDirection(findOtherAxis(incoming.getAxis(),facing.getAxis()),facing.getAxisDirection());
         });
         registerReflector(AllBlocks.SUPERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
-            heat.collapseSuperHeat(1);
+            if (heat.SuperHeat > 0 && heat.SuperHeat < 1){
+                heat.Heat = heat.SuperHeat * 4;
+                heat.SuperHeat = 0;
+            } else {
+                heat.collapseSuperHeat(1);
+            }
             return incoming;
         });
         registerReflector(AllBlocks.OVERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
-            heat.collapseOverHeat(1);
+            if (heat.OverHeat > 0 && heat.OverHeat < 1){
+                heat.SuperHeat = heat.OverHeat * 4;
+                heat.OverHeat = 0;
+            } else {
+                heat.collapseOverHeat(1);
+            }
             return incoming;
         });
         registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));
