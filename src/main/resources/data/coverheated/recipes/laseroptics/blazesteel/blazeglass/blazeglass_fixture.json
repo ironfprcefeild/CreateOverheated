@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#i#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "coverheated:blazeglass"
+    },
+    "i": {
+      "item": "create:electron_tube"
+    }
+  },
+  "result": {
+    "item": "coverheated:blazeglass_fixture",
+    "count": 1
+  }
+}

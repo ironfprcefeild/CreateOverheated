@@ -1,0 +1,22 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "superheated",
+  "ingredients": [
+    {
+      "item": "minecraft:honeycomb"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    },
+    {
+      "fluid": "minecraft:lava",
+      "amount": 200
+    }
+  ],
+  "results": [
+    {
+      "amount": 200,
+      "fluid": "coverheated:blaze_nectar"
+    }
+  ]
+}

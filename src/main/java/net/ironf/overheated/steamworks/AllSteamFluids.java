@@ -65,6 +65,7 @@ public class AllSteamFluids {
         String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1];
         return REGISTRATE.gas(name,GasFluidSource::new)
                 .GasTextures("steam")
+                .BucketTextures("steam")
                 .register(REGISTRATE.gasBlock(name)
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)

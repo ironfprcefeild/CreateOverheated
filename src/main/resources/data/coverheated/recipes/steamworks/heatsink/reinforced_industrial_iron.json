@@ -1,0 +1,16 @@
+{
+  "type": "create:item_application",
+  "ingredients": [
+    {
+      "item": "create:industrial_iron_block"
+    },
+    {
+      "item": "coverheated:industrial_sheet"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:reinforced_industrial_iron"
+    }
+  ]
+}

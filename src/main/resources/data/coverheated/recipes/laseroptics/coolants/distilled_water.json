@@ -4,6 +4,6 @@
     "fluid": "coverheated:distilled_water",
     "amount": 1
   },
-  "heat": 20,
-  "volatility": 5
+  "heat": 15,
+  "volatility": 15
 }

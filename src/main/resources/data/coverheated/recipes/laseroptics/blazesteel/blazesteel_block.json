@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "iii",
+        "iii",
+        "iii"
+    ],
+    "key": {
+        "i": {
+            "item": "coverheated:blazesteel_ingot"
+        }
+    },
+    "result": {
+        "item": "coverheated:blazesteel_block",
+        "count": 1
+    }
+}

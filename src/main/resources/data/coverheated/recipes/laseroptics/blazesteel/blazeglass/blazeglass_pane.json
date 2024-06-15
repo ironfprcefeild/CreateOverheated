@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "coverheated:blazeglass"
+    }
+  },
+  "result": {
+    "item": "coverheated:blazeglass_pane",
+    "count": 16
+  }
+}

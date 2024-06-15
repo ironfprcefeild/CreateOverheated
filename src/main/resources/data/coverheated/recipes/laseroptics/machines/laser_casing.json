@@ -1,0 +1,16 @@
+{
+  "type": "create:item_application",
+  "ingredients": [
+    {
+      "item": "coverheated:reinforced_industrial_iron"
+    },
+    {
+      "item": "coverheated:blazesteel_ingot"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:laser_casing"
+    }
+  ]
+}

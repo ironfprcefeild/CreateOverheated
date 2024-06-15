@@ -81,6 +81,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         OverheatedRegistrate Parent;
         NonNullFunction<ForgeFlowingFluid.Properties, T> Factory;
         String blockTextureOver;
+
+        String bucketTextureOver;
         int density;
 
         public gasEntry(String name, OverheatedRegistrate parent, NonNullFunction<ForgeFlowingFluid.Properties, T> factory){
@@ -101,8 +103,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
             this.blockTextureOver = location;
             return this;
         }
+        public gasEntry<T,GB> BucketTextures(String location){
+            this.bucketTextureOver = location;
+            return this;
+        }
 
         public gasEntry<T,GB> basicTexturing(){
+            this.BucketTextures(Name);
             return this.GasTextures(Name);
         }
 
@@ -117,10 +124,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
                     .source(Factory)
                     .bucket()
-                    .build()
+                        .model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(getModid(),bucketTextureOver + "_bucket")))
+                        .build()
                     .block()
-                    .blockstate(blockTextureOver == null ? simpleCubeAll("block/" + Name) : simpleGasAll(blockTextureOver))
-                    .build()
+                        .blockstate(blockTextureOver == null ? simpleCubeAll("block/" + Name) : simpleGasAll(blockTextureOver))
+                        .build()
                     .register();
             GasMap.put(gasBlock,completed);
             InvGasMap.put(completed,gasBlock);

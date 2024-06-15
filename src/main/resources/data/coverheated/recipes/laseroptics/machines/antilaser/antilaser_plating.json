@@ -1,0 +1,16 @@
+{
+  "type": "create:item_application",
+  "ingredients": [
+    {
+      "item": "coverheated:reinforced_industrial_iron"
+    },
+    {
+      "item": "coverheated:antilaser_plate"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:antilaser_plating"
+    }
+  ]
+}

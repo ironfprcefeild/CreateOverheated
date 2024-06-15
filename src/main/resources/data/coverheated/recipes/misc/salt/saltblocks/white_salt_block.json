@@ -1,0 +1,26 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:white_salt_block"
+    }
+  ],
+  "processingTime": 75,
+  "results": [
+    {
+      "chance": 0.35,
+      "item": "coverheated:white_halite",
+      "count": 1
+    },
+    {
+      "chance": 0.1,
+      "item": "coverheated:white_salt_crystal",
+      "count": 1
+    },
+    {
+      "chance": 0.25,
+      "item": "coverheated:table_salt",
+      "count": 1
+    }
+  ]
+}

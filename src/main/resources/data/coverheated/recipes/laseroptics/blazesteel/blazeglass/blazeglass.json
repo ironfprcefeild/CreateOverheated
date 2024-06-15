@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#i#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "i": {
+      "item": "coverheated:blazesteel_ingot"
+    }
+  },
+  "result": {
+    "item": "coverheated:blazeglass",
+    "count": 8
+  }
+}

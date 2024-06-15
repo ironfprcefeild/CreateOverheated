@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " f ",
+    "wct"
+  ],
+  "key": {
+    "f": {
+      "item": "coverheated:blazeglass_fixture"
+    },
+    "c": {
+      "item": "coverheated:laser_casing"
+    },
+    "w": {
+      "item": "create:cogwheel"
+    },
+    "t": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "result": {
+    "item": "coverheated:diode",
+    "count": 1
+  }
+}

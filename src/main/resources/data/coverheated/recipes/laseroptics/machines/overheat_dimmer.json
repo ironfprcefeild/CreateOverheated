@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "p p",
+    "cmc",
+    " m "
+  ],
+  "key": {
+    "m": {
+      "item": "coverheated:basic_mirror"
+    },
+    "c": {
+      "item": "coverheated:superheat_dimmer"
+    },
+    "p": {
+      "item": "coverheated:antilaser_plating"
+    }
+  },
+  "result": {
+    "item": "coverheated:overheat_dimmer",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    " f ",
+    " c "
+  ],
+  "key": {
+    "f": {
+      "item": "create:blaze_burner"
+    },
+    "c": {
+      "item": "coverheated:laser_casing"
+    }
+  },
+  "result": {
+    "item": "coverheated:blaze_crucible",
+    "count": 1
+  }
+}

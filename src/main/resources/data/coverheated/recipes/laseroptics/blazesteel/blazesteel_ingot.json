@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "coverheated:nihilite_ingot"
+    },
+    {
+      "amount": 250,
+      "fluid": "coverheated:blaze_nectar",
+      "nbt": {}
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:blazesteel_ingot"
+    }
+  ]
+}

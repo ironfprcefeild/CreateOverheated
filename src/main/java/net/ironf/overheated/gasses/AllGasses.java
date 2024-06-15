@@ -12,11 +12,13 @@ public class AllGasses {
     static {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
-
+    //TODO make proper texture for morkite and gasses instead of the placeholder in the resources right now
+    // (Morkite is using steam bucket as placeholder)
     //Will be used later, testing for now
     public static final FluidEntry<ForgeFlowingFluid.Flowing> morkite = REGISTRATE.gas("morkite",GasFluidSource::new)
             .Density(2)
-            .basicTexturing()
+            .BucketTextures("steam")
+            .GasTextures("steam")
             .register(REGISTRATE.gasBlock("morkite")
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)

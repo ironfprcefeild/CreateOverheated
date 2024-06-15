@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "coverheated:sturdy_sheet_block"
+    },
+    {
+      "item": "coverheated:blazeglass_fixture"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:antilaser_plate",
+      "count": 8
+    }
+  ]
+}

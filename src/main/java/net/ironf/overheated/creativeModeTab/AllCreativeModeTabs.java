@@ -8,6 +8,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.objects.*;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.minecraft.client.Minecraft;
@@ -103,8 +104,7 @@ public class AllCreativeModeTabs {
 
             //!!!!// Exclude Certain Items
             List<ItemProviderEntry<?>> simpleExclusions = List.of(
-
-
+                    AllItems.INCOMPLETE_INDUSTRIAL_SHEET
             );
 
             //!!!!// Exclude Certain Items by tag

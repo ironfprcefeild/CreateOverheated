@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " p ",
+    " c ",
+    " m "
+  ],
+  "key": {
+    "m": {
+      "item": "coverheated:basic_mirror"
+    },
+    "c": {
+      "item": "create:blaze_cake"
+    },
+    "p": {
+      "item": "coverheated:antilaser_plating"
+    }
+  },
+  "result": {
+    "item": "coverheated:superheat_dimmer",
+    "count": 1
+  }
+}

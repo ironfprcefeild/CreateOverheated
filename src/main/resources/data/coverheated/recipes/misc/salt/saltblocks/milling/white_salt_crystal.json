@@ -1,0 +1,21 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    {
+      "item": "coverheated:white_salt_crystal"
+    }
+  ],
+  "processingTime": 60,
+  "results": [
+    {
+      "chance": 0.5,
+      "item": "coverheated:white_halite",
+      "count": 2
+    },
+    {
+      "chance": 0.5,
+      "item": "coverheated:table_salt",
+      "count": 1
+    }
+  ]
+}
