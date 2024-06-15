@@ -17,8 +17,7 @@ public class AllGasses {
     //Will be used later, testing for now
     public static final FluidEntry<ForgeFlowingFluid.Flowing> morkite = REGISTRATE.gas("morkite",GasFluidSource::new)
             .Density(2)
-            .BucketTextures("steam")
-            .GasTextures("steam")
+            .overrideTexturing("steam")
             .register(REGISTRATE.gasBlock("morkite")
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)

@@ -1,20 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "# #",
-    "#I#",
-    "# #"
+    "   ",
+    " I ",
+    " # "
   ],
   "key": {
     "#": {
       "item": "coverheated:industrial_sheet"
     },
     "I": {
-      "item": "create:industrial_iron_block"
+      "item": "coverheated:reinforced_industrial_iron"
     }
   },
   "result": {
-    "item": "coverheated:heat_sink",
-    "count": 1
+    "item": "coverheated:gas_hood"
   }
 }

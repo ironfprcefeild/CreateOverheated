@@ -45,9 +45,6 @@ public class GasBlock extends Block {
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-
-
-
         Direction randomShift =
                 randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
                         ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
@@ -64,7 +61,7 @@ public class GasBlock extends Block {
         } else {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
-
-
     }
+
+
 }

@@ -19,7 +19,7 @@ public class GasHoodBlock extends Block implements IBE<GasHoodBlockEntity> {
 
 
     //Block State
-    public static final DirectionProperty FACING = BlockStateProperties.VERTICAL_DIRECTION;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {

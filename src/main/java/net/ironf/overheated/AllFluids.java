@@ -25,6 +25,10 @@ public class AllFluids {
                             () -> 1f / 8f * 2f))
                     .lang("Blaze Nectar")
                     .source(ForgeFlowingFluid.Source::new)
+                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
+                            .tickRate(15)
+                            .slopeFindDistance(3)
+                            .explosionResistance(100f))
                     .bucket()
                     .build()
                     .register();

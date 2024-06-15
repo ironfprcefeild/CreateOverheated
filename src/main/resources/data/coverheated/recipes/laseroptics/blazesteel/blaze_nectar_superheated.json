@@ -3,7 +3,7 @@
   "heatRequirement": "superheated",
   "ingredients": [
     {
-      "item": "minecraft:honeycomb"
+      "item": "minecraft:honey_bottle"
     },
     {
       "item": "minecraft:blaze_powder"

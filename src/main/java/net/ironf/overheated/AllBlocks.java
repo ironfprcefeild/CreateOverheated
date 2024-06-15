@@ -1,13 +1,8 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.AllItems;
-import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.AllTags;
-import com.simibubi.create.Create;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
-import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
-import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
@@ -26,7 +21,8 @@ import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.ironf.overheated.utility.data.GenericBlockStateGen;
-import net.minecraft.data.recipes.RecipeCategory;
+import net.ironf.overheated.utility.data.GenericDirectionalBlockStateGen;
+import net.ironf.overheated.utility.data.GenericSpunDirectionalBlockStateGen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -241,9 +237,9 @@ public class AllBlocks {
             .block("heat_sink", HeatSinkBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(BlockBehaviour.Properties::noOcclusion)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/heat_sink")::generate)
+            .blockstate(new GenericSpunDirectionalBlockStateGen((ctx, prov, state) -> "block/heat_sink")::generate)
             .defaultLoot()
             .register();
 
@@ -297,9 +293,9 @@ public class AllBlocks {
             .block("gas_hood", GasHoodBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new GenericDirectionalBlockStateGen((ctx, prov, state) -> "block/gas_hood")::generate)
             .defaultLoot()
             .register();
 

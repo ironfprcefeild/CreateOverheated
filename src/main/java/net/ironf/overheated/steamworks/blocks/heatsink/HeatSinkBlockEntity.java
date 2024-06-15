@@ -64,7 +64,7 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
 
     @Override
     public void update(float strength, Direction incoming) {
-        if (incoming.getAxis() == getBlockState().getValue(BlockStateProperties.AXIS)){
+        if (incoming.getAxis() == getBlockState().getValue(BlockStateProperties.FACING).getAxis()){
             sunken = 0;
             timer = 0;
             return;

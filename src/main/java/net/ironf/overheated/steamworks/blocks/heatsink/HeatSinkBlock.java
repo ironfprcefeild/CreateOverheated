@@ -19,16 +19,16 @@ public class HeatSinkBlock extends Block implements IBE<HeatSinkBlockEntity> {
     }
 
     //Block State
-    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(AXIS));
+        super.createBlockStateDefinition(pBuilder.add(FACING));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(AXIS, context.getNearestLookingDirection().getAxis());
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
     }
     //Block Entity
 

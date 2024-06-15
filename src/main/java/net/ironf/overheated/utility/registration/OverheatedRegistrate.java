@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
@@ -25,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -113,6 +115,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this.GasTextures(Name);
         }
 
+        public gasEntry<T,GB> overrideTexturing(String location){
+            this.BucketTextures(location);
+            return this.GasTextures(location);
+        }
+
 
         public FluidEntry<ForgeFlowingFluid.Flowing> register(RegistryObject<? extends  GasBlock> gasBlock){
             FluidBuilder.FluidTypeFactory fluidType = getFluidFactory(
@@ -124,11 +131,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
                     .source(Factory)
                     .bucket()
-                        .model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(getModid(),bucketTextureOver + "_bucket")))
+                        .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
+                        .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getModid(), "item/" + (bucketTextureOver == null ? Name : bucketTextureOver))))
                         .build()
-                    .block()
-                        .blockstate(blockTextureOver == null ? simpleCubeAll("block/" + Name) : simpleGasAll(blockTextureOver))
-                        .build()
+                    .defaultBlock()
                     .register();
             GasMap.put(gasBlock,completed);
             InvGasMap.put(completed,gasBlock);
@@ -208,6 +214,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         String Name;
         OverheatedRegistrate Parent;
 
+        String textureOver = null;
+
         Supplier<? extends T> altFactory;
         boolean useAlt;
         public int shiftChance;
@@ -230,6 +238,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
+        public gasBlockEntry<T> overideTexturing(String location){
+            this.textureOver = location;
+            return this;
+        }
         public RegistryObject<GasBlock> register(){
             return GAS_BLOCKS.register(
                     Name,
@@ -243,6 +255,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .noLootTable(),shiftChance,lowerTickDelay,upperTickDelay,direction)));
 
         }
+
     }
 
 
