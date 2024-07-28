@@ -1,7 +1,9 @@
 package net.ironf.overheated;
 
 import com.simibubi.create.AllTags;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
+import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
@@ -23,6 +25,7 @@ import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock
 import net.ironf.overheated.utility.data.GenericBlockStateGen;
 import net.ironf.overheated.utility.data.GenericDirectionalBlockStateGen;
 import net.ironf.overheated.utility.data.GenericSpunDirectionalBlockStateGen;
+import net.ironf.overheated.utility.registration.AllSpriteShifts;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -31,6 +34,7 @@ import net.minecraft.world.level.material.MapColor;
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static net.ironf.overheated.Overheated.REGISTRATE;
+import static net.ironf.overheated.utility.registration.BuilderTransformers.casing;
 
 public class AllBlocks {
 
@@ -45,6 +49,7 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.AMETHYST_BLOCK)
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
                             .requiresCorrectToolForDrops()
+                            .lightLevel((state) -> 2)
                             .sound(SoundType.AMETHYST))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("white_salt_crystal"))
@@ -68,7 +73,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> RED_SALT_CRYSTAL =
             REGISTRATE.block("red_salt_crystal", Block::new)
                     .initialProperties(() -> Blocks.AMETHYST_BLOCK)
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
+                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_RED)
+                            .lightLevel((state) -> 2)
                             .requiresCorrectToolForDrops()
                             .sound(SoundType.AMETHYST))
                     .transform(pickaxeOnly())
@@ -80,7 +86,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> RED_SALT_BLOCK =
             REGISTRATE.block("red_salt_block", Block::new)
                     .initialProperties(() -> Blocks.DEEPSLATE)
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
+                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_RED)
                             .requiresCorrectToolForDrops()
                             .sound(SoundType.DEEPSLATE))
                     .transform(pickaxeOnly())
@@ -92,7 +98,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> BLUE_SALT_CRYSTAL =
             REGISTRATE.block("blue_salt_crystal", Block::new)
                     .initialProperties(() -> Blocks.AMETHYST_BLOCK)
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
+                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
+                            .lightLevel((state) -> 2)
                             .requiresCorrectToolForDrops()
                             .sound(SoundType.AMETHYST))
                     .transform(pickaxeOnly())
@@ -104,7 +111,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> BLUE_SALT_BLOCK =
             REGISTRATE.block("blue_salt_block", Block::new)
                     .initialProperties(() -> Blocks.DEEPSLATE)
-                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
+                    .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                             .requiresCorrectToolForDrops()
                             .sound(SoundType.DEEPSLATE))
                     .transform(pickaxeOnly())
@@ -146,8 +153,9 @@ public class AllBlocks {
                     .blockstate(simpleCubeAll("blazesteel_block"))
                     .simpleItem()
                     .defaultLoot()
-                    .lang("Block Blazesteel")
+                    .lang("Block of Blazesteel")
                     .register();
+    //TODO make it render properly
     public static final BlockEntry<Block> BLAZEGLASS  =
             REGISTRATE.block("blazeglass", Block::new)
                     .initialProperties(() -> Blocks.GLASS)
@@ -172,11 +180,50 @@ public class AllBlocks {
 
     //TODO figure out how casings work, and add sprite shift stuff
     public static final BlockEntry<CasingBlock> LASER_CASING = REGISTRATE.block("laser_casing", CasingBlock::new)
-            .properties(p -> p.mapColor(MapColor.PODZOL))
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
-            //.transform(BuilderTransformers.casing(() -> AllSpriteShifts.ANDESITE_CASING))
+            .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK))
+            .transform(casing(() -> AllSpriteShifts.LASER_CASING))
             .register();
+    public static final BlockEntry<CasingBlock> PRESSURIZED_CASING = REGISTRATE.block("pressurized_casing", CasingBlock::new)
+            .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).sound(SoundType.COPPER))
+            .transform(casing(() -> AllSpriteShifts.PRESSURIZED_CASING))
+            .register();
+
+
+    //Nihilte Stuff
+    public static final BlockEntry<Block> NIHILITE_BLOCK =
+            REGISTRATE.block("nihilite_block", Block::new)
+                    .initialProperties(() -> Blocks.DIAMOND_BLOCK)
+                    .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.AMETHYST_CLUSTER))
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll("nihilite_block"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Block of Nihilite")
+                    .register();
+
+
+    public static final BlockEntry<Block> NIHILISTONE =
+            REGISTRATE.block("nihilistone", Block::new)
+                    .initialProperties(() -> Blocks.DIAMOND_BLOCK)
+                    .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.AMETHYST_CLUSTER))
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll("nihilistone"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Nihilistone")
+                    .register();
+    /*TODO Next steps:
+      -nihilite deposit and deposit block
+      -impacting recipe
+      -add particle and sfx to impact drill
+      -nihilite gas recipes
+      -nihilite liquid recipes
+
+     */
 
     ////Steam Works
     //Steam Vent
@@ -217,9 +264,8 @@ public class AllBlocks {
             .block("turbine_end", turbineEndBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .simpleItem()
+            .blockstate(new GenericDirectionalBlockStateGen((ctx,prov,state) -> "block/turbine_end")::generate)
             .defaultLoot()
             .register();
     //Condenser
@@ -274,7 +320,6 @@ public class AllBlocks {
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
-
             .defaultLoot()
             .register();
 
@@ -419,7 +464,17 @@ public class AllBlocks {
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .register();
 
-    //Geothermal Vents
+    public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE
+            .block("geothermal_interface", GeothermalInterfaceBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .register();
+
+    //Geothermal Vents and deposits
     public static final BlockEntry<Block> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", Block::new)
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
@@ -433,17 +488,13 @@ public class AllBlocks {
             .blockstate(simpleCubeAll("placeholder"))
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .register();
-
-    public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE
-            .block("geothermal_interface", GeothermalInterfaceBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+    public static final BlockEntry<Block> NIHILITE_DEPOSIT = REGISTRATE.block("nihilite_deposit", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .blockstate(simpleCubeAll("placeholder"))
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .defaultLoot()
-            .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
-
             .register();
+
 
     /////Everything Else
 

@@ -1,0 +1,18 @@
+{
+  "type": "create:splashing",
+  "ingredients": [
+    {
+      "item": "coverheated:crushed_nihilite"
+    }
+  ],
+  "results": [
+    {
+      "count": 9,
+      "item": "coverheated:nihilite_nugget"
+    },
+    {
+      "chance": 0.25,
+      "item": "minecraft:lapis_lazuli"
+    }
+  ]
+}

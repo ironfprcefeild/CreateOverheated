@@ -50,6 +50,10 @@ public class AllSteamFluids {
                     0x33B3FF,
                         () -> 1f / 8f * 2f))
                     .lang("Distilled Water")
+                    .fluidProperties(p -> p.levelDecreasePerBlock(5)
+                            .tickRate(20)
+                            .slopeFindDistance(6)
+                            .explosionResistance(10f))
                     .source(ForgeFlowingFluid.Source::new)
                     .bucket()
                     .build()

@@ -13,8 +13,12 @@ import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -133,9 +137,38 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
                         return;
                     currentTorque = currentTorque - recipe.getTorqueImpact();
                     level.setBlockAndUpdate(output, GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
+                    particles(output);
                 }
             }
         }
+    }
+
+    public void particles(BlockPos outputPos){
+        BlockPos mypos = getBlockPos();
+        RandomSource rand = level.random;
+
+        level.addParticle(ParticleTypes.EXPLOSION,
+                mypos.getX() + rand.nextDouble(),
+                mypos.getY() - 0.5 + rand.nextDouble(),
+                mypos.getZ() + rand.nextDouble(),
+                rand.nextDouble() * 0.04 - 0.02,
+                0.3,
+                rand.nextDouble() * 0.04 - 0.02);
+        level.addParticle(ParticleTypes.EXPLOSION,
+                mypos.getX() + rand.nextDouble() *2,
+                mypos.getY() - 0.5 + rand.nextDouble(),
+                mypos.getZ() + rand.nextDouble() *2,
+                rand.nextDouble() * 0.04 - 0.02,
+                0.3,
+                rand.nextDouble() * 0.04 - 0.02);
+        level.addParticle(ParticleTypes.SMOKE,
+                outputPos.getX() + rand.nextDouble() *2,
+                outputPos.getY() + 0.1 + rand.nextDouble(),
+                outputPos.getZ() + rand.nextDouble() *2,
+                rand.nextDouble() * 0.04 - 0.02,
+                -0.15,
+                rand.nextDouble() * 0.04 - 0.02);
+        level.playLocalSound(mypos, SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.BLOCKS,1.0f,1.0f,false);
     }
 
     //Returns valid gas output based on impact tubing, returns null if one was unable to be found

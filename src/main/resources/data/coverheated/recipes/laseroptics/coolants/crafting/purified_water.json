@@ -1,0 +1,24 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "coverheated:chlorine_crystal"
+    },
+    {
+      "amount": 250,
+      "fluid": "coverheated:distilled_water",
+      "nbt": {}
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:chlorine_crystal",
+      "chance": 0.25
+    },
+    {
+      "amount": 250,
+      "fluid": "coverheated:purified_water",
+      "nbt": {}
+    }
+  ]
+}

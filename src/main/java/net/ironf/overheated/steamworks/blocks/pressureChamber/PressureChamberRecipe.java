@@ -37,18 +37,14 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         IItemHandler availableItems = chamber.getInputItems();
         if (availableItems == null)
             return false;
-        Overheated.LOGGER.info("Items Found");
         //Check if pressure is high enough and enough steam is in the chamber
         int chamberPressure = chamber.getPressure();
         if (!(chamberPressure >= SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken)) {
-            Overheated.LOGGER.info("Pressure was not enough, Pressure was " + chamberPressure);
             return false;
         }
-        Overheated.LOGGER.info("Steam");
         //Check if Heat is high enough
         if (!(chamber.getLaserHeat().getHeatOfLevel(minimumHeatRating) >= laserHeat))
             return false;
-        Overheated.LOGGER.info("Heat");
         //Make a list to store outputs eventually.
 
         List<ItemStack> recipeOutputItems = new ArrayList<>();
@@ -59,7 +55,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             if (!simulate && fullSimulate) {
                 if (setTimer){
                     //Set timer, this code shouldn't be activated if the recipe doesn't match
-                    Overheated.LOGGER.info("Timer Set");
                     chamber.setTimer(ticksTaken + 1);
                 }
                 return true;
@@ -91,7 +86,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                 }
 
                 // something wasn't found, return false, recipe does not match
-                Overheated.LOGGER.info("Correct Items Not Found");
                 return false;
             }
 
@@ -103,7 +97,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             //The accepts outputs method will add the items if simulate is false, meaning this will add the items on the second lap and complete the recipe
             if (!chamber.acceptOutputs(recipeOutputItems,simulate))
                 return false;
-            Overheated.LOGGER.info("Items Added");
 
             if (!simulate){
                 //Add heat
@@ -114,7 +107,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         }
         if (setTimer){
             //Set timer, this code shouldn't be activated if the recipe doesn't match
-            Overheated.LOGGER.info("Timer Set");
             chamber.setTimer(ticksTaken + 1);
         }
 

@@ -23,14 +23,41 @@ public class AllFeatures {
             .makeBlock(AllBlocks.ANTI_LASER_PLATING)
             .makeEncasedBlock(com.simibubi.create.AllBlocks.DEEPSLATE_ZINC_ORE).register();
 
+    //Deposits
+    public static final RegistryObject<BedrockDepositFeature> nihilite = REGISTRATE.depositFeature("nihilite_deposit")
+            .Frequency(256)
+            .Size(10,20)
+            .BorderSize(4)
+            .makeBlock(AllBlocks.NIHILITE_DEPOSIT)
+            .makeEncasedBlock(AllBlocks.NIHILISTONE).register();
+
+    //Salt Caves
     public static final RegistryObject<SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
-            .Frequency(128)
-            .Size(40,50)
+            .Frequency(768)
+            .Size(40,60)
             .shellHeight(12)
             .makeCrystalBlock(AllBlocks.WHITE_SALT_CRYSTAL)
             .makeShellBlock(AllBlocks.WHITE_SALT_BLOCK)
             .crystalFrequency(0.1f)
-            .crystalSizes(3,10)
+            .crystalSizes(3,9)
+            .register();
+    public static final RegistryObject<SaltCaveFeature> redSaltCave = REGISTRATE.saltCaveFeature("red_salt_cave")
+            .Frequency(768)
+            .Size(40,60)
+            .shellHeight(12)
+            .makeCrystalBlock(AllBlocks.RED_SALT_CRYSTAL)
+            .makeShellBlock(AllBlocks.RED_SALT_BLOCK)
+            .crystalFrequency(0.1f)
+            .crystalSizes(3,9)
+            .register();
+    public static final RegistryObject<SaltCaveFeature> blueSaltCave = REGISTRATE.saltCaveFeature("blue_salt_cave")
+            .Frequency(768)
+            .Size(40,60)
+            .shellHeight(12)
+            .makeCrystalBlock(AllBlocks.BLUE_SALT_CRYSTAL)
+            .makeShellBlock(AllBlocks.BLUE_SALT_BLOCK)
+            .crystalFrequency(0.1f)
+            .crystalSizes(3,9)
             .register();
 
 }

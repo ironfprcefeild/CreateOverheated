@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "iii",
+    "iii"
+  ],
+  "key": {
+    "i": {
+      "item": "coverheated:nihilite_nugget"
+    }
+  },
+  "result": {
+    "item": "coverheated:nihilite_ingot",
+    "count": 1
+  }
+}

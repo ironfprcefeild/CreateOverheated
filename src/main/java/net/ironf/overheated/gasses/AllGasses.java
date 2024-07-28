@@ -24,6 +24,24 @@ public class AllGasses {
                     .tickDelays(5,8)
                     .register());
 
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> nihilite_gas = REGISTRATE.gas("nihilite_gas",GasFluidSource::new)
+            .Density(8)
+            .overrideTexturing("steam")
+            .register(REGISTRATE.gasBlock("nihilite_gas")
+                    .defaultFlow(Direction.DOWN)
+                    .shiftChance(2)
+                    .tickDelays(2,8)
+                    .register());
+
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> ammonia = REGISTRATE.gas("ammonia",GasFluidSource::new)
+            .Density(-3)
+            .overrideTexturing("steam")
+            .register(REGISTRATE.gasBlock("ammonia")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(5)
+                    .tickDelays(2,5)
+                    .register());
+
     public static void register(){
     }
 

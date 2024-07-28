@@ -3,8 +3,13 @@ package net.ironf.overheated.utility.registration;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.AllFluids;
+import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.decoration.encasing.CasingConnectivity;
+import com.simibubi.create.foundation.block.connected.CTModel;
+import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.Color;
+import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
@@ -21,11 +26,13 @@ import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -36,10 +43,13 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -48,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -83,7 +94,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         OverheatedRegistrate Parent;
         NonNullFunction<ForgeFlowingFluid.Properties, T> Factory;
         String blockTextureOver;
-
         String bucketTextureOver;
         int density;
 
@@ -132,9 +142,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .source(Factory)
                     .bucket()
                         .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
-                        .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getModid(), "item/" + (bucketTextureOver == null ? Name : bucketTextureOver))))
+                        .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getModid(), "item/" + (bucketTextureOver == null ? Name : bucketTextureOver) + "_bucket")))
                         .build()
-                    .defaultBlock()
+                    .block().blockstate(simpleCubeAll(blockTextureOver)).build()
                     .register();
             GasMap.put(gasBlock,completed);
             InvGasMap.put(completed,gasBlock);
@@ -518,5 +528,31 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return fogDistance.get();
         }
 
+    }
+
+
+    protected static void onClient(Supplier<Runnable> toRun) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, toRun);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static <T extends Block> void registerCasingConnectivity(T entry, BiConsumer<T, CasingConnectivity> consumer) {
+        consumer.accept(entry, CreateClient.CASING_CONNECTIVITY);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void registerBlockModel(Block entry, Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
+        CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(RegisteredObjects.getKeyOrThrow(entry), func.get());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void registerItemModel(Item entry, Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
+        CreateClient.MODEL_SWAPPER.getCustomItemModels().register(RegisteredObjects.getKeyOrThrow(entry), func.get());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
+        ConnectedTextureBehaviour behavior = behaviorSupplier.get();
+        CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(RegisteredObjects.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
     }
 }

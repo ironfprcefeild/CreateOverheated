@@ -1,0 +1,13 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "fluid": "coverheated:nihilite_gas",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "coverheated:liquid_nihilite",
+    "amount": 2
+  },
+  "minTemp": -20,
+  "addTemp": 200
+}

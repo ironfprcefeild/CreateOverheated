@@ -1,0 +1,19 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:nihilistone"
+    }
+  ],
+  "processingTime": 350,
+  "results": [
+    {
+      "chance": 0.05,
+      "item": "coverheated:crushed_nihilite"
+    },
+    {
+      "chance": 0.1,
+      "item": "coverheated:nihilite_nugget"
+    }
+  ]
+}

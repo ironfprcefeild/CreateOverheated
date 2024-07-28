@@ -1,6 +1,7 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.CreateClient;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
@@ -19,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -54,6 +56,8 @@ public class Overheated
         AllBlockEntities.register();
         AllRecipes.register(modEventBus);
         AllFeatures.register();
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
 
 
     }

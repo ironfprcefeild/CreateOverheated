@@ -1,0 +1,11 @@
+{
+  "type": "coverheated:impact_drilling",
+  "input": {
+      "item": "coverheated:nihilite_deposit"
+    },
+  "output": {
+    "fluid": "coverheated:nihilite_gas",
+    "amount": 1
+  },
+  "minimum_torque": 40
+}

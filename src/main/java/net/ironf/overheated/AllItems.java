@@ -18,6 +18,10 @@ public class AllItems {
 
     //Nihilite Stuff
     public static final ItemEntry<Item> NIHILTE_INGOT = craftingIngredient("nihilite_ingot");
+    public static final ItemEntry<Item> NIHILTE_NUGGET = craftingIngredient("nihilite_nugget");
+    public static final ItemEntry<Item> NIHILTE_GLOBULE = craftingIngredient("nihilite_globule");
+    public static final ItemEntry<Item> CRUSHED_NIHILITE = craftingIngredient("crushed_nihilite");
+
 
     //Blazesteel and Laser stuff
     public static final ItemEntry<Item> BLAZESTEEL_INGOT = craftingIngredient("blazesteel_ingot");
@@ -32,6 +36,9 @@ public class AllItems {
     public static final ItemEntry<Item> RAW_SALT = craftingIngredient("raw_salt");
     public static final ItemEntry<Item> TABLE_SALT = craftingIngredient("table_salt");
     public static final ItemEntry<Item> CHLORINE_CRYSTAL = craftingIngredient("chlorine_crystal");
+
+    //Steam Stuff
+    public static final ItemEntry<Item> INCOMPLETE_PRESSURIZED_CASING = craftingIngredient("incomplete_pressurized_casing");
 
 
     public static ItemEntry<Item> craftingIngredient(String name){

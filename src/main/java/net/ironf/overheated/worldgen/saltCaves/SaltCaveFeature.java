@@ -3,6 +3,7 @@ package net.ironf.overheated.worldgen.saltCaves;
 import com.mojang.serialization.Codec;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -42,17 +43,6 @@ public class SaltCaveFeature extends Feature<NoneFeatureConfiguration> {
     public final BlockEntry<? extends Block> crystalBlock;
     public final BlockEntry<? extends Block> shellBlock;
 
-    public void addShellAt(BlockPos pos, Level level, RandomSource rand, ArrayList<BlockPos> crystalOrigins){
-        level.setBlock(pos, shellBlock.getDefaultState(), 2);
-        if (rand.nextFloat() < crystalFrequency){
-            crystalOrigins.add(pos);
-        }
-        BlockPos upperBlock = pos.relative(Direction.UP,shellHeight*2);
-        level.setBlock(upperBlock,shellBlock.getDefaultState(),2);
-        if (rand.nextFloat() < crystalFrequency){
-            crystalOrigins.add(pos);
-        }
-    }
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         RandomSource rand = context.random();

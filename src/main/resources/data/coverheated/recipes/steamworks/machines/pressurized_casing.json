@@ -1,0 +1,64 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "create:copper_casing"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "item": "coverheated:pressurized_casing"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "amount": 500,
+          "fluid": "coverheated:purified_water",
+          "nbt": {}
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "create:sturdy_sheet"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "item": "coverheated:incomplete_pressurized_casing"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluid": "coverheated:nihilite_gas",
+      "nbt": {}
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:nihilite_globule"
+    },
+    {
+      "amount": 50,
+      "fluid": "coverheated:ammonia",
+      "nbt": {}
+    }
+  ]
+}

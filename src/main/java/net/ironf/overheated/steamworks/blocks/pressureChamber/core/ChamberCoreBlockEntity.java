@@ -105,7 +105,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
 
-//TODO add heat level minimum to recipe and BE
     public int validTimer = 10;
     public int recipeTimer = 0;
     //The number that if it gets too big explodes
@@ -125,16 +124,13 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         handleSteam();
         //Validity Check & Start new recipe if needed
         if (validTimer-- <= 0){
-            Overheated.LOGGER.info("1");
             validTimer = 50;
             if (checkForValidity()) {
-                Overheated.LOGGER.info("2, reading pressure of " + currentPressure);
                 if (recipeTimer == 0) {
                     startNewRecipe();
                 }
             } else {
                 //Cancel recipe if invalid
-                Overheated.LOGGER.info("Recipe Canceled Chamber Invalid");
                 cancelRecipe();
             }
         }
@@ -149,7 +145,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         }
 
         //Handle Heat
-        if (chamberHeat * Math.max(0,currentPressure-1) > 2048){
+        if (chamberHeat * Math.max(0,currentPressure) > 2048){
             causeExplode();
         }
         chamberHeat = Math.max(chamberHeat - (currentAirflow / 256), 0);
@@ -161,7 +157,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
         }
         if (recipeTimer > 0){
             //Decrement recipe timer
-            Overheated.LOGGER.info(String.valueOf(recipeTimer));
             recipeTimer--;
         }
     }
@@ -181,7 +176,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     private void finishRecipe() {
-        Overheated.LOGGER.info("Finishing Recipe");
         if (currentRecipe == null)
             return;
         level.getRecipeManager().byKey(currentRecipe).ifPresent(
@@ -210,7 +204,6 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                     BlockPos lookAt = getBlockPos().offset(x, y, z);
                     BlockState state = level.getBlockState(lookAt);
                     if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
-                        Overheated.LOGGER.info("Mismatch at: " + lookAt);
                         return false;
                     }
                     if (Math.abs(x) + Math.abs(y) + Math.abs(z) == 1 && state == AllBlocks.CHAMBER_HEAT_SINK.getDefaultState()){
