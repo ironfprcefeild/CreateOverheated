@@ -28,7 +28,7 @@
   "coverheated.diode.needs_clearance_one": "This Diode is too close to another Diode",
   "coverheated.diode.needs_clearance_two": "After fixing, Wrench this Diode to update it",
   "coverheated.diode.heat_limited_one": "This diode is spinning too slow, or has to low quality coolant",
-  "coverheated.diode.heat_limited_two": "To fire all of its heat",
+  "coverheated.diode.heat_limited_two": "to fire all of its heat",
   "coverheated.diode.no_heat": "No Heat would be transferred by this laser, increase RPM or add Coolant",
   "coverheated.diode.no_coolant": "This diode has no coolant and will not operate",
   "coverheated.diode.mode.relay": "Diode is adding heat to incoming laser, to exit relay mode, wrench the Diode",
@@ -87,6 +87,12 @@
   "coverheated.jei.cooling.recipe_category": "Cooling",
   "coverheated.jei.cooling.quality": "Quality",
   "coverheated.jei.cooling.power": "Power",
+
+  "coverheated.jei.condensing.recipe_category": "Condensing",
+  "coverheated.jei.condensing.temp": "Maximum Temperature",
+  "coverheated.jei.condensing.gained_temp": "Temperature Increase",
+
+
   "block.coverheated.ammonia": "Ammonia",
   "block.coverheated.antilaser_plating": "Antilaser Plating",
   "block.coverheated.basic_mirror": "Basic Mirror",
