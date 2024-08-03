@@ -1,7 +1,6 @@
 package net.ironf.overheated;
 
 import com.simibubi.create.AllTags;
-import com.simibubi.create.Create;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -27,14 +26,17 @@ import net.ironf.overheated.utility.data.GenericDirectionalBlockStateGen;
 import net.ironf.overheated.utility.data.GenericSpunDirectionalBlockStateGen;
 import net.ironf.overheated.utility.registration.AllSpriteShifts;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
+import static com.simibubi.create.foundation.data.BuilderTransformers.casing;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static net.ironf.overheated.Overheated.REGISTRATE;
-import static net.ironf.overheated.utility.registration.BuilderTransformers.casing;
 
 public class AllBlocks {
 
@@ -181,11 +183,11 @@ public class AllBlocks {
     //TODO figure out how casings work, and add sprite shift stuff
     public static final BlockEntry<CasingBlock> LASER_CASING = REGISTRATE.block("laser_casing", CasingBlock::new)
             .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK))
-            .transform(casing(() -> AllSpriteShifts.LASER_CASING))
+            .transform(BuilderTransformers.casing(() -> AllSpriteShifts.LASER_CASING))
             .register();
     public static final BlockEntry<CasingBlock> PRESSURIZED_CASING = REGISTRATE.block("pressurized_casing", CasingBlock::new)
             .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).sound(SoundType.COPPER))
-            .transform(casing(() -> AllSpriteShifts.PRESSURIZED_CASING))
+            .transform(BuilderTransformers.casing(() -> AllSpriteShifts.PRESSURIZED_CASING))
             .register();
 
 
