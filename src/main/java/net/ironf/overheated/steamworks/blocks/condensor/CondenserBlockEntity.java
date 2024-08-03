@@ -56,14 +56,15 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
             if (above == null) return;
             //Get fluid above the tank, return if the fluid cannot be condensed
             FluidStack input = above.getFluid();
-            if (condensingHandler.containsKey(input.getFluid()) && condensingMinTempHandler.get(input.getFluid()) >= Heat) {
+            CondensingOutputBundle bundle = condensingHandler.getOrDefault(input.getFluid(),null);
+            if (bundle != null && bundle.minTemp >= Heat) {
                 //Get the appropriate resulting fluid, get the tank below, compare the info. If tank is null or fluids do not match, return
-                FluidStack resultFluid = condensingHandler.get(input.getFluid());
+                FluidStack resultFluid = bundle.output;
                 IFluidTank below = getTank(Direction.DOWN);
                 if (below == null) return;
 
                 if (below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) <= 0) return;
-                Heat = Heat + condensingAddTempHandler.get(input.getFluid());
+                Heat = Heat + bundle.addTemp;
                 below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                 above.drain(1, IFluidHandler.FluidAction.EXECUTE);
             }

@@ -13,10 +13,7 @@ import java.util.List;
 
 public class CondensingRecipeHandler implements ResourceManagerReloadListener {
     //Maps each fluid to its output considering stack size
-    public static HashMap<Fluid, FluidStack> condensingHandler = new HashMap<>();
-    public static HashMap<Fluid, Float> condensingMinTempHandler = new HashMap<>();
-    public static HashMap<Fluid, Float> condensingAddTempHandler = new HashMap<>();
-
+    public static HashMap<Fluid, CondensingOutputBundle> condensingHandler = new HashMap<>();
 
     public static Level level = null;
     public static void setLevel(Level level) {
@@ -28,21 +25,20 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         }
         Overheated.LOGGER.info("Generating Condensing Handler");
         condensingHandler.clear();
-        condensingAddTempHandler.clear();
-        condensingMinTempHandler.clear();
         List<CondenserRecipe> recipeList = createRecipeCollection();
         for (CondenserRecipe r : recipeList){
             for (FluidStack f : r.getInput().getMatchingFluidStacks()){
-                condensingHandler.put(f.getFluid(),r.getOutput());
-                condensingMinTempHandler.put(f.getFluid(),r.getMinTemp());
-                condensingAddTempHandler.put(f.getFluid(),r.getAddTemp());
+                condensingHandler.put(f.getFluid(),new CondensingOutputBundle(r.getOutput(),r.getMinTemp(),r.getAddTemp()));
             }
         }
         for (int p = 1; p <= 4; p++){
             for (Fluid steam : AllSteamFluids.Steams[p]){
-                condensingHandler.put(steam,new FluidStack(AllSteamFluids.DISTILLED_WATER.get().getSource(),p));
-                condensingAddTempHandler.put(steam,p * 64f);
-                condensingMinTempHandler.put(steam,0f);
+                CondensingOutputBundle bundle = new CondensingOutputBundle(
+                        new FluidStack(AllSteamFluids.DISTILLED_WATER.get().getSource(),p),
+                        0f,
+                        p * 64f);
+                condensingHandler.put(steam, bundle);
+
             }
         }
     }
