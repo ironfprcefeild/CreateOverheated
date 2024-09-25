@@ -6,21 +6,10 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.RegistryObject;
 
-public class GasFluidSource extends ForgeFlowingFluid.Flowing {
+public class GasFluidSource extends ForgeFlowingFluid.Source {
 
     public GasFluidSource(Properties properties) {
         super(properties);
-    }
-
-
-    @Override
-    public boolean isSource(FluidState p_76140_) {
-        return true;
-    }
-
-    @Override
-    public int getAmount(FluidState p_164509_) {
-        return 8;
     }
 
 

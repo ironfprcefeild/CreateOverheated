@@ -45,6 +45,22 @@
       ]
     },
     {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "create:copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
       "type": "create:pressing",
       "ingredients": [
         {

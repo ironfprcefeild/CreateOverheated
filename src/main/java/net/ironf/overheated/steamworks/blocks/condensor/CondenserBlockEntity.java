@@ -5,6 +5,7 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
 import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
@@ -14,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,7 +96,10 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     public IFluidTank getTank(Direction in){
-        BlockEntity be = level.getBlockEntity(getBlockPos().relative(in));
+        BlockPos pos = getBlockPos().relative(in);
+        if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(in);}
+
+        BlockEntity be = level.getBlockEntity(pos);
         return be instanceof FluidTankBlockEntity ? ((FluidTankBlockEntity) be).getControllerBE().getTankInventory() : null;
     }
 

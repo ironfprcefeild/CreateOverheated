@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "create:fluid_tank"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "p": {
+      "item": "create:mechanical_pump"
+    }
+  },
+  "pattern": [
+    " t ",
+    " c ",
+    "p p"
+  ],
+  "result": {
+    "item": "coverheated:geothermal_interface"
+  }
+}

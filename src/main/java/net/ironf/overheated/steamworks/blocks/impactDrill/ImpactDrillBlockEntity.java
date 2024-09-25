@@ -178,7 +178,7 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
             BlockState atState = level.getBlockState(atPos);
             if (atState == Blocks.AIR.defaultBlockState()) {
                 return atPos;
-            } else if (atState == AllBlocks.IMPACT_TUBING.getDefaultState()) {
+            } else if (atState.getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {
                 atPos = atPos.above();
             } else {
                 return null;

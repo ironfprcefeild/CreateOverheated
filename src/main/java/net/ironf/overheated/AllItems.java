@@ -13,7 +13,6 @@ public class AllItems {
 
     //Industrial Sheet Stuff
     public static final ItemEntry<Item> INDUSTRIAL_SHEET = craftingIngredient("industrial_sheet");
-
     public static final ItemEntry<Item> INCOMPLETE_INDUSTRIAL_SHEET = craftingIngredient("incomplete_industrial_sheet");
 
     //Nihilite Stuff
@@ -39,6 +38,7 @@ public class AllItems {
 
     //Steam Stuff
     public static final ItemEntry<Item> INCOMPLETE_PRESSURIZED_CASING = craftingIngredient("incomplete_pressurized_casing");
+    public static final ItemEntry<Item> TURBINE_COMPONENTS = craftingIngredient("turbine_components");
 
 
     public static ItemEntry<Item> craftingIngredient(String name){

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "create:fluid_tank"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "l": {
+      "item": "coverheated:laser_casing"
+    },
+    "b": {
+      "item": "coverheated:blaze_crucible"
+    }
+  },
+  "pattern": [
+    " b ",
+    "ctl",
+    "   "
+  ],
+  "result": {
+    "item": "coverheated:pressure_heater"
+  }
+}

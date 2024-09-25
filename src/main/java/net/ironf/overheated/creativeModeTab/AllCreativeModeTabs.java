@@ -104,7 +104,8 @@ public class AllCreativeModeTabs {
 
             //!!!!// Exclude Certain Items
             List<ItemProviderEntry<?>> simpleExclusions = List.of(
-                    AllItems.INCOMPLETE_INDUSTRIAL_SHEET
+                    AllItems.INCOMPLETE_INDUSTRIAL_SHEET,
+                    AllItems.INCOMPLETE_PRESSURIZED_CASING
             );
 
             //!!!!// Exclude Certain Items by tag

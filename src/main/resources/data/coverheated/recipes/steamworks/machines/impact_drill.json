@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "create:fluid_tank"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "p": {
+      "item": "create:mechanical_pump"
+    },
+    "d": {
+      "item": "create:mechanical_drill"
+    }
+  },
+  "pattern": [
+    " t ",
+    " cp",
+    " d "
+  ],
+  "result": {
+    "item": "coverheated:impact_drill"
+  }
+}

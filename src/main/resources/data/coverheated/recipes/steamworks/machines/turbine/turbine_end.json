@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "coverheated:turbine_components"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "s": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    "   ",
+    "tcs",
+    "   "
+  ],
+  "result": {
+    "item": "coverheated:turbine_end"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "ign",
+    " c "
+  ],
+  "key": {
+    "n": {
+      "item": "create:nozzle"
+    },
+    "c": {
+      "item": "coverheated:laser_casing"
+    },
+    "i": {
+      "item": "create:filter"
+    },
+    "g": {
+      "item": "coverheated:blazeglass"
+    }
+  },
+  "result": {
+    "item": "coverheated:laser_film",
+    "count": 16
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "coverheated:turbine_components"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "p": {
+      "item": "create:propeller"
+    }
+  },
+  "pattern": [
+    "pcp",
+    "ctc",
+    "pcp"
+  ],
+  "result": {
+    "item": "coverheated:turbine_extension",
+    "count": 6
+  }
+}

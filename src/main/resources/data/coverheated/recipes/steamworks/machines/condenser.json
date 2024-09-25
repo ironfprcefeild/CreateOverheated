@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "t": {
+      "item": "create:fluid_tank"
+    },
+    "c": {
+      "item": "create:copper_casing"
+    },
+    "p": {
+      "item": "create:mechanical_pump"
+    },
+    "v": {
+      "item": "create:fluid_valve"
+    }
+  },
+  "pattern": [
+    " t ",
+    "vcp",
+    " t "
+  ],
+  "result": {
+    "item": "coverheated:condenser"
+  }
+}

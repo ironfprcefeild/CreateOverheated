@@ -115,7 +115,6 @@
   "block.coverheated.heated_steam_low": "Heated Steam Low",
   "block.coverheated.heated_steam_mid": "Heated Steam Mid",
   "block.coverheated.impact_drill": "Impact Drill",
-  "block.coverheated.impact_tubing": "Impact Tubing",
   "block.coverheated.laser_casing": "Laser Casing",
   "block.coverheated.laser_film": "Laser Film",
   "block.coverheated.liquid_nihilite": "Liquid Nihilite",
@@ -222,5 +221,6 @@
   "item.coverheated.superheated_steam_low_bucket": "Superheated Steam Low Bucket",
   "item.coverheated.superheated_steam_mid_bucket": "Superheated Steam Mid Bucket",
   "item.coverheated.table_salt": "Table Salt",
+  "item.coverheated.turbine_components": "Turbine Components",
   "item.coverheated.white_halite": "White Halite"
 }

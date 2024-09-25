@@ -1,40 +1,21 @@
 package net.ironf.overheated.steamworks;
 
-import com.simibubi.create.infrastructure.config.AllConfigs;
-import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
-import net.ironf.overheated.utility.registration.OverheatedRegistrate;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.ticks.TickPriority;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
-import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static net.ironf.overheated.Overheated.REGISTRATE;
+import static net.ironf.overheated.utility.registration.OverheatedRegistrate.getFluidFactory;
 
 public class AllSteamFluids {
 
@@ -46,9 +27,8 @@ public class AllSteamFluids {
     }
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
-            REGISTRATE.standardFluid("distilled_water", OverheatedRegistrate.SolidRenderedPlaceableFluidType.create(
-                    0x33B3FF,
-                        () -> 1f / 8f * 2f))
+            REGISTRATE.standardFluid("distilled_water", getFluidFactory(
+                            0x33B3FF, 1f / 8f * 2f))
                     .lang("Distilled Water")
                     .fluidProperties(p -> p.levelDecreasePerBlock(5)
                             .tickRate(20)

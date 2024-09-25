@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "create:steam_engine"
+    },
+    "c": {
+      "item": "create:chute"
+    },
+    "f": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "   ",
+    "efc",
+    "   "
+  ],
+  "result": {
+    "item": "coverheated:steam_vent"
+  }
+}

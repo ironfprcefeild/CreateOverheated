@@ -246,9 +246,9 @@ public class AllBlocks {
             .block("turbine_extension", Block::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
+            .blockstate(simpleCubeAll("turbine_extension"))
             .defaultLoot()
             .register();
 
@@ -256,9 +256,9 @@ public class AllBlocks {
             .block("turbine_center", Block::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
+            .blockstate(simpleCubeAll("turbine_center"))
             .defaultLoot()
             .register();
 
@@ -325,16 +325,6 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
-    public static final BlockEntry<Block> IMPACT_TUBING = REGISTRATE
-            .block("impact_tubing", Block::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
-            .defaultLoot()
-            .register();
-
     //Gas Hood
     public static final BlockEntry<GasHoodBlock> GAS_HOOD = REGISTRATE
             .block("gas_hood", GasHoodBlock::new)
@@ -355,6 +345,7 @@ public class AllBlocks {
             .transform(pickaxeOnly())
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .defaultLoot()
+            .lang("Steam Heater")
             .register();
 
     //// Laser Optics
