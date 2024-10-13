@@ -45,8 +45,6 @@ public class AllFluids {
                             .tickRate(25)
                             .slopeFindDistance(3)
                             .explosionResistance(100f))
-                    .source(ForgeFlowingFluid.Source::new) // TODO: remove when Registrate fixes FluidBuilder
-                    .bucket().build()
                     .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> PURIFIED_WATER =
