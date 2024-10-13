@@ -31,7 +31,7 @@
         },
         {
           "amount": 50,
-          "fluid": "minecraft:water",
+          "fluid": "coverheated:distilled_water",
           "nbt": {}
         }
       ],

@@ -1,6 +1,6 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.content.kinetics.base.HalfShaftInstance;
+import com.simibubi.create.content.kinetics.base.HalfShaftVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
@@ -27,7 +27,7 @@ public class AllBlockEntities {
     //Turbine
     public static final BlockEntityEntry<turbineEndBlockEntity> TURBINE_END = REGISTRATE
             .blockEntity("turbine_end", turbineEndBlockEntity::new)
-            .instance(() -> HalfShaftInstance::new, false)
+            .visual(() -> HalfShaftVisual::new, false)
             .renderer(() -> turbineEndRenderer::new)
             .validBlocks(AllBlocks.TURBINE_END)
             .register();
@@ -49,7 +49,7 @@ public class AllBlockEntities {
     //Laser Diode
     public static final BlockEntityEntry<DiodeBlockEntity> DIODE = REGISTRATE
             .blockEntity("diode", DiodeBlockEntity::new)
-            .instance(() -> DiodeCogInstance::new)
+            .visual(() -> DiodeCogInstance::new)
             .renderer(() -> DiodeBlockEntityRenderer::new)
             .validBlocks(AllBlocks.DIODE)
             .register();

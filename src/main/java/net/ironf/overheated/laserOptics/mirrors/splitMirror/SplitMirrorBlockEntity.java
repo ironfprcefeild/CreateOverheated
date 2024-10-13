@@ -12,10 +12,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
@@ -117,7 +120,6 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
 
     //public static final Holder<DamageType> Ions = Holder.direct(new DamageType("ions", DamageScaling.NEVER,2f));
     private void dealDamage(BlockPos origin, BlockPos Ending, float volatility) {
-        /*
         AABB bounds = new AABB(origin,Ending);
         List<Entity> targets = level.getEntities(null,bounds);
         for (Entity entity : targets){
@@ -125,10 +127,8 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
                 continue;
             }
             entity.setRemainingFireTicks((int) (volatility * 2));
-            entity.hurt(new DamageSource(Ions, getBlockPos().getCenter()), (float) (volatility * 0.5));
+            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.75));
         }
-
-         */
     }
 
     @Override

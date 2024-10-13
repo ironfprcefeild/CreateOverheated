@@ -25,7 +25,7 @@ public class AllFeatures {
 
     //Deposits
     public static final RegistryObject<BedrockDepositFeature> nihilite = REGISTRATE.depositFeature("nihilite_deposit")
-            .Frequency(256)
+            .Frequency(100)
             .Size(10,20)
             .BorderSize(4)
             .makeBlock(AllBlocks.NIHILITE_DEPOSIT)
@@ -33,7 +33,7 @@ public class AllFeatures {
 
     //Salt Caves
     public static final RegistryObject<SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
-            .Frequency(768)
+            .Frequency(400)
             .Size(40,60)
             .shellHeight(12)
             .makeCrystalBlock(AllBlocks.WHITE_SALT_CRYSTAL)
@@ -42,7 +42,7 @@ public class AllFeatures {
             .crystalSizes(3,9)
             .register();
     public static final RegistryObject<SaltCaveFeature> redSaltCave = REGISTRATE.saltCaveFeature("red_salt_cave")
-            .Frequency(768)
+            .Frequency(400)
             .Size(40,60)
             .shellHeight(12)
             .makeCrystalBlock(AllBlocks.RED_SALT_CRYSTAL)
@@ -51,7 +51,7 @@ public class AllFeatures {
             .crystalSizes(3,9)
             .register();
     public static final RegistryObject<SaltCaveFeature> blueSaltCave = REGISTRATE.saltCaveFeature("blue_salt_cave")
-            .Frequency(768)
+            .Frequency(400)
             .Size(40,60)
             .shellHeight(12)
             .makeCrystalBlock(AllBlocks.BLUE_SALT_CRYSTAL)

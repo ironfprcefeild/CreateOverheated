@@ -38,6 +38,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,8 +79,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         } else {
             coolantConsumptionTicks--;
         }
-
-
+        dealDamage(recentHeat.Volatility);
     }
 
     public void fireLaser(){
@@ -150,7 +150,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         }
                     } else {
                         //We are at a mirror, cause damage and update origin
-                        dealDamage(currentOrigin,continueAt,laserHeat.Volatility);
+                        addToDamage(currentOrigin,continueAt);
                         currentOrigin = continueAt;
                     }
                 } else {
@@ -158,7 +158,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                     markForEffectCloud(continueAt);
                 }
                 //We are done with the laser, cause damage
-                dealDamage(currentOrigin,continueAt,laserHeat.Volatility);
+                addToDamage(currentOrigin,continueAt);
             }
         } else {
             noCoolant = true;
@@ -177,19 +177,22 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     }
 
     //public static final Holder<DamageType> Ions = Holder.direct(new DamageType("ions", DamageScaling.NEVER,2f));
-    private void dealDamage(BlockPos origin, BlockPos Ending, float volatility) {
-        /*
-        AABB bounds = new AABB(origin,Ending);
-        List<Entity> targets = level.getEntities(null,bounds);
+    public ArrayList<AABB> damageZones = new ArrayList<>();
+    private void addToDamage(BlockPos origin, BlockPos ending){
+        damageZones.add(new AABB(origin,ending));
+    }
+    private void dealDamage(float volatility) {
+        List<Entity> targets = new ArrayList<>();
+        damageZones.forEach((bounds) -> targets.addAll(level.getEntities(null,bounds)));
         for (Entity entity : targets){
-            if (!entity.isAlive() || !entity.getBoundingBox().intersects(bounds)) {
+            if (!entity.isAlive()) {
                 continue;
             }
             entity.setRemainingFireTicks((int) (volatility * 2));
-            entity.hurt(new DamageSource(Ions, getBlockPos().getCenter()), (float) (volatility * 0.5));
+            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.75));
         }
 
-         */
+
     }
 
 

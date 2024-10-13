@@ -16,6 +16,7 @@ import static net.ironf.overheated.utility.registration.OverheatedRegistrate.get
 
 public class AllFluids {
     public static void register(){
+        FluidClasses.register();
         AllSteamFluids.register();
         AllGasses.register();
     }
@@ -36,7 +37,7 @@ public class AllFluids {
     public static final FluidEntry<ForgeFlowingFluid.Flowing> SLUDGE =
             REGISTRATE.standardFluid("sludge",
                             FluidClasses.SolidRenderedPlaceableFluidType.create(0xEAAE2F,
-                                    () -> 1f / 8f ))
+                                    () -> 1f / 8f,"sludge"))
                     .lang("Sludge")
                     .properties(b -> b.viscosity(2000)
                             .density(1400))

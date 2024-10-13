@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.AllFluids;
 import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.builders.FluidBuilder;
+import net.ironf.overheated.Overheated;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
@@ -25,6 +26,9 @@ public class FluidClasses {
 
     //This was unnecessarily private stuff in create, not my code
 
+
+    //load this class
+    public static void register(){};
     public static abstract class TintedFluidType extends FluidType {
 
         protected static final int NO_TINT = 0xffffffff;
@@ -102,9 +106,11 @@ public class FluidClasses {
         private Vector3f fogColor;
         private Supplier<Float> fogDistance;
 
-        public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
+        public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance, String location) {
             return (p, s, f) -> {
-                SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, s, f);
+                SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p,
+                        Overheated.asResource("fluid/" + location + "_still"),
+                        Overheated.asResource("fluid/" + location + "_flow"));
                 fluidType.fogColor = new Color(fogColor, false).asVectorF();
                 fluidType.fogDistance = fogDistance;
                 return fluidType;

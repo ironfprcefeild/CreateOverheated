@@ -72,7 +72,7 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
 
             coolantTemp = LaserCoolingHandler.heatHandler.containsKey(getFluid()) ? -LaserCoolingHandler.heatHandler.get(getFluid()) : 0;
-            Heat = Math.max(coolantTemp,Heat - ((getHeatSunkenFrom(getBlockPos(),level)) / 16));
+            Heat = Math.max(coolantTemp,Heat - ((32 + getHeatSunkenFrom(getBlockPos(),level)) / 16));
             if (coolantMetaTimer-- == 0) {
                 tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
                 coolantMetaTimer = 8;
@@ -100,7 +100,8 @@ public class CondenserBlockEntity extends SmartBlockEntity implements IHaveGoggl
         if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(in);}
 
         BlockEntity be = level.getBlockEntity(pos);
-        return be instanceof FluidTankBlockEntity ? ((FluidTankBlockEntity) be).getControllerBE().getTankInventory() : null;
+        FluidTankBlockEntity tank = (be instanceof FluidTankBlockEntity) ? ((FluidTankBlockEntity) be).getControllerBE() : null;
+        return (tank != null) ? tank.getTankInventory() : null;
     }
 
     @Override
