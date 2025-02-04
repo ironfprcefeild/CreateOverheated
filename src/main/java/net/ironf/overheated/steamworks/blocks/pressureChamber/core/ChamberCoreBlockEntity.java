@@ -1,16 +1,14 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber.core;
 
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllTags;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
+import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,7 +29,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAbsorber, HeatSinkHelper {
+public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber {
     public ChamberCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -208,7 +206,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
                     }
                     if (Math.abs(x) + Math.abs(y) + Math.abs(z) == 1 && state == AllBlocks.CHAMBER_HEAT_SINK.getDefaultState()){
                         for (Direction d : Iterate.directions){
-                            currentAirflow += getHeatSunkenFrom(lookAt.relative(d),level);
+                            currentAirflow += getCoolingUnits(lookAt.relative(d),level);
                         }
                         continue;
                     }
@@ -245,7 +243,7 @@ public class ChamberCoreBlockEntity extends SmartBlockEntity implements ILaserAb
     }
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
         currentHeatRating = beamHeat.OverHeat >= 1 ? 3 : (beamHeat.SuperHeat >= 1 ? 2 : 1);
         currentHeating = beamHeat.getTotalHeat();
         laserHeat = beamHeat;

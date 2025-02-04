@@ -1,4 +1,4 @@
-package net.ironf.overheated.laserOptics.colants;
+package net.ironf.overheated.cooling.colants;
 
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class LaserCoolantRecipe implements Recipe<SimpleContainer> {
+public class CoolantRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
@@ -46,12 +46,12 @@ public class LaserCoolantRecipe implements Recipe<SimpleContainer> {
     public RecipeSerializer<?> getSerializer() {
         return Serializer.INSTANCE;
     }
-    public static class Type implements RecipeType<LaserCoolantRecipe> {
+    public static class Type implements RecipeType<CoolantRecipe> {
         private Type() {
         }
 
         public static final Type INSTANCE = new Type();
-        public static final String ID = "laser_cooling";
+        public static final String ID = "cooling";
     }
 
     @Override
@@ -67,50 +67,62 @@ public class LaserCoolantRecipe implements Recipe<SimpleContainer> {
 
     private final FluidIngredient input;
     private final Integer heat;
-    private final Integer volatility;
+    private final Float efficiency;
+    private final Float minTemp;
 
     public Integer getHeat() {
         return heat;
     }
 
-    public Integer getVolatility() {
-        return volatility;
+    public Float getEfficiency() {
+        return efficiency;
+    }
+    public Float getMinTemp() {
+        return minTemp;
     }
 
-    public LaserCoolantRecipe(ResourceLocation id, FluidIngredient input, Integer heat, Integer volatility) {
+
+    public CoolantRecipe(ResourceLocation id, FluidIngredient input, Integer heat, Float efficiency, Float minTemp) {
         this.id = id;
         this.input = input;
         this.heat = heat;
-        this.volatility = volatility;
+        this.efficiency = efficiency;
+        this.minTemp = minTemp;
     }
 
-    public static class Serializer implements RecipeSerializer<LaserCoolantRecipe> {
+    public static class Serializer implements RecipeSerializer<CoolantRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(Overheated.MODID, "laser_cooling");
+                new ResourceLocation(Overheated.MODID, "cooling");
 
         @Override
-        public LaserCoolantRecipe fromJson(ResourceLocation id, JsonObject pSerializedRecipe) {
+        public CoolantRecipe fromJson(ResourceLocation id, JsonObject pSerializedRecipe) {
             FluidIngredient fluid = FluidIngredient.deserialize(GsonHelper.getAsJsonObject(pSerializedRecipe,"input_fluid"));
             Integer heat = GsonHelper.getAsInt(pSerializedRecipe,"heat");
-            Integer volatility = GsonHelper.getAsInt(pSerializedRecipe,"volatility");
-            return new LaserCoolantRecipe(id,fluid,heat,volatility);
+            Float efficiency = GsonHelper.getAsFloat(pSerializedRecipe,"efficiency");
+            Float minTemp = Math.abs(GsonHelper.getAsFloat(pSerializedRecipe,"minTemp"));
+
+
+            return new CoolantRecipe(id,fluid,heat,efficiency,minTemp);
 
         }
 
         @Override
-        public @Nullable LaserCoolantRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+        public @Nullable CoolantRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             FluidIngredient fluid = FluidIngredient.read(buf);
             Integer heat = buf.readInt();
-            Integer volatility = buf.readInt();
-            return new LaserCoolantRecipe(id, fluid, heat, volatility);
+            Float efficiency = buf.readFloat();
+            Float minTemp = buf.readFloat();
+
+            return new CoolantRecipe(id, fluid, heat,efficiency,minTemp);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buf, LaserCoolantRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, CoolantRecipe recipe) {
             recipe.input.write(buf);
             buf.writeInt(recipe.getHeat());
-            buf.writeInt(recipe.getVolatility());
+            buf.writeFloat(recipe.getEfficiency());
+            buf.writeFloat(recipe.getMinTemp());
         }
     }
 }

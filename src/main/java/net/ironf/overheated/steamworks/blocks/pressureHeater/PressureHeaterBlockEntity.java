@@ -80,7 +80,7 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
             int readHeat = AllSteamFluids.getSteamHeat(input.getFluid());
             if (readHeat > 0 && input.getFluidAmount() >= 10 && tank.getPrimaryHandler().getFluidAmount() <= 1990) {
                 int pressure = AllSteamFluids.getSteamPressure(input.getFluid());
-                recentReading = new HeatData(readHeat == 1 ? 1 : 0, readHeat == 2 ? 1 : 0, readHeat == 3 ? 1 : 0, 5f);
+                recentReading = new HeatData(readHeat == 1 ? 1 : 0, readHeat == 2 ? 1 : 0, readHeat == 3 ? 1 : 0);
                 tank.getPrimaryHandler().fill(AllSteamFluids.getSteamFromValues(pressure,0,10), IFluidHandler.FluidAction.EXECUTE);
                 input.drain(10, IFluidHandler.FluidAction.EXECUTE);
             } else {

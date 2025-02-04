@@ -2,13 +2,11 @@ package net.ironf.overheated.mixin;
 
 import com.simibubi.create.content.kinetics.fan.IAirCurrentSource;
 import com.simibubi.create.foundation.utility.Iterate;
-import net.ironf.overheated.Overheated;
-import net.ironf.overheated.steamworks.blocks.heatsink.IAirCurrentReader;
+import net.ironf.overheated.cooling.heatsink.IAirCurrentReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

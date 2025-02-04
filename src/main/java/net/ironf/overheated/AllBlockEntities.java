@@ -12,7 +12,7 @@ import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
-import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlockEntity;
+import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;

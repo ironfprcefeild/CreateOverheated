@@ -1,4 +1,4 @@
-package net.ironf.overheated.laserOptics.colants;
+package net.ironf.overheated.cooling.colants;
 
 import net.ironf.overheated.Overheated;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -10,33 +10,36 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.HashMap;
 import java.util.List;
 
-public class LaserCoolingHandler implements ResourceManagerReloadListener {
+public class CoolingHandler implements ResourceManagerReloadListener {
 
+    //Heat is the maximum amount of heat units a laser can handle when using this coolant
     public static HashMap<Fluid,Integer> heatHandler = new HashMap<>();
-    public static HashMap<Fluid,Integer> volatilityHandler = new HashMap<>();
+    public static HashMap<Fluid,Float> efficiencyHandler = new HashMap<>();
+    public static HashMap<Fluid,Float> minTempHandler = new HashMap<>();
+
 
     public static Level level = null;
     public static void setLevel(Level level) {
-        LaserCoolingHandler.level = level;
+        CoolingHandler.level = level;
     }
     public static void generateHandler(){
         if (level == null){
             return;
         }
-        Overheated.LOGGER.info("Generating Laser Coolant Recipe Helper");
+        Overheated.LOGGER.info("Generating Coolant Recipe Helper");
         heatHandler.clear();
-        volatilityHandler.clear();
-        List<LaserCoolantRecipe> recipeList = createRecipeCollection();
-        for (LaserCoolantRecipe r : recipeList){
+        List<CoolantRecipe> recipeList = createRecipeCollection();
+        for (CoolantRecipe r : recipeList){
             for (FluidStack f : r.getInput().getMatchingFluidStacks()){
                 heatHandler.put(f.getFluid(),r.getHeat());
-                volatilityHandler.put(f.getFluid(),r.getVolatility());
+                efficiencyHandler.put(f.getFluid(),r.getEfficiency());
+                minTempHandler.put(f.getFluid(),r.getMinTemp());
             }
         }
     }
 
-    public static List<LaserCoolantRecipe> createRecipeCollection(){
-        return level.getRecipeManager().getAllRecipesFor(LaserCoolantRecipe.Type.INSTANCE);
+    public static List<CoolantRecipe> createRecipeCollection(){
+        return level.getRecipeManager().getAllRecipesFor(CoolantRecipe.Type.INSTANCE);
     }
 
 

@@ -25,7 +25,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     public boolean needsStateUpdate = true;
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
         int newHeat = beamHeat.useUpToOverHeat();
         if (heatLevel != newHeat){
             needsStateUpdate = true;

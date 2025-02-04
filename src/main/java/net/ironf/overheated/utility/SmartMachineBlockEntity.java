@@ -1,0 +1,137 @@
+package net.ironf.overheated.utility;
+
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.Iterate;
+import net.ironf.overheated.cooling.CoolingData;
+import net.ironf.overheated.cooling.ICoolingBlockEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
+import java.util.Optional;
+
+
+public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
+    public SmartMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+
+    }
+
+    public float fiveTickTimer = 5;
+    @Override
+    public void tick() {
+        super.tick();
+        if (fiveTickTimer-- == 0){
+            fiveTickTimer = 5;
+            fifthTick();
+        }
+    }
+    public void fifthTick(){
+        coolingStep();
+    }
+
+    //Cooling -----
+
+    public float currentTemp = 0;
+    public float coolingProgress = 0;
+    public float getCurrentTemp(){
+        return currentTemp;
+    }
+    public float addTemp(float toAdd){
+        currentTemp += toAdd;
+        return currentTemp;
+    }
+    public float getCoolingUnits(BlockPos pos, Level level){
+        return getCoolingData(pos,level).coolingUnits;
+    }
+    public CoolingData getCoolingData(BlockPos pos, Level level){
+        CoolingData runningTotal = new CoolingData(0,1000);
+        for (Direction d : Iterate.directions){
+            BlockPos check = pos.relative(d);
+            BlockEntity be = level.getBlockEntity(check);
+            if (be instanceof ICoolingBlockEntity){
+                runningTotal.add(((ICoolingBlockEntity) be).getCoolingData(check,pos,level,d));
+            }
+        }
+        if (hasPassiveCooling()){
+            runningTotal.add(getPassiveCooling());
+        }
+        return runningTotal;
+    }
+
+    public boolean hasPassiveCooling(){
+        return false;
+    }
+    public CoolingData getPassiveCooling(){
+        return null;
+    }
+    public float getCooledDifficulty(){
+        return (float) Math.pow(Math.abs(currentTemp),3);
+    }
+    public void coolingStep(){
+        CoolingData cooling = getCoolingData(getBlockPos(),level);
+        coolingProgress += cooling.coolingUnits;
+        if (currentTemp > cooling.minTemp && coolingProgress >= getCooledDifficulty()){
+            currentTemp--;
+        }
+    }
+
+    public void tempAndCoolInfo(List<Component> tooltip){
+        //Display: Current Temperature, Cooling Units, and Minimum Temperature
+        CoolingData cooling = getCoolingData(getBlockPos(),level);
+
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.temperature").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(currentTemp)).withStyle(ChatFormatting.AQUA), 1));
+
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.cooling_units").withStyle(ChatFormatting.WHITE)));
+        if (hasPassiveCooling()){
+            CoolingData passiveCooling = getPassiveCooling();
+            tooltip.add(GoggleHelper.addIndent(
+                    Component.translatable("coverheated.tooltip.cooling.outside")
+                    .append(Component.literal(GoggleHelper.easyFloat(cooling.coolingUnits-passiveCooling.coolingUnits)))
+                    .withStyle(ChatFormatting.AQUA),1));
+            tooltip.add(GoggleHelper.addIndent(
+                    Component.translatable("coverheated.tooltip.cooling.passive")
+                    .append(Component.literal(GoggleHelper.easyFloat(passiveCooling.coolingUnits)))
+                    .withStyle(ChatFormatting.AQUA),1));
+
+        } else {
+            tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooling.coolingUnits)).withStyle(ChatFormatting.AQUA), 1));
+        }
+
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.min_temp").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooling.minTemp)).withStyle(ChatFormatting.AQUA), 1));
+    }
+
+    //Read/Writes -----
+
+    @Override
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        currentTemp = tag.getFloat("current_temp");
+        coolingProgress = tag.getFloat("cooling_progress");
+    }
+
+    @Override
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
+        tag.putFloat("current_temp",currentTemp);
+        tag.putFloat("cooling_progress",coolingProgress);
+    }
+
+    //Goggles ------
+
+}

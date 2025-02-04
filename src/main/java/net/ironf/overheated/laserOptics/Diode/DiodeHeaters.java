@@ -56,10 +56,10 @@ public class DiodeHeaters {
                 return HeatData.empty();
             }
             if (value == BlazeBurnerBlock.HeatLevel.SEETHING) {
-                return new HeatData(0,1,0,0);
+                return new HeatData(0,1,0);
             }
             if (value.isAtLeast(BlazeBurnerBlock.HeatLevel.FADING)) {
-                return new HeatData(1,0,0,0);
+                return new HeatData(1,0,0);
             }
             return HeatData.empty();
         });
@@ -67,7 +67,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.FURNACE, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(3,0,0,0);
+                return new HeatData(3,0,0);
             }
             return HeatData.empty();
         });
@@ -75,7 +75,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.BLAST_FURNACE, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(6,0,0,0);
+                return new HeatData(6,0,0);
             }
             return HeatData.empty();
         });
@@ -83,7 +83,7 @@ public class DiodeHeaters {
         registerHeater(Blocks.SMOKER, (level, pos, state) -> {
             Boolean lit = state.getValue(AbstractFurnaceBlock.LIT);
             if (lit){
-                return new HeatData(6,0,0,0);
+                return new HeatData(6,0,0);
             }
             return HeatData.empty();
         });

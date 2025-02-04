@@ -47,11 +47,6 @@ public class GoggleHelper {
                         .append(easyFloat(h.OverHeat))
                         .withStyle(ChatFormatting.RED), 1));
             }
-            if (displayUpToLevel > 0) {
-                tooltip.add(addIndent(Component.translatable("coverheated.tooltip.laser_power")
-                        .append(easyFloat(h.Volatility))
-                        .withStyle(ChatFormatting.RED), 1));
-            }
         }
     }
 

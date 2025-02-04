@@ -7,25 +7,23 @@ public class HeatData {
     public float Heat;
     public float SuperHeat;
     public float OverHeat;
-    public float Volatility;
-    public HeatData(float Heat, float SuperHeat, float OverHeat, float Volatility){
+
+    public HeatData(float Heat, float SuperHeat, float OverHeat){
         this.Heat = Heat;
         this.SuperHeat = SuperHeat;
         this.OverHeat = OverHeat;
-        this.Volatility = Volatility;
     }
 
     public HeatData copyMe(){
-        return new HeatData(this.Heat,this.SuperHeat,this.OverHeat,this.Volatility);
+        return new HeatData(this.Heat,this.SuperHeat,this.OverHeat);
     }
     public static HeatData empty(){
-        return new HeatData(0,0,0,0);
+        return new HeatData(0,0,0);
     }
 
     public static HeatData mergeHeats(HeatData a, HeatData b){
 
-        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat,
-                (a.Volatility + b.Volatility) / ((a.Volatility == 0 || b.Volatility == 0) ? 1 : 2));
+        return new HeatData(a.Heat + b.Heat, a.SuperHeat + b.SuperHeat,a.OverHeat + b.OverHeat);
     }
 
     public static HeatData mergeHeats(HeatData[] h){
@@ -33,17 +31,12 @@ public class HeatData {
         float o = 0;
         float s = 0;
         float v = 0;
-        int ignoreInMerge = 0;
         for (HeatData hd : h){
             he += hd.Heat;
             o += hd.OverHeat;
             s += hd.SuperHeat;
-            if (hd.Volatility == 0){
-                ignoreInMerge++;
-            }
-            v += hd.Volatility;
         }
-        return new HeatData(he,s,o,(v / (h.length - ignoreInMerge + 1)));
+        return new HeatData(he,s,o);
     }
 
     public float getTotalHeat(){
@@ -174,15 +167,14 @@ public class HeatData {
         tag.putFloat(s +"hdheat",write.Heat);
         tag.putFloat(s +"hdsuperheat",write.SuperHeat);
         tag.putFloat(s +"hdoverheat",write.OverHeat);
-        tag.putFloat(s +"hdv",write.Volatility);
+
     }
 
     public static HeatData readTag(CompoundTag tag, String s){
         return new HeatData(
                 tag.getFloat(s+"hdheat"),
                 tag.getFloat(s+"hdsuperheat"),
-                tag.getFloat(s+"hdoverheat"),
-                tag.getFloat(s+"hdv")
+                tag.getFloat(s+"hdoverheat")
         );
     }
 

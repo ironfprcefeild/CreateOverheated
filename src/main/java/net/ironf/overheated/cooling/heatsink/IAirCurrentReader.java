@@ -1,4 +1,4 @@
-package net.ironf.overheated.steamworks.blocks.heatsink;
+package net.ironf.overheated.cooling.heatsink;
 
 import net.minecraft.core.Direction;
 

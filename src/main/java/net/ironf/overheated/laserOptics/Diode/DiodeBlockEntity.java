@@ -10,19 +10,15 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.utility.GoggleHelper;
-import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
+import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageScaling;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -79,7 +75,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         } else {
             coolantConsumptionTicks--;
         }
-        dealDamage(recentHeat.Volatility);
+        dealDamage(recentHeat.getTotalHeat());
     }
 
     public void fireLaser(){
@@ -89,10 +85,11 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
         //Cap heat based on RPM. The boolean is used to determine goggle display
         FluidStack fluids = getFluidStack();
-        if (!fluids.isEmpty() && LaserCoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
+        if (!fluids.isEmpty() && CoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
             noCoolant = false;
+            float currentCoolantEff = CoolingHandler.efficiencyHandler.get(fluids.getFluid());
             HeatData laserHeat = findHeat();
-            float heatCap = Math.min(Math.abs(getSpeed()), LaserCoolingHandler.heatHandler.get(fluids.getFluid()));
+            float heatCap = Math.min(Math.abs(getSpeed()), CoolingHandler.heatHandler.get(fluids.getFluid()));
             if (laserHeat.getTotalHeat() > heatCap) {
                 activeInefficiency = true;
                 laserHeat.capHeat(heatCap);
@@ -106,9 +103,9 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             } else {
                 heatToLow = false;
             }
-            //Set Volatility
-            laserHeat.Volatility = Math.min(laserHeat.getTotalHeat(), LaserCoolingHandler.volatilityHandler.get(fluids.getFluid()));
-            int range = (int) Math.ceil(laserHeat.Volatility + laserHeat.getTotalHeat());
+
+            int range = (int) Math.ceil(laserHeat.getTotalHeat()*(currentCoolantEff));
+
             //Update recent heat
             recentHeat = laserHeat.copyMe();
             //Propagate Laser
@@ -133,14 +130,14 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         //Dont do anything if a mirror, otherwise check for laser absorbers
                         BlockEntity hitBE = level.getBlockEntity(continueAt);
                         if (hitBE instanceof ILaserAbsorber) {
-                            if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,t)) {
+                            if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,range-t,currentCoolantEff)) {
                                 //This is letting the laser continue if absorb laser tells us too, otherwise we break
                                 break;
                             }
                         } else {
                             //This isnt a laser absorber or a mirror, so we can do normal block stuff
                             //We are at a normal block, so lets break it!
-                            breakingCounter = (breakingCounter + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
+                            breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*currentCoolantEff));
                             double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
                             if (counterNeeded < breakingCounter) {
                                 level.destroyBlock(continueAt,true);
@@ -199,7 +196,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     public HeatData[] hittingLasers = {HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty()};
     public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
         if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
             hittingLasers[inputHelper.get(incoming)] = beamHeat;
         }
@@ -223,7 +220,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             }
         }
 
-        track.Volatility = 0;
         track = HeatData.mergeHeats(HeatData.mergeHeats(hittingLasers),track);
         return track;
     }

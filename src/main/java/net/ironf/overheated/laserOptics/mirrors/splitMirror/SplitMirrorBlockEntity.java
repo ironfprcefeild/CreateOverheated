@@ -4,6 +4,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
@@ -34,34 +35,32 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
 
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int distance) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int rangeRemaining, float eff) {
         Direction imFacing = getBlockState().getValue(SplitMirrorBlock.FACING);
         //Laser not coming through input
         if (imFacing != incoming.getOpposite()) {
             return false;
         }
-        HeatData Heat = new HeatData(beamHeat.Heat / 2, beamHeat.SuperHeat / 2, beamHeat.OverHeat / 2, beamHeat.Volatility / 2);
-        fireLaser(Heat.copyMe(), Direction.UP, 0, distance / 2);
-        fireLaser(Heat.copyMe(), Direction.DOWN, 1, distance / 2);
+        HeatData Heat = new HeatData(beamHeat.Heat / 2, beamHeat.SuperHeat / 2, beamHeat.OverHeat / 2);
+        fireLaser(Heat.copyMe(), Direction.UP, 0, rangeRemaining / 2,eff);
+        fireLaser(Heat.copyMe(), Direction.DOWN, 1, rangeRemaining / 2,eff);
 
         return false;
     }
 
     public double[] breakingCounters = {0,0};
-
     //Assumes all conditions of the diode are met
-    public void fireLaser(HeatData laserHeat, Direction initialDirection, int usedCounter, int distancePenalty){
+    public void fireLaser(HeatData laserHeat, Direction initialDirection, int usedCounter, int range, float eff){
         //If heat is too low, break out
         if (laserHeat.getTotalHeat() < 0)
             return;
 
-        int range = (int) Math.ceil(laserHeat.Volatility + laserHeat.getTotalHeat());
         //Propogate Laser
         //32 Limits the lasers length, its also limited by the heat of the laser
         Direction continueIn = initialDirection;
         BlockPos continueAt = getBlockPos();
         BlockPos currentOrigin = continueAt.relative(continueIn);
-        for (int t = distancePenalty; t < Math.min(32, range) + 16; t++) {
+        for (int t = 0; t < Math.min(32, range) + 16; t++) {
             if (laserHeat.getTotalHeat() < 0.1) {
                 //Laser isout of heat, so we gotta jumpy away
                 break;
@@ -78,14 +77,14 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
                     //Dont do anything if a mirror, otherwise check for laser absorbers
                     BlockEntity hitBE = level.getBlockEntity(continueAt);
                     if (hitBE instanceof ILaserAbsorber) {
-                        if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,t)) {
+                        if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,range-t,eff)) {
                             //This is letting the laser continue if absorb laser tells us too, otherwise we break
                             break;
                         }
                     } else {
                         //This isnt a laser absorber or a mirror, so we can do normal block stuff
                         //We are at a normal block, so lets break it!
-                        breakingCounters[usedCounter] = ( breakingCounters[usedCounter] + Math.min(laserHeat.Volatility, laserHeat.getTotalHeat()));
+                        breakingCounters[usedCounter] = (breakingCounters[usedCounter] + laserHeat.getTotalHeat());
                         double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
                         if (counterNeeded <  breakingCounters[usedCounter]) {
                             level.destroyBlock(continueAt,true);
@@ -95,7 +94,7 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
                     }
                 } else {
                     //We are at a mirror, cause damage and update origin
-                    dealDamage(currentOrigin,continueAt,laserHeat.Volatility);
+                    dealDamage(currentOrigin,continueAt,laserHeat.getTotalHeat());
                     currentOrigin = continueAt;
                 }
             } else {
@@ -103,7 +102,7 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
                 markForEffectCloud(continueAt);
             }
             //We are done with the laser, cause damage
-            dealDamage(currentOrigin,continueAt,laserHeat.Volatility);
+            dealDamage(currentOrigin,continueAt,laserHeat.getTotalHeat());
         }
 
     }

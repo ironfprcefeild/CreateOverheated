@@ -1,7 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.impactDrill;
 
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
@@ -9,7 +8,7 @@ import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkHelper;
+import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +21,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +39,7 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 import static net.minecraft.ChatFormatting.WHITE;
 
-public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAbsorber, HeatSinkHelper, IHaveGoggleInformation {
+public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
     public ImpactDrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -82,7 +80,6 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
 
     float currentTorque = 0;
     float currentHeating = 0;
-    float lastHeatSink = 0;
     int tickTimer = 20;
     int laserTimer = 50;
 
@@ -94,7 +91,6 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         super.tick();
         if (tickTimer-- == 0) {
             tickTimer = 20;
-            lastHeatSink = getHeatSunkenFrom(getBlockPos(), level);
             extractionTick();
         }
         if (laserTimer > 0) {
@@ -130,12 +126,13 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
                 //We have a recipe, lets do stuff
                 ImpactDrillRecipe recipe = orecipe.get();
 
-                //We have the torque and the gas fits
+                //We have the torque and heat, and the gas fits
                 if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded()) {
                     BlockPos output = getOutputPos();
                     if (output == null)
                         return;
                     currentTorque = currentTorque - recipe.getTorqueImpact();
+                    addTemp(recipe.getTorqueImpact());
                     level.setBlockAndUpdate(output, GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
                     particles(output);
                 }
@@ -187,17 +184,23 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
 
     }
 
+    public float getAdjustedTemp(){
+        if (currentTemp <= 0){
+            return 0;
+        }
+        return Math.min(128,Math.abs(currentTemp));
+    }
     public float torqueMultiplier() {
-         return 1+currentHeating /16+lastHeatSink /1024;
+         return (1+ currentHeating/16) * getAdjustedTemp()/64;
     }
 
 
     public float torqueLimit(){
-        return 1 + (Math.max(1,currentHeating) * Math.max(1,lastHeatSink / 64));
+        return 1 + (Math.max(1,currentHeating) * Math.max(1, getAdjustedTemp()/64));
     }
 
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d) {
+    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
         currentHeating = Math.min(beamHeat.getTotalHeat(),16);
         laserTimer = 30;
         return false;
@@ -217,7 +220,6 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         super.read(tag, clientPacket);
         currentTorque = tag.getFloat("torque");
         currentHeating = tag.getFloat("heat");
-        lastHeatSink = tag.getFloat("last_heat_sink");
         tickTimer = tag.getInt("timer");
         laserTimer = tag.getInt("l_timer");
     }
@@ -227,7 +229,6 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
         super.write(tag, clientPacket);
         tag.putFloat("torque",this.currentTorque);
         tag.putFloat("heat",this.currentHeating);
-        tag.putFloat("last_heat_sink",this.lastHeatSink);
         tag.putInt("timer",this.tickTimer);
         tag.putInt("l_timer",this.laserTimer);
     }
@@ -238,10 +239,12 @@ public class ImpactDrillBlockEntity extends SmartBlockEntity implements ILaserAb
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.torque").append(easyFloat(currentTorque)).withStyle(WHITE)));
-        tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.airflow").withStyle(ChatFormatting.WHITE)));
-        tooltip.add(addIndent(Component.literal(easyFloat(lastHeatSink)).withStyle(ChatFormatting.AQUA), 1));
         tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.heat").append(easyFloat(currentHeating)).withStyle(ChatFormatting.RED)));
+
+
         if (isPlayerSneaking){
+            tempAndCoolInfo(tooltip);
+
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.extra_info")));
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.limit_info").append(easyFloat(torqueLimit())),1));
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.multiplier_info").append(easyFloat(torqueMultiplier())),1));

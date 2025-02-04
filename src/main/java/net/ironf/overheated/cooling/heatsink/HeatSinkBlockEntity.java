@@ -1,16 +1,17 @@
-package net.ironf.overheated.steamworks.blocks.heatsink;
+package net.ironf.overheated.cooling.heatsink;
 
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlockEntities;
-import net.ironf.overheated.Overheated;
+import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
 
-public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrentReader, IHaveGoggleInformation {
+public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrentReader, ICoolingBlockEntity, IHaveGoggleInformation {
     public HeatSinkBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -42,7 +43,16 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
         }
     }
 
-    //This method is used by the IHeatSinkReader interface to collect the total heat sink of a series of heat sinks
+
+
+    @Override
+    public float getCoolingUnits(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
+        BlockState myState = level.getBlockState(myPos);
+        return (myState.getValue(BlockStateProperties.FACING).getAxis() == in.getAxis()) ? findTotalSunk(in) : 0f;
+    }
+
+    //This method is used by  to collect the total heat sink of a series of heat sinks
+
     public float findTotalSunk(Direction in){
         float runningTotal = findSunken();
         int i = 1;
@@ -69,7 +79,7 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
             timer = 0;
             return;
         }
-        sunken = strength;
+        sunken = strength/256;
         timer = 5;
     }
 

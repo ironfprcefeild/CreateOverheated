@@ -2,7 +2,6 @@ package net.ironf.overheated.utility.registration;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.simibubi.create.AllFluids;
 import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.builders.FluidBuilder;
 import net.ironf.overheated.Overheated;
@@ -16,7 +15,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.util.function.Consumer;
@@ -32,8 +30,8 @@ public class FluidClasses {
     public static abstract class TintedFluidType extends FluidType {
 
         protected static final int NO_TINT = 0xffffffff;
-        private ResourceLocation stillTexture;
-        private ResourceLocation flowingTexture;
+        private final ResourceLocation stillTexture;
+        private final ResourceLocation flowingTexture;
 
         public TintedFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
             super(properties);
@@ -47,12 +45,12 @@ public class FluidClasses {
 
                 @Override
                 public ResourceLocation getStillTexture() {
-                    return stillTexture;
+                    return  Overheated.asResource("fluid/blaze_nectar_still");
                 }
 
                 @Override
                 public ResourceLocation getFlowingTexture() {
-                    return flowingTexture;
+                    return  Overheated.asResource("fluid/blaze_nectar_flow");
                 }
 
                 @Override
@@ -66,7 +64,7 @@ public class FluidClasses {
                 }
 
                 @Override
-                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+                public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
                                                         int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
                     Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
                     return customFogColor == null ? fluidFogColor : customFogColor;

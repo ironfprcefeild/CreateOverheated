@@ -40,7 +40,7 @@
 
   "coverheated.heat_sink.airflow": "Airflow on Heat Sink",
 
-  "coverheated.thermometer.total_sunken_heat": "Total attached Heat Sink Airflow",
+  "coverheated.thermometer.total_sunken_heat": "Cooling Units on thermometer",
 
   "coverheated.pressure_chamber.crouch_for_chamber_info": "Crouch for Total Chamber Information",
   "coverheated.pressure_chamber.steam.input": "Taking In steam",
@@ -57,7 +57,7 @@
   "coverheated.impact_drill.heat_too_low_1": "This Drill has too low Heat to mine right now",
   "coverheated.impact_drill.heat_too_low_2": " Heat is needed",
   "coverheated.impact_drill.multiplier_info": "Multiplying Torque by: ",
-  "coverheated.impact_drill.extra_info": "--- Based on current Heating and Airflow ---",
+  "coverheated.impact_drill.extra_info": "--- Based on current Heating and Cooling ---",
 
   "coverheated.condenser.heat": "Condenser Temperature",
   "coverheated.condenser.coolant": "Minimum Temperature based on Coolant: ",
@@ -82,6 +82,12 @@
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
+  "coverheated.tooltip.cooling.temperature": "Machine Temperature: ",
+  "coverheated.tooltip.cooling.min_temp": "Minimum Temperature: ",
+  "coverheated.tooltip.cooling.cooling_units": "Cooling Units",
+  "coverheated.tooltip.cooling.outside": "From outside sources: ",
+  "coverheated.tooltip.cooling.passive": "From passive sources: ",
+
   "coverheated.chamber.meter.no_chamber": "This Meter is not associated with any Pressure Chamber",
 
   "coverheated.jei.cooling.recipe_category": "Cooling",

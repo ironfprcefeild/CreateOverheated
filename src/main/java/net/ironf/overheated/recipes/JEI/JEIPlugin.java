@@ -8,8 +8,8 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.laserOptics.colants.LaserCoolantRecipe;
-import net.ironf.overheated.laserOptics.colants.LaserCoolingRecipeCategory;
+import net.ironf.overheated.cooling.colants.CoolantRecipe;
+import net.ironf.overheated.cooling.colants.CoolingRecipeCategory;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeCategory;
 import net.minecraft.client.Minecraft;
@@ -28,13 +28,13 @@ public class JEIPlugin implements IModPlugin {
     }
 
 
-    public static RecipeType<LaserCoolantRecipe> LASER_COOLING_TYPE =
-            new RecipeType<>(new ResourceLocation(Overheated.MODID, "laser_cooling"), LaserCoolantRecipe.class);
+    public static RecipeType<CoolantRecipe> COOLING_TYPE =
+            new RecipeType<>(new ResourceLocation(Overheated.MODID, "cooling"), CoolantRecipe.class);
     public static RecipeType<CondenserRecipe> CONDENSING_TYPE =
             new RecipeType<>(new ResourceLocation(Overheated.MODID, "condensing"), CondenserRecipe.class);
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new LaserCoolingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new CoolingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new CondensingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 
     }
@@ -42,8 +42,8 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-        List<LaserCoolantRecipe> recipesLaserCooling = rm.getAllRecipesFor(LaserCoolantRecipe.Type.INSTANCE);
-        registration.addRecipes(LASER_COOLING_TYPE, recipesLaserCooling);
+        List<CoolantRecipe> recipesLaserCooling = rm.getAllRecipesFor(CoolantRecipe.Type.INSTANCE);
+        registration.addRecipes(COOLING_TYPE, recipesLaserCooling);
 
         List<CondenserRecipe> recipesCondensing = rm.getAllRecipesFor(CondenserRecipe.Type.INSTANCE);
         registration.addRecipes(CONDENSING_TYPE, recipesCondensing);
@@ -54,8 +54,8 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         IModPlugin.super.registerRecipeCatalysts(registration);
-        registration.addRecipeCatalyst(new ItemStack(AllBlocks.DIODE.get().asItem()), LASER_COOLING_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), LASER_COOLING_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(AllBlocks.DIODE.get().asItem()), COOLING_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), COOLING_TYPE);
         registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), CONDENSING_TYPE);
 
     }

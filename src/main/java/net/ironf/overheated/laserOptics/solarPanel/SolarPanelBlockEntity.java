@@ -63,7 +63,7 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
     }
 
     public HeatData getRecentReading(){
-        return new HeatData(recentReading,0,0,recentReading == 0 ? 0 : 7);
+        return new HeatData(recentReading,0,0);
     }
 
     @Override

@@ -1,12 +1,11 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.CreateClient;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
-import net.ironf.overheated.laserOptics.colants.LaserCoolingHandler;
+import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.AllSteamFluids;
@@ -15,7 +14,6 @@ import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -80,8 +78,8 @@ public class Overheated
     public void onServerStarting(ServerStartingEvent event)
     {
         LOGGER.info("Overheated is running on the server");
-        LaserCoolingHandler.setLevel(event.getServer().overworld());
-        LaserCoolingHandler.generateHandler();
+        CoolingHandler.setLevel(event.getServer().overworld());
+        CoolingHandler.generateHandler();
         CondensingRecipeHandler.setLevel(event.getServer().overworld());
         CondensingRecipeHandler.generateHandler();
     }

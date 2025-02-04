@@ -15,7 +15,7 @@ import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
-import net.ironf.overheated.steamworks.blocks.heatsink.HeatSinkBlock;
+import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
-import static com.simibubi.create.foundation.data.BuilderTransformers.casing;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 

@@ -12,7 +12,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.laserOptics.colants.LaserCoolantRecipe;
 import net.ironf.overheated.recipes.JEI.JEIAssistant;
 import net.ironf.overheated.recipes.JEI.JEIPlugin;
 import net.minecraft.ChatFormatting;
@@ -20,7 +19,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import static com.simibubi.create.compat.jei.category.CreateRecipeCategory.getRenderedSlot;
