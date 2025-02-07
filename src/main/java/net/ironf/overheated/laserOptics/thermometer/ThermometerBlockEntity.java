@@ -10,6 +10,7 @@ import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,11 +50,12 @@ public class ThermometerBlockEntity extends SmartMachineBlockEntity implements I
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         GoggleHelper.heatTooltip(tooltip,lastRead, HeatDisplayType.READING);
 
-        float sunken = getCoolingUnits(getBlockPos(),level);
+        float sunken = getCoolingUnits();
         if (sunken > 0) {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.thermometer.total_sunken_heat").withStyle(ChatFormatting.WHITE)));
             tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(sunken)).withStyle(ChatFormatting.AQUA), 1));
         }
         return true;
     }
+
 }

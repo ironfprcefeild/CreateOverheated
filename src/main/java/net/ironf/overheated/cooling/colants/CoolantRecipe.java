@@ -100,7 +100,7 @@ public class CoolantRecipe implements Recipe<SimpleContainer> {
             FluidIngredient fluid = FluidIngredient.deserialize(GsonHelper.getAsJsonObject(pSerializedRecipe,"input_fluid"));
             Integer heat = GsonHelper.getAsInt(pSerializedRecipe,"heat");
             Float efficiency = GsonHelper.getAsFloat(pSerializedRecipe,"efficiency");
-            Float minTemp = Math.abs(GsonHelper.getAsFloat(pSerializedRecipe,"minTemp"));
+            Float minTemp = Math.abs(GsonHelper.getAsFloat(pSerializedRecipe,"min_temp"));
 
 
             return new CoolantRecipe(id,fluid,heat,efficiency,minTemp);

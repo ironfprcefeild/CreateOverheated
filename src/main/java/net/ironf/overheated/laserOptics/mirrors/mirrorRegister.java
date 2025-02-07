@@ -1,12 +1,8 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
-import com.simibubi.create.Create;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
-import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,7 +60,7 @@ public class mirrorRegister {
                 heat.Heat = heat.SuperHeat * 4;
                 heat.SuperHeat = 0;
             } else {
-                heat.collapseSuperHeat(1);
+                heat.expandSuperHeat(1);
             }
             return incoming;
         });
@@ -73,7 +69,7 @@ public class mirrorRegister {
                 heat.SuperHeat = heat.OverHeat * 4;
                 heat.OverHeat = 0;
             } else {
-                heat.collapseOverHeat(1);
+                heat.expandOverHeat(1);
             }
             return incoming;
         });

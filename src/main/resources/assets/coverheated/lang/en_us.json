@@ -88,6 +88,11 @@
   "coverheated.tooltip.cooling.outside": "From outside sources: ",
   "coverheated.tooltip.cooling.passive": "From passive sources: ",
 
+  "coverheated.cooler.header": "--- Passing on Cooling to Faced Block ---",
+  "coverheated.cooler.no_coolant": "No Coolant",
+
+
+
   "coverheated.chamber.meter.no_chamber": "This Meter is not associated with any Pressure Chamber",
 
   "coverheated.jei.cooling.recipe_category": "Cooling",

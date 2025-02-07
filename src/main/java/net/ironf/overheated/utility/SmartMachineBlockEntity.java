@@ -1,6 +1,5 @@
 package net.ironf.overheated.utility;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
@@ -30,7 +28,7 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
 
     }
 
-    public float fiveTickTimer = 5;
+    public int fiveTickTimer = 5;
     @Override
     public void tick() {
         super.tick();
@@ -40,12 +38,14 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         }
     }
     public void fifthTick(){
-        coolingStep();
+        if (doCooling()){
+            coolingStep();
+        }
     }
 
     //Cooling -----
 
-    public float currentTemp = 0;
+    public float currentTemp = 10;
     public float coolingProgress = 0;
     public float getCurrentTemp(){
         return currentTemp;
@@ -57,14 +57,22 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
     public float getCoolingUnits(BlockPos pos, Level level){
         return getCoolingData(pos,level).coolingUnits;
     }
-    public CoolingData getCoolingData(BlockPos pos, Level level){
-        CoolingData runningTotal = new CoolingData(0,1000);
-        for (Direction d : Iterate.directions){
-            BlockPos check = pos.relative(d);
-            BlockEntity be = level.getBlockEntity(check);
-            if (be instanceof ICoolingBlockEntity){
-                runningTotal.add(((ICoolingBlockEntity) be).getCoolingData(check,pos,level,d));
-            }
+    public float getCoolingUnits(){
+        return getCoolingData(getBlockPos(),level).coolingUnits;
+    }
+
+    public CoolingData getCoolingData(){
+        return getCoolingData(getBlockPos(),level);
+    }
+
+    //Pos is the blockpos of the current block entity, which can be useful to pass in for some applications
+    public CoolingData getCoolingData(BlockPos pos, Level level) {
+        return getCoolingData(pos,level,Iterate.directions);
+    }
+    public CoolingData getCoolingData(BlockPos pos, Level level, Direction[] directions){
+        CoolingData runningTotal = new CoolingData(0,10000);
+        for (Direction d : directions){
+            runningTotal.add(getCoolingDataFromDirection(pos,level,d));
         }
         if (hasPassiveCooling()){
             runningTotal.add(getPassiveCooling());
@@ -72,6 +80,19 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         return runningTotal;
     }
 
+    public CoolingData getCoolingDataFromDirection(BlockPos pos, Level level, Direction d){
+        BlockPos check = pos.relative(d);
+        BlockEntity be = level.getBlockEntity(check);
+        if (be instanceof ICoolingBlockEntity){
+            return (((ICoolingBlockEntity) be).getGeneratedCoolingData(check,pos,level,d));
+        }
+        return CoolingData.empty();
+    }
+
+
+    public boolean doCooling(){
+        return hasPassiveCooling();
+    }
     public boolean hasPassiveCooling(){
         return false;
     }
@@ -79,13 +100,16 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         return null;
     }
     public float getCooledDifficulty(){
-        return (float) Math.pow(Math.abs(currentTemp),3);
+        return (float) Math.pow(currentTemp >= 0 ? 2 : Math.abs(currentTemp),2);
     }
     public void coolingStep(){
         CoolingData cooling = getCoolingData(getBlockPos(),level);
         coolingProgress += cooling.coolingUnits;
-        if (currentTemp > cooling.minTemp && coolingProgress >= getCooledDifficulty()){
-            currentTemp--;
+        if (currentTemp > cooling.minTemp){
+            while(coolingProgress >= getCooledDifficulty()) {
+                coolingProgress = coolingProgress - getCooledDifficulty();
+                currentTemp--;
+            }
         }
     }
 
@@ -111,9 +135,10 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         } else {
             tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooling.coolingUnits)).withStyle(ChatFormatting.AQUA), 1));
         }
-
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.min_temp").withStyle(ChatFormatting.WHITE)));
-        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooling.minTemp)).withStyle(ChatFormatting.AQUA), 1));
+        if (cooling.minTemp != 10000) {
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.min_temp").withStyle(ChatFormatting.WHITE)));
+            tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooling.minTemp)).withStyle(ChatFormatting.AQUA), 1));
+        }
     }
 
     //Read/Writes -----
@@ -123,6 +148,7 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         super.read(tag, clientPacket);
         currentTemp = tag.getFloat("current_temp");
         coolingProgress = tag.getFloat("cooling_progress");
+        fiveTickTimer = tag.getInt("five_tick_timer");
     }
 
     @Override
@@ -130,6 +156,7 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         super.write(tag, clientPacket);
         tag.putFloat("current_temp",currentTemp);
         tag.putFloat("cooling_progress",coolingProgress);
+        tag.putInt("five_tick_timer",fiveTickTimer);
     }
 
     //Goggles ------

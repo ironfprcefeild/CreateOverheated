@@ -7,5 +7,6 @@
     "fluid": "coverheated:nihilite_gas",
     "amount": 1
   },
-  "minimum_torque": 40
+  "minimum_torque": 20,
+  "torque_impact": 17
 }

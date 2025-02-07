@@ -1,9 +1,10 @@
 {
-  "type": "coverheated:laser_cooling",
+  "type": "coverheated:cooling",
   "input_fluid": {
     "fluid": "coverheated:distilled_water",
     "amount": 1
   },
   "heat": 15,
-  "efficiency": 1
+  "min_temp": 20,
+  "efficiency": 1.2
 }

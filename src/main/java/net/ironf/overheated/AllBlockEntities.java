@@ -2,6 +2,7 @@ package net.ironf.overheated;
 
 import com.simibubi.create.content.kinetics.base.HalfShaftVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
@@ -74,6 +75,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<HeatSinkBlockEntity> HEAT_SINK = REGISTRATE
             .blockEntity("heat_sink", HeatSinkBlockEntity::new)
             .validBlocks(AllBlocks.HEAT_SINK)
+            .register();
+
+    //Cooler
+    public static final BlockEntityEntry<CoolerBlockEntity> COOLER = REGISTRATE
+            .blockEntity("cooler", CoolerBlockEntity::new)
+            .validBlocks(AllBlocks.COOLER)
             .register();
 
     //Condenser

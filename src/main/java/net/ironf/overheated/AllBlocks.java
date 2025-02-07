@@ -5,6 +5,7 @@ import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.ironf.overheated.cooling.cooler.CoolerBlock;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
@@ -178,8 +179,6 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Blazeglass Pane")
                     .register();
-
-    //TODO figure out how casings work, and add sprite shift stuff
     public static final BlockEntry<CasingBlock> LASER_CASING = REGISTRATE.block("laser_casing", CasingBlock::new)
             .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK))
             .transform(BuilderTransformers.casing(() -> AllSpriteShifts.LASER_CASING))
@@ -290,6 +289,17 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    //Cooler
+    public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE
+            .block("cooler", CoolerBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
     //Pressure Chamber
 
     public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
@@ -298,7 +308,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
     public static final BlockEntry<Block> CHAMBER_HEAT_SINK = REGISTRATE
@@ -307,7 +317,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 

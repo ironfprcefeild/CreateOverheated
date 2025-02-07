@@ -112,7 +112,7 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
         @Override
         public ImpactDrillRecipe fromJson(ResourceLocation id, JsonObject j) {
             float torque = GsonHelper.getAsFloat(j,"minimum_torque");
-            float torqueImpact = j.has("torque_impact") ? GsonHelper.getAsFloat(j,"torque_impact") : torque / 4;
+            float torqueImpact = j.has("torque_impact") ? GsonHelper.getAsFloat(j,"torque_impact") : torque / 2;
             torqueImpact = torqueImpact > torque ? torque / 4 : torqueImpact;
             return new ImpactDrillRecipe(id,
                     torque,

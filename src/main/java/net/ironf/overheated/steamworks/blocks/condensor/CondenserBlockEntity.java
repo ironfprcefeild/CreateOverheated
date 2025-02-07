@@ -63,6 +63,11 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
     }
 
     @Override
+    public boolean doCooling() {
+        return true;
+    }
+
+    @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tempAndCoolInfo(tooltip);
         return true;

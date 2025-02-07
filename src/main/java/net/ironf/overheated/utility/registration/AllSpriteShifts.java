@@ -11,7 +11,8 @@ import net.ironf.overheated.Overheated;
 
 public class AllSpriteShifts {
 
-    public static final CTSpriteShiftEntry PRESSURIZED_CASING = omni("pressurized_casing"),
+    public static final CTSpriteShiftEntry
+            PRESSURIZED_CASING = omni("pressurized_casing"),
             LASER_CASING = omni("laser_casing");
 
     public static CTSpriteShiftEntry omni(String name) {

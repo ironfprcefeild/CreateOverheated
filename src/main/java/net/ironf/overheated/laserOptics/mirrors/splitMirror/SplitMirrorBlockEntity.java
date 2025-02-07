@@ -1,10 +1,8 @@
 package net.ironf.overheated.laserOptics.mirrors.splitMirror;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
@@ -13,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAbsorber {
@@ -94,17 +92,17 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
                     }
                 } else {
                     //We are at a mirror, cause damage and update origin
-                    dealDamage(currentOrigin,continueAt,laserHeat.getTotalHeat());
+                    dealDamage(laserHeat.getTotalHeat());
                     currentOrigin = continueAt;
                 }
             } else {
                 //Render the little beam
                 markForEffectCloud(continueAt);
             }
-            //We are done with the laser, cause damage
-            dealDamage(currentOrigin,continueAt,laserHeat.getTotalHeat());
-        }
 
+        }
+        //We are done with the laser, cause damage
+        dealDamage(laserHeat.getTotalHeat());
     }
     private void markForEffectCloud(BlockPos continueAt) {
         RandomSource rand = level.random;
@@ -117,12 +115,19 @@ public class SplitMirrorBlockEntity extends SmartBlockEntity implements ILaserAb
         level.addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
     }
 
+    public ArrayList<AABB> damageZones = new ArrayList<>();
+    private void addToDamage(BlockPos origin, BlockPos ending){
+        damageZones.add(new AABB(origin,ending));
+        damageZones.add(new AABB(origin.getX()+1,origin.getY()+1,origin.getZ()+1
+                ,ending.getX()-1,ending.getY()-1,ending.getZ()-1));
+
+    }
     //public static final Holder<DamageType> Ions = Holder.direct(new DamageType("ions", DamageScaling.NEVER,2f));
-    private void dealDamage(BlockPos origin, BlockPos Ending, float volatility) {
-        AABB bounds = new AABB(origin,Ending);
-        List<Entity> targets = level.getEntities(null,bounds);
+    private void dealDamage(float volatility) {
+        List<Entity> targets = new ArrayList<>();
+        damageZones.forEach((bounds) -> targets.addAll(level.getEntities(null,bounds)));
         for (Entity entity : targets){
-            if (!entity.isAlive() || !entity.getBoundingBox().intersects(bounds)) {
+            if (!entity.isAlive()) {
                 continue;
             }
             entity.setRemainingFireTicks((int) (volatility * 2));

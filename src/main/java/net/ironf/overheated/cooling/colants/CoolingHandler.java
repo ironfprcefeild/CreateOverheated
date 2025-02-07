@@ -33,7 +33,7 @@ public class CoolingHandler implements ResourceManagerReloadListener {
             for (FluidStack f : r.getInput().getMatchingFluidStacks()){
                 heatHandler.put(f.getFluid(),r.getHeat());
                 efficiencyHandler.put(f.getFluid(),r.getEfficiency());
-                minTempHandler.put(f.getFluid(),r.getMinTemp());
+                minTempHandler.put(f.getFluid(),-Math.abs(r.getMinTemp()));
             }
         }
     }

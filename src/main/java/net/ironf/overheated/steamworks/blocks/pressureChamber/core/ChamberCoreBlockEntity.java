@@ -159,6 +159,10 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         }
     }
 
+    @Override
+    public boolean doCooling() {
+        return true;
+    }
 
     //TODO cancelling for no reason
     private void cancelRecipe() {

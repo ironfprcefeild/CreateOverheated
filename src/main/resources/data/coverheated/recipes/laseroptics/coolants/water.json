@@ -1,9 +1,10 @@
 {
-  "type": "coverheated:laser_cooling",
+  "type": "coverheated:cooling",
   "input_fluid": {
     "fluid": "minecraft:water",
     "amount": 1
   },
   "heat": 5,
-  "volatility": 1
+  "min_temp": 15,
+  "efficiency": 1
 }

@@ -46,9 +46,8 @@ public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrent
 
 
     @Override
-    public float getCoolingUnits(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
-        BlockState myState = level.getBlockState(myPos);
-        return (myState.getValue(BlockStateProperties.FACING).getAxis() == in.getAxis()) ? findTotalSunk(in) : 0f;
+    public float getGeneratedCoolingUnits(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
+        return (getBlockState().getValue(BlockStateProperties.FACING).getAxis() == in.getAxis()) ? findTotalSunk(in) : 0f;
     }
 
     //This method is used by  to collect the total heat sink of a series of heat sinks
