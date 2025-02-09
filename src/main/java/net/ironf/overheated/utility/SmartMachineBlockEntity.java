@@ -104,8 +104,8 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
     }
     public void coolingStep(){
         CoolingData cooling = getCoolingData(getBlockPos(),level);
-        coolingProgress += cooling.coolingUnits;
         if (currentTemp > cooling.minTemp){
+            coolingProgress += cooling.coolingUnits;
             while(coolingProgress >= getCooledDifficulty()) {
                 coolingProgress = coolingProgress - getCooledDifficulty();
                 currentTemp--;
