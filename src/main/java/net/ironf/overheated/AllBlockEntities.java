@@ -15,6 +15,7 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
+import net.ironf.overheated.steamworks.blocks.meteExtender.MeterExtenderBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
@@ -65,6 +66,13 @@ public class AllBlockEntities {
             .blockEntity("thermometer", ThermometerBlockEntity::new)
             .validBlocks(AllBlocks.THERMOMETER)
             .register();
+
+    //Meter Extender
+    public static final BlockEntityEntry<MeterExtenderBlockEntity> METER_EXTENDER = REGISTRATE
+            .blockEntity("meter_extender", MeterExtenderBlockEntity::new)
+            .validBlocks(AllBlocks.METER_EXTENDER)
+            .register();
+
     //Solar Panel
     public static final BlockEntityEntry<SolarPanelBlockEntity> SOLAR_PANEL = REGISTRATE
             .blockEntity("solar_panel", SolarPanelBlockEntity::new)

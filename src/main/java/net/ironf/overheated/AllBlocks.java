@@ -18,6 +18,7 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
+import net.ironf.overheated.steamworks.blocks.meteExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
@@ -216,14 +217,7 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Nihilistone")
                     .register();
-    /*TODO Next steps:
-      -nihilite deposit and deposit block
-      -impacting recipe
-      -add particle and sfx to impact drill
-      -nihilite gas recipes
-      -nihilite liquid recipes
 
-     */
 
     ////Steam Works
     //Steam Vent
@@ -311,15 +305,7 @@ public class AllBlocks {
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
-    public static final BlockEntry<Block> CHAMBER_HEAT_SINK = REGISTRATE
-            .block("pressure_chamber_heat_sink", Block::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
-            .defaultLoot()
-            .register();
+
 
 
 
@@ -455,6 +441,18 @@ public class AllBlocks {
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
+
+    //Meter Extender
+    public static final BlockEntry<MeterExtenderBlock> METER_EXTENDER = REGISTRATE
+            .block("meter_extender", MeterExtenderBlock::new)
+            .initialProperties(SharedProperties::wooden)
+            .properties(p -> p.sound(SoundType.WOOD))
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
     //Solar Panel
     public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
             .block("solar_panel", SolarPanelBlock::new)

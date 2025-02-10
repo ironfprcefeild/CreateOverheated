@@ -51,7 +51,9 @@ public class GoggleHelper {
     }
 
 
-
+    public static void newLine(List<Component> tooltip){
+        tooltip.add(Component.literal(""));
+    }
 
     public static String easyFloat(float num){
         int compare = (int) num;

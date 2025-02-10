@@ -37,17 +37,20 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         IItemHandler availableItems = chamber.getInputItems();
         if (availableItems == null)
             return false;
+
         //Check if pressure is high enough and enough steam is in the chamber
         int chamberPressure = chamber.getPressure();
         if (!(chamberPressure >= SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken)) {
             return false;
         }
+
         //Check if Heat is high enough
         if (!(chamber.getLaserHeat().getHeatOfLevel(minimumHeatRating) >= laserHeat))
             return false;
-        //Make a list to store outputs eventually.
 
+        //Make a list to store outputs eventually.
         List<ItemStack> recipeOutputItems = new ArrayList<>();
+
         //Simulate it first, and then do it again if all goes well
         for (boolean simulate : Iterate.trueAndFalse) {
             //If we are doing a full simulate, we should not actually extract anything, so return on the second lap.
@@ -59,6 +62,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                 }
                 return true;
             }
+
             //Get some information
             int[] extractedItemsFromSlot = new int[availableItems.getSlots()];
             List<Ingredient> ingredients = new LinkedList<>(getIngredients());
@@ -73,6 +77,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                     if (simulate && availableItems.getStackInSlot(slot).getCount() <= extractedItemsFromSlot[slot])
                         continue;
                     ItemStack extracted = availableItems.extractItem(slot, 1, true);
+
                     //Item does not match, check next slot
                     if (!ingredient.test(extracted))
                         continue;
