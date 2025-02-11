@@ -151,7 +151,7 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.GILDED_BLACKSTONE))
+                            .sound(SoundType.ANCIENT_DEBRIS))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("blazesteel_block"))
                     .simpleItem()

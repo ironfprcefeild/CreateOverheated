@@ -82,6 +82,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                     if (!ingredient.test(extracted))
                         continue;
                     if (!simulate)
+                        //TODO make this extract a count of items
                         //ACTUALLY FOR REAL extract the item because we are not simulating
                         availableItems.extractItem(slot, 1, false);
                     //Mark an extracted item
@@ -278,7 +279,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             buf.writeFloat(recipe.heatAdded);
             buf.writeInt(recipe.ticksTaken);
             buf.writeInt(recipe.minimumHeatRating);
-            //recipe.getCatalyst().toNetwork(buf);
         }
     }
 

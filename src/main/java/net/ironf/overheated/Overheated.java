@@ -39,7 +39,7 @@ public class Overheated
 
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(Overheated::init);
+
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -54,7 +54,7 @@ public class Overheated
         AllBlockEntities.register();
         AllRecipes.register(modEventBus);
         AllFeatures.register();
-
+        modEventBus.addListener(Overheated::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
 
 

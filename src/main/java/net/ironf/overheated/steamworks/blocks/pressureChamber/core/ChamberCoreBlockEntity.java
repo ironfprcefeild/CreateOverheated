@@ -148,7 +148,7 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         }
 
         //Handle Heat
-        if ((currentTemp >= 0 ? 0 : currentTemp) * Math.max(1,currentPressure) > 1024){
+        if ((currentTemp <= 0 ? 0 : currentTemp) * Math.max(1,currentPressure) > 1024){
             causeExplode();
         }
 
@@ -219,7 +219,7 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
     private void causeExplode() {
         BlockPos pos = getBlockPos();
         currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
-        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),4f * currentPressure, Level.ExplosionInteraction.TNT);
+        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),6f * currentPressure, Level.ExplosionInteraction.TNT);
     }
 
     public void addHeat(float heatAdded) {
@@ -262,16 +262,15 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         if (checkForValidity()) {
             containedFluidTooltip(tooltip, isPlayerSneaking, InputLazyFluidHandler);
 
-            newLine(tooltip);
             GoggleHelper.heatTooltip(tooltip, laserHeat, HeatDisplayType.ABSORB);
 
-            newLine(tooltip);
             tempAndCoolInfo(tooltip);
-            tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.explode").append(easyFloat(1024f/Math.max(1,currentPressure))),1));
+            tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.explode")));
+            tooltip.add(addIndent(Component.literal(String.valueOf(Math.ceil((double) 1024 /Math.max(1,currentPressure)))),1));
 
-            newLine(tooltip);
             if (currentRecipe != null) {
-                tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.time_left").append(easyFloat(recipeTimer / 20f)), 1));
+                tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.time_left")));
+                tooltip.add(addIndent(Component.literal(String.valueOf(Math.ceil((double) recipeTimer / 20))),1));
             } else {
                 tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.no_recipe")));
 
