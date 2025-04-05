@@ -53,6 +53,7 @@ public class AllSteamFluids {
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
+                        .explosionSafety(9 - (PressureLevel+HeatRating))
                         .register());
     }
 

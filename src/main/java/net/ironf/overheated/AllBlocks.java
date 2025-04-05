@@ -5,6 +5,9 @@ import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
+import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlock;
+import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
 import net.ironf.overheated.cooling.cooler.CoolerBlock;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
@@ -286,6 +289,39 @@ public class AllBlocks {
     //Cooler
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE
             .block("cooler", CoolerBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
+    //Channel Core
+    public static final BlockEntry<ChannelCoreBlock> CHANNEL_CORE = REGISTRATE
+            .block("channel_core", ChannelCoreBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
+    //Channel Absorber
+    public static final BlockEntry<ChannelAbsorberBlock> CHANNEL_ABSORBER = REGISTRATE
+            .block("channel_absorber", ChannelAbsorberBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
+    //Channel Expeller
+    public static final BlockEntry<ChannelExpellerBlock> CHANNEL_EXPELLER = REGISTRATE
+            .block("channel_expeller", ChannelExpellerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()

@@ -2,6 +2,10 @@ package net.ironf.overheated;
 
 import com.simibubi.create.content.kinetics.base.HalfShaftVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
+import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlockEntity;
+import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
+import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
 import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
@@ -89,6 +93,24 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<CoolerBlockEntity> COOLER = REGISTRATE
             .blockEntity("cooler", CoolerBlockEntity::new)
             .validBlocks(AllBlocks.COOLER)
+            .register();
+
+    //Chill Channel Core
+    public static final BlockEntityEntry<ChannelCoreBlockEntity> CHANNEL_CORE = REGISTRATE
+            .blockEntity("channel_core", ChannelCoreBlockEntity::new)
+            .validBlocks(AllBlocks.CHANNEL_CORE)
+            .register();
+
+    //Chill Channel Absorber
+    public static final BlockEntityEntry<ChannelAbsorberBlockEntity> CHANNEL_ABSORBER = REGISTRATE
+            .blockEntity("channel_absorber", ChannelAbsorberBlockEntity::new)
+            .validBlocks(AllBlocks.CHANNEL_ABSORBER)
+            .register();
+
+    //Chill Channel Expeller
+    public static final BlockEntityEntry<ChannelExpellerBlockEntity> CHANNEL_EXPELLER = REGISTRATE
+            .blockEntity("channel_expeller", ChannelExpellerBlockEntity::new)
+            .validBlocks(AllBlocks.CHANNEL_EXPELLER)
             .register();
 
     //Condenser

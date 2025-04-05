@@ -2,17 +2,10 @@ package net.ironf.overheated.utility.registration;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.simibubi.create.AllFluids;
-import com.simibubi.create.CreateClient;
-import com.simibubi.create.content.decoration.encasing.CasingConnectivity;
-import com.simibubi.create.foundation.block.connected.CTModel;
-import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.Color;
-import com.simibubi.create.foundation.utility.RegisteredObjects;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
@@ -26,13 +19,11 @@ import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -43,13 +34,10 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -58,12 +46,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static net.ironf.overheated.gasses.GasMapper.GasMap;
 import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
 
@@ -177,7 +163,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     @Override
                     public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
                         level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
-                        level.scheduleTick(pos,createdBlock.get(),2, TickPriority.LOW);
+                        level.scheduleTick(pos,createdBlock.get(),2, TickPriority.NORMAL);
                     }
                     @Override
                     public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
@@ -239,6 +225,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public int upperTickDelay;
         public int lowerTickDelay;
 
+        public int pressurizeChance;
         public Direction direction;
 
         public gasBlockEntry<T> defaultFlow(Direction set){
@@ -254,7 +241,15 @@ public class OverheatedRegistrate extends CreateRegistrate {
             lowerTickDelay = lower;
             return this;
         }
-
+        //1 is maximum, the explosion risk is equal 1/(safety). A 0 or less indicates perfectly safe
+        public gasBlockEntry<T> explosionSafety(int safety) {
+            if (safety == 0){
+                pressurizeChance = -1;
+            } else {
+                pressurizeChance = Math.max(safety, -1);
+            }
+            return this;
+        }
         public gasBlockEntry<T> overideTexturing(String location){
             this.textureOver = location;
             return this;
@@ -269,7 +264,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .noCollission()
                             .replaceable()
                             .destroyTime(-1)
-                            .noLootTable(),shiftChance,lowerTickDelay,upperTickDelay,direction)));
+                            .noLootTable(),shiftChance, pressurizeChance, lowerTickDelay,upperTickDelay,direction)));
 
         }
 

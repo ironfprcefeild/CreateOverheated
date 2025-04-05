@@ -6,8 +6,7 @@
     },
     {
       "amount": 250,
-      "fluid": "coverheated:distilled_water",
-      "nbt": {}
+      "fluid": "coverheated:distilled_water"
     }
   ],
   "results": [
@@ -17,8 +16,7 @@
     },
     {
       "amount": 250,
-      "fluid": "coverheated:purified_water",
-      "nbt": {}
+      "fluid": "coverheated:purified_water"
     }
   ]
 }

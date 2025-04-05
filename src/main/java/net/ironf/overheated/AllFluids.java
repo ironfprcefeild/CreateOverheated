@@ -35,9 +35,7 @@ public class AllFluids {
      */
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> SLUDGE =
-            REGISTRATE.standardFluid("sludge",
-                            FluidClasses.SolidRenderedPlaceableFluidType.create(0xEAAE2F,
-                                    () -> 1f / 8f,"sludge"))
+            REGISTRATE.standardFluid("sludge")
                     .lang("Sludge")
                     .properties(b -> b.viscosity(2000)
                             .density(1400))
@@ -45,6 +43,7 @@ public class AllFluids {
                             .tickRate(25)
                             .slopeFindDistance(3)
                             .explosionResistance(100f))
+                    .source(ForgeFlowingFluid.Source::new)
                     .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> PURIFIED_WATER =

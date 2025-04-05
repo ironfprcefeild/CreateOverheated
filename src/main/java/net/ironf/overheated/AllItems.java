@@ -1,6 +1,7 @@
 package net.ironf.overheated;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.minecraft.world.item.Item;
 
@@ -39,6 +40,12 @@ public class AllItems {
     //Steam Stuff
     public static final ItemEntry<Item> INCOMPLETE_PRESSURIZED_CASING = craftingIngredient("incomplete_pressurized_casing");
     public static final ItemEntry<Item> TURBINE_COMPONENTS = craftingIngredient("turbine_components");
+
+
+    //Chill Channel Stuff
+    public static final ItemEntry<ChannelWrenchItem> ChannelWrench = REGISTRATE.item("channel_wrench",ChannelWrenchItem::new)
+            .properties(p -> p.stacksTo(1))
+            .register();
 
 
     public static ItemEntry<Item> craftingIngredient(String name){

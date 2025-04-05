@@ -1,7 +1,6 @@
 package net.ironf.overheated.gasses;
 
 import com.simibubi.create.foundation.utility.Iterate;
-import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,17 +11,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GasBlock extends Block {
-    public GasBlock(Properties p, int shiftChance, int lowerTickDelay, int upperTickDelay, Direction direction) {
+    public GasBlock(Properties p, int shiftChance, int pressurizeChance, int lowerTickDelay, int upperTickDelay, Direction direction) {
         super(p);
         this.shiftChance = shiftChance;
+        this.pressurizeChance = pressurizeChance;
         this.upperTickDelay = upperTickDelay;
         this.lowerTickDelay = lowerTickDelay;
         this.direction = direction;
@@ -30,6 +28,7 @@ public class GasBlock extends Block {
 
 
     protected final int shiftChance;
+    protected final int pressurizeChance;
     protected final int upperTickDelay;
     protected final int lowerTickDelay;
 
@@ -43,24 +42,38 @@ public class GasBlock extends Block {
     }
 
 
+
+
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        Direction randomShift =
-                randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
-                        ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
-                        : direction;
-        BlockPos target = pos.relative(randomShift);
+
+        boolean shift = randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance;
+        Direction movement = shift
+                ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
+                : direction;
+
+        BlockPos target = pos.relative(movement);
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (targetState == Blocks.AIR.defaultBlockState()) {
                 world.setBlockAndUpdate(target, world.getBlockState(pos));
                 world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
-                world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
+                /*
+                if (!shift && pressurizeChance > 0 && targetState.getBlock() == this && randomSource.nextIntBetweenInclusive(0, pressurizeChance) == 0){
+                    world.explode(null,pos.getX(),pos.getY(),pos.getZ(),(24f /pressurizeChance), Level.ExplosionInteraction.TNT);
+                }
+
+                 */
+
+                world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }
         } else {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
+
+
+
     }
 
 

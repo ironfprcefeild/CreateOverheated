@@ -147,16 +147,17 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         }
                     } else {
                         //We are at a mirror, cause damage and update origin
-                        addToDamage(currentOrigin,continueAt);
+                        //addToDamage(currentOrigin,continueAt);
                         currentOrigin = continueAt;
                     }
                 } else {
                     //Render the little beam
                     markForEffectCloud(continueAt);
+                    addToDamage(continueAt.relative(continueIn.getOpposite()),continueAt);
                 }
             }
             //We are done with the laser, cause damage
-            addToDamage(currentOrigin,continueAt);
+            //addToDamage(currentOrigin,continueAt);
         } else {
             noCoolant = true;
         }
@@ -176,7 +177,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     //public static final Holder<DamageType> Ions = Holder.direct(new DamageType("ions", DamageScaling.NEVER,2f));
     public ArrayList<AABB> damageZones = new ArrayList<>();
     private void addToDamage(BlockPos origin, BlockPos ending){
-        damageZones.add(new AABB(origin,ending));
         damageZones.add(new AABB(origin.getX()+1,origin.getY()+1,origin.getZ()+1
                                 ,ending.getX()-1,ending.getY()-1,ending.getZ()-1));
 
@@ -189,7 +189,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 continue;
             }
             entity.setRemainingFireTicks((int) (volatility * 2));
-            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.1));
+            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.5));
         }
 
 

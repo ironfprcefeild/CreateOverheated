@@ -7,8 +7,7 @@
     },
     {
       "amount": 25,
-      "fluid": "minecraft:water",
-      "nbt": {}
+      "fluid": "minecraft:water"
     }
   ],
   "results": [

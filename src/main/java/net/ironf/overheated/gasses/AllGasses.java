@@ -22,6 +22,7 @@ public class AllGasses {
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
                     .tickDelays(5,8)
+                    .explosionSafety(0)
                     .register());
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> nihilite_gas = REGISTRATE.gas("nihilite_gas",GasFluidSource::new)
@@ -31,6 +32,7 @@ public class AllGasses {
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
                     .tickDelays(2,8)
+                    .explosionSafety(10)
                     .register());
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> ammonia = REGISTRATE.gas("ammonia",GasFluidSource::new)
@@ -40,6 +42,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(2,5)
+                    .explosionSafety(12)
                     .register());
 
     public static void register(){

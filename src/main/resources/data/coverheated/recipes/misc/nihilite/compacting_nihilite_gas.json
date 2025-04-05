@@ -13,8 +13,7 @@
     },
     {
       "amount": 50,
-      "fluid": "coverheated:ammonia",
-      "nbt": {}
+      "fluid": "coverheated:ammonia"
     }
   ]
 }

@@ -80,7 +80,8 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
         Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
         if (facing.getOpposite() == in
             && (effTracker > 0)
-            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())) {
+            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
+            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL_ABSORBER.get())) {
 
             return collectCooling(myPos,facing);
         } else {
