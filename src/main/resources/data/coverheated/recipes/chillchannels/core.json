@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " r ",
+    "sss",
+    "dfd"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:end_rod"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "s": {
+      "item": "coverheated:chill_steel"
+    },
+    "f": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "result": {
+    "item": "coverheated:channel_core",
+    "count": 1
+  }
+}

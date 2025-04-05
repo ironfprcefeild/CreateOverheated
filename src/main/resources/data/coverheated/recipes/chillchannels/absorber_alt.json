@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "coverheated:channel_expeller"
+    }
+  ],
+  "result": {
+    "item": "coverheated:channel_absorber",
+    "count": 1
+  }
+}
