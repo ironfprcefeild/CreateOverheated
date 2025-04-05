@@ -47,7 +47,12 @@
   "coverheated.chill_channel.wrench.bound_initial": "Selected Block as Draw From",
   "coverheated.chill_channel.wrench.bound_hook": "Set Block to Pull From previous Block",
   "coverheated.chill_channel.wrench.cleared": "Cleared Draw From selection",
-
+  "coverheated.chill_channel.node.draws_from": "Draws From: ",
+  "coverheated.chill_channel.node.unset": "Is not connected to a network, use a Channel Adjuster",
+  "coverheated.chill_channel.cooling_units": "Cooling Units on network: ",
+  "coverheated.chill_channel.eff": "Network Efficiency: ",
+  "coverheated.chill_channel.mintemp": "Network Minimum Temperature: ",
+  "coverheated.chill_channel.capacity": "Network Capacity: ",
 
 
   "coverheated.meter_extender.no_read": "Not facing a Block with Goggle information",

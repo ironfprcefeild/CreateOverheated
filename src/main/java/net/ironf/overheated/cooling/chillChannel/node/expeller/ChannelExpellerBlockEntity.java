@@ -1,5 +1,6 @@
 package net.ironf.overheated.cooling.chillChannel.node.expeller;
 
+import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
 
-public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChillChannelHook, ICoolingBlockEntity {
+public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChillChannelHook, ICoolingBlockEntity, IHaveGoggleInformation {
     public ChannelExpellerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -30,11 +31,23 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         capacityScrollWheel =
                 new ScrollValueBehaviour(Component.translatable("coverheated.chill_channel.expeller.scroll"), this, new ChannelSlotBox())
-                        .between(1,512);
+                        .between(0,256);
 
         behaviours.add(capacityScrollWheel);
     }
 
+    //Goggles
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(posSet ? Component.translatable("coverheated.chill_channel.node.draws_from").append(drawsFromPos.toString())
+                : Component.translatable("coverheated.chill_channel.node.unset"));
+        tooltip.add(Component.translatable("coverheated.chill_channel.cooling_units").append(String.valueOf(lastCoolingUnits)));
+        tooltip.add(Component.translatable("coverheated.chill_channel.mintemp").append(String.valueOf(lastMinTemp)));
+        tooltip.add(Component.translatable("coverheated.chill_channel.eff").append(String.valueOf(lastEff)));
+        tooltip.add(Component.translatable("coverheated.chill_channel.capacity").append(String.valueOf(lastCapacity)));
+        return true;
+    }
 
 
     //Cooling Stuff
@@ -75,10 +88,10 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
                         //Too much drain, invalidate this node.
                         invalidateNode();
                     } else {
-                        lastCooler.coolingUnits = capacityScrollWheel.getValue();
-                        lastCooler.minTemp = lastMinTemp;
+                        lastCooler = new CoolingData(capacityScrollWheel.getValue(),lastMinTemp);
                     }
                 }
+                sendParticlesToo(drawsFromPos,this);
             } else {
                 //No hook to pull from
                 invalidateNode();
@@ -102,7 +115,7 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     float lastCoolingUnits;
     float lastMinTemp;
     boolean posSet;
-    CoolingData lastCooler;
+    CoolingData lastCooler = CoolingData.empty();
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -113,8 +126,8 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         lastCoolingUnits = tag.getFloat("coolingunits");
         lastMinTemp = tag.getFloat("lastmintemp");
         lastCooler = CoolingData.readTag(tag,"lastcooler");
-        drawsFromPos = BlockPos.of(tag.getLong("drawsfrom"));
         posSet = tag.getBoolean("posset");
+        drawsFromPos = posSet ? BlockPos.of(tag.getLong("drawsfrom")) : null;
 
     }
 
@@ -126,9 +139,9 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         tag.putInt("capacity",lastCapacity);
         tag.putFloat("coolingunits",lastCoolingUnits);
         tag.putFloat("lastmintemp",lastMinTemp);
-        lastCooler.writeTag(tag,"lastcooler");
-        tag.putLong("drawsfrom",drawsFromPos.asLong());
+        if (lastCooler!=null) lastCooler.writeTag(tag,"lastcooler");
         tag.putBoolean("posset",posSet);
+        if (posSet) tag.putLong("drawsfrom", drawsFromPos.asLong());
 
     }
 
@@ -155,6 +168,7 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     @Override
     public void setHookTarget(BlockPos bp) {
         drawsFromPos = bp;
+        posSet = true;
     }
 
 
