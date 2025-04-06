@@ -47,6 +47,7 @@ public class AllItems {
             .properties(p -> p.stacksTo(1))
             .register();
 
+    public static final ItemEntry<Item> CHILL_STEEL = craftingIngredient("chill_steel");
 
     public static ItemEntry<Item> craftingIngredient(String name){
         return REGISTRATE.item(name,Item::new).register();

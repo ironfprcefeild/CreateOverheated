@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " r ",
-    "rsr",
-    "sfs"
+    " ss",
+    "rds",
+    "r  "
   ],
   "key": {
     "r": {
       "item": "minecraft:end_rod"
     },
+    "d": {
+      "item": "minecraft:diamond"
+    },
     "s": {
       "item": "coverheated:chill_steel"
-    },
-    "f": {
-      "item": "create:fluid_tank"
     }
   },
   "result": {
-    "item": "coverheated:channel_absorber",
+    "item": "coverheated:channel_wrench",
     "count": 1
   }
 }
