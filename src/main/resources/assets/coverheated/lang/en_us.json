@@ -19,7 +19,6 @@
   "coverheated.turbine.too_long": "Turbine Too Long",
   "coverheated.turbine.too_small": "Turbine is too Small, add Centers or Extensions",
   "coverheated.turbine.outtake_full": "Turbine Outtake is full, add a Pump or increase its speed.",
-
   "coverheated.steam_vent.distilling": "Vent is making Distilled Water",
   "coverheated.steam_vent.not_distilling": "Vent is making Steam",
   "coverheated.steam_vent.wrench": "Wrench to change modes",
@@ -54,7 +53,6 @@
   "coverheated.chill_channel.mintemp": "Network Minimum Temperature: ",
   "coverheated.chill_channel.capacity": "Network Capacity: ",
 
-
   "coverheated.meter_extender.no_read": "Not facing a Block with Goggle information",
 
   "coverheated.pressure_chamber.crouch_for_chamber_info": "Crouch for Total Chamber Information",
@@ -80,10 +78,9 @@
   "coverheated.pressure_heater.mode.use": "Using Steam Pressure",
   "coverheated.pressure_heater.mode.return": "Returning Cold Steam",
   "coverheated.pressure_heater.mode.change": "Wrench to Change Modes",
-
-  "coverheated.geothermal.heating.none":"Not above a Geothermal Vent",
-  "coverheated.geothermal.heating.heated":"Providing Heated Steam",
-  "coverheated.geothermal.heating.superheated":"Providing Superheated Steam",
+  "coverheated.geothermal.heating.none": "Not above a Geothermal Vent",
+  "coverheated.geothermal.heating.heated": "Providing Heated Steam",
+  "coverheated.geothermal.heating.superheated": "Providing Superheated Steam",
   "coverheated.geothermal.steam_buildup": "Steam Buildup: ",
 
   "coverheated.tooltip.heat": "Heat: ",
@@ -97,6 +94,7 @@
   "coverheated.tooltip.display_type.absorb": " (Absorbing) ",
   "coverheated.tooltip.display_type.supplying": " (Supplying) ",
   "coverheated.tooltip.crouch_for_more_info": "Crouch for more Info",
+
   "coverheated.tooltip.cooling.temperature": "Machine Temperature: ",
   "coverheated.tooltip.cooling.min_temp": "Minimum Temperature: ",
   "coverheated.tooltip.cooling.cooling_units": "Cooling Units",
@@ -106,8 +104,6 @@
   "coverheated.cooler.header": "--- Passing on Cooling to Faced Block ---",
   "coverheated.cooler.no_coolant": "No Coolant",
 
-
-
   "coverheated.pressure_chamber.explode": "Chamber will explode if Temperature Reaches: ",
   "coverheated.pressure_chamber.invalid": "Chamber is not made of valid blocks",
   "coverheated.pressure_chamber.time_left": "Seconds until recipe finished: ",
@@ -116,11 +112,9 @@
   "coverheated.jei.cooling.recipe_category": "Cooling",
   "coverheated.jei.cooling.quality": "Quality",
   "coverheated.jei.cooling.power": "Power",
-
   "coverheated.jei.condensing.recipe_category": "Condensing",
   "coverheated.jei.condensing.temp": "Maximum Temperature",
   "coverheated.jei.condensing.gained_temp": "Temperature Increase",
-
 
   "block.coverheated.ammonia": "Ammonia",
   "block.coverheated.antilaser_plating": "Antilaser Plating",
@@ -132,11 +126,17 @@
   "block.coverheated.blazesteel_block": "Block of Blazesteel",
   "block.coverheated.blue_salt_block": "Block of Blue Salt",
   "block.coverheated.blue_salt_crystal": "Block of Blue Salt Crystals",
+  "block.coverheated.channel_absorber": "Channel Absorber",
+  "block.coverheated.channel_core": "Channel Core",
+  "block.coverheated.channel_expeller": "Channel Expeller",
+  "block.coverheated.chill_steel_block": "Block of Chillsteel",
   "block.coverheated.condenser": "Condenser",
+  "block.coverheated.cooler": "Cooler",
   "block.coverheated.diode": "Diode",
   "block.coverheated.distilled_water": "Distilled Water",
   "block.coverheated.gas_hood": "Gas Hood",
   "block.coverheated.geothermal_interface": "Geothermal Interface",
+  "block.coverheated.geothermium": "Geothermium",
   "block.coverheated.heat_sink": "Heat Sink",
   "block.coverheated.heated_geothermal_vent": "Heated Geothermal Vent",
   "block.coverheated.heated_steam_high": "Heated Steam High",
@@ -147,7 +147,9 @@
   "block.coverheated.laser_casing": "Laser Casing",
   "block.coverheated.laser_film": "Laser Film",
   "block.coverheated.liquid_nihilite": "Liquid Nihilite",
+  "block.coverheated.meter_extender": "Meter Extender",
   "block.coverheated.morkite": "Morkite",
+  "block.coverheated.nether_geothermium": "Nether Geothermium",
   "block.coverheated.nihilistone": "Nihilistone",
   "block.coverheated.nihilite_block": "Block of Nihilite",
   "block.coverheated.nihilite_deposit": "Nihilite Deposit",
@@ -158,8 +160,7 @@
   "block.coverheated.overheated_steam_low": "Overheated Steam Low",
   "block.coverheated.overheated_steam_mid": "Overheated Steam Mid",
   "block.coverheated.pressure_chamber_core": "Pressure Chamber Core",
-  "block.coverheated.pressure_chamber_heat_sink": "Pressure Chamber Heat Sink",
-  "block.coverheated.pressure_heater": "Pressure Heater",
+  "block.coverheated.pressure_heater": "Steam Heater",
   "block.coverheated.pressurized_casing": "Pressurized Casing",
   "block.coverheated.purified_water": "Purified Water",
   "block.coverheated.red_salt_block": "Block of Red Salt",
@@ -211,12 +212,15 @@
   "fluid_type.coverheated.superheated_steam_low": "Superheated Steam Low",
   "fluid_type.coverheated.superheated_steam_mid": "Superheated Steam Mid",
   "item.coverheated.ammonia_bucket": "Ammonia Bucket",
-  "item.coverheated.antilaser_plate": "Antilaser Plate",
+  "item.coverheated.antilaser_plate": "Anti-laser Plate",
   "item.coverheated.blaze_nectar_bucket": "Blaze Nectar Bucket",
   "item.coverheated.blazeglass_fixture": "Blazeglass Fixture",
   "item.coverheated.blazesteel_ingot": "Blazesteel Ingot",
   "item.coverheated.blazesteel_nugget": "Blazesteel Nugget",
   "item.coverheated.blue_halite": "Blue Halite",
+  "item.coverheated.channel_wrench": "Chill Channel Adjuster",
+  "item.coverheated.chill_steel": "Chillsteel Ingot",
+  "item.coverheated.chill_steel_nugget": "Chillsteel Nugget",
   "item.coverheated.chlorine_crystal": "Chlorine Crystal",
   "item.coverheated.crushed_nihilite": "Crushed Nihilite",
   "item.coverheated.distilled_water_bucket": "Distilled Water Bucket",

@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "coverheated:heated_geothermal_vent",
+  "step": "underground_ores"
+}

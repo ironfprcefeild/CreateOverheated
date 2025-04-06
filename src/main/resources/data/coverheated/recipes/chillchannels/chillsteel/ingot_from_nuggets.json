@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "iii",
+    "iii"
+  ],
+  "key": {
+    "i": {
+      "item": "coverheated:chill_steel_nugget"
+    }
+  },
+  "result": {
+    "item": "coverheated:chill_steel",
+    "count": 1
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "coverheated:superheated_geothermal_vent",
+  "step": "underground_ores"
+}

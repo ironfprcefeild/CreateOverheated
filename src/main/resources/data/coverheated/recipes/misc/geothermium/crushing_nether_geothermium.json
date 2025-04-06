@@ -1,0 +1,29 @@
+
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:nether_geothermium"
+    }
+  ],
+  "processingTime": 185,
+  "results": [
+    {
+      "chance": 0.75,
+      "item": "minecraft:basalt"
+    },
+    {
+      "chance": 0.75,
+      "item": "minecraft:nether_gold_ore"
+    },
+    {
+      "chance": 0.75,
+      "item": "create:crimsite"
+    },
+    {
+      "chance": 0.75,
+      "item": "create:scoria"
+    }
+
+  ]
+}

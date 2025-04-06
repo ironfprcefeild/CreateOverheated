@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "coverheated:blue_salt_cave",
+  "step": "underground_ores"
+}

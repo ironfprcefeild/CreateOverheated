@@ -161,6 +161,20 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Block of Blazesteel")
                     .register();
+
+    public static final BlockEntry<Block> CHILL_STEEL_BLOCK =
+            REGISTRATE.block("chill_steel_block", Block::new)
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_BLUE)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.POWDER_SNOW))
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll("chill_steel_block"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Block of Chillsteel")
+                    .register();
+
     //TODO make it render properly
     public static final BlockEntry<Block> BLAZEGLASS  =
             REGISTRATE.block("blazeglass", Block::new)
@@ -220,6 +234,55 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Nihilistone")
                     .register();
+
+    //Geothermium
+    public static final BlockEntry<Block> GEOTHERMIUM =
+            REGISTRATE.block("geothermium", Block::new)
+                    .initialProperties(() -> Blocks.DEEPSLATE)
+                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.DRIPSTONE_BLOCK))
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll("geothermium"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Geothermium")
+                    .register();
+
+    public static final BlockEntry<Block> NETHER_GEOTHERMIUM =
+            REGISTRATE.block("nether_geothermium", Block::new)
+                    .initialProperties(() -> Blocks.NETHER_GOLD_ORE)
+                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.DEEPSLATE))
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll("nether_geothermium"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Nether Geothermium")
+                    .register();
+    //Deposits
+    //Geothermal Vents and deposits
+    public static final BlockEntry<Block> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .blockstate(simpleCubeAll("heated_geothermal_vent"))
+            .lang("Heated Geothermal Vent")
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<Block> SUPERHEATED_VENT = REGISTRATE.block("superheated_geothermal_vent", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .blockstate(simpleCubeAll("superheated_geothermal_vent"))
+            .simpleItem()
+            .register();
+    public static final BlockEntry<Block> NIHILITE_DEPOSIT = REGISTRATE.block("nihilite_deposit", Block::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .blockstate(simpleCubeAll("nihilite_deposit"))
+            .simpleItem()
+            .register();
 
 
     ////Steam Works
@@ -510,26 +573,6 @@ public class AllBlocks {
             .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
             .register();
 
-    //Geothermal Vents and deposits
-    public static final BlockEntry<Block> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", Block::new)
-            .initialProperties(SharedProperties::stone)
-            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
-            .blockstate(simpleCubeAll("placeholder"))
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .register();
-
-    public static final BlockEntry<Block> SUPERHEATED_VENT = REGISTRATE.block("superheated_geothermal_vent", Block::new)
-            .initialProperties(SharedProperties::stone)
-            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
-            .blockstate(simpleCubeAll("placeholder"))
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .register();
-    public static final BlockEntry<Block> NIHILITE_DEPOSIT = REGISTRATE.block("nihilite_deposit", Block::new)
-            .initialProperties(SharedProperties::stone)
-            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
-            .blockstate(simpleCubeAll("placeholder"))
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .register();
 
 
     /////Everything Else

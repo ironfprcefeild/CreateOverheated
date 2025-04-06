@@ -35,7 +35,8 @@ public class AllFluids {
      */
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> SLUDGE =
-            REGISTRATE.standardFluid("sludge")
+            REGISTRATE.standardFluid("sludge",getFluidFactory(
+                            0x553E9B, 1f / 10f * 2f))
                     .lang("Sludge")
                     .properties(b -> b.viscosity(2000)
                             .density(1400))
@@ -60,7 +61,8 @@ public class AllFluids {
                     .register();
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BLAZE_NECTAR =
-            REGISTRATE.standardFluid("blaze_nectar")
+            REGISTRATE.standardFluid("blaze_nectar",getFluidFactory(
+                            0x553E9B, 1f / 10f * 2f))
                     .lang("Blaze Nectar")
                     .source(ForgeFlowingFluid.Source::new)
                     .properties(p -> p.lightLevel(4).temperature(30).density(3).viscosity(100).supportsBoating(false))
