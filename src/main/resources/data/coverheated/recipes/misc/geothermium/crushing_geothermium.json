@@ -8,15 +8,27 @@
   "processingTime": 125,
   "results": [
     {
-      "chance": 0.75,
+      "chance": 0.50,
       "item": "create:ochrum"
     },
     {
       "chance": 0.75,
-      "item": "create:asurine"
+      "item": "minecraft:gold_nugget"
     },
     {
       "chance": 0.75,
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "chance": 0.75,
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "chance": 0.15,
+      "item": "create:asurine"
+    },
+    {
+      "chance": 0.15,
       "item": "create:crimsite"
     }
   ]

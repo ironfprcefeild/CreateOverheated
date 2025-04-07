@@ -17,7 +17,7 @@ public class AllFeatures {
 
     //This is a placeholder registration
     public static final RegistryObject<BedrockDepositFeature> morkite = REGISTRATE.depositFeature("morkite_deposit")
-            .Frequency(196)
+            .Frequency(300)
             .Size(10,20)
             .BorderSize(3)
             .makeBlock(AllBlocks.ANTI_LASER_PLATING)
@@ -25,7 +25,7 @@ public class AllFeatures {
 
     //Deposits
     public static final RegistryObject<BedrockDepositFeature> nihilite = REGISTRATE.depositFeature("nihilite_deposit")
-            .Frequency(128)
+            .Frequency(300)
             .Size(10,22)
             .BorderSize(4)
             .makeBlock(AllBlocks.NIHILITE_DEPOSIT)
@@ -33,7 +33,7 @@ public class AllFeatures {
 
     //Geothermal Vent
     public static final RegistryObject<BedrockDepositFeature> heated_geothermal = REGISTRATE.depositFeature("heated_geothermal_vent")
-            .Frequency(196)
+            .Frequency(300)
             .Size(15,25)
             .BorderSize(4)
             .makeBlock(AllBlocks.HEATED_VENT)
@@ -42,7 +42,7 @@ public class AllFeatures {
 
     //Superheated Geothermal Vent
     public static final RegistryObject<BedrockDepositFeature> superheated_geothermal = REGISTRATE.depositFeature("superheated_geothermal_vent")
-            .Frequency(512)
+            .Frequency(384)
             .Size(15,25)
             .BorderSize(4)
             .makeBlock(AllBlocks.SUPERHEATED_VENT)

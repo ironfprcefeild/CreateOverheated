@@ -2,6 +2,8 @@ package net.ironf.overheated.utility.registration;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
+import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.utility.Color;
 import com.tterrag.registrate.builders.FluidBuilder;
@@ -10,6 +12,7 @@ import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
@@ -26,8 +29,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -264,10 +269,15 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .noCollission()
                             .replaceable()
                             .destroyTime(-1)
+                            .sound(SoundType.FUNGUS)
+                            .isSuffocating(OverheatedRegistrate::always)
                             .noLootTable(),shiftChance, pressurizeChance, lowerTickDelay,upperTickDelay,direction)));
 
         }
 
+    }
+    private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
+        return true;
     }
 
 
@@ -648,6 +658,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
     }
 
      */
+
+    public static <T extends Block> NonNullConsumer<? super T> easyConnectedTextures(CTSpriteShiftEntry shiftEntry){
+        return connectedTextures(() -> new SimpleCTBehaviour(shiftEntry));
+    }
 
 
 }

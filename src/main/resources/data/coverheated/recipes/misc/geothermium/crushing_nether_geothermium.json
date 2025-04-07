@@ -17,13 +17,20 @@
       "item": "minecraft:nether_gold_ore"
     },
     {
-      "chance": 0.75,
+      "chance": 0.25,
       "item": "create:crimsite"
     },
     {
-      "chance": 0.75,
+      "chance": 0.25,
       "item": "create:scoria"
+    },
+    {
+      "chance": 0.10,
+      "item": "minecraft:blaze_rod"
+    },
+    {
+      "chance": 0.10,
+      "item": "minecraft:blaze_rod"
     }
-
   ]
 }

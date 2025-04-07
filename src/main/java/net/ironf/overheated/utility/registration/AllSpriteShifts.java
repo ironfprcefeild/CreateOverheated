@@ -13,7 +13,9 @@ public class AllSpriteShifts {
 
     public static final CTSpriteShiftEntry
             PRESSURIZED_CASING = omni("pressurized_casing"),
-            LASER_CASING = omni("laser_casing");
+            LASER_CASING = omni("laser_casing"),
+            HEATED_GEOTHERMAL_VENT = omni("heated_geothermal_vent"),
+            SUPERHEATED_GEOTHERMAL_VENT = omni("superheated_geothermal_vent");
 
     public static CTSpriteShiftEntry omni(String name) {
         return getCT(AllCTTypes.OMNIDIRECTIONAL, name);

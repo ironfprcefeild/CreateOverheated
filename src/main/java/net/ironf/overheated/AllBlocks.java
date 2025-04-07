@@ -2,7 +2,10 @@ package net.ironf.overheated;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
+import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
+import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.BuilderTransformers;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
@@ -20,6 +23,7 @@ import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
+import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.meteExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
@@ -38,9 +42,12 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
+import java.util.function.Supplier;
+
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static net.ironf.overheated.Overheated.REGISTRATE;
+import static net.ironf.overheated.utility.registration.OverheatedRegistrate.easyConnectedTextures;
 
 public class AllBlocks {
 
@@ -263,18 +270,29 @@ public class AllBlocks {
                     .register();
     //Deposits
     //Geothermal Vents and deposits
-    public static final BlockEntry<Block> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", Block::new)
+    public static final BlockEntry<GeothermalVentBlock> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", GeothermalVentBlock::new)
+            .onRegister(easyConnectedTextures(AllSpriteShifts.HEATED_GEOTHERMAL_VENT))
             .initialProperties(SharedProperties::stone)
-            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .properties(p -> p
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> 8)
+                    .sound(SoundType.DRIPSTONE_BLOCK))
             .blockstate(simpleCubeAll("heated_geothermal_vent"))
             .lang("Heated Geothermal Vent")
             .simpleItem()
             .register();
 
-    public static final BlockEntry<Block> SUPERHEATED_VENT = REGISTRATE.block("superheated_geothermal_vent", Block::new)
+    public static final BlockEntry<GeothermalVentBlock> SUPERHEATED_VENT = REGISTRATE.block("superheated_geothermal_vent", GeothermalVentBlock::new)
             .initialProperties(SharedProperties::stone)
-            .properties(p -> p.strength(-1.0F, 3600000.0F).noLootTable())
+            .onRegister(easyConnectedTextures(AllSpriteShifts.SUPERHEATED_GEOTHERMAL_VENT))
+            .properties(p -> p
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
+                    .lightLevel(s -> 12)
+                    .sound(SoundType.BASALT))
             .blockstate(simpleCubeAll("superheated_geothermal_vent"))
+            .lang("Superheated Geothermal Vent")
             .simpleItem()
             .register();
     public static final BlockEntry<Block> NIHILITE_DEPOSIT = REGISTRATE.block("nihilite_deposit", Block::new)
