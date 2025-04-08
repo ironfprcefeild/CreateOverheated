@@ -7,6 +7,7 @@ import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBl
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
 import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
+import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlockEntity;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
@@ -113,6 +114,11 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.CHANNEL_EXPELLER)
             .register();
 
+    //Cooling Tower
+    public static final BlockEntityEntry<CoolingTowerBlockEntity> COOLING_TOWER = REGISTRATE
+            .blockEntity("cooling_tower", CoolingTowerBlockEntity::new)
+            .validBlocks(AllBlocks.COOLING_TOWER)
+            .register();
     //Condenser
     public static final BlockEntityEntry<CondenserBlockEntity> CONDENSER = REGISTRATE
             .blockEntity("condenser", CondenserBlockEntity::new)

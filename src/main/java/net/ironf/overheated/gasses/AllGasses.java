@@ -45,6 +45,16 @@ public class AllGasses {
                     .explosionSafety(12)
                     .register());
 
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> water_vapor = REGISTRATE.gas("water_vapor",GasFluidSource::new)
+            .Density(-3)
+            .overrideTexturing("steam")
+            .register(REGISTRATE.gasBlock("water_vapor")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(2)
+                    .tickDelays(2,3)
+                    .explosionSafety(0)
+                    .register());
+
     public static void register(){
     }
 

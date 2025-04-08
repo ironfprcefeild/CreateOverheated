@@ -13,23 +13,7 @@
     },
     {
       "chance": 0.75,
-      "item": "minecraft:gold_nugget"
-    },
-    {
-      "chance": 0.75,
-      "item": "minecraft:gold_nugget"
-    },
-    {
-      "chance": 0.75,
-      "item": "minecraft:gold_nugget"
-    },
-    {
-      "chance": 0.15,
-      "item": "create:asurine"
-    },
-    {
-      "chance": 0.15,
-      "item": "create:crimsite"
+      "item": "coverheated:geothermium_powders"
     }
   ]
 }

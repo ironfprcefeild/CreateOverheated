@@ -12,6 +12,7 @@ import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
 import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlock;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
 import net.ironf.overheated.cooling.cooler.CoolerBlock;
+import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlock;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
@@ -403,6 +404,17 @@ public class AllBlocks {
     //Channel Expeller
     public static final BlockEntry<ChannelExpellerBlock> CHANNEL_EXPELLER = REGISTRATE
             .block("channel_expeller", ChannelExpellerBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
+    //Cooling Tower
+    public static final BlockEntry<CoolingTowerBlock> COOLING_TOWER = REGISTRATE
+            .block("cooling_tower", CoolingTowerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()

@@ -39,6 +39,13 @@
 
   "coverheated.heat_sink.airflow": "Airflow on Heat Sink",
 
+  "coverheated.cooling_tower.airflow": "Airflow on Cooling Tower",
+  "coverheated.cooling_tower.cooling": "Cooling Units produced by Tower",
+  "coverheated.cooling_tower.making_vapor": "Making Vapor In ",
+  "coverheated.cooling_tower.invalid": "Either there is no tank under this, no fan blowing on this,",
+  "coverheated.cooling_tower.invalid_2": " or it is not exposed to the sky",
+  "coverheated.cooling_tower.invalid_3": "Because of this, it will not provide any cooling",
+
   "coverheated.thermometer.total_sunken_heat": "Cooling Units on thermometer",
 
   "coverheated.chill_channel.core.scroll": "Channel Capacity",
@@ -132,6 +139,7 @@
   "block.coverheated.chill_steel_block": "Block of Chillsteel",
   "block.coverheated.condenser": "Condenser",
   "block.coverheated.cooler": "Cooler",
+  "block.coverheated.cooling_tower": "Cooling Tower",
   "block.coverheated.diode": "Diode",
   "block.coverheated.distilled_water": "Distilled Water",
   "block.coverheated.gas_hood": "Gas Hood",
@@ -185,6 +193,7 @@
   "block.coverheated.turbine_center": "Turbine Center",
   "block.coverheated.turbine_end": "Turbine End",
   "block.coverheated.turbine_extension": "Turbine Extension",
+  "block.coverheated.water_vapor": "Water Vapor",
   "block.coverheated.white_salt_block": "Block of White Salt",
   "block.coverheated.white_salt_crystal": "Block of White Salt Crystals",
   "fluid.coverheated.blaze_nectar": "Blaze Nectar",
@@ -211,6 +220,7 @@
   "fluid_type.coverheated.superheated_steam_insane": "Superheated Steam Insane",
   "fluid_type.coverheated.superheated_steam_low": "Superheated Steam Low",
   "fluid_type.coverheated.superheated_steam_mid": "Superheated Steam Mid",
+  "fluid_type.coverheated.water_vapor": "Water Vapor",
   "item.coverheated.ammonia_bucket": "Ammonia Bucket",
   "item.coverheated.antilaser_plate": "Anti-laser Plate",
   "item.coverheated.blaze_nectar_bucket": "Blaze Nectar Bucket",
@@ -224,6 +234,8 @@
   "item.coverheated.chlorine_crystal": "Chlorine Crystal",
   "item.coverheated.crushed_nihilite": "Crushed Nihilite",
   "item.coverheated.distilled_water_bucket": "Distilled Water Bucket",
+  "item.coverheated.geothermium_chunk": "Geothermium Chunk",
+  "item.coverheated.geothermium_powders": "Geothermium Powders",
   "item.coverheated.heated_steam_high_bucket": "Heated Steam High Bucket",
   "item.coverheated.heated_steam_insane_bucket": "Heated Steam Insane Bucket",
   "item.coverheated.heated_steam_low_bucket": "Heated Steam Low Bucket",
@@ -233,6 +245,8 @@
   "item.coverheated.industrial_sheet": "Industrial Sheet",
   "item.coverheated.liquid_nihilite_bucket": "Liquid Nihilite Bucket",
   "item.coverheated.morkite_bucket": "Morkite Bucket",
+  "item.coverheated.nether_geothermium_chunk": "Nether Geothermium Chunk",
+  "item.coverheated.nether_geothermium_powders": "Nether Geothermium Powders",
   "item.coverheated.nihilite_gas_bucket": "Nihilite Gas Bucket",
   "item.coverheated.nihilite_globule": "Nihilite Globule",
   "item.coverheated.nihilite_ingot": "Nihilite Ingot",
@@ -255,5 +269,6 @@
   "item.coverheated.superheated_steam_mid_bucket": "Superheated Steam Mid Bucket",
   "item.coverheated.table_salt": "Table Salt",
   "item.coverheated.turbine_components": "Turbine Components",
+  "item.coverheated.water_vapor_bucket": "Water Vapor Bucket",
   "item.coverheated.white_halite": "White Halite"
 }

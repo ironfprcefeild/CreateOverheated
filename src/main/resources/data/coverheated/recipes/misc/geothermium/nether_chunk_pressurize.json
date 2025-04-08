@@ -1,0 +1,19 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "ingredients": [
+    {
+      "item": "coverheated:nether_geothermium_powders",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "coverheated:nether_geothermium_chunk",
+      "count": 1
+    }
+  ],
+  "heat_added": 32,
+  "ticks_taken": 20,
+  "pressure": 2,
+  "laser_heat": 2
+}

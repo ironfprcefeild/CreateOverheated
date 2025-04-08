@@ -1,4 +1,4 @@
-package net.ironf.overheated.cooling.heatsink;
+package net.ironf.overheated.cooling;
 
 import net.minecraft.core.Direction;
 

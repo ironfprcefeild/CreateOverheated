@@ -4,6 +4,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlockEntities;
+import net.ironf.overheated.cooling.IAirCurrentReader;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;

@@ -9,6 +9,7 @@
   "processingTime": 185,
   "results": [
     {
+
       "chance": 0.75,
       "item": "minecraft:basalt"
     },
@@ -17,20 +18,8 @@
       "item": "minecraft:nether_gold_ore"
     },
     {
-      "chance": 0.25,
-      "item": "create:crimsite"
-    },
-    {
-      "chance": 0.25,
-      "item": "create:scoria"
-    },
-    {
-      "chance": 0.10,
-      "item": "minecraft:blaze_rod"
-    },
-    {
-      "chance": 0.10,
-      "item": "minecraft:blaze_rod"
+      "chance": 0.75,
+      "item": "coverheated:nether_geothermium_powders"
     }
   ]
 }
