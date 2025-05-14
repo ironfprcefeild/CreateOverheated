@@ -61,7 +61,6 @@ public class Overheated
     }
 
 
-
     public static void init(final FMLCommonSetupEvent event)
     {
         LOGGER.info("...OVERHEATING...");

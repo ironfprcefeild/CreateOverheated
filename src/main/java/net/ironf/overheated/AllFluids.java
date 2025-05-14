@@ -1,13 +1,10 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.AllTags;
-import com.simibubi.create.Create;
-import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.utility.registration.FluidClasses;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
@@ -16,7 +13,6 @@ import static net.ironf.overheated.utility.registration.OverheatedRegistrate.get
 
 public class AllFluids {
     public static void register(){
-        FluidClasses.register();
         AllSteamFluids.register();
         AllGasses.register();
     }
@@ -34,9 +30,14 @@ public class AllFluids {
     magmafreeze
      */
 
+    public static final OverheatedRegistrate.FluidRegistration STRAY_SAUCE =
+            REGISTRATE.SimpleFluid("stray_sauce")
+                    .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
+                    .Register(p -> p.canHydrate(true).canDrown(true).canSwim(true).canExtinguish(true)
+                            .density(2000).viscosity(1400));
+
     public static final FluidEntry<ForgeFlowingFluid.Flowing> SLUDGE =
-            REGISTRATE.standardFluid("sludge",getFluidFactory(
-                            0x553E9B, 1f / 10f * 2f))
+            REGISTRATE.standardFluid("sludge")
                     .lang("Sludge")
                     .properties(b -> b.viscosity(2000)
                             .density(1400))
@@ -62,7 +63,7 @@ public class AllFluids {
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> BLAZE_NECTAR =
             REGISTRATE.standardFluid("blaze_nectar",getFluidFactory(
-                            0x553E9B, 1f / 10f * 2f))
+                            0x553E9B, 1f / 10f * 2f, "blaze_nectar_flow"))
                     .lang("Blaze Nectar")
                     .source(ForgeFlowingFluid.Source::new)
                     .properties(p -> p.lightLevel(4).temperature(30).density(3).viscosity(100).supportsBoating(false))

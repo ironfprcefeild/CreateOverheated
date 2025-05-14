@@ -11,6 +11,7 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -247,6 +248,9 @@ public class AllCreativeModeTabs {
                     continue;
                 if (!exclusionPredicate.test(item))
                     items.add(item);
+            }
+            for (RegistryObject<BucketItem> bucket : OverheatedRegistrate.allBuckets) {
+                items.add(bucket.get());
             }
             return items;
         }

@@ -14,6 +14,7 @@ import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
@@ -25,13 +26,21 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,6 +49,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -51,12 +61,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static net.ironf.overheated.gasses.GasMapper.GasMap;
-import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
+import static net.ironf.overheated.gasses.GasMapper.*;
 
 public class OverheatedRegistrate extends CreateRegistrate {
     public OverheatedRegistrate(String modid) {
@@ -73,6 +83,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static final DeferredRegister<Fluid> GAS_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Overheated.MODID);
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Overheated.MODID);
 
+    public static final DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,Overheated.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES,Overheated.MODID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,Overheated.MODID);
+    public static final DeferredRegister<Item> BUCKET_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
 
     @Override
     public CreateRegistrate registerEventListeners(IEventBus bus) {
@@ -80,6 +94,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
         GAS_FLUID_TYPES.register(bus);
         GAS_FLUIDS.register(bus);
         FEATURES.register(bus);
+
+        FLUID_BLOCKS.register(bus);
+        FLUID_TYPES.register(bus);
+        FLUIDS.register(bus);
+        BUCKET_ITEMS.register(bus);
+
         return super.registerEventListeners(bus);
     }
 
@@ -424,8 +444,127 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     }
 
+
+    public FluidRegistration SimpleFluid(String name){
+        return new FluidRegistration(this,name);
+    }
+    public static List<RegistryObject<BucketItem>> allBuckets = new ReferenceArrayList<>();
+    public static class FluidRegistration {
+        OverheatedRegistrate Parent;
+        String name;
+
+        public RegistryObject<FlowingFluid> FLOWING;
+        public RegistryObject<FlowingFluid> SOURCE;
+        public ForgeFlowingFluid.Properties FLUID_PROPERTIES;
+        public RegistryObject<FluidType> FLUID_TYPE;
+
+        public RegistryObject<BucketItem> BUCKET;
+        public RegistryObject<LiquidBlock> FLUID_BLOCK;
+
+        private int slopeFindDistance = 4;
+        private int levelDecreasePerBlock = 1;
+        private float explosionResistance = 1;
+        private int tickRate = 5;
+
+        public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
+
+        public FluidRegistration(OverheatedRegistrate parent, String Name){
+            name = Name;
+            Parent = parent;
+        }
+
+        public FluidRegistration blockProperties(BlockBehaviour.Properties set){
+            block_properties = set;
+            return this;
+        }
+        public FluidRegistration slopeFindDistance(int a){
+            slopeFindDistance = a;
+            return this;
+        }
+        public FluidRegistration levelDecreasePerBlock(int a){
+            levelDecreasePerBlock = a;
+            return this;
+        }
+        public FluidRegistration explosionResistance(float a){
+            explosionResistance = a;
+            return this;
+        }
+        public FluidRegistration tickRate(int a){
+            tickRate = a;
+            return this;
+        }
+
+        public FluidRegistration Register(UnaryOperator<FluidType.Properties> fluidTypeProperties) {
+
+            ResourceLocation textureLocation = new ResourceLocation(Parent.getModid(),"block/fluids/" + name );
+
+            FLUID_TYPE = registerFluidType(name,
+                    fluidTypeProperties,
+                    textureLocation,textureLocation,textureLocation);
+
+
+            FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
+            SOURCE = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(FLUID_PROPERTIES));
+
+            BUCKET = registerBucket(name,SOURCE);
+
+            FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
+                    () -> new LiquidBlock(SOURCE, block_properties));
+
+            FLUID_PROPERTIES = new ForgeFlowingFluid
+                    .Properties(FLUID_TYPE,SOURCE,FLOWING)
+                    .explosionResistance(explosionResistance).tickRate(tickRate).slopeFindDistance(slopeFindDistance).levelDecreasePerBlock(levelDecreasePerBlock)
+                    .block(FLUID_BLOCK).bucket(BUCKET);
+
+            return this;
+        }
+        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid){
+            RegistryObject<BucketItem> toReturn = BUCKET_ITEMS.register(fluidName + "_bucket", () -> new BucketItem(fluid,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            allBuckets.add(toReturn);
+            return toReturn;
+        }
+        private static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL) {
+
+            return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create())) {
+
+                private final ResourceLocation stillTexture = Still_RL;
+                private final ResourceLocation flowingTexture = Flowing_RL;
+                private final ResourceLocation overlayTexture = Overlay_RL;
+
+
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(new IClientFluidTypeExtensions() {
+                        @Override
+                        public ResourceLocation getStillTexture() {
+                            return stillTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getFlowingTexture() {
+                            return flowingTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getOverlayTexture() {
+                            return overlayTexture;
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+
+
+
+
+
     //Fluid Classes, theese are barley modified code from creates all fluids made to be more usable and less private
 
+    public static FluidBuilder.FluidTypeFactory getFluidFactory(int fogColor, float fogDistance, String texture) {
+        return (p, s, f) -> new basicFluidType(p,Overheated.asResource(texture),fogColor,fogDistance);
+    }
 
 
     public static FluidBuilder.FluidTypeFactory getFluidFactory(int fogColor, float fogDistance) {
