@@ -43,7 +43,7 @@ public class AllCreativeModeTabs {
                     .title(Components.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(AllBlocks.DIODE::asStack)
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB))
+                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.allBuckets))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
@@ -94,10 +94,16 @@ public class AllCreativeModeTabs {
 
         private final boolean addItems;
         private final RegistryObject<CreativeModeTab> tabFilter;
+        List<RegistryObject<? extends Item>> extraItems = null;
 
         public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) {
             this.addItems = addItems;
             this.tabFilter = tabFilter;
+        }
+        public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter, List<RegistryObject<? extends Item>> ExtraItems) {
+            this.addItems = addItems;
+            this.tabFilter = tabFilter;
+            this.extraItems = ExtraItems;
         }
 
         private static Predicate<Item> makeExclusionPredicate() {
@@ -249,8 +255,11 @@ public class AllCreativeModeTabs {
                 if (!exclusionPredicate.test(item))
                     items.add(item);
             }
-            for (RegistryObject<BucketItem> bucket : OverheatedRegistrate.allBuckets) {
-                items.add(bucket.get());
+
+            if (extraItems != null) {
+                for (RegistryObject<? extends Item> i : extraItems) {
+                    items.add(i.get());
+                }
             }
             return items;
         }

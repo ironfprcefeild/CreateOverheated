@@ -448,7 +448,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public FluidRegistration SimpleFluid(String name){
         return new FluidRegistration(this,name);
     }
-    public static List<RegistryObject<BucketItem>> allBuckets = new ReferenceArrayList<>();
+    public static List<RegistryObject<? extends Item>> allBuckets = new ReferenceArrayList<>();
     public static class FluidRegistration {
         OverheatedRegistrate Parent;
         String name;
@@ -461,16 +461,24 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public RegistryObject<BucketItem> BUCKET;
         public RegistryObject<LiquidBlock> FLUID_BLOCK;
 
+        private int tintColor = 0x252FBE;
         private int slopeFindDistance = 4;
         private int levelDecreasePerBlock = 1;
         private float explosionResistance = 1;
         private int tickRate = 5;
 
+        public String BucketModelLocation;
         public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
 
         public FluidRegistration(OverheatedRegistrate parent, String Name){
             name = Name;
+            BucketModelLocation = Name;
             Parent = parent;
+        }
+
+        public FluidRegistration bucketModelLocation(String set){
+            BucketModelLocation = set;
+            return this;
         }
 
         public FluidRegistration blockProperties(BlockBehaviour.Properties set){
@@ -493,6 +501,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
             tickRate = a;
             return this;
         }
+        public FluidRegistration tintColor(int a){
+            tintColor = a;
+            return this;
+        }
 
         public FluidRegistration Register(UnaryOperator<FluidType.Properties> fluidTypeProperties) {
 
@@ -500,13 +512,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             FLUID_TYPE = registerFluidType(name,
                     fluidTypeProperties,
-                    textureLocation,textureLocation,textureLocation);
+                    textureLocation,textureLocation,textureLocation
+                    ,tintColor);
 
 
             FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
             SOURCE = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(FLUID_PROPERTIES));
 
-            BUCKET = registerBucket(name,SOURCE);
+            BUCKET = registerBucket(BucketModelLocation,SOURCE);
 
             FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
                     () -> new LiquidBlock(SOURCE, block_properties));
@@ -523,14 +536,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
             allBuckets.add(toReturn);
             return toReturn;
         }
-        private static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL) {
-
+        private static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color) {
             return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create())) {
 
                 private final ResourceLocation stillTexture = Still_RL;
                 private final ResourceLocation flowingTexture = Flowing_RL;
                 private final ResourceLocation overlayTexture = Overlay_RL;
 
+                private final int tintColor = Tint_Color;
 
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -549,6 +562,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         public ResourceLocation getOverlayTexture() {
                             return overlayTexture;
                         }
+
+                        @Override
+                        public int getTintColor() {
+                            return tintColor;
+                        }
                     });
                 }
             });
@@ -557,250 +575,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
     }
 
 
-
-
-
-    //Fluid Classes, theese are barley modified code from creates all fluids made to be more usable and less private
-
-    public static FluidBuilder.FluidTypeFactory getFluidFactory(int fogColor, float fogDistance, String texture) {
-        return (p, s, f) -> new basicFluidType(p,Overheated.asResource(texture),fogColor,fogDistance);
-    }
-
-
-    public static FluidBuilder.FluidTypeFactory getFluidFactory(int fogColor, float fogDistance) {
-        return (p, s, f) -> new basicFluidType(p,s,fogColor,fogDistance);
-    }
-
-    public static class basicFluidType extends FluidType {
-        private final ResourceLocation textureRL;
-        private final Vector3f fogColor;
-        private final float fogDistance;
-
-        public basicFluidType(Properties properties, ResourceLocation textureRL, int customFogColor, float fogDistance) {
-            super(properties);
-            this.textureRL = textureRL;
-            this.fogColor =  new Color(customFogColor, false).asVectorF();
-            this.fogDistance = fogDistance;
-        }
-
-        @Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new IClientFluidTypeExtensions() {
-                @Override
-                public ResourceLocation getStillTexture() {
-                    return textureRL;
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture() {
-                    return textureRL;
-                }
-
-                @Override
-                public ResourceLocation getOverlayTexture() {
-                    return textureRL;
-                }
-
-
-                @Override
-                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                    return 0xffffffff;
-                }
-
-                @Override
-                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                    return fogColor == null ? fluidFogColor : fogColor;
-                }
-
-                @Override
-                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                    if (fogDistance != 1f) {
-                        RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                        RenderSystem.setShaderFogStart(-8);
-                        RenderSystem.setShaderFogEnd(96.0f * fogDistance);
-                    }
-                }
-            });
-        }
-    }
-
-
-    public static FluidBuilder.FluidTypeFactory getFluidFactory(
-            UnaryOperator<FluidType.Properties> operator,
-            int customFogColor,
-            float fogDistance) {
-        return (FluidType.Properties properties, ResourceLocation Still_RL, ResourceLocation Flowing_RL) ->
-                        (new FluidType(operator.apply(FluidType.Properties.create())) {
-                            private final ResourceLocation stillTexture = Still_RL;
-                            private final ResourceLocation flowingTexture = Flowing_RL;
-                            private final Vector3f fogColor = new Color(customFogColor, false).asVectorF();
-
-                            @Override
-                            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                                consumer.accept(new IClientFluidTypeExtensions() {
-                                    @Override
-                                    public ResourceLocation getStillTexture() {
-                                        return stillTexture;
-                                    }
-
-                                    @Override
-                                    public ResourceLocation getFlowingTexture() {
-                                        return flowingTexture;
-                                    }
-
-                                    @Override
-                                    public ResourceLocation getOverlayTexture() {
-                                        return getFlowingTexture();
-                                    }
-
-
-                                    @Override
-                                    public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                                        return 0xffffffff;
-                                    }
-
-                                    @Override
-                                    public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                                        return fogColor == null ? fluidFogColor : fogColor;
-                                    }
-
-                                    @Override
-                                    public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                                        if (fogDistance != 1f) {
-                                            RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                                            RenderSystem.setShaderFogStart(-8);
-                                            RenderSystem.setShaderFogEnd(96.0f * fogDistance);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-    }
-
-    /*
-
-    public static abstract class TintedFluidType extends FluidType {
-
-        protected static final int NO_TINT = 0xffffffff;
-        private final ResourceLocation stillTexture;
-        private final ResourceLocation flowingTexture;
-
-
-        public TintedFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-            super(properties);
-            this.stillTexture = stillTexture;
-            this.flowingTexture = flowingTexture;
-        }
-
-        @Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new IClientFluidTypeExtensions() {
-
-                @Override
-                public ResourceLocation getStillTexture() {
-                    return stillTexture;
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture() {
-                    return flowingTexture;
-                }
-
-                @Override
-                public int getTintColor(FluidStack stack) {
-                    return TintedFluidType.this.getTintColor(stack);
-                }
-
-                @Override
-                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                    return TintedFluidType.this.getTintColor(state, getter, pos);
-                }
-
-                @Override
-                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                    Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
-                    return customFogColor == null ? fluidFogColor : customFogColor;
-                }
-
-                @Override
-                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                    float modifier = TintedFluidType.this.getFogDistanceModifier();
-                    float baseWaterFog = 96.0f;
-                    if (modifier != 1f) {
-                        RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                        RenderSystem.setShaderFogStart(-8);
-                        RenderSystem.setShaderFogEnd(baseWaterFog * modifier);
-                    }
-                }
-
-            });
-        }
-
-        protected abstract int getTintColor(FluidStack stack);
-
-        protected abstract int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos);
-
-        protected Vector3f getCustomFogColor() {
-            return null;
-        }
-
-        protected float getFogDistanceModifier() {
-            return 1f;
-        }
-
-    }
-
-    public static class SolidRenderedPlaceableFluidType extends TintedFluidType {
-
-        private Vector3f fogColor;
-        private Supplier<Float> fogDistance;
-
-        public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
-            return (p, s, f) -> {
-                SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, s, f);
-                fluidType.fogColor = new Color(fogColor, false).asVectorF();
-                fluidType.fogDistance = fogDistance;
-                return fluidType;
-            };
-        }
-
-        private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture,
-                                                ResourceLocation flowingTexture) {
-            super(properties, stillTexture, flowingTexture);
-        }
-
-        @Override
-        protected int getTintColor(FluidStack stack) {
-            return NO_TINT;
-        }
-
-        /*
-         * Removing alpha from tint prevents optifine from forcibly applying biome
-         * colors to modded fluids (this workaround only works for fluids in the solid
-         * render layer)
-
-        @Override
-        public int getTintColor(FluidState state, BlockAndTintGetter world, BlockPos pos) {
-            return 0x00ffffff;
-        }
-
-        @Override
-        protected Vector3f getCustomFogColor() {
-            return fogColor;
-        }
-
-        @Override
-        protected float getFogDistanceModifier() {
-            return fogDistance.get();
-        }
-
-    }
-
-     */
-
+    //Connected Textures
     public static <T extends Block> NonNullConsumer<? super T> easyConnectedTextures(CTSpriteShiftEntry shiftEntry){
         return connectedTextures(() -> new SimpleCTBehaviour(shiftEntry));
     }
-
 
 }

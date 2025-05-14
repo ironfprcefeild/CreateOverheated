@@ -5,6 +5,7 @@ import com.tterrag.registrate.util.nullness.NonnullType;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -15,7 +16,6 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
-import static net.ironf.overheated.utility.registration.OverheatedRegistrate.getFluidFactory;
 
 public class AllSteamFluids {
 
@@ -26,18 +26,18 @@ public class AllSteamFluids {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
-            REGISTRATE.standardFluid("distilled_water", getFluidFactory(
-                            0x33B3FF, 1f / 8f * 2f))
-                    .lang("Distilled Water")
-                    .fluidProperties(p -> p.levelDecreasePerBlock(5)
-                            .tickRate(20)
-                            .slopeFindDistance(6)
-                            .explosionResistance(10f))
-                    .source(ForgeFlowingFluid.Source::new)
-                    .bucket()
-                    .build()
-                    .register();
+
+    public static final OverheatedRegistrate.FluidRegistration DISTILLED_WATER =
+            REGISTRATE.SimpleFluid("purified_water")
+                    .tintColor(0x33B3FF)
+                    .levelDecreasePerBlock(2)
+                    .tickRate(20)
+                    .explosionResistance(10f)
+                    .slopeFindDistance(6)
+                    .Register(p -> p.canHydrate(false)
+                            .canDrown(true)
+                            .canSwim(true)
+                            .canExtinguish(true));
 
 
     static {
@@ -83,7 +83,7 @@ public class AllSteamFluids {
     public static void prepareSteamArray(){
         Overheated.LOGGER.info("Preparing Steam Utility Array");
         Steams = new Fluid[][]{
-                {DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource()},
+                {DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get()},
                 {STEAM_LOW.get().getSource(), HEATED_STEAM_LOW.get().getSource(), SUPERHEATED_STEAM_LOW.get().getSource(), OVERHEATED_STEAM_LOW.get().getSource()},
                 {STEAM_MID.get().getSource(),HEATED_STEAM_MID.get().getSource(),SUPERHEATED_STEAM_MID.get().getSource(),OVERHEATED_STEAM_MID.get().getSource()},
                 {STEAM_HIGH.get().getSource(),HEATED_STEAM_HIGH.get().getSource(),SUPERHEATED_STEAM_HIGH.get().getSource(),OVERHEATED_STEAM_HIGH.get().getSource()},
