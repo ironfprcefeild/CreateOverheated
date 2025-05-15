@@ -50,8 +50,8 @@ public class AllCreativeModeTabs {
             () -> CreativeModeTab.builder()
                     .title(Components.translatable("itemGroup.overheated.steam_bucket_tab"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.get().getBucket(),1))
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB))
+                    .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
+                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))
                     .build());
     
 
