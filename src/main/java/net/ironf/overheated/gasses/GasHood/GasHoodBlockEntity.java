@@ -52,7 +52,7 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
                     return;
                 }
                 FluidTankBlockEntity tank = ((FluidTankBlockEntity) be).getControllerBE();
-                Fluid gas = RawGasMap.get(testedState).get().getSource();
+                Fluid gas = RawGasMap.get(testedState).SOURCE.get();
                 if (tank.getTankInventory().fill(new FluidStack(gas,1000), IFluidHandler.FluidAction.SIMULATE) != 1000){
                     return;
                 }

@@ -5,6 +5,7 @@ import com.tterrag.registrate.util.nullness.NonnullType;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -15,7 +16,6 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
-import static net.ironf.overheated.utility.registration.OverheatedRegistrate.getFluidFactory;
 
 public class AllSteamFluids {
 
@@ -26,18 +26,18 @@ public class AllSteamFluids {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> DISTILLED_WATER =
-            REGISTRATE.standardFluid("distilled_water", getFluidFactory(
-                            0x33B3FF, 1f / 8f * 2f))
-                    .lang("Distilled Water")
-                    .fluidProperties(p -> p.levelDecreasePerBlock(5)
-                            .tickRate(20)
-                            .slopeFindDistance(6)
-                            .explosionResistance(10f))
-                    .source(ForgeFlowingFluid.Source::new)
-                    .bucket()
-                    .build()
-                    .register();
+
+    public static final OverheatedRegistrate.FluidRegistration DISTILLED_WATER =
+            REGISTRATE.SimpleFluid("distilled_water")
+                    .tintColor(0x33B3FF)
+                    .levelDecreasePerBlock(2)
+                    .tickRate(20)
+                    .explosionResistance(10f)
+                    .slopeFindDistance(6)
+                    .Register(p -> p.canHydrate(false)
+                            .canDrown(true)
+                            .canSwim(true)
+                            .canExtinguish(true));
 
 
     static {
@@ -45,36 +45,41 @@ public class AllSteamFluids {
     }
 
 
-    public static FluidEntry<ForgeFlowingFluid.Flowing> registerSteam(int PressureLevel, int HeatRating){
+    public static OverheatedRegistrate.FluidRegistration registerSteam(int PressureLevel, int HeatRating){
         String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1];
-        return REGISTRATE.gas(name,GasFluidSource::new)
-                .overrideTexturing("steam")
-                .register(REGISTRATE.gasBlock(name)
+        return REGISTRATE.SimpleFluid(name)
+                .tintColor(0x33B3FF)
+                .overrideTexture("block/fluids/steam")
+                .addBucketToSteamTabOnly()
+                .bucketModelLocation("steam_bucket")
+                .setGas(REGISTRATE.gasBlock(name)
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
                         .explosionSafety(9 - (PressureLevel+HeatRating))
-                        .register());
+                        .overideTexturing("block/steam")
+                        .register())
+                .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));
     }
 
     public static final String[] pressureIDs = {"low","mid","high","insane"};
     public static final String[] heatingIDs = {"","heated_","superheated_","overheated_"};
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_LOW = registerSteam(1,0);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_MID = registerSteam(2,0);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_HIGH = registerSteam(3,0);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> STEAM_INSANE = registerSteam(4,0);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_LOW = registerSteam(1,1);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_MID = registerSteam(2,1);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_HIGH = registerSteam(3,1);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> HEATED_STEAM_INSANE = registerSteam(4,1);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_LOW = registerSteam(1,2);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_MID = registerSteam(2,2);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_HIGH = registerSteam(3,2);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> SUPERHEATED_STEAM_INSANE = registerSteam(4,2);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_LOW = registerSteam(1,3);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_MID = registerSteam(2,3);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_HIGH = registerSteam(3,3);
-    public static final FluidEntry<ForgeFlowingFluid.Flowing> OVERHEATED_STEAM_INSANE = registerSteam(4,3);
+    public static final OverheatedRegistrate.FluidRegistration STEAM_LOW = registerSteam(1,0);
+    public static final OverheatedRegistrate.FluidRegistration STEAM_MID = registerSteam(2,0);
+    public static final OverheatedRegistrate.FluidRegistration STEAM_HIGH = registerSteam(3,0);
+    public static final OverheatedRegistrate.FluidRegistration STEAM_INSANE = registerSteam(4,0);
+    public static final OverheatedRegistrate.FluidRegistration HEATED_STEAM_LOW = registerSteam(1,1);
+    public static final OverheatedRegistrate.FluidRegistration HEATED_STEAM_MID = registerSteam(2,1);
+    public static final OverheatedRegistrate.FluidRegistration HEATED_STEAM_HIGH = registerSteam(3,1);
+    public static final OverheatedRegistrate.FluidRegistration HEATED_STEAM_INSANE = registerSteam(4,1);
+    public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_STEAM_LOW = registerSteam(1,2);
+    public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_STEAM_MID = registerSteam(2,2);
+    public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_STEAM_HIGH = registerSteam(3,2);
+    public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_STEAM_INSANE = registerSteam(4,2);
+    public static final OverheatedRegistrate.FluidRegistration OVERHEATED_STEAM_LOW = registerSteam(1,3);
+    public static final OverheatedRegistrate.FluidRegistration OVERHEATED_STEAM_MID = registerSteam(2,3);
+    public static final OverheatedRegistrate.FluidRegistration OVERHEATED_STEAM_HIGH = registerSteam(3,3);
+    public static final OverheatedRegistrate.FluidRegistration OVERHEATED_STEAM_INSANE = registerSteam(4,3);
 
 
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
@@ -83,11 +88,11 @@ public class AllSteamFluids {
     public static void prepareSteamArray(){
         Overheated.LOGGER.info("Preparing Steam Utility Array");
         Steams = new Fluid[][]{
-                {DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource(), DISTILLED_WATER.get().getSource()},
-                {STEAM_LOW.get().getSource(), HEATED_STEAM_LOW.get().getSource(), SUPERHEATED_STEAM_LOW.get().getSource(), OVERHEATED_STEAM_LOW.get().getSource()},
-                {STEAM_MID.get().getSource(),HEATED_STEAM_MID.get().getSource(),SUPERHEATED_STEAM_MID.get().getSource(),OVERHEATED_STEAM_MID.get().getSource()},
-                {STEAM_HIGH.get().getSource(),HEATED_STEAM_HIGH.get().getSource(),SUPERHEATED_STEAM_HIGH.get().getSource(),OVERHEATED_STEAM_HIGH.get().getSource()},
-                {STEAM_INSANE.get().getSource(),HEATED_STEAM_INSANE.get().getSource(),SUPERHEATED_STEAM_INSANE.get().getSource(),OVERHEATED_STEAM_INSANE.get().getSource()}
+                {DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get()},
+                {STEAM_LOW.SOURCE.get().getSource(), HEATED_STEAM_LOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_LOW.SOURCE.get().getSource(), OVERHEATED_STEAM_LOW.SOURCE.get().getSource()},
+                {STEAM_MID.SOURCE.get().getSource(),HEATED_STEAM_MID.SOURCE.get().getSource(),SUPERHEATED_STEAM_MID.SOURCE.get().getSource(),OVERHEATED_STEAM_MID.SOURCE.get().getSource()},
+                {STEAM_HIGH.SOURCE.get().getSource(),HEATED_STEAM_HIGH.SOURCE.get().getSource(),SUPERHEATED_STEAM_HIGH.SOURCE.get().getSource(),OVERHEATED_STEAM_HIGH.SOURCE.get().getSource()},
+                {STEAM_INSANE.SOURCE.get().getSource(),HEATED_STEAM_INSANE.SOURCE.get().getSource(),SUPERHEATED_STEAM_INSANE.SOURCE.get().getSource(),OVERHEATED_STEAM_INSANE.SOURCE.get().getSource()}
         };
     }
 

@@ -11,6 +11,7 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -42,15 +43,15 @@ public class AllCreativeModeTabs {
                     .title(Components.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(AllBlocks.DIODE::asStack)
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB))
+                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.allBuckets))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
             () -> CreativeModeTab.builder()
                     .title(Components.translatable("itemGroup.overheated.steam_bucket_tab"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.get().getBucket(),1))
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB))
+                    .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
+                    .displayItems(new RegistrateDisplayItemsGenerator(false, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))
                     .build());
     
 
@@ -93,10 +94,16 @@ public class AllCreativeModeTabs {
 
         private final boolean addItems;
         private final RegistryObject<CreativeModeTab> tabFilter;
+        List<RegistryObject<? extends Item>> extraItems = null;
 
         public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) {
             this.addItems = addItems;
             this.tabFilter = tabFilter;
+        }
+        public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter, List<RegistryObject<? extends Item>> ExtraItems) {
+            this.addItems = addItems;
+            this.tabFilter = tabFilter;
+            this.extraItems = ExtraItems;
         }
 
         private static Predicate<Item> makeExclusionPredicate() {
@@ -211,10 +218,16 @@ public class AllCreativeModeTabs {
             List<Item> items = new LinkedList<>();
             if (addItems) {
                 items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
-            }
-            items.addAll(collectBlocks(exclusionPredicate));
-            if (addItems) {
+
+                items.addAll(collectBlocks(exclusionPredicate));
+
                 items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
+            }
+
+            if (extraItems != null) {
+                for (RegistryObject<? extends Item> i : extraItems) {
+                    items.add(i.get());
+                }
             }
 
             applyOrderings(items, orderings);
@@ -248,6 +261,8 @@ public class AllCreativeModeTabs {
                 if (!exclusionPredicate.test(item))
                     items.add(item);
             }
+
+
             return items;
         }
 

@@ -1,37 +1,35 @@
 package net.ironf.overheated.utility.registration;
 
-import com.mojang.blaze3d.shaders.FogShape;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.utility.Color;
-import com.tterrag.registrate.builders.FluidBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.FluidEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
+import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,23 +38,28 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static net.ironf.overheated.gasses.GasMapper.GasMap;
-import static net.ironf.overheated.gasses.GasMapper.InvGasMap;
+import static net.ironf.overheated.gasses.GasMapper.*;
 
 public class OverheatedRegistrate extends CreateRegistrate {
     public OverheatedRegistrate(String modid) {
@@ -68,139 +71,314 @@ public class OverheatedRegistrate extends CreateRegistrate {
         return Overheated.MODID;
     }
 
-    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
-    public static final DeferredRegister<FluidType> GAS_FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Overheated.MODID);
-    public static final DeferredRegister<Fluid> GAS_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Overheated.MODID);
+
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Overheated.MODID);
 
+    public static final DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,Overheated.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES,Overheated.MODID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,Overheated.MODID);
+    public static final DeferredRegister<Item> BUCKET_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
+
+    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
+
+
+
+    //Datagen
+    public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
+
+    @Mod.EventBusSubscriber(modid = Overheated.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class DataGenerators {
+
+        @SubscribeEvent
+        public static void gatherData(GatherDataEvent event) {
+            Overheated.LOGGER.info("Overheated Gathering Data");
+            DataGenerator generator = event.getGenerator();
+            PackOutput packOutput = generator.getPackOutput();
+            ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+            generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
+                            packOutput,
+                            existingFileHelper,
+                            GAS_BLOCKS.getEntries(),
+                            OverheatedRegistrate.makeBlockItems,
+                            OverheatedRegistrate.blockModelOverride));
+
+            generator.addProvider(event.includeClient(), new OverheatedItemModelProvider(
+                    packOutput,
+                    existingFileHelper,
+                    BUCKET_ITEMS.getEntries(),
+                    itemModelOverride));
+        }
+    }
 
     @Override
-    public CreateRegistrate registerEventListeners(IEventBus bus) {
+    public @NotNull CreateRegistrate registerEventListeners(IEventBus bus) {
         GAS_BLOCKS.register(bus);
-        GAS_FLUID_TYPES.register(bus);
-        GAS_FLUIDS.register(bus);
         FEATURES.register(bus);
+
+        FLUID_BLOCKS.register(bus);
+        FLUID_TYPES.register(bus);
+        FLUIDS.register(bus);
+        BUCKET_ITEMS.register(bus);
+
         return super.registerEventListeners(bus);
     }
 
-    public <T extends GasFluidSource, GB extends RegistryObject<? extends GasBlock>> gasEntry<T,GB> gas(String name, NonNullFunction<ForgeFlowingFluid.Properties, T> factory){
-        return new gasEntry<T,GB>(name,this,factory);
+    //Fluids
+    public FluidRegistration SimpleFluid(String name){
+        return new FluidRegistration(this,name);
     }
-
-    public class gasEntry<T extends GasFluidSource, GB extends RegistryObject<? extends GasBlock>> {
-        String Name;
+    public static List<RegistryObject<? extends Item>> allBuckets = new ReferenceArrayList<>();
+    public static List<RegistryObject<? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
+    public static class FluidRegistration {
         OverheatedRegistrate Parent;
-        NonNullFunction<ForgeFlowingFluid.Properties, T> Factory;
-        String blockTextureOver;
-        String bucketTextureOver;
-        int density;
+        String name;
 
-        public gasEntry(String name, OverheatedRegistrate parent, NonNullFunction<ForgeFlowingFluid.Properties, T> factory){
-            Name = name;
+        public RegistryObject<FlowingFluid> FLOWING;
+        public RegistryObject<FlowingFluid> SOURCE;
+        public ForgeFlowingFluid.Properties FLUID_PROPERTIES;
+        public RegistryObject<FluidType> FLUID_TYPE;
+
+        public RegistryObject<BucketItem> BUCKET;
+        public RegistryObject<LiquidBlock> FLUID_BLOCK;
+
+        int tintColor = 0xFFFFFFFF;
+        int slopeFindDistance = 4;
+        int levelDecreasePerBlock = 1;
+        float explosionResistance = 1;
+        int tickRate = 5;
+
+        public String BucketModelLocation = null;
+        public boolean putBucketInSteamTab = false;
+
+        public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
+
+        ResourceLocation textureOverride = null;
+
+        public FluidRegistration(OverheatedRegistrate parent, String Name){
+            name = Name;
             Parent = parent;
-            Factory = factory;
-            density = -1;
-            blockTextureOver = null;
-            object(Name);
         }
 
-        public gasEntry<T,GB> Density(int d){
-            this.density = d;
+
+        public FluidRegistration overrideTexture(ResourceLocation override){
+            textureOverride = override;
             return this;
         }
 
-        public gasEntry<T,GB> GasTextures(String location){
-            this.blockTextureOver = location;
+        public FluidRegistration overrideTexture(String override){
+            return overrideTexture(new ResourceLocation(Parent.getModid(),override));
+        }
+
+        public FluidRegistration bucketModelLocation(String set){
+            BucketModelLocation = set;
             return this;
         }
-        public gasEntry<T,GB> BucketTextures(String location){
-            this.bucketTextureOver = location;
+
+        public FluidRegistration addBucketToSteamTabOnly(){
+            putBucketInSteamTab = true;
             return this;
         }
 
-        public gasEntry<T,GB> basicTexturing(){
-            this.BucketTextures(Name);
-            return this.GasTextures(Name);
+        public FluidRegistration blockProperties(BlockBehaviour.Properties set){
+            block_properties = set;
+            return this;
+        }
+        public FluidRegistration slopeFindDistance(int a){
+            slopeFindDistance = a;
+            return this;
+        }
+        public FluidRegistration levelDecreasePerBlock(int a){
+            levelDecreasePerBlock = a;
+            return this;
+        }
+        public FluidRegistration explosionResistance(float a){
+            explosionResistance = a;
+            return this;
+        }
+        public FluidRegistration tickRate(int a){
+            tickRate = a;
+            return this;
+        }
+        public FluidRegistration tintColor(int a){
+            tintColor = a;
+            return this;
         }
 
-        public gasEntry<T,GB> overrideTexturing(String location){
-            this.BucketTextures(location);
-            return this.GasTextures(location);
+        //Gas Stuff
+        public boolean isGas = false;
+        public RegistryObject<GasBlock> gb = null;
+
+        public FluidRegistration setGas(RegistryObject<GasBlock> gasBlock){
+            gb = gasBlock;
+            isGas = true;
+            return this;
         }
 
 
-        public FluidEntry<ForgeFlowingFluid.Flowing> register(RegistryObject<? extends  GasBlock> gasBlock){
-            FluidBuilder.FluidTypeFactory fluidType = getFluidFactory(
-                    gasBlock,
-                    p -> p.supportsBoating(false).viscosity(0).density(density),
-                    blockTextureOver == null ? null : new ResourceLocation(Parent.getModid(),blockTextureOver));
-            FluidEntry<ForgeFlowingFluid.Flowing> completed = Parent.fluid(Name, fluidType)
-                    .properties(b -> b.supportsBoating(false).viscosity(0).density(density))
-                    .fluidProperties(p -> p.levelDecreasePerBlock(10).slopeFindDistance(1).tickRate(1))
-                    .source(Factory)
-                    .bucket()
-                        .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
-                        .model((ctx, prov) -> prov.generated(ctx::getEntry, new ResourceLocation(getModid(), "item/" + (bucketTextureOver == null ? Name : bucketTextureOver) + "_bucket")))
-                        .build()
-                    .block().blockstate(simpleGasAll(blockTextureOver)).build()
-                    .register();
-            GasMap.put(gasBlock,completed);
-            InvGasMap.put(completed,gasBlock);
-            return completed;
+        public FluidRegistration Register(UnaryOperator<FluidType.Properties> fluidTypeProperties) {
+
+            ResourceLocation textureLocation =
+                    textureOverride == null
+                            ? new ResourceLocation(Parent.getModid(),"block/fluids/" + name )
+                            : textureOverride;
+
+            FLUID_TYPE = registerFluidType(name,
+                    fluidTypeProperties,
+                    textureLocation, textureLocation, textureLocation,tintColor,gb);
+
+            FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
+
+            if (isGas){
+                SOURCE = FLUIDS.register(name, () -> new GasFluidSource(FLUID_PROPERTIES));
+            } else {
+                SOURCE = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(FLUID_PROPERTIES));
+            }
+
+            BUCKET = registerBucket(
+                    name,SOURCE,
+                    BucketModelLocation,
+                    putBucketInSteamTab);
+
+            FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
+                    () -> new LiquidBlock(SOURCE, block_properties));
+
+
+            FLUID_PROPERTIES = new ForgeFlowingFluid
+                    .Properties(FLUID_TYPE, SOURCE, FLOWING)
+                    .explosionResistance(explosionResistance).tickRate(tickRate).slopeFindDistance(slopeFindDistance).levelDecreasePerBlock(levelDecreasePerBlock)
+                    .block(FLUID_BLOCK).bucket(BUCKET);
+
+
+            if (isGas){
+                GasMap.put(gb,this);
+                InvGasMap.put(this,gb);
+            }
+
+            return this;
         }
 
-        public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> simpleGasAll(String path) {
-            return (c, p) -> p.simpleBlock(c.get(), p.models().cubeAll(c.getName(), p.modLoc("gas/" + path)));
+        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid, String bucketModelLocation, boolean addToSteamTab){
+            RegistryObject<BucketItem> toReturn = BUCKET_ITEMS.register(
+                    fluidName + "_bucket",
+                    () -> new BucketItem(fluid,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            if (addToSteamTab){
+                allSteamBuckets.add(toReturn);
+            } else {
+                allBuckets.add(toReturn);
+            }
+            if (bucketModelLocation != null){
+                itemModelOverride.put(toReturn,bucketModelLocation);
+            }
+            return toReturn;
+        }
+        public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color) {
+
+            return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create())) {
+
+                private final ResourceLocation stillTexture = Still_RL;
+                private final ResourceLocation flowingTexture = Flowing_RL;
+                private final ResourceLocation overlayTexture = Overlay_RL;
+
+                private final int tintColor = Tint_Color;
+
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(new IClientFluidTypeExtensions() {
+                        @Override
+                        public ResourceLocation getStillTexture() {
+                            return stillTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getFlowingTexture() {
+                            return flowingTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getOverlayTexture() {
+                            return overlayTexture;
+                        }
+
+                        /*
+                        @Override
+                        public int getTintColor() {
+                            return tintColor;
+                        }
+
+                         */
+
+
+                    });
+                }
+
+
+            });
+        }
+        //If GB is not null, this registers a gas instead
+        public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color,RegistryObject<GasBlock> gb) {
+            if (gb == null){
+                return registerFluidType(name,operator,Still_RL,Flowing_RL,Overlay_RL,Tint_Color);
+            }
+            return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create().supportsBoating(false).viscosity(0))) {
+
+                private final ResourceLocation stillTexture = Still_RL;
+                private final ResourceLocation flowingTexture = Flowing_RL;
+                private final ResourceLocation overlayTexture = Overlay_RL;
+
+                private final int tintColor = Tint_Color;
+                public final RegistryObject<? extends GasBlock> createdBlock = gb;
+
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(new IClientFluidTypeExtensions() {
+                        @Override
+                        public ResourceLocation getStillTexture() {
+                            return stillTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getFlowingTexture() {
+                            return flowingTexture;
+                        }
+
+                        @Override
+                        public ResourceLocation getOverlayTexture() {
+                            return overlayTexture;
+                        }
+
+                        /*
+                        @Override
+                        public int getTintColor() {
+                            return tintColor;
+                        }
+
+                         */
+                    });
+                }
+                @Override
+                public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
+                    return true;
+                }
+                @Override
+                public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
+                    level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
+                    level.scheduleTick(pos,createdBlock.get(),2, TickPriority.NORMAL);
+                }
+                @Override
+                public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
+                    return createdBlock.get().defaultBlockState();
+                }
+
+            });
         }
 
-        public FluidBuilder.FluidTypeFactory getFluidFactory(RegistryObject<? extends GasBlock> gasBlock, UnaryOperator<FluidType.Properties> operator, ResourceLocation overRL) {
-        FluidBuilder.FluidTypeFactory factory =
-                (FluidType.Properties properties, ResourceLocation Still_RL, ResourceLocation Flowing_RL) ->
-                (new FluidType(operator.apply(FluidType.Properties.create())) {
-                    private final ResourceLocation stillTexture = overRL == null ? Still_RL : overRL;
-                    private final ResourceLocation flowingTexture = overRL == null ? Flowing_RL : overRL;
-                    public final RegistryObject<? extends GasBlock> createdBlock = gasBlock;
 
-                    @Override
-                    public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-                        return true;
-                    }
-                    @Override
-                    public void onVaporize(@Nullable Player player, Level level, BlockPos pos, FluidStack stack) {
-                        level.setBlockAndUpdate(pos,createdBlock.get().defaultBlockState());
-                        level.scheduleTick(pos,createdBlock.get(),2, TickPriority.NORMAL);
-                    }
-                    @Override
-                    public BlockState getBlockForFluidState(BlockAndTintGetter getter, BlockPos pos, FluidState state) {
-                        return gasBlock.get().defaultBlockState();
-                    }
-                    @Override
-                    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                        consumer.accept(new IClientFluidTypeExtensions() {
-                            @Override
-                            public ResourceLocation getStillTexture() {
-                                return stillTexture;
-                            }
 
-                            @Override
-                            public ResourceLocation getFlowingTexture() {
-                                return flowingTexture;
-                            }
-
-                            @Override
-                            public ResourceLocation getOverlayTexture() {
-                                return getFlowingTexture();
-                            }
-                        });
-                    }
-                });
-            return factory;
-        }
     }
 
-
-
-    //Registers a gasblock, should be inlined with the register call for gas fluids
     public <T extends GasBlock> gasBlockEntry<T> gasBlock(String name){
         return new gasBlockEntry<T>(name + "_block", this);
     }
@@ -260,7 +438,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
         public RegistryObject<GasBlock> register(){
-            return GAS_BLOCKS.register(
+            RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? altFactory :
                     (() -> new GasBlock(
@@ -272,6 +450,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .sound(SoundType.FUNGUS)
                             .isSuffocating(OverheatedRegistrate::always)
                             .noLootTable(),shiftChance, pressurizeChance, lowerTickDelay,upperTickDelay,direction)));
+
+            makeBlockItems.put(toReturn,false);
+            if (textureOver != null){
+                blockModelOverride.put(toReturn,new ResourceLocation(Parent.getModid(),textureOver));
+            }
+            return toReturn;
 
         }
 
@@ -424,244 +608,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     }
 
-    //Fluid Classes, theese are barley modified code from creates all fluids made to be more usable and less private
 
-
-
-    public static FluidBuilder.FluidTypeFactory getFluidFactory(int fogColor, float fogDistance) {
-        return (p, s, f) -> new basicFluidType(p,s,fogColor,fogDistance);
-    }
-
-    public static class basicFluidType extends FluidType {
-        private final ResourceLocation textureRL;
-        private final Vector3f fogColor;
-        private final float fogDistance;
-
-        public basicFluidType(Properties properties, ResourceLocation textureRL, int customFogColor, float fogDistance) {
-            super(properties);
-            this.textureRL = textureRL;
-            this.fogColor =  new Color(customFogColor, false).asVectorF();
-            this.fogDistance = fogDistance;
-        }
-
-        @Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new IClientFluidTypeExtensions() {
-                @Override
-                public ResourceLocation getStillTexture() {
-                    return textureRL;
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture() {
-                    return textureRL;
-                }
-
-                @Override
-                public ResourceLocation getOverlayTexture() {
-                    return textureRL;
-                }
-
-
-                @Override
-                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                    return 0xffffffff;
-                }
-
-                @Override
-                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                    return fogColor == null ? fluidFogColor : fogColor;
-                }
-
-                @Override
-                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                    if (fogDistance != 1f) {
-                        RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                        RenderSystem.setShaderFogStart(-8);
-                        RenderSystem.setShaderFogEnd(96.0f * fogDistance);
-                    }
-                }
-            });
-        }
-    }
-
-
-    public static FluidBuilder.FluidTypeFactory getFluidFactory(
-            UnaryOperator<FluidType.Properties> operator,
-            int customFogColor,
-            float fogDistance) {
-        return (FluidType.Properties properties, ResourceLocation Still_RL, ResourceLocation Flowing_RL) ->
-                        (new FluidType(operator.apply(FluidType.Properties.create())) {
-                            private final ResourceLocation stillTexture = Still_RL;
-                            private final ResourceLocation flowingTexture = Flowing_RL;
-                            private final Vector3f fogColor = new Color(customFogColor, false).asVectorF();
-
-                            @Override
-                            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                                consumer.accept(new IClientFluidTypeExtensions() {
-                                    @Override
-                                    public ResourceLocation getStillTexture() {
-                                        return stillTexture;
-                                    }
-
-                                    @Override
-                                    public ResourceLocation getFlowingTexture() {
-                                        return flowingTexture;
-                                    }
-
-                                    @Override
-                                    public ResourceLocation getOverlayTexture() {
-                                        return getFlowingTexture();
-                                    }
-
-
-                                    @Override
-                                    public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                                        return 0xffffffff;
-                                    }
-
-                                    @Override
-                                    public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                                        return fogColor == null ? fluidFogColor : fogColor;
-                                    }
-
-                                    @Override
-                                    public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                                        if (fogDistance != 1f) {
-                                            RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                                            RenderSystem.setShaderFogStart(-8);
-                                            RenderSystem.setShaderFogEnd(96.0f * fogDistance);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-    }
-
-    /*
-
-    public static abstract class TintedFluidType extends FluidType {
-
-        protected static final int NO_TINT = 0xffffffff;
-        private final ResourceLocation stillTexture;
-        private final ResourceLocation flowingTexture;
-
-
-        public TintedFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-            super(properties);
-            this.stillTexture = stillTexture;
-            this.flowingTexture = flowingTexture;
-        }
-
-        @Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new IClientFluidTypeExtensions() {
-
-                @Override
-                public ResourceLocation getStillTexture() {
-                    return stillTexture;
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture() {
-                    return flowingTexture;
-                }
-
-                @Override
-                public int getTintColor(FluidStack stack) {
-                    return TintedFluidType.this.getTintColor(stack);
-                }
-
-                @Override
-                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                    return TintedFluidType.this.getTintColor(state, getter, pos);
-                }
-
-                @Override
-                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                    Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
-                    return customFogColor == null ? fluidFogColor : customFogColor;
-                }
-
-                @Override
-                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                    float modifier = TintedFluidType.this.getFogDistanceModifier();
-                    float baseWaterFog = 96.0f;
-                    if (modifier != 1f) {
-                        RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-                        RenderSystem.setShaderFogStart(-8);
-                        RenderSystem.setShaderFogEnd(baseWaterFog * modifier);
-                    }
-                }
-
-            });
-        }
-
-        protected abstract int getTintColor(FluidStack stack);
-
-        protected abstract int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos);
-
-        protected Vector3f getCustomFogColor() {
-            return null;
-        }
-
-        protected float getFogDistanceModifier() {
-            return 1f;
-        }
-
-    }
-
-    public static class SolidRenderedPlaceableFluidType extends TintedFluidType {
-
-        private Vector3f fogColor;
-        private Supplier<Float> fogDistance;
-
-        public static FluidBuilder.FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
-            return (p, s, f) -> {
-                SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, s, f);
-                fluidType.fogColor = new Color(fogColor, false).asVectorF();
-                fluidType.fogDistance = fogDistance;
-                return fluidType;
-            };
-        }
-
-        private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture,
-                                                ResourceLocation flowingTexture) {
-            super(properties, stillTexture, flowingTexture);
-        }
-
-        @Override
-        protected int getTintColor(FluidStack stack) {
-            return NO_TINT;
-        }
-
-        /*
-         * Removing alpha from tint prevents optifine from forcibly applying biome
-         * colors to modded fluids (this workaround only works for fluids in the solid
-         * render layer)
-
-        @Override
-        public int getTintColor(FluidState state, BlockAndTintGetter world, BlockPos pos) {
-            return 0x00ffffff;
-        }
-
-        @Override
-        protected Vector3f getCustomFogColor() {
-            return fogColor;
-        }
-
-        @Override
-        protected float getFogDistanceModifier() {
-            return fogDistance.get();
-        }
-
-    }
-
-     */
-
+    //Connected Textures
     public static <T extends Block> NonNullConsumer<? super T> easyConnectedTextures(CTSpriteShiftEntry shiftEntry){
         return connectedTextures(() -> new SimpleCTBehaviour(shiftEntry));
     }
-
 
 }
