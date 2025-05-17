@@ -1,40 +1,28 @@
 package net.ironf.overheated.utility.registration;
 
-import com.mojang.blaze3d.shaders.FogShape;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.utility.Color;
-import com.tterrag.registrate.builders.FluidBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.FluidEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
-import net.ironf.overheated.gasses.GasMapper;
+import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
+import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
@@ -47,23 +35,26 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -80,9 +71,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         return Overheated.MODID;
     }
 
-    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
-    public static final DeferredRegister<FluidType> GAS_FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, Overheated.MODID);
-    public static final DeferredRegister<Fluid> GAS_FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Overheated.MODID);
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Overheated.MODID);
 
@@ -91,11 +79,43 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,Overheated.MODID);
     public static final DeferredRegister<Item> BUCKET_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
 
+    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
+
+
+
+    //Datagen
+    public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
+
+    @Mod.EventBusSubscriber(modid = Overheated.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class DataGenerators {
+
+        @SubscribeEvent
+        public static void gatherData(GatherDataEvent event) {
+            Overheated.LOGGER.info("Overheated Gathering Data");
+            DataGenerator generator = event.getGenerator();
+            PackOutput packOutput = generator.getPackOutput();
+            ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+            generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
+                            packOutput,
+                            existingFileHelper,
+                            GAS_BLOCKS.getEntries(),
+                            OverheatedRegistrate.makeBlockItems,
+                            OverheatedRegistrate.blockModelOverride));
+
+            generator.addProvider(event.includeClient(), new OverheatedItemModelProvider(
+                    packOutput,
+                    existingFileHelper,
+                    BUCKET_ITEMS.getEntries(),
+                    itemModelOverride));
+        }
+    }
+
     @Override
-    public CreateRegistrate registerEventListeners(IEventBus bus) {
+    public @NotNull CreateRegistrate registerEventListeners(IEventBus bus) {
         GAS_BLOCKS.register(bus);
-        GAS_FLUID_TYPES.register(bus);
-        GAS_FLUIDS.register(bus);
         FEATURES.register(bus);
 
         FLUID_BLOCKS.register(bus);
@@ -130,15 +150,26 @@ public class OverheatedRegistrate extends CreateRegistrate {
         float explosionResistance = 1;
         int tickRate = 5;
 
-        public String BucketModelLocation;
+        public String BucketModelLocation = null;
+        public boolean putBucketInSteamTab = false;
+
         public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
 
-        public boolean putBucketInSteamTab = false;
+        ResourceLocation textureOverride = null;
 
         public FluidRegistration(OverheatedRegistrate parent, String Name){
             name = Name;
-            BucketModelLocation = Name;
             Parent = parent;
+        }
+
+
+        public FluidRegistration overrideTexture(ResourceLocation override){
+            textureOverride = override;
+            return this;
+        }
+
+        public FluidRegistration overrideTexture(String override){
+            return overrideTexture(new ResourceLocation(Parent.getModid(),override));
         }
 
         public FluidRegistration bucketModelLocation(String set){
@@ -178,8 +209,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         //Gas Stuff
         public boolean isGas = false;
-        public RegistryObject<GasBlock> gb;
-        ResourceLocation textureOverride = null;
+        public RegistryObject<GasBlock> gb = null;
 
         public FluidRegistration setGas(RegistryObject<GasBlock> gasBlock){
             gb = gasBlock;
@@ -187,14 +217,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public FluidRegistration overrideTexture(ResourceLocation override){
-            textureOverride = override;
-            return this;
-        }
-
-        public FluidRegistration overrideTexture(String override){
-            return overrideTexture(new ResourceLocation(Parent.getModid(),override));
-        }
 
         public FluidRegistration Register(UnaryOperator<FluidType.Properties> fluidTypeProperties) {
 
@@ -203,24 +225,22 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             ? new ResourceLocation(Parent.getModid(),"block/fluids/" + name )
                             : textureOverride;
 
-            if (isGas){
-                FLUID_TYPE = registerGasFluidType(name,
-                        fluidTypeProperties,
-                        textureLocation, textureLocation, textureLocation,tintColor,gb);
-            } else {
-                FLUID_TYPE = registerFluidType(name,
-                        fluidTypeProperties,
-                        textureLocation, textureLocation, textureLocation,tintColor);
-            }
-
+            FLUID_TYPE = registerFluidType(name,
+                    fluidTypeProperties,
+                    textureLocation, textureLocation, textureLocation,tintColor,gb);
 
             FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
+
             if (isGas){
                 SOURCE = FLUIDS.register(name, () -> new GasFluidSource(FLUID_PROPERTIES));
             } else {
                 SOURCE = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(FLUID_PROPERTIES));
             }
-            BUCKET = registerBucket(name,SOURCE);
+
+            BUCKET = registerBucket(
+                    name,SOURCE,
+                    BucketModelLocation,
+                    putBucketInSteamTab);
 
             FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
                     () -> new LiquidBlock(SOURCE, block_properties));
@@ -239,11 +259,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             return this;
         }
-        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid){
-            return registerBucket(fluidName,fluid,false);
-        }
 
-        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid, boolean addToSteamTab){
+        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid, String bucketModelLocation, boolean addToSteamTab){
             RegistryObject<BucketItem> toReturn = BUCKET_ITEMS.register(
                     fluidName + "_bucket",
                     () -> new BucketItem(fluid,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
@@ -252,9 +269,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
             } else {
                 allBuckets.add(toReturn);
             }
+            if (bucketModelLocation != null){
+                itemModelOverride.put(toReturn,bucketModelLocation);
+            }
             return toReturn;
         }
         public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color) {
+
             return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create())) {
 
                 private final ResourceLocation stillTexture = Still_RL;
@@ -281,10 +302,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
+                        /*
                         @Override
                         public int getTintColor() {
                             return tintColor;
                         }
+
+                         */
 
 
                     });
@@ -293,7 +317,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             });
         }
-        public static RegistryObject<FluidType> registerGasFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color,RegistryObject<GasBlock> gb) {
+        //If GB is not null, this registers a gas instead
+        public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color,RegistryObject<GasBlock> gb) {
+            if (gb == null){
+                return registerFluidType(name,operator,Still_RL,Flowing_RL,Overlay_RL,Tint_Color);
+            }
             return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create().supportsBoating(false).viscosity(0))) {
 
                 private final ResourceLocation stillTexture = Still_RL;
@@ -321,10 +349,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
+                        /*
                         @Override
                         public int getTintColor() {
                             return tintColor;
                         }
+
+                         */
                     });
                 }
                 @Override
@@ -407,7 +438,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
         public RegistryObject<GasBlock> register(){
-            return GAS_BLOCKS.register(
+            RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? altFactory :
                     (() -> new GasBlock(
@@ -419,6 +450,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .sound(SoundType.FUNGUS)
                             .isSuffocating(OverheatedRegistrate::always)
                             .noLootTable(),shiftChance, pressurizeChance, lowerTickDelay,upperTickDelay,direction)));
+
+            makeBlockItems.put(toReturn,false);
+            if (textureOver != null){
+                blockModelOverride.put(toReturn,new ResourceLocation(Parent.getModid(),textureOver));
+            }
+            return toReturn;
 
         }
 

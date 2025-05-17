@@ -47,13 +47,13 @@ public class Overheated
         //CTOR
         REGISTRATE.registerEventListeners(modEventBus);
         AllTags.init();
-        AllCreativeModeTabs.register(modEventBus);
         AllFluids.register();
         AllBlocks.register();
         AllItems.register();
         AllBlockEntities.register();
         AllRecipes.register(modEventBus);
         AllFeatures.register();
+        AllCreativeModeTabs.register(modEventBus);
         modEventBus.addListener(Overheated::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
 

@@ -51,7 +51,7 @@ public class AllCreativeModeTabs {
                     .title(Components.translatable("itemGroup.overheated.steam_bucket_tab"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))
+                    .displayItems(new RegistrateDisplayItemsGenerator(false, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))
                     .build());
     
 
@@ -218,10 +218,16 @@ public class AllCreativeModeTabs {
             List<Item> items = new LinkedList<>();
             if (addItems) {
                 items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
-            }
-            items.addAll(collectBlocks(exclusionPredicate));
-            if (addItems) {
+
+                items.addAll(collectBlocks(exclusionPredicate));
+
                 items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
+            }
+
+            if (extraItems != null) {
+                for (RegistryObject<? extends Item> i : extraItems) {
+                    items.add(i.get());
+                }
             }
 
             applyOrderings(items, orderings);
@@ -256,11 +262,7 @@ public class AllCreativeModeTabs {
                     items.add(item);
             }
 
-            if (extraItems != null) {
-                for (RegistryObject<? extends Item> i : extraItems) {
-                    items.add(i.get());
-                }
-            }
+
             return items;
         }
 

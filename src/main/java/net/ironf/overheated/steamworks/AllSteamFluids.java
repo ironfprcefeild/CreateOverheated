@@ -49,14 +49,15 @@ public class AllSteamFluids {
         String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel - 1];
         return REGISTRATE.SimpleFluid(name)
                 .tintColor(0x33B3FF)
-                .overrideTexture("steam")
-                .bucketModelLocation("steam")
+                .overrideTexture("block/fluids/steam")
                 .addBucketToSteamTabOnly()
+                .bucketModelLocation("steam_bucket")
                 .setGas(REGISTRATE.gasBlock(name)
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
                         .explosionSafety(9 - (PressureLevel+HeatRating))
+                        .overideTexturing("block/steam")
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));
     }

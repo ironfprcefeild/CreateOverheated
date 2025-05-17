@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "overheated:item/steam_bucket"
+    "layer0": "coverheated:item/steam_bucket"
   }
 }
