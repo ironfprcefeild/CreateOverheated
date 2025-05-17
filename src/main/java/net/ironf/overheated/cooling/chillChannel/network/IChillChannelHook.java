@@ -30,9 +30,9 @@ public interface IChillChannelHook {
         Level level = me.getLevel();
         BlockPos sourcePos = me.getBlockPos();
         double distance = sourcePos.distSqr(bp);
-        double vx = (sourcePos.getX() - bp.getX());
-        double vy = (sourcePos.getY() - bp.getY());
-        double vz = (sourcePos.getZ() - bp.getZ());
+        double vx = (sourcePos.getX() - bp.getX())/10f;
+        double vy = (sourcePos.getY() - bp.getY())/10f;
+        double vz = (sourcePos.getZ() - bp.getZ())/10f;
         level.addParticle(ParticleTypes.ELECTRIC_SPARK, bp.getX() + 0.5, bp.getY() + 1.5, bp.getZ() + 0.5, vx, vy, vz);
         level.addParticle(ParticleTypes.END_ROD, bp.getX() + 0.5, bp.getY() + 1.5, bp.getZ() + 0.5, vx, vy, vz);
 

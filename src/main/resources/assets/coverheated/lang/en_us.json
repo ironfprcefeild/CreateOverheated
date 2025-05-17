@@ -50,7 +50,7 @@
 
   "coverheated.chill_channel.core.scroll": "Channel Capacity",
   "coverheated.chill_channel.expeller.scroll": "Cooling into faced block",
-  "coverheated.chill_channel.wrench.bound_initial": "Selected Block as Draw From",
+  "coverheated.chill_channel.wrench.bound_initial": "Selected Block to Pull From",
   "coverheated.chill_channel.wrench.bound_hook": "Set Block to Pull From previous Block",
   "coverheated.chill_channel.wrench.cleared": "Cleared Draw From selection",
   "coverheated.chill_channel.node.draws_from": "Draws From: ",
