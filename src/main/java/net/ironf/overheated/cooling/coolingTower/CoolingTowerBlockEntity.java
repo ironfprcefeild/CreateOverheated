@@ -54,7 +54,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
 
         if (tickTimer-- < 1){
             IFluidTank tank = getTank();
-            if (tank.getFluidAmount() > 0 && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
+            if (tank != null && tank.getFluidAmount() > 0 && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
                     && level.canSeeSky(getBlockPos().above())){
                 tank.drain(5, IFluidHandler.FluidAction.EXECUTE);
                 recentCoolingUnits = 64000 * sunken;
