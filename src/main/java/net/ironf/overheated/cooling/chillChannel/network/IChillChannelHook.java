@@ -29,7 +29,6 @@ public interface IChillChannelHook {
     default void sendParticlesToo(BlockPos bp, SmartBlockEntity me){
         Level level = me.getLevel();
         BlockPos sourcePos = me.getBlockPos();
-        double distance = sourcePos.distSqr(bp);
         double vx = (sourcePos.getX() - bp.getX())/10f;
         double vy = (sourcePos.getY() - bp.getY())/10f;
         double vz = (sourcePos.getZ() - bp.getZ())/10f;
