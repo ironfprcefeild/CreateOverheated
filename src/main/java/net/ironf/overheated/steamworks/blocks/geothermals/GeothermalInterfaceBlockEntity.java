@@ -54,12 +54,14 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
             //Updates heating status,
             heatingStatus = superHeated ? "superheated" : "heated";
             //Build up Steam
-            SteamBuildup += (superHeated ? 8 : 6);
+            SteamBuildup += 5;
             if (SteamBuildup < 1000){
                 return;
             }
             BlockPos above = getBlockPos().above();
-            if (tank.getPrimaryHandler().getFluid().getFluid() == DISTILLED_WATER.SOURCE.get() && tank.getPrimaryHandler().getFluidAmount() >= 1000 && level.getBlockState(above) == Blocks.AIR.defaultBlockState()){
+            if (tank.getPrimaryHandler().getFluid().getFluid() == DISTILLED_WATER.SOURCE.get()
+                    && tank.getPrimaryHandler().getFluidAmount() >= 1000
+                    && level.getBlockState(above) == Blocks.AIR.defaultBlockState()){
                 tank.getPrimaryHandler().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 SteamBuildup = 0;
                 level.setBlock(above, GasMapper.InvGasMap.get(superHeated ? AllSteamFluids.SUPERHEATED_STEAM_MID : AllSteamFluids.HEATED_STEAM_MID).get().defaultBlockState(), 3);

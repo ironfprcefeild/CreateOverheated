@@ -39,7 +39,7 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000));
+        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000).forbidInsertion());
     }
 
     @Override
@@ -64,14 +64,14 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
     }
 
 
-    int timer = 8;
+    int timer = 25;
     HeatData recentReading = HeatData.empty();
 
     @Override
     public void tick() {
         super.tick();
         if (timer-- == 0){
-            timer = 8;
+            timer = 75;
             IFluidTank input = getTank(Direction.DOWN);
             if (input == null){
                 recentReading = HeatData.empty();
@@ -91,13 +91,6 @@ public class PressureHeaterBlockEntity extends SmartBlockEntity implements IHave
 
     public IFluidTank getTank(Direction in){
         BlockEntity be = level.getBlockEntity(getBlockPos().relative(in));
-        if (be instanceof  FluidTankBlockEntity){
-            FluidTankBlockEntity tank = ((FluidTankBlockEntity) be);
-            if (tank.getControllerBE() != null){
-                return tank.getControllerBE().getTankInventory();
-            }
-            return null;
-        }
         return be instanceof FluidTankBlockEntity ? ((FluidTankBlockEntity) be).getControllerBE().getTankInventory() : null;
     }
 
