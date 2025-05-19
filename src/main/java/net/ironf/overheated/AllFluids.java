@@ -67,7 +67,7 @@ public class AllFluids {
                             .canDrown(true)
                             .canSwim(true)
                             .canExtinguish(false)
-                            .lightLevel(4)
+                            .lightLevel(8)
                             .temperature(30)
                             .supportsBoating(false));
 

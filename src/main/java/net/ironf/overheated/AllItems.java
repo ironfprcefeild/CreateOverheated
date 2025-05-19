@@ -50,6 +50,7 @@ public class AllItems {
 
     public static final ItemEntry<Item> CHILL_STEEL = craftingIngredient("chill_steel","Chillsteel Ingot");
     public static final ItemEntry<Item> CHILL_STEEL_NUGGET = craftingIngredient("chill_steel_nugget","Chillsteel Nugget");
+    public static final ItemEntry<Item> ICE_DIAMOND = craftingIngredient("ice_diamond","Ice Diamond");
 
     //Geothermium Stuff
     public static final ItemEntry<Item> GEOTHERMIUM_CHUNK = craftingIngredient("geothermium_chunk","Geothermium Chunk");

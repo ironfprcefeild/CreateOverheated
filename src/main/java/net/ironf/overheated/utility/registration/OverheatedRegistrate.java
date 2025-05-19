@@ -145,6 +145,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public RegistryObject<LiquidBlock> FLUID_BLOCK;
 
         int tintColor = 0xFFFFFFFF;
+        boolean hasFlowingTexture = false;
+
         int slopeFindDistance = 4;
         int levelDecreasePerBlock = 1;
         float explosionResistance = 1;
@@ -162,6 +164,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
             Parent = parent;
         }
 
+        //Do not use with Texture Override
+        public FluidRegistration hasFlowingTexture(){
+            hasFlowingTexture = true;
+            return this;
+        }
 
         public FluidRegistration overrideTexture(ResourceLocation override){
             textureOverride = override;
@@ -227,7 +234,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             FLUID_TYPE = registerFluidType(name,
                     fluidTypeProperties,
-                    textureLocation, textureLocation, textureLocation,tintColor,gb);
+                    textureLocation,
+                    hasFlowingTexture ? new ResourceLocation(Parent.getModid(),"block/fluids/" + name + "_flow") : textureLocation,
+                    textureLocation,tintColor,gb);
 
             FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
 

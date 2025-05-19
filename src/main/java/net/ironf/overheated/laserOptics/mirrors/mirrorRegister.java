@@ -28,11 +28,7 @@ public class mirrorRegister {
 
     public static Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData heatData) {
         Reflector mirror = MIRRORS.get(state.getBlock());
-        if (mirror != null) {
-            return mirror.doReflection(incoming,level, pos, state,heatData);
-        }
-
-        return incoming;
+        return mirror != null ? mirror.doReflection(incoming,level, pos, state,heatData) : incoming;
     }
 
     public static boolean isMirror(BlockState state){

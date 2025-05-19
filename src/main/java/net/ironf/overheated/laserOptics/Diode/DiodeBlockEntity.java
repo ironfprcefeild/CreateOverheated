@@ -43,7 +43,6 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        setLazyTickRate(5);
     }
 
 
@@ -52,7 +51,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     boolean activeInefficiency = false;
     boolean heatToLow = false;
     boolean noCoolant = false;
-    int coolantConsumptionTicks = 258;
+    int coolantConsumptionTicks = 256;
     double breakingCounter = 0;
 
     int timer = 5;
@@ -65,12 +64,13 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         super.tick();
         if (timer-- <= 0){
             fireLaser();
+            damageZones.clear();
             hittingLasers = new HeatData[]{HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty()};
             timer = 5;
         }
         //This should drain fluid based on the speed
         if (Math.abs(getSpeed()) > coolantConsumptionTicks){
-            coolantConsumptionTicks = 258;
+            coolantConsumptionTicks = 256;
             tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
         } else {
             coolantConsumptionTicks--;
@@ -113,16 +113,14 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
             BlockPos continueAt = getBlockPos();
             BlockPos currentOrigin = continueAt.relative(continueIn);
-            for (int t = 0; t < Math.min(32, range) + 16; t++) {
-                if (laserHeat.getTotalHeat() < 0.1) {
-                    //Laser isout of heat, so we gotta jumpy away
-                    break;
-                }
+            for (int t = 0; t < Math.min(32, range) + 16 && laserHeat.getTotalHeat() > 0.1; t++) {
                 continueAt = continueAt.relative(continueIn);
                 BlockState hitState = level.getBlockState(continueAt);
-                continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
                 //Dont do anything if its air besides rendering
                 if (!hitState.isAir()) {
+
+                    continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
+
                     if (AllBlocks.ANTI_LASER_PLATING.has(hitState) || Blocks.BEDROCK == hitState.getBlock()) {
                         //Anti laser plating or bedrock, cant be destroyed, so we just break here
                         break;
@@ -147,7 +145,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                         }
                     } else {
                         //We are at a mirror, cause damage and update origin
-                        //addToDamage(currentOrigin,continueAt);
+                        addToDamage(currentOrigin,continueAt);
                         currentOrigin = continueAt;
                     }
                 } else {

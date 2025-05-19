@@ -8,6 +8,9 @@
       "item": "minecraft:iron_ingot"
     },
     {
+      "item": "coverheated:ice_diamond"
+    },
+    {
       "item": "minecraft:snow_block"
     }
   ],

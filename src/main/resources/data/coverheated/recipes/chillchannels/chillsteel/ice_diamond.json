@@ -1,0 +1,17 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:packed_ice"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:ice_diamond",
+      "count": 16
+    }
+  ]
+}
