@@ -68,6 +68,9 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
             tickTimer = 75;
         }
     }
+
+
+    //TODO do we actually want to have pressurized casing towers with this block?
     public IFluidTank getTank(){
         BlockPos pos = getBlockPos().relative(Direction.DOWN);
         if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(Direction.DOWN);}
@@ -80,7 +83,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     //Air Current Reading
     @Override
     public void update(float strength, Direction incoming) {
-        sunken = strength/256;
+        sunken = Math.abs(strength)/256;
         fanTimer = 5;
     }
 
@@ -110,7 +113,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.cooling").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(recentCoolingUnits)).withStyle(ChatFormatting.AQUA),1));
 
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.heat_sink.airflow").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.airflow").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(sunken)).withStyle(ChatFormatting.AQUA),1));
 
         if (isPlayerSneaking) {
