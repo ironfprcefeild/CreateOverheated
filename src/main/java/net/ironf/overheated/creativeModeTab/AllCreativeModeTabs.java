@@ -142,7 +142,13 @@ public class AllCreativeModeTabs {
                     AllBlocks.SUPERHEAT_DIMMER,AllBlocks.OVERHEAT_DIMMER,
                     AllBlocks.DIODE,AllBlocks.BLAZE_CRUCIBLE,
                     AllBlocks.TURBINE_CENTER, AllBlocks.TURBINE_END,
-                    AllBlocks.TURBINE_END,AllBlocks.TURBINE_CENTER
+                    AllBlocks.TURBINE_END,AllBlocks.TURBINE_CENTER,
+                    AllItems.RAW_ZOMBIE_MEAT,AllItems.COOKED_ZOMBIE_MEAT,
+                    AllBlocks.GEOTHERMIUM,AllItems.GEOTHERMIUM_CHUNK,
+                    AllItems.GEOTHERMIUM_CHUNK,AllItems.GEOTHERMIUM_POWDERS,
+                    AllItems.GEOTHERMIUM_POWDERS,AllBlocks.NETHER_GEOTHERMIUM,
+                    AllBlocks.NETHER_GEOTHERMIUM,AllItems.NETHER_GEOTHERMIUM_CHUNK,
+                    AllItems.NETHER_GEOTHERMIUM_CHUNK,AllItems.NETHER_GEOTHERMIUM_POWDERS
             );
 
             //!!!!// Put some items after others

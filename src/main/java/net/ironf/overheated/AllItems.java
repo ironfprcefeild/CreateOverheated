@@ -3,6 +3,9 @@ package net.ironf.overheated;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
@@ -36,6 +39,17 @@ public class AllItems {
     public static final ItemEntry<Item> RAW_SALT = craftingIngredient("raw_salt","Raw Salt");
     public static final ItemEntry<Item> TABLE_SALT = craftingIngredient("table_salt","Table Salt");
     public static final ItemEntry<Item> CHLORINE_CRYSTAL = craftingIngredient("chlorine_crystal","Chlorine Crystal");
+
+    //Zombie Meat
+    public static final ItemEntry<Item> RAW_ZOMBIE_MEAT = REGISTRATE.item("raw_zombie_meat",Item::new)
+            .properties(
+                    p -> p.food(new FoodProperties.Builder().nutrition(4).meat().saturationMod(0.1f).effect(new MobEffectInstance(MobEffects.HUNGER,600,0),0.35F).build()))
+            .register();
+
+    public static final ItemEntry<Item> COOKED_ZOMBIE_MEAT = REGISTRATE.item("cooked_zombie_meat",Item::new)
+            .properties(
+                    p -> p.food(new FoodProperties.Builder().nutrition(9).meat().saturationMod(0.4f).build()))
+            .register();
 
     //Steam Stuff
     public static final ItemEntry<Item> INCOMPLETE_PRESSURIZED_CASING = craftingIngredient("incomplete_pressurized_casing","Incomplete Pressurized Casing");

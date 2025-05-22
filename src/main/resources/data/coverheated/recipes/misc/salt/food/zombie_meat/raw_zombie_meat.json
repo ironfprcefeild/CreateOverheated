@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:rotten_flesh"
+    },
+    {
+      "item": "coverheated:table_salt"
+    },
+    {
+      "item": "coverheated:table_salt"
+    }
+  ],
+  "result": {
+    "item": "coverheated:raw_zombie_meat",
+    "count": 1
+  }
+}
