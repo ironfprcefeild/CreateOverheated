@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "heated",
+
+  "ingredients": [
+    {
+      "amount": 50,
+      "fluid": "coverheated:steam_mid"
+    },
+    {
+      "item": "minecraft:beef"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:steamed_ham"
+    }
+  ]
+}

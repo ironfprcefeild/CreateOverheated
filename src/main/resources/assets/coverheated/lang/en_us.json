@@ -272,5 +272,7 @@
   "item.coverheated.water_vapor_bucket": "Water Vapor Bucket",
   "item.coverheated.white_halite": "White Halite",
   "item.coverheated.cooked_zombie_meat": "Zombie Chop",
-  "item.coverheated.raw_zombie_meat": "Cured Zombie Meat"
+  "item.coverheated.raw_zombie_meat": "Cured Zombie Meat",
+  "item.coverheated.steamed_ham": "Steamed Ham",
+  "item.coverheated.steamed_ham_sandwich": "Steamed Ham Sandwich"
 }

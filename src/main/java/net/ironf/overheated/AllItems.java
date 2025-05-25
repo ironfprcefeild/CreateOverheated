@@ -48,7 +48,18 @@ public class AllItems {
 
     public static final ItemEntry<Item> COOKED_ZOMBIE_MEAT = REGISTRATE.item("cooked_zombie_meat",Item::new)
             .properties(
-                    p -> p.food(new FoodProperties.Builder().nutrition(9).meat().saturationMod(0.4f).build()))
+                    p -> p.food(new FoodProperties.Builder().nutrition(10).meat().saturationMod(0.4f).build()))
+            .register();
+
+    //Steamed Hams
+    public static final ItemEntry<Item> STEAMED_HAM = REGISTRATE.item("steamed_ham",Item::new)
+            .properties(p -> p.food(new FoodProperties.Builder()
+                    .nutrition(8).meat().saturationMod(0.6f).build()))
+            .register();
+
+    public static final ItemEntry<Item> STEAMED_HAM_SANDWICH = REGISTRATE.item("steamed_ham_sandwich",Item::new)
+            .properties(p -> p.food(new FoodProperties.Builder()
+                    .nutrition(13).meat().saturationMod(0.6f).build()))
             .register();
 
     //Steam Stuff

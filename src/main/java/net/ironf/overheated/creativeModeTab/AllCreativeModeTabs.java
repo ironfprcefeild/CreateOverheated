@@ -25,6 +25,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -138,18 +139,20 @@ public class AllCreativeModeTabs {
             List<RegistrateDisplayItemsGenerator.ItemOrdering> orderings = new ReferenceArrayList<>();
 
             //!!!!// Put some items before others
-            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = Map.of(
-                    AllBlocks.SUPERHEAT_DIMMER,AllBlocks.OVERHEAT_DIMMER,
-                    AllBlocks.DIODE,AllBlocks.BLAZE_CRUCIBLE,
+            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = new java.util.HashMap<>(Map.of(
+                    AllBlocks.SUPERHEAT_DIMMER, AllBlocks.OVERHEAT_DIMMER,
+                    AllBlocks.DIODE, AllBlocks.BLAZE_CRUCIBLE,
                     AllBlocks.TURBINE_CENTER, AllBlocks.TURBINE_END,
-                    AllBlocks.TURBINE_END,AllBlocks.TURBINE_CENTER,
-                    AllItems.RAW_ZOMBIE_MEAT,AllItems.COOKED_ZOMBIE_MEAT,
-                    AllBlocks.GEOTHERMIUM,AllItems.GEOTHERMIUM_CHUNK,
-                    AllItems.GEOTHERMIUM_CHUNK,AllItems.GEOTHERMIUM_POWDERS,
-                    AllItems.GEOTHERMIUM_POWDERS,AllBlocks.NETHER_GEOTHERMIUM,
-                    AllBlocks.NETHER_GEOTHERMIUM,AllItems.NETHER_GEOTHERMIUM_CHUNK,
-                    AllItems.NETHER_GEOTHERMIUM_CHUNK,AllItems.NETHER_GEOTHERMIUM_POWDERS
-            );
+                    AllBlocks.TURBINE_END, AllBlocks.TURBINE_CENTER,
+                    AllItems.RAW_ZOMBIE_MEAT, AllItems.COOKED_ZOMBIE_MEAT,
+                    AllBlocks.GEOTHERMIUM, AllItems.GEOTHERMIUM_CHUNK,
+                    AllItems.GEOTHERMIUM_CHUNK, AllItems.GEOTHERMIUM_POWDERS,
+                    AllItems.GEOTHERMIUM_POWDERS, AllBlocks.NETHER_GEOTHERMIUM,
+                    AllBlocks.NETHER_GEOTHERMIUM, AllItems.NETHER_GEOTHERMIUM_CHUNK,
+                    AllItems.NETHER_GEOTHERMIUM_CHUNK, AllItems.NETHER_GEOTHERMIUM_POWDERS
+            ));
+            simpleBeforeOrderings.put(AllItems.COOKED_ZOMBIE_MEAT,AllItems.STEAMED_HAM);
+            simpleBeforeOrderings.put(AllItems.STEAMED_HAM,AllItems.STEAMED_HAM_SANDWICH);
 
             //!!!!// Put some items after others
             Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleAfterOrderings = Map.of(
