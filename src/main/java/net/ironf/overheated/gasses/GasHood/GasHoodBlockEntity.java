@@ -21,8 +21,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static net.ironf.overheated.gasses.GasMapper.GasMap;
-import static net.ironf.overheated.gasses.GasMapper.RawGasMap;
+import static net.ironf.overheated.gasses.GasMapper.*;
 
 public class GasHoodBlockEntity extends SmartBlockEntity {
     public GasHoodBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -42,7 +41,7 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
     public void tick() {
         super.tick();
         if (timer-- <= 0){
-            timer = 8;
+            timer = 10;
             BlockPos mypos = getBlockPos();
             Direction faced = GasHoodBlock.getAttachedDirection(getBlockState()).getOpposite();
             BlockState testedState = level.getBlockState(mypos.relative(faced));

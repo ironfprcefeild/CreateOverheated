@@ -3,7 +3,9 @@ package net.ironf.overheated.cooling.chillChannel.node.absorber;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.chillChannel.network.IChillChannelHook;
+import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.SmartMachineBlockEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -120,12 +122,18 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(posSet ? Component.translatable("coverheated.chill_channel.node.draws_from").append(drawsFromPos.toString())
-                : Component.translatable("coverheated.chill_channel.node.unset"));
-        tooltip.add(Component.translatable("coverheated.chill_channel.cooling_units").append(String.valueOf(lastCoolingUnits)));
-        tooltip.add(Component.translatable("coverheated.chill_channel.mintemp").append(String.valueOf(lastMinTemp)));
-        tooltip.add(Component.translatable("coverheated.chill_channel.eff").append(String.valueOf(lastEff)));
-        tooltip.add(Component.translatable("coverheated.chill_channel.capacity").append(String.valueOf(lastCapacity)));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.node." + (posSet ? "draws_from" : "unset"))));
+        if (posSet){
+            tooltip.add(GoggleHelper.addIndent(Component.literal(drawsFromPos.toString().replace("BlockPos","")),1));
+        }
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.cooling_units").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(lastCoolingUnits)).withStyle(ChatFormatting.AQUA),1));
+
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.mintemp").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(lastMinTemp)).withStyle(ChatFormatting.AQUA),1));
+
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.eff").append(String.valueOf(lastEff))));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.capacity").append(String.valueOf(lastCapacity))));
         return true;
     }
 }

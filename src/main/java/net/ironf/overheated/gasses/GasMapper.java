@@ -3,12 +3,15 @@ package net.ironf.overheated.gasses;
 import com.tterrag.registrate.util.entry.FluidEntry;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
+import net.minecraft.world.level.block.PumpkinBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GasMapper {
     //Maps Gas Blocks to Gas Fluids, added too when gasses are registered
@@ -18,7 +21,7 @@ public class GasMapper {
     public static HashMap<OverheatedRegistrate.FluidRegistration,RegistryObject<? extends GasBlock>> InvGasMap = new HashMap<>();
     public static HashMap<FluidType,RegistryObject<? extends GasBlock>> InvFluidGasMap = new HashMap<>();
 
-
+    public static ArrayList<RegistryObject<?extends GasBlock>> nonCapturableGases = new ArrayList<>();
     public static void prepareGasBlockInfo(){
         Overheated.LOGGER.info("Preparing Gas Block Info");
         for (RegistryObject<? extends GasBlock> gb : GasMap.keySet()){
@@ -27,6 +30,10 @@ public class GasMapper {
         for (RegistryObject<? extends GasBlock> gb : GasMap.keySet()){
             RawGasMap.put(gb.get().defaultBlockState(),GasMap.get(gb));
         }
+        for (RegistryObject<?extends GasBlock> gb : nonCapturableGases){
+            RawGasMap.remove(gb.get().defaultBlockState());
+        }
+
     }
 
 

@@ -43,15 +43,15 @@
   "coverheated.cooling_tower.cooling": "Cooling Units produced by Tower",
   "coverheated.cooling_tower.making_vapor": "Making Vapor In ",
   "coverheated.cooling_tower.invalid": "Either there is no tank under this, no fan blowing on this,",
-  "coverheated.cooling_tower.invalid_2": " or it is not exposed to the sky",
+  "coverheated.cooling_tower.invalid_2": " or its output is blocked",
   "coverheated.cooling_tower.invalid_3": "Because of this, it will not provide any cooling",
 
   "coverheated.thermometer.total_sunken_heat": "Cooling Units on thermometer",
 
   "coverheated.chill_channel.core.scroll": "Channel Capacity",
   "coverheated.chill_channel.expeller.scroll": "Cooling into faced block",
-  "coverheated.chill_channel.wrench.bound_initial": "Selected Block to Pull From",
-  "coverheated.chill_channel.wrench.bound_hook": "Set Block to Pull From previous Block",
+  "coverheated.chill_channel.wrench.bound_initial": "Selected Block to Draw From",
+  "coverheated.chill_channel.wrench.bound_hook": "Set Block to Draw From previous Block",
   "coverheated.chill_channel.wrench.cleared": "Cleared Draw From selection",
   "coverheated.chill_channel.node.draws_from": "Draws From: ",
   "coverheated.chill_channel.node.unset": "Is not connected to a network, use a Channel Adjuster",

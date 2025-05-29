@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
@@ -159,6 +160,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         ResourceLocation textureOverride = null;
 
+
         public FluidRegistration(OverheatedRegistrate parent, String Name){
             name = Name;
             Parent = parent;
@@ -217,10 +219,16 @@ public class OverheatedRegistrate extends CreateRegistrate {
         //Gas Stuff
         public boolean isGas = false;
         public RegistryObject<GasBlock> gb = null;
+        public boolean gasHoodCapturable = true;
 
         public FluidRegistration setGas(RegistryObject<GasBlock> gasBlock){
             gb = gasBlock;
             isGas = true;
+            return this;
+        }
+
+        public FluidRegistration makeGasUnCapturable(){
+            gasHoodCapturable = false;
             return this;
         }
 
@@ -264,6 +272,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
             if (isGas){
                 GasMap.put(gb,this);
                 InvGasMap.put(this,gb);
+                if (!gasHoodCapturable){
+                    nonCapturableGases.add(gb);
+                }
             }
 
             return this;

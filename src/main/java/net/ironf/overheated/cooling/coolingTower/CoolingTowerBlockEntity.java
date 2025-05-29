@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,16 +52,17 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         } else {
             fanTimer--;
         }
-
         if (tickTimer-- < 1){
             IFluidTank tank = getTank();
-            if (tank != null && tank.getFluidAmount() > 0 && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
-                    && level.canSeeSky(getBlockPos().above())){
-                tank.drain(5, IFluidHandler.FluidAction.EXECUTE);
-                recentCoolingUnits = 64000 * sunken;
+            if (tank != null && tank.getFluidAmount() > 0
+                    && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 2
+                    && level.getBlockState(getBlockPos().above()) == Blocks.AIR.defaultBlockState()){
+                tank.drain(2, IFluidHandler.FluidAction.EXECUTE);
+                recentCoolingUnits = 12800 * sunken;
                 if (vaporCounter-- < 1) {
-                    vaporCounter = 10;
+                    vaporCounter = 5;
                     level.setBlock(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get().defaultBlockState(), 3);
+                    level.scheduleTick(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get(),4);
                 }
             } else {
                 recentCoolingUnits = 0;
@@ -70,11 +72,8 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     }
 
 
-    //TODO do we actually want to have pressurized casing towers with this block?
     public IFluidTank getTank(){
         BlockPos pos = getBlockPos().relative(Direction.DOWN);
-        if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(Direction.DOWN);}
-
         BlockEntity be = level.getBlockEntity(pos);
         FluidTankBlockEntity tank = (be instanceof FluidTankBlockEntity) ? ((FluidTankBlockEntity) be).getControllerBE() : null;
         return (tank != null) ? tank.getTankInventory() : null;
@@ -117,7 +116,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(sunken)).withStyle(ChatFormatting.AQUA),1));
 
         if (isPlayerSneaking) {
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.making_vapor").append(String.valueOf((vaporCounter)*40)).append(Component.translatable("coverheated.turbine.drain.ticks")),1));
+            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.making_vapor").append(String.valueOf((vaporCounter)*75 - tickTimer)).append(Component.translatable("coverheated.turbine.drain.ticks"))));
         } else {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));
         }

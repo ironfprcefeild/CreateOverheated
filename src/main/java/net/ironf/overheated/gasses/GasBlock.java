@@ -47,12 +47,9 @@ public class GasBlock extends Block {
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
 
-        boolean shift = randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance;
-        Direction movement = shift
+        BlockPos target = pos.relative(randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
                 ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
-                : direction;
-
-        BlockPos target = pos.relative(movement);
+                : direction);
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (targetState == Blocks.AIR.defaultBlockState()) {
