@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,6 +33,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IChillCh
     public int tickTimer = 20;
     public float currentEff = 0f;
     public boolean active = true;
+    public BlockPos sendToPos = null;
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -39,6 +41,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IChillCh
         tickTimer = tag.getInt("ticktimer");
         currentEff = tag.getFloat("eff");
         active = tag.getBoolean("active");
+        sendToPos = tag.getBoolean("sendtoset") ? BlockPos.of(tag.getLong("sendto")) : null;
+
     }
 
     @Override
@@ -47,6 +51,12 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IChillCh
         tag.putInt("ticktimer",tickTimer);
         tag.putFloat("eff",currentEff);
         tag.putBoolean("active",active);
+        if (sendToPos == null) {
+            tag.putBoolean("sendtoset",false);
+        } else {
+            tag.putBoolean("sendtoset",true);
+            tag.putLong("sendto",sendToPos.asLong());
+        }
     }
 
     @Override
@@ -111,7 +121,22 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IChillCh
         return false;
     }
     @Override
-    public void setHookTarget(BlockPos bp) {}
+    public void setDrawFrom(BlockPos bp) {}
+
+    @Override
+    public void unsetDrawFrom() {}
+
+
+    @Override
+    public void setSendToo(BlockPos bp) {
+        if (sendToPos != null) {
+            BlockEntity sbe = level.getBlockEntity(sendToPos);
+            if (sbe instanceof IChillChannelHook oldSendingToo) {
+                oldSendingToo.unsetDrawFrom();
+            }
+        }
+        sendToPos = bp;
+    }
 
     //Fluid Handling
     public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();

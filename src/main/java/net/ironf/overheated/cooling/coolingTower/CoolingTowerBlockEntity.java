@@ -15,6 +15,7 @@ import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -41,7 +42,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     ////Doing Stuff
     int fanTimer = 5;
     int tickTimer = 75;
-    int vaporCounter = 10;
+    int vaporCounter = 5;
     float sunken = 0;
     float recentCoolingUnits = 0f;
     @Override
@@ -54,15 +55,14 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         }
         if (tickTimer-- < 1){
             IFluidTank tank = getTank();
-            if (tank != null && tank.getFluidAmount() > 0
-                    && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 2
+            if (tank != null && tank.getFluidAmount() >= 2
+                    && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
                     && level.getBlockState(getBlockPos().above()) == Blocks.AIR.defaultBlockState()){
                 tank.drain(2, IFluidHandler.FluidAction.EXECUTE);
                 recentCoolingUnits = 12800 * sunken;
                 if (vaporCounter-- < 1) {
                     vaporCounter = 5;
-                    level.setBlock(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get().defaultBlockState(), 3);
-                    level.scheduleTick(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get(),4);
+                    level.setBlockAndUpdate(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get().defaultBlockState());
                 }
             } else {
                 recentCoolingUnits = 0;
@@ -71,12 +71,28 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         }
     }
 
+    @Override
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        fanTimer = tag.getInt("fantimer");
+        tickTimer = tag.getInt("ticktimer");
+        vaporCounter = tag.getInt("vaporcounter");
+        sunken = tag.getFloat("sunken");
+        recentCoolingUnits = tag.getFloat("recentcoolingunits");
+    }
+
+    @Override
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
+        tag.putInt("fantimer",fanTimer);
+        tag.putInt("ticktimer",tickTimer);
+        tag.putInt("vaporcounter",vaporCounter);
+        tag.putFloat("sunken",sunken);
+        tag.putFloat("recentcoolingunits",recentCoolingUnits);
+    }
 
     public IFluidTank getTank(){
-        BlockPos pos = getBlockPos().relative(Direction.DOWN);
-        BlockEntity be = level.getBlockEntity(pos);
-        FluidTankBlockEntity tank = (be instanceof FluidTankBlockEntity) ? ((FluidTankBlockEntity) be).getControllerBE() : null;
-        return (tank != null) ? tank.getTankInventory() : null;
+        return (level.getBlockEntity(getBlockPos().relative(Direction.DOWN)) instanceof FluidTankBlockEntity fbe) ? fbe.getControllerBE().getTankInventory() : null;
     }
 
     //Air Current Reading
@@ -115,11 +131,6 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.airflow").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(sunken)).withStyle(ChatFormatting.AQUA),1));
 
-        if (isPlayerSneaking) {
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooling_tower.making_vapor").append(String.valueOf((vaporCounter)*75 - tickTimer)).append(Component.translatable("coverheated.turbine.drain.ticks"))));
-        } else {
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));
-        }
         return true;
     }
 }

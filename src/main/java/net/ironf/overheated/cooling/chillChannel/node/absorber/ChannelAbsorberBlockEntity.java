@@ -1,7 +1,6 @@
 package net.ironf.overheated.cooling.chillChannel.node.absorber;
 
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
-import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.chillChannel.network.IChillChannelHook;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.SmartMachineBlockEntity;
@@ -31,7 +30,7 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 20;
-            if (!posSet) return;
+            if (!drawFromPosSet) return;
             BlockEntity drawsFromEntity = level.getBlockEntity(drawsFromPos);
             if (drawsFromEntity instanceof IChillChannelHook hookEntity){
                 //This channels draw point is still valid
@@ -62,12 +61,13 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
     }
 
     BlockPos drawsFromPos;
+    BlockPos sendToPos = null;
     int tickTimer = 1;
     int lastCapacity;
     float lastEff;
     float lastMinTemp;
     float lastCoolingUnits;
-    boolean posSet = false;
+    boolean drawFromPosSet = false;
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
@@ -76,8 +76,9 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
         lastCapacity = tag.getInt("capacity");
         lastCoolingUnits = tag.getFloat("coolingunits");
         lastMinTemp = tag.getFloat("lastmintemp");
-        posSet = tag.getBoolean("posset");
-        drawsFromPos = posSet ? BlockPos.of(tag.getLong("drawsfrom")) : null;
+        drawFromPosSet = tag.getBoolean("posset");
+        drawsFromPos = drawFromPosSet ? BlockPos.of(tag.getLong("drawsfrom")) : null;
+        sendToPos = tag.getBoolean("sendtoset") ? BlockPos.of(tag.getLong("sendto")) : null;
 
     }
 
@@ -89,9 +90,15 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
         tag.putInt("capacity",lastCapacity);
         tag.putFloat("coolingunits",lastCoolingUnits);
         tag.putFloat("lastmintemp",lastMinTemp);
-        tag.putBoolean("posset",posSet);
-        if (posSet) {
+        tag.putBoolean("posset", drawFromPosSet);
+        if (drawFromPosSet) {
             tag.putLong("drawsfrom", drawsFromPos.asLong());
+        }
+        if (sendToPos == null) {
+            tag.putBoolean("sendtoset",false);
+        } else {
+            tag.putBoolean("sendtoset",true);
+            tag.putLong("sendto",sendToPos.asLong());
         }
     }
 
@@ -114,16 +121,34 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
         return lastCoolingUnits;
     }
 
+
     @Override
-    public void setHookTarget(BlockPos bp) {
+    public void setDrawFrom(BlockPos bp) {
         drawsFromPos = bp;
-        posSet = true;
+        drawFromPosSet = true;
+    }
+
+    @Override
+    public void unsetDrawFrom() {
+        drawsFromPos = null;
+        drawFromPosSet = false;
+    }
+
+    @Override
+    public void setSendToo(BlockPos bp) {
+        if (sendToPos != null) {
+            BlockEntity sbe = level.getBlockEntity(sendToPos);
+            if (sbe instanceof IChillChannelHook oldSendingToo) {
+                oldSendingToo.unsetDrawFrom();
+            }
+        }
+        sendToPos = bp;
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.node." + (posSet ? "draws_from" : "unset"))));
-        if (posSet){
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.node." + (drawFromPosSet ? "draws_from" : "unset"))));
+        if (drawFromPosSet){
             tooltip.add(GoggleHelper.addIndent(Component.literal(drawsFromPos.toString().replace("BlockPos","")),1));
         }
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.cooling_units").withStyle(ChatFormatting.WHITE)));

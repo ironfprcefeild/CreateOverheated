@@ -47,21 +47,19 @@ public class GasBlock extends Block {
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
 
-        BlockPos target = pos.relative(randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
-                ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
-                : direction);
+        BlockPos target = pos.relative(
+                (shiftChance == 0)
+                        ? direction
+                        : randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
+                            ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
+                            : direction);
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (targetState == Blocks.AIR.defaultBlockState()) {
                 world.setBlockAndUpdate(target, world.getBlockState(pos));
                 world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
-                /*
-                if (!shift && pressurizeChance > 0 && targetState.getBlock() == this && randomSource.nextIntBetweenInclusive(0, pressurizeChance) == 0){
-                    world.explode(null,pos.getX(),pos.getY(),pos.getZ(),(24f /pressurizeChance), Level.ExplosionInteraction.TNT);
-                }
 
-                 */
 
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }

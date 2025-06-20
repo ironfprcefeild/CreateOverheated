@@ -60,7 +60,7 @@ public class GoggleHelper {
         if (num == compare){
             return String.valueOf(compare);
         } else {
-            return String.valueOf((double)Math.round((double) num * 10000d)/10000d);
+            return String.valueOf((double)Math.round((double) num * 100000d)/10000d);
         }
     }
 

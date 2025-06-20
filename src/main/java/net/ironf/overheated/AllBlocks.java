@@ -2,10 +2,7 @@ package net.ironf.overheated;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
-import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
-import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.BuilderTransformers;
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
@@ -26,7 +23,7 @@ import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlo
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
-import net.ironf.overheated.steamworks.blocks.meteExtender.MeterExtenderBlock;
+import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
@@ -42,8 +39,6 @@ import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-
-import java.util.function.Supplier;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
@@ -386,7 +381,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/channel_core")::generate)
             .defaultLoot()
             .register();
 

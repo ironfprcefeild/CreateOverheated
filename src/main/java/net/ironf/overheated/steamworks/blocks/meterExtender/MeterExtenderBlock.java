@@ -1,4 +1,4 @@
-package net.ironf.overheated.steamworks.blocks.meteExtender;
+package net.ironf.overheated.steamworks.blocks.meterExtender;
 
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;

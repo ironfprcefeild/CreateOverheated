@@ -100,7 +100,7 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         return null;
     }
     public float getCooledDifficulty(){
-        return (float) Math.pow(currentTemp >= 0 ? 2 : Math.abs(currentTemp),2);
+        return (float) Math.pow(Math.abs(currentTemp),2);
     }
     public void coolingStep(){
         CoolingData cooling = getCoolingData(getBlockPos(),level);

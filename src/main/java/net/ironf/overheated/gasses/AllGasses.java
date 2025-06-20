@@ -53,7 +53,7 @@ public class AllGasses {
             .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("water_vapor")
                     .defaultFlow(Direction.UP)
-                    .shiftChance(10)
+                    .shiftChance(0)
                     .tickDelays(2,3)
                     .explosionSafety(0)
                     .register())

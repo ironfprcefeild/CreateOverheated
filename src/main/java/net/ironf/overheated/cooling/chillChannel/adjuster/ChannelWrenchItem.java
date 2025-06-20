@@ -2,13 +2,11 @@ package net.ironf.overheated.cooling.chillChannel.adjuster;
 
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
-import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockItem;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayTarget;
 import net.ironf.overheated.cooling.chillChannel.network.IChillChannelHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -33,25 +31,34 @@ public class ChannelWrenchItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         if (context.getPlayer() != null && context.getPlayer().isCrouching()){
+            //Clear Selection
             context.getItemInHand().getOrCreateTag().putBoolean("initialselected",false);
             displayClientMessage(context,"coverheated.chill_channel.wrench.cleared");
             return InteractionResult.SUCCESS;
         } else if (!context.getItemInHand().getOrCreateTag().getBoolean("initialselected")){
             //Clicking first block
-            context.getItemInHand().getOrCreateTag().putLong("initialpos",context.getClickedPos().asLong());
-            context.getItemInHand().getOrCreateTag().putBoolean("initialselected",true);
-            displayClientMessage(context,"coverheated.chill_channel.wrench.bound_initial");
+            BlockEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
+            if (be instanceof IChillChannelHook) {
+                context.getItemInHand().getOrCreateTag().putLong("initialpos",context.getClickedPos().asLong());
+                context.getItemInHand().getOrCreateTag().putBoolean("initialselected",true);
+                displayClientMessage(context,"coverheated.chill_channel.wrench.bound_initial");
+            }
+
             return InteractionResult.SUCCESS;
         } else {
-            BlockEntity be = context.getLevel().getBlockEntity(context.getClickedPos());
-            if (be instanceof IChillChannelHook hookBe){
-                BlockPos initialPos = BlockPos.of(context.getItemInHand().getOrCreateTag().getLong("initialpos"));
-                if (hookBe.canBeRouted() && initialPos.distSqr(initialPos) <= 32){
-                    displayClientMessage(context,"coverheated.chill_channel.wrench.bound_hook");
-                  //We have clicked a proper block and can now set the hook
-                  hookBe.setHookTarget(initialPos);
-                  context.getItemInHand().getOrCreateTag().putBoolean("initialselected",false);
+            //Getting Block Entity that has been clicked, checking if it can be adjusted
+            BlockPos initialPos = BlockPos.of(context.getItemInHand().getOrCreateTag().getLong("initialpos"));
+            BlockEntity dbe = context.getLevel().getBlockEntity(context.getClickedPos());
+            BlockEntity sbe = context.getLevel().getBlockEntity(initialPos);
 
+            if (dbe instanceof IChillChannelHook destinationBE && sbe instanceof IChillChannelHook startBE){
+
+                if (destinationBE.canBeRouted() && initialPos.distSqr(context.getClickedPos()) <= 32){
+                    displayClientMessage(context,"coverheated.chill_channel.wrench.bound_hook");
+                    //We have clicked a proper block and can now set the hook
+                    destinationBE.setDrawFrom(initialPos);
+                    startBE.setSendToo(context.getClickedPos());
+                    context.getItemInHand().getOrCreateTag().putBoolean("initialselected",false);
                   return InteractionResult.SUCCESS;
                 }
             }

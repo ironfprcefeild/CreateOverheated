@@ -1,7 +1,10 @@
 package net.ironf.overheated.cooling.chillChannel.network;
 
+import com.simibubi.create.content.kinetics.speedController.SpeedControllerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.utility.VecHelper;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 
@@ -17,5 +20,6 @@ public class ChannelSlotBox extends ValueBoxTransform.Sided {
     public float getScale() {
         return 0.5f;
     }
+
 
 }

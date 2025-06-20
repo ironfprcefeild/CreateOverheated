@@ -3,14 +3,7 @@ package net.ironf.overheated.cooling.chillChannel.network;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import org.checkerframework.checker.units.qual.C;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public interface IChillChannelHook {
     int getBlockCapacity();
@@ -24,7 +17,9 @@ public interface IChillChannelHook {
         return true;
     }
 
-    void setHookTarget(BlockPos bp);
+    void setDrawFrom(BlockPos bp);
+    void unsetDrawFrom();
+    void setSendToo(BlockPos bp);
 
     default void sendParticlesToo(BlockPos bp, SmartBlockEntity me){
         Level level = me.getLevel();

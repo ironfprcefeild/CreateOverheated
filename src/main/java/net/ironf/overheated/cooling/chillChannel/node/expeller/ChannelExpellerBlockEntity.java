@@ -20,10 +20,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChillChannelHook, ICoolingBlockEntity, IHaveGoggleInformation {
+    private static final Logger log = LoggerFactory.getLogger(ChannelExpellerBlockEntity.class);
+
     public ChannelExpellerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -32,7 +36,10 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         capacityScrollWheel =
-                new ScrollValueBehaviour(Component.translatable("coverheated.chill_channel.expeller.scroll"), this, new ChannelSlotBox())
+                new ScrollValueBehaviour(
+                        Component.translatable("coverheated.chill_channel.expeller.scroll"),
+                        this,
+                        new ChannelSlotBox())
                         .between(0,256);
 
         behaviours.add(capacityScrollWheel);
@@ -42,8 +49,8 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.node." + (posSet ? "draws_from" : "unset"))));
-        if (posSet){
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.node." + (drawFromPosSet ? "draws_from" : "unset"))));
+        if (drawFromPosSet){
             tooltip.add(GoggleHelper.addIndent(Component.literal(drawsFromPos.toString().replace("BlockPos","")),1));
         }
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.cooling_units").withStyle(ChatFormatting.WHITE)));
@@ -79,7 +86,7 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 20;
-            if (!posSet) return;
+            if (!drawFromPosSet) return;
             BlockEntity drawsFromEntity = level.getBlockEntity(drawsFromPos);
             if (drawsFromEntity instanceof IChillChannelHook hookEntity){
                 //This channels draw point is still valid
@@ -117,12 +124,14 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     }
 
     BlockPos drawsFromPos;
+    BlockPos sendToPos = null;
     int tickTimer = 1;
     int lastCapacity;
     float lastEff;
     float lastCoolingUnits;
     float lastMinTemp;
-    boolean posSet;
+    boolean drawFromPosSet;
+    boolean sendTooPosSet;
     CoolingData lastCooler = CoolingData.empty();
 
     @Override
@@ -134,9 +143,9 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         lastCoolingUnits = tag.getFloat("coolingunits");
         lastMinTemp = tag.getFloat("lastmintemp");
         lastCooler = CoolingData.readTag(tag,"lastcooler");
-        posSet = tag.getBoolean("posset");
-        drawsFromPos = posSet ? BlockPos.of(tag.getLong("drawsfrom")) : null;
-
+        drawFromPosSet = tag.getBoolean("posset");
+        drawsFromPos = drawFromPosSet ? BlockPos.of(tag.getLong("drawsfrom")) : null;
+        sendToPos = tag.getBoolean("sendtoset") ? BlockPos.of(tag.getLong("sendto")) : null;
     }
 
     @Override
@@ -148,9 +157,14 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         tag.putFloat("coolingunits",lastCoolingUnits);
         tag.putFloat("lastmintemp",lastMinTemp);
         if (lastCooler!=null) lastCooler.writeTag(tag,"lastcooler");
-        tag.putBoolean("posset",posSet);
-        if (posSet) tag.putLong("drawsfrom", drawsFromPos.asLong());
-
+        tag.putBoolean("posset", drawFromPosSet);
+        if (drawFromPosSet) tag.putLong("drawsfrom", drawsFromPos.asLong());
+        if (sendToPos == null) {
+            tag.putBoolean("sendtoset",false);
+        } else {
+            tag.putBoolean("sendtoset",true);
+            tag.putLong("sendto",sendToPos.asLong());
+        }
     }
 
     //Network Stuff
@@ -174,10 +188,26 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
     }
 
     @Override
-    public void setHookTarget(BlockPos bp) {
+    public void setDrawFrom(BlockPos bp) {
         drawsFromPos = bp;
-        posSet = true;
+        drawFromPosSet = true;
     }
 
+    @Override
+    public void unsetDrawFrom() {
+        drawsFromPos = null;
+        drawFromPosSet = false;
+    }
 
+    @Override
+    public void setSendToo(BlockPos bp) {
+        if (sendToPos != null) {
+
+            BlockEntity sbe = level.getBlockEntity(sendToPos);
+            if (sbe instanceof IChillChannelHook oldSendingToo) {
+                oldSendingToo.unsetDrawFrom();
+            }
+        }
+        sendToPos = bp;
+    }
 }
