@@ -10,7 +10,7 @@
       "item": "coverheated:industrial_sheet"
     },
     "I": {
-      "item": "create:industrial_iron_block"
+      "item": "coverheated:reinforced_industrial_iron"
     }
   },
   "result": {

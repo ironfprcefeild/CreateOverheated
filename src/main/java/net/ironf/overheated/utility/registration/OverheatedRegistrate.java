@@ -3,11 +3,13 @@ package net.ironf.overheated.utility.registration;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.utility.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
+import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
@@ -431,6 +433,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public int pressurizeChance;
         public Direction direction;
 
+        public GasFlowGetter gfg = null;
+
+        public gasBlockEntry<T> createGasFlowGetter(GasFlowGetter g){
+            gfg = g;
+            return this;
+        }
         public gasBlockEntry<T> defaultFlow(Direction set){
             direction = set;
             return this;
@@ -458,6 +466,16 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
         public RegistryObject<GasBlock> register(){
+            if (gfg == null){
+                if (shiftChance == 0){
+                    gfg = (randomSource,pos,world) -> pos.relative(direction);
+                } else {
+                    gfg = (randomSource, pos,world) -> pos.relative(
+                        randomSource.nextIntBetweenInclusive(0, shiftChance) == shiftChance
+                            ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
+                            : direction);
+                }
+            }
             RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? altFactory :
@@ -469,7 +487,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .destroyTime(-1)
                             .sound(SoundType.FUNGUS)
                             .isSuffocating(OverheatedRegistrate::always)
-                            .noLootTable(),shiftChance, pressurizeChance, lowerTickDelay,upperTickDelay,direction)));
+                            .noLootTable(),
+                            gfg, pressurizeChance, lowerTickDelay,upperTickDelay)));
 
             makeBlockItems.put(toReturn,false);
             if (textureOver != null){

@@ -134,32 +134,32 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
                     currentTorque = currentTorque - recipe.getTorqueImpact();
                     addTemp(recipe.getTorqueImpact());
                     level.setBlockAndUpdate(output, GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
-                    particles(output);
+                    particles(output,getLevel());
                 }
             }
         }
     }
 
     //TODO no work
-    public void particles(BlockPos outputPos){
+    public void particles(BlockPos outputPos, Level level){
         BlockPos mypos = getBlockPos();
         RandomSource rand = level.random;
 
-        level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
+        level.addParticle(ParticleTypes.LARGE_SMOKE,
                 mypos.getX() + rand.nextDouble(),
                 mypos.getY() - 0.5 + rand.nextDouble(),
                 mypos.getZ() + rand.nextDouble(),
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
+        level.addParticle(ParticleTypes.LARGE_SMOKE,
                 mypos.getX() + rand.nextDouble() *2,
                 mypos.getY() - 0.5 + rand.nextDouble(),
                 mypos.getZ() + rand.nextDouble() *2,
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
+        level.addParticle(ParticleTypes.LARGE_SMOKE,
                 outputPos.getX() + rand.nextDouble() *2,
                 outputPos.getY() + 0.1 + rand.nextDouble(),
                 outputPos.getZ() + rand.nextDouble() *2,

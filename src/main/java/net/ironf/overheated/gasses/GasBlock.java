@@ -16,23 +16,22 @@ import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
+
 public class GasBlock extends Block {
-    public GasBlock(Properties p, int shiftChance, int pressurizeChance, int lowerTickDelay, int upperTickDelay, Direction direction) {
+    public GasBlock(Properties p, GasFlowGetter gfg, int pressurizeChance, int lowerTickDelay, int upperTickDelay) {
         super(p);
-        this.shiftChance = shiftChance;
+        this.gasFlowGetter = gfg;
         this.pressurizeChance = pressurizeChance;
         this.upperTickDelay = upperTickDelay;
         this.lowerTickDelay = lowerTickDelay;
-        this.direction = direction;
     }
 
-
-    protected final int shiftChance;
+    protected final GasFlowGetter gasFlowGetter;
     protected final int pressurizeChance;
     protected final int upperTickDelay;
     protected final int lowerTickDelay;
 
-    protected final Direction direction;
 
 
     @Override
@@ -46,21 +45,13 @@ public class GasBlock extends Block {
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-
-        BlockPos target = pos.relative(
-                (shiftChance == 0)
-                        ? direction
-                        : randomSource.nextIntBetweenInclusive(0,shiftChance) == shiftChance
-                            ? Iterate.horizontalDirections[randomSource.nextIntBetweenInclusive(0, 3)]
-                            : direction);
+        BlockPos target = (gasFlowGetter.flowGas(randomSource,pos,world));
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (targetState == Blocks.AIR.defaultBlockState()) {
                 world.setBlockAndUpdate(target, world.getBlockState(pos));
                 world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
-
-
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }
         } else {
