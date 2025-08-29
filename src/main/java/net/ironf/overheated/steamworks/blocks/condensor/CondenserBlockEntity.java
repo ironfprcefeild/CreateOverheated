@@ -47,10 +47,13 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                 IFluidTank below = getTank(Direction.DOWN);
                 if (below == null) return;
 
-                if (below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) <= 0) return;
-                addTemp(bundle.addTemp);
-                below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
-                above.drain(1, IFluidHandler.FluidAction.EXECUTE);
+                while (bundle.minTemp >= getCurrentTemp()
+                        && below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) == resultFluid.getAmount()
+                        && above.drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1) {
+                    addTemp(bundle.addTemp);
+                    below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
+                    above.drain(1, IFluidHandler.FluidAction.EXECUTE);
+                }
             }
         }
     }

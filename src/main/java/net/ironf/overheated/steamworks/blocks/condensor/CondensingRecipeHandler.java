@@ -36,7 +36,7 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
                 CondensingOutputBundle bundle = new CondensingOutputBundle(
                         new FluidStack(AllSteamFluids.DISTILLED_WATER.SOURCE.get(),p*5),
                         0f,
-                        p);
+                        p*3);
                 condensingHandler.put(steam, bundle);
 
             }
