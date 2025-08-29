@@ -104,7 +104,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
                                 ((int) (Math.floor((double) (tier - 1) / 6) + 1)),
                                 0,
                                 getFluidStack().getAmount() + 10));
-                processingTicks = 75 + Math.max(0,5 * (boiler.attachedEngines - tier));
+                processingTicks = 75 + Math.max(0,15 * (boiler.attachedEngines - tier));
                 isSlow = processingTicks != 75;
             }
         }
