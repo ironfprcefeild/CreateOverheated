@@ -30,18 +30,19 @@ public class MeterExtenderBlockEntity extends SmartBlockEntity implements IHaveG
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 
         if ((level.getBlockEntity(getBlockPos().relative(getBlockState().getValue(BlockStateProperties.FACING)))) instanceof IHaveGoggleInformation target){
+            /*
             if (target instanceof SmartBlockEntity smartTarget){
                 LazyOptional<IFluidHandler> cap = smartTarget.getCapability(ForgeCapabilities.FLUID_HANDLER);
                 if (cap.isPresent()){
                     IFluidHandler Tank = cap.resolve().get();
                     int tankCount = Tank.getTanks();
                     for (int i = 0; i < tankCount; i++){
-                        FluidStack contained = Tank.getFluidInTank(i);
                         tooltip.add(Component.literal("Tank #" + tankCount + ": " + Tank.getFluidInTank(i).getTranslationKey()));
-
                     }
                 }
             }
+
+             */
             return target.addToGoggleTooltip(tooltip,isPlayerSneaking);
         } else {
             tooltip.add(addIndent(Component.translatable("coverheated.meter_extender.no_read")));

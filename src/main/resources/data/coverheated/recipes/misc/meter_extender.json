@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "create:goggles"
+    },
+    "o": {
+      "item": "minecraft:observer"
+    },
+    "b": {
+      "item": "minecraft:iron_bars"
+    },
+    "c": {
+      "item": "create:andesite_casing"
+    }
+  },
+  "pattern": [
+    "  b",
+    "cog",
+    "  b"
+  ],
+  "result": {
+    "item": "coverheated:meter_extender"
+  }
+}
