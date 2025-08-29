@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "C": {
+      "item": "coverheated:cooler"
+    },
+    "p": {
+      "item": "create:mechanical_pump"
+    },
+    "f": {
+      "item": "create:encased_fan"
+    }
+  },
+  "pattern": [
+    " f ",
+    "pCp",
+    "ccc"
+  ],
+  "result": {
+    "item": "coverheated:cooling_tower"
+  }
+}

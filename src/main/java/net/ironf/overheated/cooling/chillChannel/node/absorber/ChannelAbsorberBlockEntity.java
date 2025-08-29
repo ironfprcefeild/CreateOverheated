@@ -30,7 +30,13 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 20;
-            if (!drawFromPosSet) return;
+            if (!drawFromPosSet) {
+                lastCapacity = 0;
+                lastCoolingUnits = 0;
+                lastMinTemp = 0;
+                lastEff = 0;
+                return;
+            }
             BlockEntity drawsFromEntity = level.getBlockEntity(drawsFromPos);
             if (drawsFromEntity instanceof IChillChannelHook hookEntity){
                 //This channels draw point is still valid

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "srs",
+    "sss"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:end_rod"
+    },
+    "s": {
+      "item": "coverheated:chill_steel"
+    }
+  },
+  "result": {
+    "item": "coverheated:chillsteel_coil",
+    "count": 1
+  }
+}

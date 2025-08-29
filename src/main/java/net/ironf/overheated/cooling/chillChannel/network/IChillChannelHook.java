@@ -13,6 +13,7 @@ public interface IChillChannelHook {
     float getNetworkEfficency();
     float getNetworkMinTemp();
 
+    //Indicates if a block can accept a channel, is only overridden by the core block.
     default boolean canBeRouted(){
         return true;
     }

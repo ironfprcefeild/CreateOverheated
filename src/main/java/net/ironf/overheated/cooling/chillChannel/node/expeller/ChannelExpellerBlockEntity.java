@@ -20,29 +20,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChillChannelHook, ICoolingBlockEntity, IHaveGoggleInformation {
-    private static final Logger log = LoggerFactory.getLogger(ChannelExpellerBlockEntity.class);
 
     public ChannelExpellerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    ScrollValueBehaviour capacityScrollWheel;
+    ScrollValueBehaviour expellScrollWheel;
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        capacityScrollWheel =
+        expellScrollWheel =
                 new ScrollValueBehaviour(
                         Component.translatable("coverheated.chill_channel.expeller.scroll"),
                         this,
                         new ChannelSlotBox())
                         .between(0,256);
 
-        behaviours.add(capacityScrollWheel);
+        behaviours.add(expellScrollWheel);
     }
 
     //Goggles
@@ -86,7 +83,13 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 20;
-            if (!drawFromPosSet) return;
+            if (!drawFromPosSet) {
+                lastCapacity = 0;
+                lastCoolingUnits = 0;
+                lastMinTemp = 0;
+                lastEff = 0;
+                return;
+            }
             BlockEntity drawsFromEntity = level.getBlockEntity(drawsFromPos);
             if (drawsFromEntity instanceof IChillChannelHook hookEntity){
                 //This channels draw point is still valid
@@ -98,12 +101,13 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
                     invalidateNode();
                 } else {
                     //Subtract from channel based on how much the wheel is set too
-                    lastCoolingUnits = hookEntity.getCoolingUnitsCapacity() - capacityScrollWheel.getValue();
+                    int expelled = getExpelled();
+                    lastCoolingUnits = hookEntity.getCoolingUnitsCapacity() - expelled;
                     if (lastCoolingUnits < 0){
                         //Too much drain, invalidate this node.
                         invalidateNode();
                     } else {
-                        lastCooler = new CoolingData(capacityScrollWheel.getValue(),lastMinTemp);
+                        lastCooler = new CoolingData(expelled,lastMinTemp);
                     }
                 }
                 sendParticlesToo(drawsFromPos,this);
@@ -112,6 +116,10 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
                 invalidateNode();
             }
         }
+    }
+
+    public int getExpelled(){
+        return (level.getBlockState(getBlockPos().below()) == AllBlocks.CHILLSTEEL_COIL.getDefaultState()) ? (int) Math.pow(expellScrollWheel.getValue(), 2) : expellScrollWheel.getValue();
     }
 
     void invalidateNode(){

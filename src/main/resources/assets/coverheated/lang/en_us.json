@@ -43,7 +43,7 @@
   "coverheated.cooling_tower.cooling": "Cooling Units produced by Tower",
   "coverheated.cooling_tower.making_vapor": "Making Vapor In ",
   "coverheated.cooling_tower.invalid": "Either there is no tank under this, no fan blowing on this,",
-  "coverheated.cooling_tower.invalid_2": " or its output is blocked",
+  "coverheated.cooling_tower.invalid_2": "its output is blocked, or has an incomplete border",
   "coverheated.cooling_tower.invalid_3": "Because of this, it will not provide any cooling",
 
   "coverheated.thermometer.total_sunken_heat": "Cooling Units on thermometer",

@@ -52,7 +52,7 @@ public class ChannelWrenchItem extends Item {
 
             if (dbe instanceof IChillChannelHook destinationBE && sbe instanceof IChillChannelHook startBE){
 
-                if (startBE.canBeRouted() && initialPos.distSqr(context.getClickedPos()) <= 32){
+                if (destinationBE.canBeRouted() && initialPos.distSqr(context.getClickedPos()) <= 32){
                     displayClientMessage(context,"coverheated.chill_channel.wrench.bound_hook");
                     //We have clicked a proper block and can now set the hook
                     destinationBE.setDrawFrom(initialPos);

@@ -2,8 +2,10 @@ package net.ironf.overheated.cooling.coolingTower;
 
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +28,6 @@ public class CoolingTowerBlock extends Block implements IBE<CoolingTowerBlockEnt
     public BlockEntityType<? extends CoolingTowerBlockEntity> getBlockEntityType() {
         return AllBlockEntities.COOLING_TOWER.get();
     }
-
 
     //Block State
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;

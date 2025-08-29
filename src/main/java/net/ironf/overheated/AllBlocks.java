@@ -407,6 +407,17 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    //Chill Steel Coil
+    public static final BlockEntry<Block> CHILLSTEEL_COIL = REGISTRATE
+            .block("chillsteel_coil", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(simpleCubeAll("placeholder"))
+            .defaultLoot()
+            .register();
+
     //Cooling Tower
     public static final BlockEntry<CoolingTowerBlock> COOLING_TOWER = REGISTRATE
             .block("cooling_tower", CoolingTowerBlock::new)

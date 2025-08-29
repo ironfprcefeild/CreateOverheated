@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "h": {
+      "item": "coverheated:heat_sink"
+    },
+    "t": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "   ",
+    "hth",
+    "   "
+  ],
+  "result": {
+    "item": "coverheated:cooler"
+  }
+}

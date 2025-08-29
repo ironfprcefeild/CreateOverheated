@@ -8,16 +8,13 @@
     "c": {
       "item": "create:copper_casing"
     },
-    "p": {
-      "item": "create:mechanical_pump"
-    },
     "v": {
       "item": "create:fluid_valve"
     }
   },
   "pattern": [
     " t ",
-    "vcp",
+    "vc ",
     " t "
   ],
   "result": {

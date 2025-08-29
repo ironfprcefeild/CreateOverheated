@@ -5,11 +5,13 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.AllTags;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.cooling.IAirCurrentReader;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.GasMapper;
+import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
@@ -17,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,10 +28,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation {
+public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation, IGasPlacer {
+    private static final Logger log = LoggerFactory.getLogger(CoolingTowerBlockEntity.class);
+
     public CoolingTowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -45,6 +52,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     int vaporCounter = 5;
     float sunken = 0;
     float recentCoolingUnits = 0f;
+
     @Override
     public void tick() {
         super.tick();
@@ -55,14 +63,14 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         }
         if (tickTimer-- < 1){
             IFluidTank tank = getTank();
-            if (tank != null && tank.getFluidAmount() >= 2
+            if (tank != null
                     && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
-                    && level.getBlockState(getBlockPos().above()) == Blocks.AIR.defaultBlockState()){
-                tank.drain(2, IFluidHandler.FluidAction.EXECUTE);
+                    && checkForValidity()){
+                tank.drain(1, IFluidHandler.FluidAction.EXECUTE);
                 recentCoolingUnits = 12800 * sunken;
                 if (vaporCounter-- < 1) {
                     vaporCounter = 5;
-                    level.setBlockAndUpdate(getBlockPos().above(), GasMapper.InvGasMap.get(AllGasses.water_vapor).get().defaultBlockState());
+                    placeGasBlock(getBlockPos().above(),AllGasses.water_vapor,level);
                 }
             } else {
                 recentCoolingUnits = 0;
@@ -70,6 +78,26 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
             tickTimer = 75;
         }
     }
+
+    public boolean checkForValidity(){
+        BlockPos pos = getBlockPos();
+        BlockState aboveState = level.getBlockState(pos.above());
+        if (aboveState == Blocks.AIR.defaultBlockState() ||
+                (aboveState == AllGasses.water_vapor.gb.get().defaultBlockState() && level.getBlockState(pos.above().above()) == Blocks.AIR.defaultBlockState())){
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1 ; y++) {
+                    if (!AllTags.AllBlockTags.COOLING_TOWER_BORDER.matches(level.getBlockState(pos.offset(x,0,y)))){
+                        if(!(x==0 && y==0)){
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -121,7 +149,6 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
             tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.cooling_tower.invalid"))));
             tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.cooling_tower.invalid_2"))));
             tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.cooling_tower.invalid_3"))));
-
             return true;
         }
 
