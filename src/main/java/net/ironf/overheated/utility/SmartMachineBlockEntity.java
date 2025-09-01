@@ -1,5 +1,6 @@
 package net.ironf.overheated.utility;
 
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -8,8 +9,12 @@ import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -161,4 +166,17 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
 
     //Goggles ------
 
+    // Noises! ------
+    public void makeSound(SoundEvent sound, float volume, float pitch){
+        makeSound(sound,getBlockPos(),volume,pitch);
+    }
+
+    public void makeSound(AllSoundEvents.SoundEntry sound, float volume, float pitch){
+        makeSound(sound.getMainEvent(),getBlockPos(),volume,pitch);
+    }
+
+    public void makeSound(SoundEvent sound, BlockPos pos, float volume, float pitch){
+        Holder<SoundEvent> sfx = Holder.direct(sound);
+        level.playSeededSound(null, pos.getX(), pos.getY(), pos.getZ(), sfx, SoundSource.BLOCKS,volume,pitch,0);
+    }
 }

@@ -1,10 +1,14 @@
 package net.ironf.overheated.steamworks.blocks.impactDrill;
 
+import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import com.simibubi.create.foundation.sound.SoundScapes;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasMapper;
+import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
@@ -12,18 +16,22 @@ import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -39,7 +47,7 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 import static net.minecraft.ChatFormatting.WHITE;
 
-public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
+public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation, IGasPlacer {
     public ImpactDrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -100,6 +108,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         }
     }
 
+    BlockPos output;
     private void extractionTick() {
 
         //Get some stuff
@@ -110,13 +119,20 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         int pressure = AllSteamFluids.getSteamPressure(contained.getFluid());
         lastPressure = pressure;
         //Ask if fluid is usable
-        if (pressure > 0) {
+        if (pressure > 0 ) {
+            Overheated.LOGGER.info("Fluid is useable");
             //Drain some stuff
             tank.getPrimaryHandler().drain(300, IFluidHandler.FluidAction.EXECUTE);
 
             //Update some values
-            currentTorque += (pressure * torqueMultiplier());
+            currentTorque += (pressure * 2 * torqueMultiplier());
             currentTorque = Math.min(currentTorque, torqueLimit());
+
+            makeSound(SoundEvents.ARMOR_EQUIP_IRON,2f,0.75f);
+            makeSound(AllSoundEvents.STEAM,2f,0.75f);
+            particles(output == null ? getBlockPos() : output,level);
+
+            Overheated.LOGGER.info(currentTorque + "/" + torqueLimit() +". Multi of: " + torqueMultiplier());
             BlockPos myPos = getBlockPos();
 
             //recipe time
@@ -125,57 +141,60 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
             if (orecipe.isPresent()) {
                 //We have a recipe, lets do stuff
                 ImpactDrillRecipe recipe = orecipe.get();
-
                 //We have the torque and heat, and the gas fits
                 if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded()) {
-                    BlockPos output = getOutputPos();
+                    output = getOutputPos();
                     if (output == null)
                         return;
+
                     currentTorque = currentTorque - recipe.getTorqueImpact();
                     addTemp(recipe.getTorqueImpact());
-                    level.setBlockAndUpdate(output, GasMapper.InvFluidGasMap.get(recipe.getOutput().getFluid().getFluidType()).get().defaultBlockState());
-                    particles(output,getLevel());
+                    placeGasBlock(output,recipe.getOutput(),level);
+                    particles(output,level);
+                    particles(output,level);
+                    particles(output,level);
+                    makeSound(SoundEvents.DRAGON_FIREBALL_EXPLODE,4f,1f);
+
                 }
             }
         }
     }
 
     //TODO no work
-    public void particles(BlockPos outputPos, Level level){
-        BlockPos mypos = getBlockPos();
+    public void particles(BlockPos mypos, Level level){
         RandomSource rand = level.random;
-
-        level.addParticle(ParticleTypes.LARGE_SMOKE,
+        level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                 mypos.getX() + rand.nextDouble(),
                 mypos.getY() - 0.5 + rand.nextDouble(),
                 mypos.getZ() + rand.nextDouble(),
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.addParticle(ParticleTypes.LARGE_SMOKE,
+        level.addParticle(ParticleTypes.EXPLOSION,
                 mypos.getX() + rand.nextDouble() *2,
                 mypos.getY() - 0.5 + rand.nextDouble(),
                 mypos.getZ() + rand.nextDouble() *2,
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.addParticle(ParticleTypes.LARGE_SMOKE,
-                outputPos.getX() + rand.nextDouble() *2,
-                outputPos.getY() + 0.1 + rand.nextDouble(),
-                outputPos.getZ() + rand.nextDouble() *2,
+        level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
+                mypos.getX() + rand.nextDouble() *2,
+                mypos.getY() + 0.1 + rand.nextDouble(),
+                mypos.getZ() + rand.nextDouble() *2,
                 rand.nextDouble() * 0.04 - 0.02,
                 -0.15,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.playLocalSound(mypos, SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.BLOCKS,1.0f,1.0f,false);
+
     }
 
-    //Returns valid gas output based on impact tubing, returns null if one was unable to be found
-    private BlockPos getOutputPos() {
+
+    //Returns valid gas output based on casing tower, returns null if a valid output was unable to be found
+    public BlockPos getOutputPos() {
         BlockPos atPos = getBlockPos().above();
         while (true) {
             BlockState atState = level.getBlockState(atPos);
-            if (atState == Blocks.AIR.defaultBlockState()) {
-                return atPos;
+            if (atState.getBlock() == Blocks.AIR) {
+                return level.isInWorldBounds(atPos) ? atPos : null;
             } else if (atState.getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {
                 atPos = atPos.above();
             } else {
@@ -192,7 +211,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         return Math.min(128,Math.abs(currentTemp));
     }
     public float torqueMultiplier() {
-         return ((1+currentHeating/48) * (1+(getAdjustedTemp()/64)));
+         return (1+(currentHeating/12) * (1+(getAdjustedTemp()/16)));
     }
 
 
