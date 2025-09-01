@@ -56,12 +56,8 @@ public class GoggleHelper {
     }
 
     public static String easyFloat(float num){
-        int compare = (int) num;
-        if (num == compare){
-            return String.valueOf(compare);
-        } else {
-            return String.valueOf((double)Math.round((double) num * 100000d)/10000d);
-        }
+        String[] splits = String.valueOf(num).split("\\.");
+        return splits[0] + (splits[1].toCharArray()[0] != '0' ? "." + splits[1].toCharArray()[0] : "");
     }
 
     public static void addIndents(List<Component> prep, int indents){
