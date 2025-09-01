@@ -33,7 +33,7 @@ public class ChannelAbsorberBlockEntity extends SmartMachineBlockEntity implemen
             if (!drawFromPosSet) {
                 lastCapacity = 0;
                 lastCoolingUnits = 0;
-                lastMinTemp = 0;
+                lastMinTemp = 10000;
                 lastEff = 0;
                 return;
             }

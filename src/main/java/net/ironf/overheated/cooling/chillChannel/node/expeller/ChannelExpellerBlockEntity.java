@@ -86,7 +86,7 @@ public class ChannelExpellerBlockEntity extends SmartBlockEntity implements IChi
             if (!drawFromPosSet) {
                 lastCapacity = 0;
                 lastCoolingUnits = 0;
-                lastMinTemp = 0;
+                lastMinTemp = 10000;
                 lastEff = 0;
                 return;
             }
