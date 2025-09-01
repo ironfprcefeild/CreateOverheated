@@ -19,6 +19,7 @@ public interface IGasPlacer {
     }
 
     default void placeGasBlock(BlockPos pos, FluidStack gas, Level level){
+
         placeGasBlock(pos,GasMapper.InvFluidGasMap.get(gas.getFluid().getFluidType()).get(),level);
     }
 }
