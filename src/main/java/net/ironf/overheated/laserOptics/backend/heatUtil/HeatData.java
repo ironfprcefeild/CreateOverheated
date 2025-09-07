@@ -2,6 +2,8 @@ package net.ironf.overheated.laserOptics.backend.heatUtil;
 
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.Map;
+
 //This is the class used to transfer heat data, but also has a static mergeheat function
 public class HeatData {
     public float Heat;
@@ -81,6 +83,7 @@ public class HeatData {
 
 
 
+
     //Theese methods collapse a heat level into the heat level below.
     public void expandOverHeat() {
         this.SuperHeat = this.OverHeat * 4;
@@ -143,6 +146,13 @@ public class HeatData {
     public float getHeatOfLevel(int heatLevel){
         return  (heatLevel == 1 ? this.Heat + this.SuperHeat + this.OverHeat : (heatLevel == 2 ? this.SuperHeat + this.OverHeat : this.OverHeat));
     }
+    public void modifyHeatOfLevel(int heatLevel, float amount){
+        switch (heatLevel){
+            case 1: this.Heat += amount;
+            case 2: this.SuperHeat += amount;
+            case 3: this.OverHeat += amount;
+        }
+    }
     //Combines Heat, moving them up levels
 
     public void combineHeat(){
@@ -160,6 +170,22 @@ public class HeatData {
     public void combineAllHeat(){
         combineHeat();
         combineSuperHeat();
+    }
+
+    //Maps Names to heat ratings and vice versa
+    public static final Map<String,Integer> NameMap = Map.of("overheat",3,"superheat",2,"heat",1);
+    public static final Map<Integer,String> InvNameMap = Map.of(3,"overheat",2,"superheat",1,"heat");
+
+    //Returns True if heating meets the requirements.
+    //To meet the requirements, heating must have at least as much as each heat type as requirments
+    //But Higher levels of heat can meet the requirements of lower ones,
+    // So, (0,2,4) is met by (1,0,0)
+    public static boolean compare(HeatData requirements, HeatData heating){
+        return (
+            heating.OverHeat >= requirements.OverHeat &&
+            heating.OverHeat * 4 + heating.SuperHeat >= requirements.SuperHeat &&
+            heating.getTotalHeat() >= requirements.Heat
+        );
     }
 
     //Read Write stuff
@@ -183,7 +209,7 @@ public class HeatData {
 
 
 
-    public static void writeHeadDataArray(CompoundTag tag, HeatData[] write, String s){
+    public static void writeHeatDataArray(CompoundTag tag, HeatData[] write, String s){
         int i = 0;
         tag.putInt(s+"hdarraylength",write.length);
         for (HeatData hd : write){

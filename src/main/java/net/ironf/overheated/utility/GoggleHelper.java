@@ -17,8 +17,14 @@ import static net.minecraft.ChatFormatting.WHITE;
 public class GoggleHelper {
 
 
+    public static void heatTooltip(List<Component> tooltip, HeatData h, HeatDisplayType hdt){
+        heatTooltip(tooltip,"coverheated.tooltip.heat_info",h,hdt,2);
+    }
 
-    public static void heatTooltip(List<Component> tooltip, HeatData h, HeatDisplayType hdt ){
+    public static void heatTooltip(List<Component> tooltip, HeatData h, HeatDisplayType hdt, int decimals){
+        heatTooltip(tooltip,"coverheated.tooltip.heat_info",h,hdt,decimals);
+    }
+    public static void heatTooltip(List<Component> tooltip, String headerKey, HeatData h, HeatDisplayType hdt, int decimals){
         String heatDisplayKey = "coverheated.tooltip.display_type." + switch (hdt){
             case EMIT -> "emit";
             case ABSORB -> "absorb";
@@ -26,25 +32,27 @@ public class GoggleHelper {
             case SUPPLYING -> "supplying";
         };
 
-        tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat_info")
+
+        tooltip.add(addIndent(Component.translatable(headerKey)
                 .append(Component.translatable(heatDisplayKey))
                 .withStyle(WHITE)));
+
         int displayUpToLevel = (h.Heat > 0 ? 1 : 0) + (h.SuperHeat > 0 ? 2 : 0) + (h.OverHeat > 0 ? 4 : 0);
         if (displayUpToLevel == 0) {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.no_heat")
                     .withStyle(GRAY),1));
         } else {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
-                    .append(easyFloat(h.Heat))
+                    .append(easyFloat(h.Heat,decimals))
                     .withStyle(ChatFormatting.RED), 1));
             if (displayUpToLevel >= 2) {
                 tooltip.add(addIndent(Component.translatable("coverheated.tooltip.superheat")
-                        .append(easyFloat(h.SuperHeat))
+                        .append(easyFloat(h.SuperHeat,decimals))
                         .withStyle(ChatFormatting.RED), 1));
             }
             if (displayUpToLevel >= 4) {
                 tooltip.add(addIndent(Component.translatable("coverheated.tooltip.overheat")
-                        .append(easyFloat(h.OverHeat))
+                        .append(easyFloat(h.OverHeat,decimals))
                         .withStyle(ChatFormatting.RED), 1));
             }
         }
@@ -56,8 +64,17 @@ public class GoggleHelper {
     }
 
     public static String easyFloat(float num){
-        String[] splits = String.valueOf(num).split("\\.");
-        return splits[0] + (splits[1].toCharArray()[0] != '0' ? "." + splits[1].toCharArray()[0] : "");
+        return easyFloat(num,2);
+    }
+    public static String easyFloat(float num, int decimals){
+        String s = String.format("%."+ decimals+ "f",num);
+        if (s.contains("."+"0".repeat(decimals))){
+            return s.split("\\.")[0];
+        }
+        return s;
+
+        //String[] splits = String.valueOf(num).split("\\.");
+        //return splits[0] + (splits[1].toCharArray()[0] != '0' ? "." + splits[1].toCharArray()[0] : "");
     }
 
     public static void addIndents(List<Component> prep, int indents){

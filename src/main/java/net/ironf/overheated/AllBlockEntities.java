@@ -14,6 +14,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
+import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
@@ -81,6 +82,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<SolarPanelBlockEntity> SOLAR_PANEL = REGISTRATE
             .blockEntity("solar_panel", SolarPanelBlockEntity::new)
             .validBlocks(AllBlocks.SOLAR_PANEL)
+            .register();
+
+    //Blaze Absorber
+    public static final BlockEntityEntry<BlazeAbsorberBlockEntity> BLAZE_ABSORBER = REGISTRATE
+            .blockEntity("blaze_absorber", BlazeAbsorberBlockEntity::new)
+            .validBlocks(AllBlocks.BLAZE_ABSORBER)
             .register();
 
     //Heat Sink

@@ -37,6 +37,9 @@
   "coverheated.solar_panel.ticks": " Ticks",
   "coverheated.solar_panel.absorbed_heat": "Absorbed Heat: ",
 
+  "coverheated.absorber.from_panels": "Heat From Panels",
+  "coverheated.absorber.to_boiler": "Heat passed onto Boiler",
+
   "coverheated.heat_sink.airflow": "Airflow on Heat Sink",
 
   "coverheated.cooling_tower.airflow": "Airflow on Cooling Tower",
@@ -176,6 +179,7 @@
   "block.coverheated.reinforced_industrial_iron": "Block of Reinforced Industrial Iron",
   "block.coverheated.sludge": "Sludge",
   "block.coverheated.solar_panel": "Solar Panel",
+  "block.coverheated.blaze_absorber": "Solar Absorber",
   "block.coverheated.split_mirror": "Split Mirror",
   "block.coverheated.steam_high": "Steam High",
   "block.coverheated.steam_insane": "Steam Insane",

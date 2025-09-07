@@ -282,7 +282,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         tag.putInt("consumption_ticks",coolantConsumptionTicks);
         tag.putDouble("break_counter",breakingCounter);
         tag.putInt("timer",timer);
-        HeatData.writeHeadDataArray(tag,hittingLasers,"incoming_heat");
+        HeatData.writeHeatDataArray(tag,hittingLasers,"incoming_heat");
     }
 
     //Goggles

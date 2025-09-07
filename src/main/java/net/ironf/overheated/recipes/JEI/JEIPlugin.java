@@ -32,6 +32,7 @@ public class JEIPlugin implements IModPlugin {
             new RecipeType<>(new ResourceLocation(Overheated.MODID, "cooling"), CoolantRecipe.class);
     public static RecipeType<CondenserRecipe> CONDENSING_TYPE =
             new RecipeType<>(new ResourceLocation(Overheated.MODID, "condensing"), CondenserRecipe.class);
+
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new CoolingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));

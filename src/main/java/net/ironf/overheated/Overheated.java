@@ -7,6 +7,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
+import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
@@ -68,11 +69,11 @@ public class Overheated
         GasMapper.prepareGasBlockInfo();
         AllSteamFluids.prepareSteamArray();
         BlazeCrucibleBlockEntity.addToBoilerHeaters();
+        BlazeAbsorberBlockEntity.addToBoilerHeaters();
         DiodeHeaters.registerDefaults();
         mirrorRegister.registerDefaults();
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "ggg",
+    "gzg"
+  ],
+  "key": {
+    "g": {
+      "item": "create:framed_glass"
+    },
+    "z": {
+      "item": "coverheated:blaze_absorber"
+    }
+  },
+  "result": {
+    "item": "coverheated:solar_panel",
+    "count": 4
+  }
+}

@@ -17,6 +17,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
+import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
@@ -592,6 +593,17 @@ public class AllBlocks {
     public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
             .block("solar_panel", SolarPanelBlock::new)
             .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .register();
+
+    //Blaze Absorber
+    public static final BlockEntry<BlazeAbsorberBlock> BLAZE_ABSORBER = REGISTRATE
+            .block("blaze_absorber", BlazeAbsorberBlock::new)
+            .initialProperties(SharedProperties::softMetal)
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()

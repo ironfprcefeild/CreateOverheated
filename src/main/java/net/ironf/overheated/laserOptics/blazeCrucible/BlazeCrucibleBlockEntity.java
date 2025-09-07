@@ -114,7 +114,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
                 }
                 return 0;
             } catch (NullPointerException e){
-                return 0;
+                return -1;
             }
         });
     }

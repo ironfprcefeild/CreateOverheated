@@ -44,18 +44,12 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
     }
 
     public void updateHeat() {
-        //Returns 0 if it cant see the sky, if it can the running total starts at 0.25
-        //Gains 0.25 more if during the day
-        //Gains 0.25 more if in hot biomes
+        //Returns 0 if it cant see the sky
+        //0.5 in hot biome day, 0.25 in hot biome night.
+        //0.25 in normal day, 0.125 in normal night.
         if (level.canSeeSky(getBlockPos().above())){
-            if (level.getBiome(getBlockPos()).is(Tags.Biomes.IS_HOT)){
-                recentReading = 0.5f;
-            } else {
-                recentReading = 0.25f;
-            }
-            if (level.getDayTime() < 13000) {
-                recentReading = recentReading + 0.25f;
-            }
+            recentReading = (level.getBiome(getBlockPos()).is(Tags.Biomes.IS_HOT)) ? 0.5f : 0.25f;
+            recentReading = (level.getDayTime() < 13000) ? recentReading : recentReading/2;
         } else {
             recentReading = 0;
         }
@@ -82,7 +76,7 @@ public class SolarPanelBlockEntity extends SmartBlockEntity implements IHaveGogg
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        GoggleHelper.heatTooltip(tooltip,getRecentReading(), HeatDisplayType.SUPPLYING);
+        GoggleHelper.heatTooltip(tooltip,getRecentReading(), HeatDisplayType.SUPPLYING,3);
         if (isPlayerSneaking) {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.solar_panel.updating").append(String.valueOf(processingTicks)).append(Component.translatable("coverheated.solar_panel.ticks"))));
         }

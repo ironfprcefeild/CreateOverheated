@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "zgz",
+    "dzd"
+  ],
+  "key": {
+    "i": {
+      "item": "create:iron_sheet"
+    },
+    "g": {
+      "item": "create:framed_glass"
+    },
+    "z": {
+      "item": "create:zinc_ingot"
+    },
+
+    "d": {
+      "item": "minecraft:daylight_detector"
+    }
+  },
+  "result": {
+    "item": "coverheated:blaze_absorber",
+    "count": 2
+  }
+}
