@@ -4,6 +4,7 @@ import com.simibubi.create.foundation.utility.AttachedRegistry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -67,6 +68,12 @@ public class mirrorRegister {
             } else {
                 heat.expandOverHeat(1);
             }
+            return incoming;
+        });
+        registerReflector(AllBlocks.PRESSURE_HEATER.get(), (incoming,level,pos,state,heat) -> {
+            PressureHeaterBlockEntity be = ((PressureHeaterBlockEntity) level.getBlockEntity(pos));
+            be.laserHeatLevel = heat.useUpToOverHeat();
+            be.laserTimer = 60;
             return incoming;
         });
         registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));

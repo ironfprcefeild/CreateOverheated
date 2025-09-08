@@ -99,7 +99,7 @@ public abstract class SmartMachineBlockEntity extends SmartBlockEntity {
         return hasPassiveCooling();
     }
     public boolean hasPassiveCooling(){
-        return false;
+        return getPassiveCooling() != null;
     }
     public CoolingData getPassiveCooling(){
         return null;

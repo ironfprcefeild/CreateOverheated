@@ -153,8 +153,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         return PressureChamberRecipe.Serializer.INSTANCE;
     }
     public static class Type implements RecipeType<PressureChamberRecipe> {
-        private Type() {
-        }
+        private Type() {}
 
         public static final Type INSTANCE = new Type();
         public static final String ID = "pressure_chamber";
@@ -206,7 +205,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<PressureChamberRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(Overheated.MODID, "pressure_chamber");
+                Overheated.asResource("pressure_chamber");
 
         @Override
         public PressureChamberRecipe fromJson(ResourceLocation id, JsonObject SerializedRecipe) {
@@ -249,7 +248,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             7     Added Heat
             8     Ticks Taken
             9     Heat Rate
-            10    Catalyst
          */
         @Override
         public @Nullable PressureChamberRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {

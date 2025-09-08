@@ -593,7 +593,7 @@ public class AllBlocks {
     public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
             .block("solar_panel", SolarPanelBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.forceSolidOn())
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()
             .transform(pickaxeOnly())
