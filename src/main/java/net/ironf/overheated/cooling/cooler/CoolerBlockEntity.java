@@ -77,7 +77,7 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
     @Override
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
         //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a cooler
-        Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
+        Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (facing.getOpposite() == in
             && (effTracker > 0)
             && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
@@ -92,7 +92,6 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
     public CoolingData collectCooling(BlockPos myPos, Direction facing){
         //Gets cooling data from any adjacent blocks (besides the one being faced)
         ArrayList<Direction> directions = (new ArrayList<>(List.of(Iterate.directions)));
-        directions.remove(facing);
         CoolingData toReturn = getCoolingData(myPos, level, directions.toArray(Direction[]::new));
 
         Fluid coolant = tank.getPrimaryHandler().getFluid().getFluid();
@@ -112,7 +111,7 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
     public void tick() {
         super.tick();
         if (tickTimer-- == 0){
-            tickTimer = 72;
+            tickTimer = 75;
             tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
             effTracker = !tank.isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(tank.getPrimaryHandler().getFluid().getFluid(),0f) : 0f;
         }
@@ -141,7 +140,7 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
         if (effTracker > 0) {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooler.header").withStyle(ChatFormatting.WHITE)));
 
-            CoolingData cooled = collectCooling(getBlockPos(),getBlockState().getValue(BlockStateProperties.FACING));
+            CoolingData cooled = collectCooling(getBlockPos(),getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.cooling_units").withStyle(ChatFormatting.WHITE)));
             tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooled.coolingUnits)).withStyle(ChatFormatting.AQUA), 1));
 

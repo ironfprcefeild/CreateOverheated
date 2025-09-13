@@ -29,9 +29,10 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBl
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
-import net.ironf.overheated.utility.data.GenericBlockStateGen;
-import net.ironf.overheated.utility.data.GenericDirectionalBlockStateGen;
-import net.ironf.overheated.utility.data.GenericSpunDirectionalBlockStateGen;
+import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelBlockStateGen;
+import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelDirectionalBlockStateGen;
+import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelHorizontalDirectionalBlockStateGen;
+import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelSpunBlockStateGen;
 import net.ironf.overheated.utility.registration.AllSpriteShifts;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -307,10 +308,10 @@ public class AllBlocks {
     public static final BlockEntry<steamVentBlock> STEAM_VENT = REGISTRATE
             .block("steam_vent", steamVentBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.noOcclusion())
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/steam_vent")::generate)
             .defaultLoot()
             .register();
 
@@ -340,7 +341,7 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
             .simpleItem()
-            .blockstate(new GenericDirectionalBlockStateGen((ctx,prov,state) -> "block/turbine_end")::generate)
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/turbine_end")::generate)
             .defaultLoot()
             .register();
     //Condenser
@@ -348,9 +349,9 @@ public class AllBlocks {
             .block("condenser", CondenserBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/condenser")::generate)
             .defaultLoot()
             .register();
     //Heat Sink
@@ -360,7 +361,7 @@ public class AllBlocks {
             .properties(BlockBehaviour.Properties::noOcclusion)
             .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericSpunDirectionalBlockStateGen((ctx, prov, state) -> "block/heat_sink")::generate)
+            .blockstate(new ModelSpunBlockStateGen((ctx, prov, state) -> "block/heat_sink")::generate)
             .defaultLoot()
             .register();
 
@@ -368,10 +369,10 @@ public class AllBlocks {
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE
             .block("cooler", CoolerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.noOcclusion())
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/cooler")::generate)
             .defaultLoot()
             .register();
 
@@ -382,7 +383,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/channel_core")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/channel_core")::generate)
             .defaultLoot()
             .register();
 
@@ -393,7 +394,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -404,7 +405,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -423,10 +424,10 @@ public class AllBlocks {
     public static final BlockEntry<CoolingTowerBlock> COOLING_TOWER = REGISTRATE
             .block("cooling_tower", CoolingTowerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.noOcclusion())
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/cooling_tower")::generate)
             .defaultLoot()
             .register();
 
@@ -438,7 +439,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -452,7 +453,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -463,7 +464,7 @@ public class AllBlocks {
             .properties(p -> p)
             .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new GenericDirectionalBlockStateGen((ctx, prov, state) -> "block/gas_hood")::generate)
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/gas_hood")::generate)
             .defaultLoot()
             .register();
 
@@ -474,7 +475,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .lang("Steam Heater")
             .register();
@@ -489,7 +490,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -500,7 +501,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -534,7 +535,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
     public static final BlockEntry<SplitMirrorBlock> SPLIT_MIRROR = REGISTRATE
@@ -543,7 +544,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -574,7 +575,7 @@ public class AllBlocks {
             .properties(p -> p)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -585,7 +586,7 @@ public class AllBlocks {
             .properties(p -> p.sound(SoundType.WOOD))
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
 
@@ -597,7 +598,7 @@ public class AllBlocks {
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .register();
 
     //Blaze Absorber
@@ -608,7 +609,7 @@ public class AllBlocks {
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .register();
 
     public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE
@@ -618,7 +619,7 @@ public class AllBlocks {
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()
             .transform(pickaxeOnly())
-            .blockstate(new GenericBlockStateGen((ctx,prov,state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .register();
 
 

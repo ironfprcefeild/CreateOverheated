@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -57,6 +58,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+
         behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000).forbidInsertion());
     }
 
@@ -74,7 +76,7 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
+        if(cap == ForgeCapabilities.FLUID_HANDLER && side == this.getBlockState().getValue(BlockStateProperties.FACING).getOpposite()) {
             return tank.getCapability().cast();
         }
         return super.getCapability(cap, side);

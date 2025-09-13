@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation, IGasPlacer {
-    private static final Logger log = LoggerFactory.getLogger(CoolingTowerBlockEntity.class);
 
     public CoolingTowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -64,7 +63,8 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         if (tickTimer-- < 1){
             IFluidTank tank = getTank();
             if (tank != null
-                    && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 5
+                    && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
+                    && tank.getFluidAmount() >= 5
                     && checkForValidity()){
                 tank.drain(5, IFluidHandler.FluidAction.EXECUTE);
                 recentCoolingUnits = 12800 * sunken;
@@ -133,7 +133,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     //Cooling
     @Override
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
-        Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
+        Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (facing.getOpposite() == in){
             return new CoolingData(recentCoolingUnits,-20f);
         } else {

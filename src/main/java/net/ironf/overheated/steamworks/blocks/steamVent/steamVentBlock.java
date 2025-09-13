@@ -32,7 +32,7 @@ public class steamVentBlock extends Block implements IBE<steamVentBlockEntity> {
     }
 
     //Block State
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WALL = BooleanProperty.create("wall");
 
     @Override

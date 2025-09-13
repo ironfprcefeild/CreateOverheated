@@ -29,7 +29,7 @@ public class CoolerBlock extends Block implements IBE<CoolerBlockEntity> {
 
 
     //Block State
-    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder.add(FACING));
@@ -38,6 +38,6 @@ public class CoolerBlock extends Block implements IBE<CoolerBlockEntity> {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite());
     }
 }

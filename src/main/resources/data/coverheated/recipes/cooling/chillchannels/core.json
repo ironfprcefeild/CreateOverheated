@@ -16,7 +16,7 @@
       "item": "coverheated:chill_steel"
     },
     "f": {
-      "item": "create:fluid_tank"
+      "item": "coverheated:cooler"
     }
   },
   "result": {

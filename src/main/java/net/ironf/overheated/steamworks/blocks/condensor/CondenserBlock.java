@@ -15,7 +15,7 @@ public class CondenserBlock extends Block implements IBE<CondenserBlockEntity> {
     public CondenserBlock(Properties p) {
         super(p);
     }
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder.add(FACING));
@@ -24,7 +24,7 @@ public class CondenserBlock extends Block implements IBE<CondenserBlockEntity> {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite());
     }
 
     @Override

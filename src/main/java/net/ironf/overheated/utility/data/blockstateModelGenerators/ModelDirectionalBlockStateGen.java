@@ -1,12 +1,13 @@
-package net.ironf.overheated.utility.data;
+package net.ironf.overheated.utility.data.blockstateModelGenerators;
 
+import net.ironf.overheated.utility.data.BSGen;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class GenericDirectionalBlockStateGen extends GenericBlockStateGen {
+public class ModelDirectionalBlockStateGen extends ModelBlockStateGen {
 
-    public GenericDirectionalBlockStateGen(BSGen bsGen) {
+    public ModelDirectionalBlockStateGen(BSGen bsGen) {
         super(bsGen);
     }
 

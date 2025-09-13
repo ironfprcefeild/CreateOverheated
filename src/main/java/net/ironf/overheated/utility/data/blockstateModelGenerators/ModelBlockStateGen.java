@@ -1,14 +1,14 @@
-package net.ironf.overheated.utility.data;
+package net.ironf.overheated.utility.data.blockstateModelGenerators;
 
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import net.minecraft.util.RandomSource;
+import net.ironf.overheated.utility.data.BSGen;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.generators.ModelFile;
 
-public class GenericBlockStateGen extends SpecialBlockStateGen {
+public class ModelBlockStateGen extends SpecialBlockStateGen {
     @Override
     protected int getXRotation(BlockState state) {
         return 0;
@@ -19,7 +19,7 @@ public class GenericBlockStateGen extends SpecialBlockStateGen {
         return 0;
     }
 
-    public GenericBlockStateGen(BSGen bsGen){
+    public ModelBlockStateGen(BSGen bsGen){
         this.gen = bsGen;
     }
 
