@@ -60,7 +60,8 @@ public class AllTags {
 
     public enum AllBlockTags {
         CHAMBER_BORDER,
-        COOLING_TOWER_BORDER
+        COOLING_TOWER_BORDER,
+        DRILL_SCAFFOLD
         ;
         public final TagKey<Block> tag;
         public final boolean alwaysDatagen;

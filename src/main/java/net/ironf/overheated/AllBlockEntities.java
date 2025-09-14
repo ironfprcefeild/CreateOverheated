@@ -20,6 +20,7 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
+import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRenderer;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
@@ -135,6 +136,7 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<ImpactDrillBlockEntity> IMPACT_DRILL = REGISTRATE
             .blockEntity("impact_drill", ImpactDrillBlockEntity::new)
             .validBlocks(AllBlocks.IMPACT_DRILL)
+            .renderer(() -> ImpactDrillRenderer::new)
             .register();
 
     //GasHood

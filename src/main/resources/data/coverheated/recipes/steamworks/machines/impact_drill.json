@@ -11,14 +11,17 @@
     "p": {
       "item": "create:mechanical_pump"
     },
+    "m": {
+      "item": "create:mechanical_press"
+    },
     "d": {
       "item": "create:mechanical_drill"
     }
   },
   "pattern": [
-    " t ",
-    " cp",
-    " d "
+    "ctc",
+    "mcm",
+    "pdp"
   ],
   "result": {
     "item": "coverheated:impact_drill"

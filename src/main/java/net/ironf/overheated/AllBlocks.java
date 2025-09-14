@@ -450,10 +450,10 @@ public class AllBlocks {
     public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
             .block("impact_drill", ImpactDrillBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.noOcclusion())
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/impact_drill")::generate)
             .defaultLoot()
             .register();
 

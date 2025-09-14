@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.sound.SoundScapes;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.AllTags;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.gasses.IGasPlacer;
@@ -43,6 +44,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import static net.ironf.overheated.AllTags.AllBlockTags.DRILL_SCAFFOLD;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 import static net.minecraft.ChatFormatting.WHITE;
@@ -85,7 +87,8 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
     }
 
     //Doing stuff
-
+    float headPosition = 0;
+        //0 = Fully Retracted, 1 = Fully Extended
     float currentTorque = 0;
     float currentHeating = 0;
     int tickTimer = 20;
@@ -97,6 +100,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
     @Override
     public void tick() {
         super.tick();
+        headPosition = (headPosition > 0.01) ? headPosition * 0.95f : 0;
         if (tickTimer-- == 0) {
             tickTimer = 20;
             extractionTick();
@@ -120,7 +124,6 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         lastPressure = pressure;
         //Ask if fluid is usable
         if (pressure > 0 ) {
-            Overheated.LOGGER.info("Fluid is useable");
             //Drain some stuff
             tank.getPrimaryHandler().drain(300, IFluidHandler.FluidAction.EXECUTE);
 
@@ -130,13 +133,13 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
 
             makeSound(SoundEvents.ARMOR_EQUIP_IRON,2f,0.75f);
             makeSound(AllSoundEvents.STEAM,2f,0.75f);
-            particles(output == null ? getBlockPos() : output,level);
+            particles(output == null ? getBlockPos() : output,level,false);
 
-            Overheated.LOGGER.info(currentTorque + "/" + torqueLimit() +". Multi of: " + torqueMultiplier());
             BlockPos myPos = getBlockPos();
 
             //recipe time
-            ItemStack inputItem = new ItemStack(level.getBlockState(myPos.below()).getBlock().asItem(), 1);
+            if (!DRILL_SCAFFOLD.matches(level.getBlockState(myPos.below()).getBlock())) return;
+            ItemStack inputItem = new ItemStack(level.getBlockState(myPos.below().below()).getBlock().asItem(), 1);
             Optional<ImpactDrillRecipe> orecipe = grabRecipe(level, inputItem);
             if (orecipe.isPresent()) {
                 //We have a recipe, lets do stuff
@@ -150,9 +153,11 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
                     currentTorque = currentTorque - recipe.getTorqueImpact();
                     addTemp(recipe.getTorqueImpact());
                     placeGasBlock(output,recipe.getOutput(),level);
-                    particles(output,level);
-                    particles(output,level);
-                    particles(output,level);
+
+                    headPosition = 1f;
+                    particles(output,level,true);
+                    particles(output,level,true);
+                    particles(output,level,true);
                     makeSound(SoundEvents.DRAGON_FIREBALL_EXPLODE,4f,1f);
 
                 }
@@ -161,7 +166,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
     }
 
     //TODO no work
-    public void particles(BlockPos mypos, Level level){
+    public void particles(BlockPos mypos, Level level, boolean explosion){
         RandomSource rand = level.random;
         level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                 mypos.getX() + rand.nextDouble(),
@@ -170,13 +175,22 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
-        level.addParticle(ParticleTypes.EXPLOSION,
-                mypos.getX() + rand.nextDouble() *2,
-                mypos.getY() - 0.5 + rand.nextDouble(),
-                mypos.getZ() + rand.nextDouble() *2,
-                rand.nextDouble() * 0.04 - 0.02,
-                0.3,
-                rand.nextDouble() * 0.04 - 0.02);
+        if (explosion) {
+            level.addParticle(ParticleTypes.EXPLOSION,
+                    mypos.getX() + rand.nextDouble() * 2,
+                    mypos.getY() - 0.5 + rand.nextDouble(),
+                    mypos.getZ() + rand.nextDouble() * 2,
+                    rand.nextDouble() * 0.04 - 0.02,
+                    0.3,
+                    rand.nextDouble() * 0.04 - 0.02);
+            level.addParticle(ParticleTypes.EXPLOSION,
+                    mypos.getX() + rand.nextDouble() * 2,
+                    mypos.getY() - 0.5 + rand.nextDouble(),
+                    mypos.getZ() + rand.nextDouble() * 2,
+                    rand.nextDouble() * 0.04 - 0.02,
+                    0.3,
+                    rand.nextDouble() * 0.04 - 0.02);
+        }
         level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                 mypos.getX() + rand.nextDouble() *2,
                 mypos.getY() + 0.1 + rand.nextDouble(),
@@ -250,6 +264,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         currentHeating = tag.getFloat("heat");
         tickTimer = tag.getInt("timer");
         laserTimer = tag.getInt("l_timer");
+        headPosition = tag.getFloat("headpos");
     }
 
     @Override
@@ -259,6 +274,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         tag.putFloat("heat",this.currentHeating);
         tag.putInt("timer",this.tickTimer);
         tag.putInt("l_timer",this.laserTimer);
+        tag.putFloat("headpos",this.headPosition);
     }
 
     //Goggle
@@ -272,11 +288,9 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
 
         if (isPlayerSneaking){
             tempAndCoolInfo(tooltip);
-
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.extra_info")));
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.limit_info").append(easyFloat(torqueLimit())),1));
             tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.multiplier_info").append(easyFloat(torqueMultiplier())),1));
-
         } else {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info")));
         }
