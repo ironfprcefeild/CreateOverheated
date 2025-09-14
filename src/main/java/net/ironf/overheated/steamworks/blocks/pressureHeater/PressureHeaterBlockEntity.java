@@ -93,7 +93,7 @@ public class PressureHeaterBlockEntity extends SmartMachineBlockEntity implement
         if (timer-- == 0){
             timer = 75;
             IFluidTank input = getTank(Direction.DOWN);
-            if (input == null || input.getFluidAmount() >= 10){
+            if (input == null || input.getFluidAmount() <= 10){
                 recentReading = HeatData.empty();
                 return;
             }
@@ -115,8 +115,8 @@ public class PressureHeaterBlockEntity extends SmartMachineBlockEntity implement
                 return;
             }
             recentReading = new HeatData(readHeat == 1 ? 1 : 0, readHeat == 2 ? 1 : 0, readHeat == 3 ? 1 : 0);
-            tank.getPrimaryHandler().fill(AllSteamFluids.getSteamFromValues(pressure,0,10), IFluidHandler.FluidAction.EXECUTE);
-            addTemp((float) Math.pow(4,2*readHeat-1));
+            tank.getPrimaryHandler().fill(toFill, IFluidHandler.FluidAction.EXECUTE);
+            addTemp((float) Math.floor(Math.pow(3.5,readHeat+1)));
             input.drain(10, IFluidHandler.FluidAction.EXECUTE);
         } else {
             recentReading = HeatData.empty();
