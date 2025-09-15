@@ -167,35 +167,27 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaser
     }
     @OnlyIn(Dist.CLIENT)
     void tickAnimation() {
-        boolean active = heatLevel > 0;
 
-        if (!active) {
-            float target = 0;
-            LocalPlayer player = Minecraft.getInstance().player;
-            if (player != null && !player.isInvisible()) {
-                double x;
-                double z;
-                if (isVirtual()) {
-                    x = -4;
-                    z = -10;
-                } else {
-                    x = player.getX();
-                    z = player.getZ();
-                }
-                double dx = x - (getBlockPos().getX() + 0.5);
-                double dz = z - (getBlockPos().getZ() + 0.5);
-                target = AngleHelper.deg(-Mth.atan2(dz, dx)) - 90;
+        float target = 0;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null && !player.isInvisible()) {
+            double x;
+            double z;
+            if (isVirtual()) {
+                x = -4;
+                z = -10;
+            } else {
+                x = player.getX();
+                z = player.getZ();
             }
-            target = headAngle.getValue() + AngleHelper.getShortestAngleDiff(headAngle.getValue(), target);
-            headAngle.chase(target, .25f, LerpedFloat.Chaser.exp(5));
-            headAngle.tickChaser();
-        } else {
-            headAngle.chase((AngleHelper.horizontalAngle(getBlockState().getOptionalValue(BlazeBurnerBlock.FACING)
-                    .orElse(Direction.SOUTH)) + 180) % 360, .125f, LerpedFloat.Chaser.EXP);
-            headAngle.tickChaser();
+            double dx = x - (getBlockPos().getX() + 0.5);
+            double dz = z - (getBlockPos().getZ() + 0.5);
+            target = AngleHelper.deg(-Mth.atan2(dz, dx)) - 90;
         }
-
-        headAnimation.chase(active ? 1 : 0, .25f, LerpedFloat.Chaser.exp(.25f));
+        target = headAngle.getValue() + AngleHelper.getShortestAngleDiff(headAngle.getValue(), target);
+        headAngle.chase(target, .25f, LerpedFloat.Chaser.exp(5));
+        headAngle.tickChaser();
+        headAnimation.chase(1, .25f, LerpedFloat.Chaser.exp(.25f));
         headAnimation.tickChaser();
     }
 

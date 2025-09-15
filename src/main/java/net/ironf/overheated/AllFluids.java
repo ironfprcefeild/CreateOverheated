@@ -33,6 +33,12 @@ public class AllFluids {
                     .Register(p -> p.canHydrate(true).canDrown(true).canSwim(true).canExtinguish(true)
                             .density(2000).viscosity(1400));
 
+    public static final OverheatedRegistrate.FluidRegistration STRAY_SPIRIT =
+            REGISTRATE.SimpleFluid("stray_spirit")
+                    .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
+                    .Register(p -> p.canHydrate(true).canDrown(true).canSwim(true).canExtinguish(true)
+                            .density(2000).viscosity(1400));
+
     public static final OverheatedRegistrate.FluidRegistration SLUDGE =
             REGISTRATE.SimpleFluid("sludge")
                     .tintColor(0x25BE45)

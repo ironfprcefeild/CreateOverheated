@@ -82,8 +82,11 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
 
         if (canDrawFlame) {
             SpriteShiftEntry spriteShift =
-                    heatLevel >= 2 ? AllSpriteShifts.SUPER_BURNER_FLAME : AllSpriteShifts.BURNER_FLAME;
-
+                    switch (heatLevel){
+                        case 1 -> AllSpriteShifts.BURNER_FLAME;
+                        case 2 -> AllSpriteShifts.SUPER_BURNER_FLAME;
+                        default -> net.ironf.overheated.AllSpriteShifts.OVERHEATED_BURNER_FLAME;
+                    };
             float spriteWidth = spriteShift.getTarget()
                     .getU1()
                     - spriteShift.getTarget()
@@ -121,10 +124,18 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
 
 
         if (heatLevel >= 1) {
-            PartialModel rodsModel = heatLevel >= 2 ? AllPartialModels.BLAZE_BURNER_SUPER_RODS
-                    : AllPartialModels.BLAZE_BURNER_RODS;
-            PartialModel rodsModel2 = heatLevel >= 2 ? AllPartialModels.BLAZE_BURNER_SUPER_RODS_2
-                    : AllPartialModels.BLAZE_BURNER_RODS_2;
+
+            PartialModel rodsModel = switch(heatLevel){
+                case 2 -> AllPartialModels.BLAZE_BURNER_SUPER_RODS;
+                case 1 -> AllPartialModels.BLAZE_BURNER_RODS;
+                default -> net.ironf.overheated.AllPartialModels.BLAZE_OVERHEAT_RODS;
+            };
+
+            PartialModel rodsModel2 = switch(heatLevel){
+                case 2 -> AllPartialModels.BLAZE_BURNER_SUPER_RODS_2;
+                case 1 -> AllPartialModels.BLAZE_BURNER_RODS_2;
+                default -> net.ironf.overheated.AllPartialModels.BLAZE_OVERHEAT_RODS_2;
+            };
 
             SuperByteBuffer rodsBuffer = CachedBufferer.partial(rodsModel, blockState);
             if (modelTransform != null)

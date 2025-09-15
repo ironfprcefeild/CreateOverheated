@@ -31,6 +31,8 @@ public class AllItems {
     public static final ItemEntry<Item> BLAZESTEEL_NUGGET = craftingIngredient("blazesteel_nugget","Blazesteel Nugget");
     public static final ItemEntry<Item> BLAZEGLASS_FIXTURE = craftingIngredient("blazeglass_fixture","Blazeglass Fixture");
     public static final ItemEntry<Item> ANTILASER_PLATE = craftingIngredient("antilaser_plate","Anti-laser Plate");
+    public static final ItemEntry<Item> INCOMPLETE_LASER_CASING = craftingIngredient("incomplete_laser_casing","Incomplete Laser Casing");
+
 
     //Salt Stuff
     public static final ItemEntry<Item> WHITE_HALITE = craftingIngredient("white_halite","White Halite");
