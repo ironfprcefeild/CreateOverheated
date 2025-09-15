@@ -487,10 +487,10 @@ public class AllBlocks {
     public static final BlockEntry<BlazeCrucibleBlock> BLAZE_CRUCIBLE = REGISTRATE
             .block("blaze_crucible", BlazeCrucibleBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.noOcclusion().lightLevel(BlazeCrucibleBlock::getLight))
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/blaze_crucible")::generate)
             .defaultLoot()
             .register();
 

@@ -12,6 +12,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
 import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
@@ -52,6 +53,7 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<BlazeCrucibleBlockEntity> BLAZE_CRUCIBLE = REGISTRATE
             .blockEntity("blaze_crucible", BlazeCrucibleBlockEntity::new)
             .validBlocks(AllBlocks.BLAZE_CRUCIBLE)
+            .renderer(() -> BlazeCrucibleRenderer::new)
             .register();
 
     //Laser Diode

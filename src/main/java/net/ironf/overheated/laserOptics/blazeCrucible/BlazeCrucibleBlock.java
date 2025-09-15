@@ -43,6 +43,16 @@ public class BlazeCrucibleBlock extends Block implements IBE<BlazeCrucibleBlockE
         basin.notifyChangeOfContents();
     }
 
+    public static int getLight(BlockState state) {
+        BlazeBurnerBlock.HeatLevel level = state.getValue(HEAT_LEVEL);
+        return switch (level) {
+            case NONE -> 0;
+            case SMOULDERING,KINDLED -> 8;
+            case SEETHING -> 15;
+            default -> 20;
+        };
+    }
+
     public BlazeCrucibleBlock(Properties p_49795_) {
         super(p_49795_);
     }
