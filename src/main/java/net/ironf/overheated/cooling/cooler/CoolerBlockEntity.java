@@ -79,6 +79,7 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
         //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a cooler
         Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (facing.getOpposite() == in
+
             && (effTracker > 0)
             && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
             && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL_ABSORBER.get())) {
@@ -95,9 +96,13 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
         CoolingData toReturn = getCoolingData(myPos, level, directions.toArray(Direction[]::new));
 
         Fluid coolant = tank.getPrimaryHandler().getFluid().getFluid();
-        toReturn.minTemp = CoolingHandler.minTempHandler.get(coolant);
-        toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
-        return toReturn;
+        if (CoolingHandler.minTempHandler.containsKey(coolant)) {
+            toReturn.minTemp = CoolingHandler.minTempHandler.get(coolant);
+            toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
+            return toReturn;
+        } else {
+            return CoolingData.empty();
+        }
     }
 
 

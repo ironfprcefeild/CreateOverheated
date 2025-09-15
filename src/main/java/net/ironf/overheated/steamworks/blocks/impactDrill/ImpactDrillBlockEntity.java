@@ -225,7 +225,7 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         return Math.min(128,Math.abs(currentTemp));
     }
     public float torqueMultiplier() {
-         return (1+(currentHeating/12) * (1+(getAdjustedTemp()/16)));
+         return ((1+(currentHeating/12)) * (1+(getAdjustedTemp()/16)));
     }
 
 
