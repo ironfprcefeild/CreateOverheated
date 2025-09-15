@@ -5,13 +5,20 @@
       "item": "minecraft:diamond"
     },
     {
-      "item": "minecraft:packed_ice"
+      "item": "minecraft:blue_ice"
+    },
+    {
+      "item": "minecraft:blue_ice"
+    },
+    {
+      "fluid": "coverheated:stray_sauce",
+      "amount": 1000
     }
   ],
   "results": [
     {
       "item": "coverheated:ice_diamond",
-      "count": 16
+      "count": 8
     }
   ]
 }

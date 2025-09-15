@@ -29,7 +29,7 @@ public class AllFeatures {
             .Size(10,22)
             .BorderSize(4)
             .makeBlock(AllBlocks.NIHILITE_DEPOSIT)
-            .makeEncasedBlock(AllBlocks.NIHILISTONE).register();
+            .makeEncasedBlock(AllBlocks.NIHBOROCK).register();
 
     //Geothermal Vent
     public static final RegistryObject<BedrockDepositFeature> heated_geothermal = REGISTRATE.depositFeature("heated_geothermal_vent")

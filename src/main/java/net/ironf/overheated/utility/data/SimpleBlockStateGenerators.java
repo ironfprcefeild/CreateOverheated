@@ -10,4 +10,5 @@ public class SimpleBlockStateGenerators {
         return (c, p) -> p.simpleBlock(c.get(), p.models()
                 .cubeColumn(c.getName(), p.modLoc("block/" + path),p.modLoc("block/" + path +"_top")));
     }
+
 }

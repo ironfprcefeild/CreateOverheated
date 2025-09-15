@@ -1,0 +1,19 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:nihborock"
+    }
+  ],
+  "processingTime": 350,
+  "results": [
+    {
+      "chance": 0.25,
+      "item": "coverheated:nihilite_globule"
+    },
+    {
+      "chance": 0.2,
+      "item": "minecraft:lapis_lazuli"
+    }
+  ]
+}

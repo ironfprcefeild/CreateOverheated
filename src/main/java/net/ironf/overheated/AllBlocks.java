@@ -29,6 +29,7 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBl
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
+import net.ironf.overheated.utility.data.SimpleBlockStateGenerators;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelBlockStateGen;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelDirectionalBlockStateGen;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelHorizontalDirectionalBlockStateGen;
@@ -238,6 +239,19 @@ public class AllBlocks {
                     .simpleItem()
                     .defaultLoot()
                     .lang("Nihilistone")
+                    .register();
+
+    public static final BlockEntry<Block> NIHBOROCK =
+            REGISTRATE.block("nihborock", Block::new)
+                    .initialProperties(() -> Blocks.DIAMOND_BLOCK)
+                    .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.ANCIENT_DEBRIS))
+                    .transform(pickaxeOnly())
+                    .blockstate(SimpleBlockStateGenerators.simpleCubeColumn("nihborock"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Nihborock")
                     .register();
 
     //Geothermium

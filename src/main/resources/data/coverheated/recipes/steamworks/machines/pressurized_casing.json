@@ -51,6 +51,22 @@
           "item": "coverheated:incomplete_pressurized_casing"
         },
         {
+          "item": "minecraft:gunpowder"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
           "item": "create:copper_sheet"
         }
       ],
