@@ -608,22 +608,22 @@ public class AllBlocks {
     public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
             .block("solar_panel", SolarPanelBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.forceSolidOn())
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .properties(p -> p.forceSolidOn().noOcclusion())
+            .simpleItem()
             .defaultLoot()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/solar_panel")::generate)
             .register();
 
     //Blaze Absorber
     public static final BlockEntry<BlazeAbsorberBlock> BLAZE_ABSORBER = REGISTRATE
-            .block("blaze_absorber", BlazeAbsorberBlock::new)
+            .block("solar_absorber", BlazeAbsorberBlock::new)
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .simpleItem()
             .defaultLoot()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/solar_absorber")::generate)
             .register();
 
     public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE

@@ -10,7 +10,7 @@
       "item": "create:framed_glass"
     },
     "z": {
-      "item": "coverheated:blaze_absorber"
+      "item": "coverheated:solar_absorber"
     }
   },
   "result": {
