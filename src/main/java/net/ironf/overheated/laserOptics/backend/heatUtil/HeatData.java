@@ -97,13 +97,13 @@ public class HeatData {
 
     public void expandOverHeat(int amount) {
         float detracted = Math.min(amount, this.OverHeat);
-        this.SuperHeat = detracted * 4;
+        this.SuperHeat += detracted * 4;
         this.OverHeat = this.OverHeat - detracted;
     }
 
     public void expandSuperHeat(int amount){
         float detracted = Math.min(amount, this.SuperHeat);
-        this.Heat = detracted * 4;
+        this.Heat += detracted * 4;
         this.SuperHeat = this.SuperHeat - detracted;
     }
 

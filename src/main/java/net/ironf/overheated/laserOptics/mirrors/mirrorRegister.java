@@ -54,7 +54,7 @@ public class mirrorRegister {
         });
         registerReflector(AllBlocks.SUPERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
             if (heat.SuperHeat > 0 && heat.SuperHeat < 1){
-                heat.Heat = heat.SuperHeat * 4;
+                heat.Heat += heat.SuperHeat * 4;
                 heat.SuperHeat = 0;
             } else {
                 heat.expandSuperHeat(1);
@@ -63,7 +63,7 @@ public class mirrorRegister {
         });
         registerReflector(AllBlocks.OVERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
             if (heat.OverHeat > 0 && heat.OverHeat < 1){
-                heat.SuperHeat = heat.OverHeat * 4;
+                heat.SuperHeat += heat.OverHeat * 4;
                 heat.OverHeat = 0;
             } else {
                 heat.expandOverHeat(1);
