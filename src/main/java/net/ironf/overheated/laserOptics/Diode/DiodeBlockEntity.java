@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,7 +41,7 @@ import java.util.Map;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable, ILaserAbsorber {
+public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable,ILaserEmitter {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -53,6 +54,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     boolean noCoolant = false;
     int coolantConsumptionTicks = 256;
     double breakingCounter = 0;
+    LaserSegment LS;
 
     int timer = 5;
     HeatData recentHeat = HeatData.empty();
@@ -64,8 +66,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         super.tick();
         if (timer-- <= 0){
             fireLaser();
-            damageZones.clear();
-            hittingLasers = new HeatData[]{HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty(), HeatData.empty()};
             timer = 5;
         }
         //This should drain fluid based on the speed
@@ -75,7 +75,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         } else {
             coolantConsumptionTicks--;
         }
-        dealDamage(recentHeat.getTotalHeat());
     }
 
     public void fireLaser(){
@@ -104,15 +103,18 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 heatToLow = false;
             }
 
-            int range = (int) Math.ceil(laserHeat.getTotalHeat()*(currentCoolantEff));
-
-            //Update recent heat
+            //Update recent heat (for goggles)
             recentHeat = laserHeat.copyMe();
-            //Propagate Laser
-            //32 Limits the lasers length, it's also limited by the heat of the laser
-            Direction continueIn = getBlockState().getValue(BlockStateProperties.FACING);
-            BlockPos continueAt = getBlockPos();
-            BlockPos currentOrigin = continueAt.relative(continueIn);
+
+            LS.updateLaserEmission(
+                    recentHeat,
+                    (int) (recentHeat.getTotalHeat() + 16),
+                    3,
+                    level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
+
+
+
+            /*
             for (int t = 0; t < Math.min(32, range) + 16 && laserHeat.getTotalHeat() > 0.1; t++) {
                 continueAt = continueAt.relative(continueIn);
                 BlockState hitState = level.getBlockState(continueAt);
@@ -154,57 +156,18 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                     addToDamage(continueAt.relative(continueIn.getOpposite()),continueAt);
                 }
             }
-            //We are done with the laser, cause damage
-            //addToDamage(currentOrigin,continueAt);
+
+             */
+
         } else {
             noCoolant = true;
         }
     }
 
-    private void markForEffectCloud(BlockPos continueAt) {
-        RandomSource rand = level.random;
-        double x = continueAt.getX() + rand.nextDouble();
-        double y = continueAt.getY() + rand.nextDouble();
-        double z = continueAt.getZ() + rand.nextDouble();
-        double vx = rand.nextDouble() * 0.04 - 0.02;
-        double vy = -0.2;
-        double vz = rand.nextDouble() * 0.04 - 0.02;
-        level.addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
-    }
-
-    //public static final Holder<DamageType> Ions = Holder.direct(new DamageType("ions", DamageScaling.NEVER,2f));
-    public ArrayList<AABB> damageZones = new ArrayList<>();
-    private void addToDamage(BlockPos origin, BlockPos ending){
-        damageZones.add(new AABB(origin.getX()+1,origin.getY()+1,origin.getZ()+1
-                                ,ending.getX()-1,ending.getY()-1,ending.getZ()-1));
-
-    }
-    private void dealDamage(float volatility) {
-        List<Entity> targets = new ArrayList<>();
-        damageZones.forEach((bounds) -> targets.addAll(level.getEntities(null,bounds)));
-        for (Entity entity : targets){
-            if (!entity.isAlive()) {
-                continue;
-            }
-            entity.setRemainingFireTicks((int) (volatility * 2));
-            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.5));
-        }
-
-
-    }
-
-
-    public HeatData[] hittingLasers = {HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty(),HeatData.empty()};
-    public static Map<Direction, Integer> inputHelper = Map.of(Direction.UP,0,Direction.DOWN,1,Direction.NORTH,2,Direction.SOUTH,3,Direction.EAST,4,Direction.WEST,5);
     @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
-        if (getBlockState().getValue(BlockStateProperties.FACING) != incoming.getOpposite()) {
-            hittingLasers[inputHelper.get(incoming)] = beamHeat;
-        }
-        return false;
+    public Level getLaserWorld() {
+        return level;
     }
-
-
 
 
     //This method looks for all diode heaters within 1 block
@@ -220,8 +183,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
                 }
             }
         }
-
-        track = HeatData.mergeHeats(HeatData.mergeHeats(hittingLasers),track);
         return track;
     }
 
@@ -270,7 +231,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         coolantConsumptionTicks = tag.getInt("consumption_ticks");
         breakingCounter = tag.getDouble("break_counter");
         timer = tag.getInt("timer");
-        hittingLasers = HeatData.readHeatDataArray(tag,"incoming_heat");
     }
 
     @Override
@@ -282,7 +242,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         tag.putInt("consumption_ticks",coolantConsumptionTicks);
         tag.putDouble("break_counter",breakingCounter);
         tag.putInt("timer",timer);
-        HeatData.writeHeatDataArray(tag,hittingLasers,"incoming_heat");
     }
 
     //Goggles

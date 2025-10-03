@@ -3,15 +3,12 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber.core;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import com.simibubi.create.foundation.utility.Iterate;
-import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllTags;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
+import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +32,7 @@ import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.*;
 
-public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
+public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation {
     public ChamberCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -113,9 +110,6 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
     public int validTimer = 10;
     public int recipeTimer = 0;
     //The total heat coming from inputted lasers
-    public float currentHeating = 0;
-    public int currentHeatRating = 0;
-    public HeatData laserHeat = HeatData.empty();
     public int currentPressure = 0;
     public int laserTimer = 0;
     //Doing stuff
@@ -138,14 +132,6 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
             }
         }
 
-        //Laser Check
-        if (laserTimer > 0){
-            laserTimer--;
-        } else {
-            currentHeatRating = 0;
-            currentHeating = 0;
-            laserHeat = HeatData.empty();
-        }
 
         //Handle Heat
         if ((currentTemp <= 0 ? 0 : currentTemp) * Math.max(1,currentPressure) > 1024){
@@ -231,24 +217,15 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
 
 
     public float getHeating() {
-        return currentHeating;
+        return totalLaserHeat.getTotalHeat();
     }
 
     public int getHeatRating(){
-        return currentHeatRating;
+        return totalLaserHeat.OverHeat >= 1 ? 3 : (totalLaserHeat.SuperHeat >= 1 ? 2 : 1);
     }
 
     public HeatData getLaserHeat() {
-        return laserHeat;
-    }
-
-    @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
-        currentHeatRating = beamHeat.OverHeat >= 1 ? 3 : (beamHeat.SuperHeat >= 1 ? 2 : 1);
-        currentHeating = beamHeat.getTotalHeat();
-        laserHeat = beamHeat;
-        laserTimer = 60;
-        return false;
+        return totalLaserHeat;
     }
 
     public int getPressure() {
@@ -262,7 +239,7 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         if (checkForValidity()) {
             containedFluidTooltip(tooltip, isPlayerSneaking, InputLazyFluidHandler);
 
-            GoggleHelper.heatTooltip(tooltip, laserHeat, HeatDisplayType.ABSORB);
+            GoggleHelper.heatTooltip(tooltip, totalLaserHeat, HeatDisplayType.ABSORB);
 
             tempAndCoolInfo(tooltip);
             tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.explode")));
@@ -292,12 +269,9 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         super.read(tag, clientPacket);
         validTimer = tag.getInt("validTimer");
         recipeTimer = tag.getInt("recipeTimer");
-        currentHeating = tag.getFloat("heat");
-        currentHeatRating = tag.getInt("heatRating");
         currentPressure = tag.getInt("pressure");
         laserTimer = tag.getInt("laserTimer");
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
-        laserHeat = HeatData.readTag(tag,"laserHeat");
     }
 
 
@@ -306,12 +280,10 @@ public class ChamberCoreBlockEntity extends SmartMachineBlockEntity implements I
         super.write(tag, clientPacket);
         tag.putInt("validTimer",validTimer);
         tag.putInt("recipeTimer",recipeTimer);
-        tag.putFloat("heat", currentHeating);
         tag.putInt("pressure",currentPressure);
         tag.putInt("laserTimer",laserTimer);
-        tag.putInt("heatRating",currentHeatRating);
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
-        HeatData.writeTag(tag,laserHeat,"laserHeat");
+
 
     }
 }

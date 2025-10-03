@@ -4,35 +4,24 @@ import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import com.simibubi.create.foundation.sound.SoundScapes;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.AllTags;
-import net.ironf.overheated.Overheated;
-import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.gasses.IGasPlacer;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
-import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
+import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -49,7 +38,7 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 import static net.minecraft.ChatFormatting.WHITE;
 
-public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation, IGasPlacer {
+public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation, IGasPlacer {
     public ImpactDrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -92,7 +81,6 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
     float currentTorque = 0;
     float currentHeating = 0;
     int tickTimer = 20;
-    int laserTimer = 50;
 
     int lastPressure = 0;
 
@@ -103,13 +91,10 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         headPosition = (headPosition > 0.01) ? headPosition * 0.95f : 0;
         if (tickTimer-- == 0) {
             tickTimer = 20;
+            currentHeating = Math.min(totalLaserHeat.getTotalHeat(),16);
             extractionTick();
         }
-        if (laserTimer > 0) {
-            laserTimer--;
-        } else {
-            currentHeating = 0;
-        }
+
     }
 
     BlockPos output;
@@ -233,13 +218,11 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         return (8 * (1+currentHeating) * (1+(getAdjustedTemp()/8)));
     }
 
-    @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
-        currentHeating = Math.min(beamHeat.getTotalHeat(),16);
-        laserTimer = 30;
-        return false;
-    }
 
+    //Laser Time
+
+
+    //Recipe Stuff
     public static Optional<ImpactDrillRecipe> grabRecipe(Level level, ItemStack stack){
         SimpleContainer inventory = new SimpleContainer(1);
         inventory.setItem(0, stack);
@@ -263,7 +246,6 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         currentTorque = tag.getFloat("torque");
         currentHeating = tag.getFloat("heat");
         tickTimer = tag.getInt("timer");
-        laserTimer = tag.getInt("l_timer");
         headPosition = tag.getFloat("headpos");
     }
 
@@ -273,7 +255,6 @@ public class ImpactDrillBlockEntity extends SmartMachineBlockEntity implements I
         tag.putFloat("torque",this.currentTorque);
         tag.putFloat("heat",this.currentHeating);
         tag.putInt("timer",this.tickTimer);
-        tag.putInt("l_timer",this.laserTimer);
         tag.putFloat("headpos",this.headPosition);
     }
 

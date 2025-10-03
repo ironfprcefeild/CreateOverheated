@@ -4,6 +4,7 @@ import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
 import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
@@ -17,38 +18,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ThermometerBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber, IHaveGoggleInformation {
+public class ThermometerBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation {
     public ThermometerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
-    }
-
-    HeatData lastRead = HeatData.empty();
-    int timer = 0;
-    @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d,float eff) {
-        lastRead = beamHeat.copyMe();
-        timer = 20;
-        return true;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (timer > 0){
-            timer--;
-        } else {
-            lastRead = HeatData.empty();
-        }
-    }
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        GoggleHelper.heatTooltip(tooltip,lastRead, HeatDisplayType.READING);
+        GoggleHelper.heatTooltip(tooltip,totalLaserHeat, HeatDisplayType.READING);
 
         float sunken = getCoolingUnits();
         if (sunken > 0) {

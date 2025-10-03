@@ -1,20 +1,48 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
 import com.simibubi.create.foundation.utility.AttachedRegistry;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
+import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class mirrorRegister {
+
+
+    //Returning a direction indicates the new direction for the laser to travel
+    //Modifying the heatdata changes the HD of the laser after it leaves
+    //Returning null will stop the laser
+    public interface Reflector {
+        Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData passingData);
+    }
+
+    //Usage
+    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData heatData) {
+        Reflector mirror = MIRRORS.get(state.getBlock());
+        return mirror != null ? mirror.doReflection(incoming,level, pos, state,heatData) : incoming;
+    }
+
+    public static boolean isMirror(BlockState state){
+        return  MIRRORS.get(state.getBlock()) != null;
+    }
+
+    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, HeatData heatData) {
+        return doReflection(incoming,level,pos,level.getBlockState(pos),heatData);
+    }
 
     //This is an adapted style of creates Boiler Heater Code
     private static final AttachedRegistry<Block, Reflector> MIRRORS = new AttachedRegistry<>(ForgeRegistries.BLOCKS);
@@ -27,20 +55,17 @@ public class mirrorRegister {
         MIRRORS.register(block,reflector);
     }
 
-    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData heatData) {
-        Reflector mirror = MIRRORS.get(state.getBlock());
-        return mirror != null ? mirror.doReflection(incoming,level, pos, state,heatData) : incoming;
+    //Only use this register blocks whose block entity implements ILaserAbsorber or extend SmartLaserMachineBlockEntity
+    public static void registerBEAbsorber(Block block){
+        registerReflector(block, (incoming,level,pos,state,heat) -> {
+            ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
+            be.setLaserHD(heat,incoming);
+            be.setLaserTimer(12,incoming);
+            return null;
+        });
     }
 
-    public static boolean isMirror(BlockState state){
-        return  MIRRORS.get(state.getBlock()) != null;
-    }
 
-
-
-    public static Direction doReflection(Direction incoming, Level level, BlockPos pos, HeatData heatData) {
-        return doReflection(incoming,level,pos,level.getBlockState(pos),heatData);
-    }
 
     public static void registerDefaults(){
         Overheated.LOGGER.info("Registering Default Thermal Mirrors");
@@ -70,18 +95,36 @@ public class mirrorRegister {
             }
             return incoming;
         });
+
+
+        registerReflector(AllBlocks.ANTI_LASER_PLATING.get(),(i,l,p,s,h) -> null);
+        registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));
+
+
+        //Block Entities
+        registerBEAbsorber(AllBlocks.IMPACT_DRILL.get());
+        registerBEAbsorber(AllBlocks.CHAMBER_CORE.get());
         registerReflector(AllBlocks.PRESSURE_HEATER.get(), (incoming,level,pos,state,heat) -> {
             PressureHeaterBlockEntity be = ((PressureHeaterBlockEntity) level.getBlockEntity(pos));
             be.laserHeatLevel = heat.useUpToOverHeat();
             be.laserTimer = 60;
             return incoming;
         });
-        registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));
+        registerReflector(AllBlocks.BLAZE_CRUCIBLE.get(),(incoming,level,pos,state,beamHeat) -> {
+            BlazeCrucibleBlockEntity be = ((BlazeCrucibleBlockEntity) level.getBlockEntity(pos));
+            int newHeat = beamHeat.useUpToOverHeat();
+            if (be.heatLevel != newHeat){
+                be.needsStateUpdate = true;
+            }
+            be.heatLevel = newHeat;
+            be.timeHeated = 15;
+            return incoming;
+        });
+        //Replace all laser absorber blocks with the new smartlasermachine or a register here
+
     }
 
-    public interface Reflector {
-        Direction doReflection(Direction incoming, Level level, BlockPos pos, BlockState state, HeatData passingData);
-    }
+
 
     public static Direction.Axis findOtherAxis(Direction.Axis a, Direction.Axis b){
         switch (a) {

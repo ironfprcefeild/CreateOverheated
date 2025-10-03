@@ -30,22 +30,12 @@ import java.util.Objects;
 
 import static com.simibubi.create.content.fluids.tank.BoilerHeaters.registerHeater;
 
-public class BlazeCrucibleBlockEntity extends SmartBlockEntity implements ILaserAbsorber {
+public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
 
     public int timeHeated = 0;
     public int heatLevel = 0;
     public boolean needsStateUpdate = true;
 
-    @Override
-    public boolean absorbLaser(Direction incoming, HeatData beamHeat, int d, float eff) {
-        int newHeat = beamHeat.useUpToOverHeat();
-        if (heatLevel != newHeat){
-            needsStateUpdate = true;
-        }
-        heatLevel = newHeat;
-        timeHeated = 15;
-        return true;
-    }
 
     @Override
     public void tick() {
