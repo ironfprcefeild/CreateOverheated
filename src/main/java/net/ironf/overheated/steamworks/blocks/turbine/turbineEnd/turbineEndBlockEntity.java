@@ -21,10 +21,11 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.*;
 
 public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
     public turbineEndBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -74,8 +75,14 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         noIntake = false;
         tooLong = false;
         BlockPos origin = getBlockPos();
-        int radius = 999;
+        int radius = 9999;
         Direction turbineDirection = getBlockState().getValue(BlockStateProperties.FACING).getOpposite();
+
+        ArrayList<Direction> extensionDirections = new ArrayList<>(List.of(Iterate.directions));
+        extensionDirections.remove(turbineDirection);
+        extensionDirections.remove(turbineDirection.getOpposite());
+
+
         //Go back through turbine, the 12 limits the length of a turbine to 12
         int i = 0;
         while (i < 12){
@@ -96,16 +103,16 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                    if (drain < 1){
                         //The turbine does not have a high enough drain to operate, too teeny weeny
                        turbineTooSmall = true;
-                    } else if (intakeTank.getTankInventory().getFluid().getAmount() < drain){
+                   } else if (intakeTank.getTankInventory().getFluid().getAmount() < drain){
                         //The intake tank doesn't have enough fluid for the drain
                        turbineIntakeLow = true;
-                    } else if(1 > pressureLevel){
+                   } else if(1 > pressureLevel){
                         //The pressure of the fluid in the intake is not high enough to run a turbine
                        turbineIntakePressureLow = true;
-                    } else if (capacity - tank.getPrimaryHandler().getFluid().getAmount() < drain){
+                   } else if (capacity - tank.getPrimaryHandler().getFluid().getAmount() < drain){
                         //The outtakes tank is full and cannot accept more
                         outtakeFull = true;
-                    } else {
+                   } else {
                         //Drain the intake tank
                         intakeTank.getTankInventory().drain(drain, IFluidHandler.FluidAction.EXECUTE);
                         //Fill this tank
@@ -119,7 +126,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                         recentRadius = radius;
                         //Break out of loop, no need to check further blocks
                         return;
-                    }
+                   }
                 }
                 //If its any block besides a turbine, even if we ended early or reached a fluid tank then we stop the search
                 //This code is also reached when any of the big conditions are true
@@ -128,29 +135,33 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 noIntake = true;
                 return;
             } else {
-                //We are at an extension so just update radius
-                radius = Math.min(radius,getRadiusOfCenterAt(bp));
+                //We are at a center point, so just update radius
+                radius = Math.min(radius,getRadiusOfCenterAt(bp,extensionDirections));
             }
         }
         tooLong = true;
     }
 
-    public int getRadiusOfCenterAt(BlockPos checkAt) {
-        int radiusRating = 1;
-
+    public int getRadiusOfCenterAt(BlockPos checkAt, ArrayList<Direction> directions) {
+        int radiusRating = 0;
+        BlockPos bp;
+        Set<BlockPos> secondPass = new LinkedHashSet<>();
         //Find blockpos of cardinally adjacent blocks
-        for (Direction d : Iterate.directions) {
-            BlockPos bp = checkAt.relative(d);
+        for (Direction d : directions) {
+            bp = checkAt.relative(d);
             if (AllBlocks.TURBINE_EXTENSION.get() == level.getBlockState(bp).getBlock()) {
                 radiusRating += 1;
-                for (Direction d2 : Iterate.directions) {
-                    if (AllBlocks.TURBINE_EXTENSION.get() == (level.getBlockState(bp.relative(d).relative(d2)).getBlock())) {
-                        radiusRating += 1;
-                    }
+                for (Direction d2 : directions){
+                    secondPass.add(bp.relative(d2));
                 }
             }
         }
-        return Math.max(radiusRating-1,1);
+        for (BlockPos bp2 : secondPass){
+            if (AllBlocks.TURBINE_EXTENSION.get() == level.getBlockState(bp2).getBlock()) {
+                radiusRating +=1;
+            }
+        }
+        return Math.max(radiusRating,1);
     }
 
 
