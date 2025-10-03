@@ -15,7 +15,6 @@ import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
-import net.ironf.overheated.laserOptics.mirrors.splitMirror.SplitMirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
@@ -552,15 +551,7 @@ public class AllBlocks {
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
-    public static final BlockEntry<SplitMirrorBlock> SPLIT_MIRROR = REGISTRATE
-            .block("split_mirror", SplitMirrorBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
-            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-            .defaultLoot()
-            .register();
+
 
     //Dimmers
     public static final BlockEntry<Block> SUPERHEAT_DIMMER = REGISTRATE
