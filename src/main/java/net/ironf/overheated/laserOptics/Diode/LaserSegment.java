@@ -27,9 +27,9 @@ public class LaserSegment {
     public HeatData initialHD;
     public BlockPos origin;
     public Direction emissionDirection;
-    public int volatility;
+    public float volatility;
 
-    public LaserSegment(ILaserEmitter laserSource, HeatData initialHD, BlockPos origin, int Range, Direction direction, int volatility) {
+    public LaserSegment(ILaserEmitter laserSource, HeatData initialHD, BlockPos origin, int Range, Direction direction, float volatility) {
         this.laserSource = laserSource;
 
 
@@ -41,7 +41,7 @@ public class LaserSegment {
         this.volatility =volatility;
     }
 
-    public void updateLaserEmission(HeatData hd, int range, int volatility, Direction direction){
+    public void updateLaserEmission(HeatData hd, int range, float volatility, Direction direction){
         this.initialHD = hd;
         this.range = range;
         this.emissionDirection = direction;
@@ -59,7 +59,7 @@ public class LaserSegment {
         Level level = laserSource.getLaserWorld();
         HeatData laserHeat = initialHD;
         Direction continueIn = emissionDirection;
-        BlockPos continueAt = origin.relative(emissionDirection);
+        BlockPos continueAt = origin;
 
         for (int t = 0; t < range && laserHeat.getTotalHeat() > 0.1; t++) {
             continueAt = continueAt.relative(continueIn);
@@ -67,18 +67,23 @@ public class LaserSegment {
 
             //Dont do anything if its air besides rendering
             if (!hitState.isAir()) {
-                if (!mirrorRegister.isMirror(hitState) || hitState.getBlock().defaultDestroyTime() >= 0) {
+                if (!mirrorRegister.isMirror(hitState) && hitState.getBlock().defaultDestroyTime() >= 0) {
                     // Mirror or breakable block.
                     breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*volatility));
                     double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
                     if (counterNeeded < breakingCounter) {
+                        //break, lower counter, and pass to test for additional break
                         level.destroyBlock(continueAt,true);
                         breakingCounter = breakingCounter - counterNeeded;
+                        continue;
                     }
                     break;
 
                 } else {
                     //Mirror or unbreakable block
+
+                    //Set this to 0 to avoid a buildup of breaking power
+                    breakingCounter = 0;
                     continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
 
 

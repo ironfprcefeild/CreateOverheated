@@ -41,7 +41,7 @@ public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEnti
     }
     @Override
     public int getLaserTimer(Direction d) {
-        return laserTimers.get(d);
+        return laserTimers.getOrDefault(d,0);
     }
 
     @Override
@@ -50,7 +50,7 @@ public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEnti
         totalLaserHeat = HeatData.readTag(tag,"total_laser_heat");
         laserHeats.clear(); laserTimers.clear();
         for (Direction d : Iterate.directions){
-            laserHeats.put(d,HeatData.readTag(tag,d.name()+"_laser_timer"));
+            laserHeats.put(d,HeatData.readTag(tag,d.name()+"_laser_heat"));
             laserTimers.put(d,tag.getInt(d.name()+"_laser_timer"));
         }
     }
@@ -60,8 +60,8 @@ public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEnti
         super.write(tag, clientPacket);
         totalLaserHeat.writeTag(tag,"total_laser_heat");
         for (Direction d : Iterate.directions){
-            tag.putInt(d.name()+"_laser_timer", laserTimers.get(d));
-            laserHeats.get(d).writeTag(tag,d.name()+"_laser_timer");
+            tag.putInt(d.name()+"_laser_timer", laserTimers.getOrDefault(d,0));
+            laserHeats.getOrDefault(d, HeatData.empty()).writeTag(tag,d.name()+"_laser_heat");
         }
     }
 }

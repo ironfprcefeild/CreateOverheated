@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -86,7 +87,6 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         FluidStack fluids = getFluidStack();
         if (!fluids.isEmpty() && CoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
             noCoolant = false;
-            float currentCoolantEff = CoolingHandler.efficiencyHandler.get(fluids.getFluid());
             HeatData laserHeat = findHeat();
             float heatCap = Math.min(Math.abs(getSpeed()), CoolingHandler.heatHandler.get(fluids.getFluid()));
             if (laserHeat.getTotalHeat() > heatCap) {
@@ -109,7 +109,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             LS.updateLaserEmission(
                     recentHeat,
                     (int) (recentHeat.getTotalHeat() + 16),
-                    3,
+                    0.5f,
                     level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
 
 
@@ -217,6 +217,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     @Override
     public void initialize() {
         super.initialize();
+        LS = new LaserSegment(this,recentHeat,this.getBlockPos(),(int)recentHeat.getTotalHeat()+16,level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING),3);
         testForClearance();
     }
 

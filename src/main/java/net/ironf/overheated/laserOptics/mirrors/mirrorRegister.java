@@ -55,7 +55,7 @@ public class mirrorRegister {
         MIRRORS.register(block,reflector);
     }
 
-    //Only use this register blocks whose block entity implements ILaserAbsorber or extend SmartLaserMachineBlockEntity
+    //Only use these register blocks whose block entity implements ILaserAbsorber or extend SmartLaserMachineBlockEntity
     public static void registerBEAbsorber(Block block){
         registerReflector(block, (incoming,level,pos,state,heat) -> {
             ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
@@ -64,6 +64,7 @@ public class mirrorRegister {
             return null;
         });
     }
+
 
 
 
@@ -118,6 +119,12 @@ public class mirrorRegister {
             }
             be.heatLevel = newHeat;
             be.timeHeated = 15;
+            return incoming;
+        });
+        registerReflector(AllBlocks.THERMOMETER.get(),(incoming,level,pos,state,heat) -> {
+            ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
+            be.setLaserHD(heat,incoming);
+            be.setLaserTimer(12,incoming);
             return incoming;
         });
         //Replace all laser absorber blocks with the new smartlasermachine or a register here

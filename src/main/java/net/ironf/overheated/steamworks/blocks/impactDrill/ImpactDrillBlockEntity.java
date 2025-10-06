@@ -150,7 +150,6 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
         }
     }
 
-    //TODO no work
     public void particles(BlockPos mypos, Level level, boolean explosion){
         RandomSource rand = level.random;
         level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
@@ -160,8 +159,15 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
                 rand.nextDouble() * 0.04 - 0.02,
                 0.3,
                 rand.nextDouble() * 0.04 - 0.02);
+        level.addParticle(ParticleTypes.EXPLOSION,
+                mypos.getX() + rand.nextDouble() * 2,
+                mypos.getY() - 0.5 + rand.nextDouble(),
+                mypos.getZ() + rand.nextDouble() * 2,
+                rand.nextDouble() * 0.04 - 0.02,
+                0.3,
+                rand.nextDouble() * 0.04 - 0.02);
         if (explosion) {
-            level.addParticle(ParticleTypes.EXPLOSION,
+            level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
                     mypos.getX() + rand.nextDouble() * 2,
                     mypos.getY() - 0.5 + rand.nextDouble(),
                     mypos.getZ() + rand.nextDouble() * 2,
