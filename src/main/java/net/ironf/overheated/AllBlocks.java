@@ -55,6 +55,8 @@ public class AllBlocks {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
+    //TODO everything is indescribable lmaooo
+
     //Generic Blocks
     public static final BlockEntry<Block> WHITE_SALT_CRYSTAL =
             REGISTRATE.block("white_salt_crystal", Block::new)

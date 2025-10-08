@@ -109,55 +109,9 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             LS.updateLaserEmission(
                     recentHeat,
                     (int) (recentHeat.getTotalHeat() + 16),
-                    0.5f,
+                    CoolingHandler.efficiencyHandler.get(fluids.getFluid()),
                     level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
-
-
-
-            /*
-            for (int t = 0; t < Math.min(32, range) + 16 && laserHeat.getTotalHeat() > 0.1; t++) {
-                continueAt = continueAt.relative(continueIn);
-                BlockState hitState = level.getBlockState(continueAt);
-                //Dont do anything if its air besides rendering
-                if (!hitState.isAir()) {
-
-                    continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
-
-                    if (AllBlocks.ANTI_LASER_PLATING.has(hitState) || Blocks.BEDROCK == hitState.getBlock()) {
-                        //Anti laser plating or bedrock, cant be destroyed, so we just break here
-                        break;
-                    } else if (!mirrorRegister.isMirror(hitState)) {
-                        //Dont do anything if a mirror, otherwise check for laser absorbers
-                        BlockEntity hitBE = level.getBlockEntity(continueAt);
-                        if (hitBE instanceof ILaserAbsorber) {
-                            if (!((ILaserAbsorber) hitBE).absorbLaser(continueIn, laserHeat,range-t,currentCoolantEff)) {
-                                //This is letting the laser continue if absorb laser tells us too, otherwise we break
-                                break;
-                            }
-                        } else {
-                            //This isnt a laser absorber or a mirror, so we can do normal block stuff
-                            //We are at a normal block, so lets break it!
-                            breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*currentCoolantEff));
-                            double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
-                            if (counterNeeded < breakingCounter) {
-                                level.destroyBlock(continueAt,true);
-                                breakingCounter = breakingCounter - counterNeeded;
-                            }
-                            break;
-                        }
-                    } else {
-                        //We are at a mirror, cause damage and update origin
-                        addToDamage(currentOrigin,continueAt);
-                        currentOrigin = continueAt;
-                    }
-                } else {
-                    //Render the little beam
-                    markForEffectCloud(continueAt);
-                    addToDamage(continueAt.relative(continueIn.getOpposite()),continueAt);
-                }
-            }
-
-             */
+            LS.tickAffectedEntities();
 
         } else {
             noCoolant = true;

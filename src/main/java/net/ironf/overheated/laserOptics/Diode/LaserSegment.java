@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class LaserSegment {
@@ -49,9 +50,23 @@ public class LaserSegment {
         tick();
     }
 
+    public ArrayList<AABB> damageZones = new ArrayList<>();
 
-    public void findEntities(){
-
+    public void tickAffectedEntities(){
+        List<Entity> caughtEntities;
+        Level world = laserSource.getLaserWorld();
+        int fireTicks = (int) ((volatility)*(initialHD.getTotalHeat()));
+        int damage = (int) ((volatility)*(initialHD.getTotalHeat())*(0.4));
+        for (AABB zone : damageZones) {
+            caughtEntities = (world.getEntities(null, zone));
+            for (Entity entity : caughtEntities) {
+                if (!entity.isAlive() || !entity.getBoundingBox().intersects(zone)) {
+                    continue;
+                }
+                entity.setRemainingFireTicks(fireTicks);
+                entity.hurt(entity.damageSources().lightningBolt(),damage);
+            }
+        }
     }
 
     //TODO add back damage
@@ -60,7 +75,8 @@ public class LaserSegment {
         HeatData laserHeat = initialHD;
         Direction continueIn = emissionDirection;
         BlockPos continueAt = origin;
-
+        damageZones.clear();
+        BlockPos lastBound = origin;
         for (int t = 0; t < range && laserHeat.getTotalHeat() > 0.1; t++) {
             continueAt = continueAt.relative(continueIn);
             BlockState hitState = level.getBlockState(continueAt);
@@ -68,7 +84,7 @@ public class LaserSegment {
             //Dont do anything if its air besides rendering
             if (!hitState.isAir()) {
                 if (!mirrorRegister.isMirror(hitState) && hitState.getBlock().defaultDestroyTime() >= 0) {
-                    // Mirror or breakable block.
+                    //Non-Mirror or breakable block.
                     breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*volatility));
                     double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
                     if (counterNeeded < breakingCounter) {
@@ -86,9 +102,9 @@ public class LaserSegment {
                     breakingCounter = 0;
                     continueIn = mirrorRegister.doReflection(continueIn, level, continueAt, hitState,laserHeat);
 
-
-                    //addToDamage(currentOrigin,continueAt);
-                    //currentOrigin = continueAt;
+                    //Damage Zone
+                    damageZones.add(damageZoneAsField(continueAt,lastBound));
+                    lastBound = continueAt;
 
                     //We have hit an absorber
                     if (continueIn == null){
@@ -98,11 +114,11 @@ public class LaserSegment {
             } else {
                 //Air, render beam
                 markForEffectCloud(continueAt);
-                //addToDamage(continueAt.relative(continueIn.getOpposite()),continueAt);
+                markForEffectCloud(continueAt);
             }
         }
+        damageZones.add(damageZoneAsField(continueAt,lastBound));
     }
-
 
     private void markForEffectCloud(BlockPos continueAt) {
         RandomSource rand = laserSource.getLaserWorld().random;
@@ -112,29 +128,11 @@ public class LaserSegment {
         double vx = rand.nextDouble() * 0.04 - 0.02;
         double vy = -0.2;
         double vz = rand.nextDouble() * 0.04 - 0.02;
-        laserSource.getLaserWorld().addParticle(ParticleTypes.LAVA, x, y, z, vx, vy, vz);
+        laserSource.getLaserWorld().addParticle(ParticleTypes.FLAME, x, y, z, vx, vy, vz);
     }
 
-
-    //TODO figure out what to do about theese
-    public ArrayList<AABB> damageZones = new ArrayList<>();
-    private void addToDamage(BlockPos origin, BlockPos ending){
-        damageZones.add(new AABB(origin.getX(),origin.getY(),origin.getZ()
-                ,ending.getX(),ending.getY(),ending.getZ()));
-
-    }
-    private void dealDamage(float volatility) {
-        List<Entity> targets = new ArrayList<>();
-        damageZones.forEach((bounds) -> targets.addAll(laserSource.getLaserWorld().getEntities(null,bounds)));
-        for (Entity entity : targets){
-            if (!entity.isAlive()) {
-                continue;
-            }
-            entity.setRemainingFireTicks((int) (volatility * 2));
-            entity.hurt(entity.damageSources().lightningBolt(), (float) (volatility * 0.5));
-        }
-
-
+    public static AABB damageZoneAsField(BlockPos continueAt, BlockPos lastBound){
+        return new AABB(continueAt.getX(),continueAt.getY(),continueAt.getZ(),lastBound.getX()+1,lastBound.getY()+1,lastBound.getZ()+1);
     }
 
 }
