@@ -16,6 +16,14 @@ public class HeatData {
         this.OverHeat = OverHeat;
     }
 
+    public HeatData (int level, int amount){
+        switch (level){
+            case 1: this.Heat = amount; break;
+            case 2: this.SuperHeat = amount; break;
+            case 3: this.OverHeat = amount; break;
+        }
+    }
+
     public HeatData copyMe(){
         return new HeatData(this.Heat,this.SuperHeat,this.OverHeat);
     }

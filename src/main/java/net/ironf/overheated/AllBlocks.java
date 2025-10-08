@@ -13,6 +13,7 @@ import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlock;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
+import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlock;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlock;
 import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
@@ -517,6 +518,19 @@ public class AllBlocks {
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .defaultLoot()
             .register();
+
+
+    //DIODE JUNCTION
+    public static final BlockEntry<DiodeJunctionBlock> DIODE_JUNCTION = REGISTRATE
+            .block("diode_junction", DiodeJunctionBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(simpleCubeAll("placeholder"))
+            .defaultLoot()
+            .register();
+
 
     //Laser Film
     public static final BlockEntry<Block> LASER_FILM = REGISTRATE

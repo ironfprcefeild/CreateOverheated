@@ -4,6 +4,9 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.utility.AttachedRegistry;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlock;
+import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
+import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
@@ -88,21 +91,29 @@ public class DiodeHeaters {
             return HeatData.empty();
         });
 
-        registerHeater(net.ironf.overheated.AllBlocks.SOLAR_PANEL.get(), ((level, pos, state) -> {
+        registerHeater(net.ironf.overheated.AllBlocks.SOLAR_PANEL.get(), (level, pos, state) -> {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof SolarPanelBlockEntity){
                 return ((SolarPanelBlockEntity) be).getRecentReading();
             }
             return HeatData.empty();
-        }));
+        });
 
-        registerHeater(net.ironf.overheated.AllBlocks.PRESSURE_HEATER.get(), (((level, pos, state) -> {
+        registerHeater(net.ironf.overheated.AllBlocks.PRESSURE_HEATER.get(), (level, pos, state) -> {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof PressureHeaterBlockEntity){
                 return ((PressureHeaterBlockEntity) be).getRecentReading();
             }
             return HeatData.empty();
-        })));
+        });
+
+        registerHeater(net.ironf.overheated.AllBlocks.DIODE_JUNCTION.get(), (level, pos, state) -> {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof DiodeJunctionBlockEntity djbe){
+                return djbe.totalLaserHeat;
+            }
+            return HeatData.empty();
+        });
 
         registerHeater(Blocks.COMMAND_BLOCK, (level, pos, state) -> new HeatData(0,0,1));
 

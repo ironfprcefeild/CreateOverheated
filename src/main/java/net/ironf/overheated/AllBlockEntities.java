@@ -11,6 +11,7 @@ import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
 import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
+import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
@@ -27,6 +28,7 @@ import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
+import net.minecraft.world.level.block.Block;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -61,6 +63,11 @@ public class AllBlockEntities {
             .visual(() -> DiodeCogInstance::new)
             .renderer(() -> DiodeBlockEntityRenderer::new)
             .validBlocks(AllBlocks.DIODE)
+            .register();
+    //Diode Junction
+    public static final BlockEntityEntry<DiodeJunctionBlockEntity> DIODE_JUNCTION = REGISTRATE
+            .blockEntity("diode_junction",DiodeJunctionBlockEntity::new)
+            .validBlocks(AllBlocks.DIODE_JUNCTION)
             .register();
 
 

@@ -44,7 +44,6 @@ public class mirrorRegister {
         return doReflection(incoming,level,pos,level.getBlockState(pos),heatData);
     }
 
-    //This is an adapted style of creates Boiler Heater Code
     private static final AttachedRegistry<Block, Reflector> MIRRORS = new AttachedRegistry<>(ForgeRegistries.BLOCKS);
 
     public static void registerReflector(ResourceLocation block, Reflector reflector) {
@@ -71,6 +70,7 @@ public class mirrorRegister {
     public static void registerDefaults(){
         Overheated.LOGGER.info("Registering Default Thermal Mirrors");
 
+        //Mirror
         registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state, heat) -> {
             Direction facing = state.getValue(BlockStateProperties.FACING);
             if (facing.getAxis() == incoming.getAxis()){
@@ -78,6 +78,8 @@ public class mirrorRegister {
             }
             return Direction.fromAxisAndDirection(findOtherAxis(incoming.getAxis(),facing.getAxis()),facing.getAxisDirection());
         });
+
+        //Dimmers, can handle multiple lasers
         registerReflector(AllBlocks.SUPERHEAT_DIMMER.get(), (incoming, level, pos, state, heat) -> {
             if (heat.SuperHeat > 0 && heat.SuperHeat < 1){
                 heat.Heat += heat.SuperHeat * 4;
@@ -98,19 +100,24 @@ public class mirrorRegister {
         });
 
 
+        //Other stuff, can handle multiple lasers
         registerReflector(AllBlocks.ANTI_LASER_PLATING.get(),(i,l,p,s,h) -> null);
         registerReflector(AllBlocks.LASER_FILM.get(), ((incoming, level, pos, state, passingData) -> incoming));
 
 
-        //Block Entities
+        //Block Entities, can handle multiple lasers
         registerBEAbsorber(AllBlocks.IMPACT_DRILL.get());
         registerBEAbsorber(AllBlocks.CHAMBER_CORE.get());
+
+        //Cannot Handle Multiple Lasers
         registerReflector(AllBlocks.PRESSURE_HEATER.get(), (incoming,level,pos,state,heat) -> {
             PressureHeaterBlockEntity be = ((PressureHeaterBlockEntity) level.getBlockEntity(pos));
             be.laserHeatLevel = heat.useUpToOverHeat();
             be.laserTimer = 60;
             return incoming;
         });
+
+        //Cannot Handle Multiple Lasers
         registerReflector(AllBlocks.BLAZE_CRUCIBLE.get(),(incoming,level,pos,state,beamHeat) -> {
             BlazeCrucibleBlockEntity be = ((BlazeCrucibleBlockEntity) level.getBlockEntity(pos));
             int newHeat = beamHeat.useUpToOverHeat();
@@ -121,9 +128,18 @@ public class mirrorRegister {
             be.timeHeated = 15;
             return incoming;
         });
+
+        //Can Handle Multiple Lasers
         registerReflector(AllBlocks.THERMOMETER.get(),(incoming,level,pos,state,heat) -> {
             ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
             be.setLaserHD(heat,incoming);
+            be.setLaserTimer(12,incoming);
+            return incoming;
+        });
+        //Can Handle Multiple Lasers
+        registerReflector(AllBlocks.DIODE_JUNCTION.get(),(incoming,level,pos,state,heat) -> {
+            ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
+            be.setLaserHD(new HeatData(heat.useUpToOverHeat(),1),incoming);
             be.setLaserTimer(12,incoming);
             return incoming;
         });
