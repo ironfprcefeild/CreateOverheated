@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
@@ -55,7 +54,7 @@ public class AllBlocks {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
-    //TODO everything is indescribable lmaooo
+    //TODO everything is indestructible lmaooo
 
     //Generic Blocks
     public static final BlockEntry<Block> WHITE_SALT_CRYSTAL =
@@ -64,7 +63,8 @@ public class AllBlocks {
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
                             .requiresCorrectToolForDrops()
                             .lightLevel((state) -> 2)
-                            .sound(SoundType.AMETHYST))
+                            .sound(SoundType.AMETHYST)
+                            .strength(1f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("white_salt_crystal"))
                     .simpleItem()
@@ -76,7 +76,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DEEPSLATE)
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_WHITE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.DEEPSLATE))
+                            .sound(SoundType.DEEPSLATE)
+                            .strength(2f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("white_salt_block"))
                     .simpleItem()
@@ -90,6 +91,7 @@ public class AllBlocks {
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_RED)
                             .lightLevel((state) -> 2)
                             .requiresCorrectToolForDrops()
+                            .strength(1f)
                             .sound(SoundType.AMETHYST))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("red_salt_crystal"))
@@ -102,6 +104,7 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DEEPSLATE)
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_RED)
                             .requiresCorrectToolForDrops()
+                            .strength(2f)
                             .sound(SoundType.DEEPSLATE))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("red_salt_block"))
@@ -115,6 +118,7 @@ public class AllBlocks {
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                             .lightLevel((state) -> 2)
                             .requiresCorrectToolForDrops()
+                            .strength(1f)
                             .sound(SoundType.AMETHYST))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("blue_salt_crystal"))
@@ -127,6 +131,7 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DEEPSLATE)
                     .properties(p -> p.mapColor(MapColor.TERRACOTTA_BLUE)
                             .requiresCorrectToolForDrops()
+                            .strength(2f)
                             .sound(SoundType.DEEPSLATE))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("blue_salt_block"))
@@ -134,12 +139,14 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Block of Blue Salt")
                     .register();
+
     public static final BlockEntry<Block> REINFORCED_INDUSTRIAL_IRON =
             REGISTRATE.block("reinforced_industrial_iron", Block::new)
                     .initialProperties(SharedProperties::softMetal)
                     .properties(p -> p.mapColor(MapColor.COLOR_GRAY)
                             .sound(SoundType.NETHERITE_BLOCK)
-                            .requiresCorrectToolForDrops())
+                            .requiresCorrectToolForDrops()
+                            .strength(2.5f))
                     .transform(pickaxeOnly())
                     .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
                     .simpleItem()
@@ -151,7 +158,8 @@ public class AllBlocks {
                     .initialProperties(SharedProperties::softMetal)
                     .properties(p -> p.mapColor(MapColor.COLOR_GRAY)
                             .sound(SoundType.NETHERITE_BLOCK)
-                            .requiresCorrectToolForDrops())
+                            .requiresCorrectToolForDrops()
+                            .strength(4f))
                     .transform(pickaxeOnly())
                     .simpleItem()
                     .defaultLoot()
@@ -162,7 +170,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.ANCIENT_DEBRIS))
+                            .sound(SoundType.ANCIENT_DEBRIS)
+                            .strength(5f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("blazesteel_block"))
                     .simpleItem()
@@ -175,7 +184,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.IRON_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_BLUE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.POWDER_SNOW))
+                            .sound(SoundType.POWDER_SNOW)
+                            .strength(3.5f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("chill_steel_block"))
                     .simpleItem()
@@ -187,7 +197,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> BLAZEGLASS  =
             REGISTRATE.block("blazeglass", Block::new)
                     .initialProperties(() -> Blocks.GLASS)
-                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE))
+                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).strength(1.5f))
                     .blockstate(simpleCubeAll("blazeglass"))
                     .simpleItem()
                     .transform(pickaxeOnly())
@@ -199,19 +209,21 @@ public class AllBlocks {
     public static final BlockEntry<IronBarsBlock> BLAZEGLASS_PANE  =
             REGISTRATE.block("blazeglass_pane", IronBarsBlock::new)
                     .initialProperties(() -> Blocks.GLASS_PANE)
-                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE))
+                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).strength(1f))
                     .simpleItem()
                     .transform(pickaxeOnly())
                     .defaultLoot()
                     .lang("Blazeglass Pane")
                     .register();
     public static final BlockEntry<CasingBlock> LASER_CASING = REGISTRATE.block("laser_casing", CasingBlock::new)
-            .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK))
+            .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK).strength(3f))
             .transform(BuilderTransformers.casing(() -> AllSpriteShifts.LASER_CASING))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .register();
     public static final BlockEntry<CasingBlock> PRESSURIZED_CASING = REGISTRATE.block("pressurized_casing", CasingBlock::new)
-            .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).sound(SoundType.COPPER))
+            .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).sound(SoundType.COPPER).strength(3f))
             .transform(BuilderTransformers.casing(() -> AllSpriteShifts.PRESSURIZED_CASING))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .register();
 
 
@@ -221,7 +233,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DIAMOND_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.AMETHYST_CLUSTER))
+                            .sound(SoundType.AMETHYST_CLUSTER)
+                            .strength(5f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("nihilite_block"))
                     .simpleItem()
@@ -235,7 +248,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DIAMOND_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.AMETHYST_CLUSTER))
+                            .sound(SoundType.AMETHYST_CLUSTER)
+                            .strength(3f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("nihilistone"))
                     .simpleItem()
@@ -248,7 +262,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DIAMOND_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_CYAN)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.ANCIENT_DEBRIS))
+                            .sound(SoundType.ANCIENT_DEBRIS)
+                            .strength(2.5f))
                     .transform(pickaxeOnly())
                     .blockstate(SimpleBlockStateGenerators.simpleCubeColumn("nihborock"))
                     .simpleItem()
@@ -262,7 +277,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.DEEPSLATE)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.DRIPSTONE_BLOCK))
+                            .sound(SoundType.DRIPSTONE_BLOCK)
+                            .strength(3f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("geothermium"))
                     .simpleItem()
@@ -275,7 +291,8 @@ public class AllBlocks {
                     .initialProperties(() -> Blocks.NETHER_GOLD_ORE)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.DEEPSLATE))
+                            .sound(SoundType.DEEPSLATE)
+                            .strength(4f))
                     .transform(pickaxeOnly())
                     .blockstate(simpleCubeAll("nether_geothermium"))
                     .simpleItem()
@@ -324,8 +341,9 @@ public class AllBlocks {
     public static final BlockEntry<steamVentBlock> STEAM_VENT = REGISTRATE
             .block("steam_vent", steamVentBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion())
+            .properties(p -> p.noOcclusion().strength(3f))
             .simpleItem()
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .transform(pickaxeOnly())
             .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/steam_vent")::generate)
             .defaultLoot()
@@ -335,7 +353,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> TURBINE_EXTENSION = REGISTRATE
             .block("turbine_extension", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("turbine_extension"))
@@ -345,7 +364,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> TURBINE_CENTER = REGISTRATE
             .block("turbine_center", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("turbine_center"))
@@ -355,7 +375,8 @@ public class AllBlocks {
     public static final BlockEntry<turbineEndBlock> TURBINE_END = REGISTRATE
             .block("turbine_end", turbineEndBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/turbine_end")::generate)
             .defaultLoot()
@@ -364,7 +385,8 @@ public class AllBlocks {
     public static final BlockEntry<CondenserBlock> CONDENSER = REGISTRATE
             .block("condenser", CondenserBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/condenser")::generate)
@@ -374,7 +396,8 @@ public class AllBlocks {
     public static final BlockEntry<HeatSinkBlock> HEAT_SINK = REGISTRATE
             .block("heat_sink", HeatSinkBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(BlockBehaviour.Properties::noOcclusion)
+            .properties(p->p.noOcclusion().strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelSpunBlockStateGen((ctx, prov, state) -> "block/heat_sink")::generate)
@@ -385,7 +408,8 @@ public class AllBlocks {
     public static final BlockEntry<CoolerBlock> COOLER = REGISTRATE
             .block("cooler", CoolerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion())
+            .properties(p -> p.noOcclusion().strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/cooler")::generate)
@@ -396,7 +420,8 @@ public class AllBlocks {
     public static final BlockEntry<ChannelCoreBlock> CHANNEL_CORE = REGISTRATE
             .block("channel_core", ChannelCoreBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/channel_core")::generate)
@@ -407,7 +432,8 @@ public class AllBlocks {
     public static final BlockEntry<ChannelAbsorberBlock> CHANNEL_ABSORBER = REGISTRATE
             .block("channel_absorber", ChannelAbsorberBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -418,7 +444,8 @@ public class AllBlocks {
     public static final BlockEntry<ChannelExpellerBlock> CHANNEL_EXPELLER = REGISTRATE
             .block("channel_expeller", ChannelExpellerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -429,7 +456,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> CHILLSTEEL_COIL = REGISTRATE
             .block("chillsteel_coil", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("placeholder"))
@@ -440,7 +468,8 @@ public class AllBlocks {
     public static final BlockEntry<CoolingTowerBlock> COOLING_TOWER = REGISTRATE
             .block("cooling_tower", CoolingTowerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion())
+            .properties(p -> p.noOcclusion().strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/cooling_tower")::generate)
@@ -452,7 +481,8 @@ public class AllBlocks {
     public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
             .block("pressure_chamber_core", ChamberCoreBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -466,7 +496,8 @@ public class AllBlocks {
     public static final BlockEntry<ImpactDrillBlock> IMPACT_DRILL = REGISTRATE
             .block("impact_drill", ImpactDrillBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion())
+            .properties(p -> p.noOcclusion().strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/impact_drill")::generate)
@@ -477,7 +508,8 @@ public class AllBlocks {
     public static final BlockEntry<GasHoodBlock> GAS_HOOD = REGISTRATE
             .block("gas_hood", GasHoodBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/gas_hood")::generate)
@@ -488,7 +520,8 @@ public class AllBlocks {
     public static final BlockEntry<PressureHeaterBlock> PRESSURE_HEATER= REGISTRATE
             .block("pressure_heater", PressureHeaterBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -503,7 +536,8 @@ public class AllBlocks {
     public static final BlockEntry<BlazeCrucibleBlock> BLAZE_CRUCIBLE = REGISTRATE
             .block("blaze_crucible", BlazeCrucibleBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.noOcclusion().lightLevel(BlazeCrucibleBlock::getLight))
+            .properties(p -> p.noOcclusion().lightLevel(BlazeCrucibleBlock::getLight).strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/blaze_crucible")::generate)
@@ -514,7 +548,8 @@ public class AllBlocks {
     public static final BlockEntry<DiodeBlock> DIODE = REGISTRATE
             .block("diode", DiodeBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -526,7 +561,8 @@ public class AllBlocks {
     public static final BlockEntry<DiodeJunctionBlock> DIODE_JUNCTION = REGISTRATE
             .block("diode_junction", DiodeJunctionBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("placeholder"))
@@ -538,7 +574,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> LASER_FILM = REGISTRATE
             .block("laser_film", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(2f))
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("placeholder"))
@@ -550,7 +586,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> ANTI_LASER_PLATING = REGISTRATE
             .block("antilaser_plating", Block::new)
             .initialProperties(SharedProperties::netheriteMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(5f))
             .simpleItem()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("antilaser_plating"))
@@ -561,7 +597,8 @@ public class AllBlocks {
     public static final BlockEntry<mirrorBlock> BASIC_MIRROR = REGISTRATE
             .block("basic_mirror", mirrorBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -573,7 +610,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> SUPERHEAT_DIMMER = REGISTRATE
             .block("superheat_dimmer", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("placeholder"))
@@ -583,7 +621,8 @@ public class AllBlocks {
     public static final BlockEntry<Block> OVERHEAT_DIMMER = REGISTRATE
             .block("overheat_dimmer", Block::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(simpleCubeAll("placeholder"))
@@ -593,7 +632,8 @@ public class AllBlocks {
     public static final BlockEntry<ThermometerBlock> THERMOMETER = REGISTRATE
             .block("thermometer", ThermometerBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -604,7 +644,8 @@ public class AllBlocks {
     public static final BlockEntry<MeterExtenderBlock> METER_EXTENDER = REGISTRATE
             .block("meter_extender", MeterExtenderBlock::new)
             .initialProperties(SharedProperties::wooden)
-            .properties(p -> p.sound(SoundType.WOOD))
+            .properties(p -> p.sound(SoundType.WOOD).strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
@@ -612,10 +653,12 @@ public class AllBlocks {
             .register();
 
     //Solar Panel
+    //TODO make sure solar panels aren't transparent
     public static final BlockEntry<SolarPanelBlock> SOLAR_PANEL = REGISTRATE
             .block("solar_panel", SolarPanelBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.forceSolidOn().noOcclusion())
+            .properties(p -> p.forceSolidOn().noOcclusion().strength(2f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .defaultLoot()
             .transform(pickaxeOnly())
@@ -626,7 +669,8 @@ public class AllBlocks {
     public static final BlockEntry<BlazeAbsorberBlock> BLAZE_ABSORBER = REGISTRATE
             .block("solar_absorber", BlazeAbsorberBlock::new)
             .initialProperties(SharedProperties::softMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .simpleItem()
             .defaultLoot()
             .transform(pickaxeOnly())
@@ -636,7 +680,8 @@ public class AllBlocks {
     public static final BlockEntry<GeothermalInterfaceBlock> GEOTHERMAL_INTERFACE = REGISTRATE
             .block("geothermal_interface", GeothermalInterfaceBlock::new)
             .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
             .defaultLoot()
             .transform(pickaxeOnly())
