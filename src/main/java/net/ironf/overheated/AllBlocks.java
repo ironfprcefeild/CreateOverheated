@@ -5,6 +5,7 @@ import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.ironf.overheated.batteries.charger.ChargerBlock;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
 import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlock;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
@@ -663,6 +664,17 @@ public class AllBlocks {
             .defaultLoot()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/solar_panel")::generate)
+            .register();
+
+    public static final BlockEntry<ChargerBlock> CHARGER = REGISTRATE
+            .block("charger", ChargerBlock::new)
+            .initialProperties(SharedProperties::wooden)
+            .properties(p -> p.sound(SoundType.WOOD).strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(new ResourceLocation(Overheated.MODID,"placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .defaultLoot()
             .register();
 
     //Blaze Absorber

@@ -2,6 +2,9 @@ package net.ironf.overheated;
 
 import com.simibubi.create.content.kinetics.base.HalfShaftVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.batteries.charger.ChargerBlockEntity;
+import net.ironf.overheated.batteries.charger.ChargerBlockEntityRenderer;
+import net.ironf.overheated.batteries.charger.ChargerShaftInstance;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
@@ -160,12 +163,18 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.PRESSURE_HEATER)
             .register();
 
-    ///Pressure Chamber
-
-    //Core
+    //PC Core
     public static final BlockEntityEntry<ChamberCoreBlockEntity> CHAMBER_CORE = REGISTRATE
             .blockEntity("pressure_chamber_core", ChamberCoreBlockEntity::new)
             .validBlocks(AllBlocks.CHAMBER_CORE)
+            .register();
+
+    //Charger
+    public static final BlockEntityEntry<ChargerBlockEntity> CHARGER = REGISTRATE
+            .blockEntity("charger", ChargerBlockEntity::new)
+            .visual(() -> ChargerShaftInstance::new)
+            .renderer(() -> ChargerBlockEntityRenderer::new)
+            .validBlocks(AllBlocks.CHARGER)
             .register();
 
 

@@ -1,6 +1,7 @@
 package net.ironf.overheated;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -84,6 +85,12 @@ public class AllItems {
     public static final ItemEntry<Item> NETHER_GEOTHERMIUM_CHUNK = craftingIngredient("nether_geothermium_chunk","Nether Geothermium Chunk");
     public static final ItemEntry<Item> GEOTHERMIUM_POWDERS = craftingIngredient("geothermium_powders","Geothermium Powders");
     public static final ItemEntry<Item> NETHER_GEOTHERMIUM_POWDERS = craftingIngredient("nether_geothermium_powders","Nether Geothermium Powders");
+
+    //Batteries
+    static {
+        AllBatteryItems.register();
+    }
+
 
     public static ItemEntry<Item> craftingIngredient(String id,String lang){
         return REGISTRATE.item(id,Item::new).lang(lang).register();
