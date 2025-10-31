@@ -1,6 +1,5 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.Create;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 
 public class AllPartialModels {

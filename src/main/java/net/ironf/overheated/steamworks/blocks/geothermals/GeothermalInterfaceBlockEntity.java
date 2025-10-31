@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.minecraft.ChatFormatting;
@@ -27,7 +26,6 @@ import java.util.List;
 
 import static net.ironf.overheated.steamworks.AllSteamFluids.DISTILLED_WATER;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
-import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
 public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public GeothermalInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

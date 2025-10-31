@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
-import static net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler.*;
+import static net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler.condensingHandler;
 
 public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {
 

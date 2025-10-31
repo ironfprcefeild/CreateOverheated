@@ -25,7 +25,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.LinkedList;
 import java.util.List;

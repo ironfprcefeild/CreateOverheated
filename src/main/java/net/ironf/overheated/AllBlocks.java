@@ -11,6 +11,7 @@ import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBl
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
 import net.ironf.overheated.cooling.cooler.CoolerBlock;
 import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlock;
+import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlock;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlock;
@@ -22,7 +23,6 @@ import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBl
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
-import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;

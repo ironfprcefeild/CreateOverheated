@@ -1,6 +1,5 @@
 package net.ironf.overheated.laserOptics.DiodeJunction;
 
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
 import net.minecraft.core.BlockPos;

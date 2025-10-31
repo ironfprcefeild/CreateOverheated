@@ -1,16 +1,13 @@
 package net.ironf.overheated.steamworks;
 
-import com.tterrag.registrate.util.entry.FluidEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import java.util.Arrays;
 import java.util.function.Predicate;

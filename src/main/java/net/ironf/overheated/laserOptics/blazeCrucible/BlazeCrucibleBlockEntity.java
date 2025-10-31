@@ -9,8 +9,6 @@ import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
-import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

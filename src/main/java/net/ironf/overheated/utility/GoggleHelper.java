@@ -1,14 +1,10 @@
 package net.ironf.overheated.utility;
 
-import com.simibubi.create.foundation.utility.Lang;
-import com.simibubi.create.foundation.utility.LangBuilder;
 import joptsimple.internal.Strings;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.ChatFormatting.GRAY;

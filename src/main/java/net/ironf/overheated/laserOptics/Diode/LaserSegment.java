@@ -1,7 +1,5 @@
 package net.ironf.overheated.laserOptics.Diode;
 
-import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.minecraft.core.BlockPos;
@@ -10,13 +8,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class LaserSegment {

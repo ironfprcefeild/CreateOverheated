@@ -1,6 +1,5 @@
 package net.ironf.overheated.cooling;
 
-import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.nbt.CompoundTag;
 
 //Includes information about coolant level and min temperature

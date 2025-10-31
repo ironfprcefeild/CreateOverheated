@@ -2,10 +2,8 @@ package net.ironf.overheated.cooling.coolingTower;
 
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;

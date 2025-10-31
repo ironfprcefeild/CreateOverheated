@@ -1,21 +1,17 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
 import com.simibubi.create.foundation.utility.AttachedRegistry;
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
-import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;

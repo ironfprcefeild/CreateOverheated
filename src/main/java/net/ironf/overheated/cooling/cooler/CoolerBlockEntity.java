@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICoolingBlockEntity, IHaveGoggleInformation {
     public CoolerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

@@ -10,6 +10,7 @@ import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBl
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
 import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
 import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlockEntity;
+import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
@@ -22,7 +23,6 @@ import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBl
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
-import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRenderer;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlockEntity;
@@ -31,7 +31,6 @@ import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
-import net.minecraft.world.level.block.Block;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 

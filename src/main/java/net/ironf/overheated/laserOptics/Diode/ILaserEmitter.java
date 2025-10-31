@@ -1,7 +1,6 @@
 package net.ironf.overheated.laserOptics.Diode;
 
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 
 //Block Entities implement this interface

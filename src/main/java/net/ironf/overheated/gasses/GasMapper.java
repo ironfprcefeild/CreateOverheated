@@ -1,17 +1,13 @@
 package net.ironf.overheated.gasses;
 
-import com.tterrag.registrate.util.entry.FluidEntry;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
-import net.minecraft.world.level.block.PumpkinBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GasMapper {
     //Maps Gas Blocks to Gas Fluids, added too when gasses are registered

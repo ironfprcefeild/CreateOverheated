@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 
 //Only block entities may implement this interface
 public interface ILaserAbsorber {
-    //If a laser is firing on you, this will be called every 5 ticks, return true to indicate to pass through the block
 
     void setLaserTimer(int Timer, Direction d);
     int getLaserTimer(Direction d);

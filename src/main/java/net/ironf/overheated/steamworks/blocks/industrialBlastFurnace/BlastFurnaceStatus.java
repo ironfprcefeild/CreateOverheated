@@ -1,9 +1,8 @@
 package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace;
 
+import com.google.gson.JsonObject;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.nbt.CompoundTag;
-
-import com.google.gson.JsonObject;
 import net.minecraft.util.GsonHelper;
 
 public class BlastFurnaceStatus {

@@ -1,7 +1,8 @@
 package net.ironf.overheated.laserOptics.thermometer;
+
+import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
 import net.minecraft.world.level.block.Block;
-import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ThermometerBlock extends Block implements IBE<ThermometerBlockEntity> {

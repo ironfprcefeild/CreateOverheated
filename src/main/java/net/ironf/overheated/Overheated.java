@@ -1,11 +1,11 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
+import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
-import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.recipes.AllRecipes;

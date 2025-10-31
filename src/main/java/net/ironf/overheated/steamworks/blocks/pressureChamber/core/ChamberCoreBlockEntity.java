@@ -6,10 +6,10 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import net.ironf.overheated.AllTags;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
-import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static net.ironf.overheated.utility.GoggleHelper.*;
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
 public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation {
     public ChamberCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

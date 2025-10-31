@@ -3,25 +3,20 @@ package net.ironf.overheated.gasses.GasHood;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import net.ironf.overheated.Overheated;
-import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static net.ironf.overheated.gasses.GasMapper.*;
+import static net.ironf.overheated.gasses.GasMapper.RawGasMap;
 
 public class GasHoodBlockEntity extends SmartBlockEntity {
     public GasHoodBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

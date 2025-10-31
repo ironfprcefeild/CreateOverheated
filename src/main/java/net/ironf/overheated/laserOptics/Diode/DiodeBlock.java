@@ -1,11 +1,9 @@
 package net.ironf.overheated.laserOptics.Diode;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.utility.Iterate;
 import net.ironf.overheated.AllBlockEntities;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;

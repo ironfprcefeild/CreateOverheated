@@ -1,7 +1,6 @@
 package net.ironf.overheated.batteries.charger;
 
 import com.simibubi.create.content.kinetics.base.KineticBlock;
-import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
 import net.minecraft.core.BlockPos;

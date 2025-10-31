@@ -1,6 +1,5 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.utility.Lang;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;

@@ -2,11 +2,9 @@ package net.ironf.overheated.steamworks.blocks.pressureHeater;
 
 import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.cooling.CoolingData;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.HeatDisplayType;
@@ -28,9 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 
-import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.heatTooltip;
 
 public class PressureHeaterBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {

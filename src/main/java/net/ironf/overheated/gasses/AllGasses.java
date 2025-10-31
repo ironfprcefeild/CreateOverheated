@@ -1,11 +1,9 @@
 package net.ironf.overheated.gasses;
 
-import com.tterrag.registrate.util.entry.FluidEntry;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
