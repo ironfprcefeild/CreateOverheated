@@ -1,6 +1,6 @@
 package net.ironf.overheated.cooling.chillChannel.node.absorber;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import net.ironf.overheated.cooling.chillChannel.network.IChillChannelHook;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.SmartMachineBlockEntity;

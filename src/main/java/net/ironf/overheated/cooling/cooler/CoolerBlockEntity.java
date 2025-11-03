@@ -1,9 +1,9 @@
 package net.ironf.overheated.cooling.cooler;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
-import com.simibubi.create.foundation.utility.Iterate;
+import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;

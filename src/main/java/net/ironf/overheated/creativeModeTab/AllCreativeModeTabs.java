@@ -2,7 +2,6 @@ package net.ironf.overheated.creativeModeTab;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.TagDependentIngredientItem;
-import com.simibubi.create.foundation.utility.Components;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -16,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,7 +40,7 @@ public class AllCreativeModeTabs {
 
     public static final RegistryObject<CreativeModeTab> OVERHEATED_TAB = REGISTER.register("overheatedtab",
             () -> CreativeModeTab.builder()
-                    .title(Components.translatable("itemGroup.overheated.base"))
+                    .title(Component.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(AllBlocks.DIODE::asStack)
                     .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.allBuckets))
@@ -48,7 +48,7 @@ public class AllCreativeModeTabs {
 
     public static final RegistryObject<CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
             () -> CreativeModeTab.builder()
-                    .title(Components.translatable("itemGroup.overheated.steam_bucket_tab"))
+                    .title(Component.translatable("itemGroup.overheated.steam_bucket_tab"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
                     .displayItems(new RegistrateDisplayItemsGenerator(false, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))

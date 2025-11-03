@@ -25,7 +25,7 @@ import static com.simibubi.create.compat.jei.category.CreateRecipeCategory.getRe
 public class CoolingRecipeCategory implements IRecipeCategory<CoolantRecipe> {
 
     private final IGuiHelper helper;
-    public final static ResourceLocation UID = new ResourceLocation(Overheated.MODID, "cooling");
+    public final static ResourceLocation UID = Overheated.asResource("cooling");
     public CoolingRecipeCategory(IGuiHelper helper) {
         this.helper = helper;
     }
@@ -46,14 +46,19 @@ public class CoolingRecipeCategory implements IRecipeCategory<CoolantRecipe> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return new EmptyBackground(177,48);
+    public int getHeight() {
+        return 48;
+    }
+
+    @Override
+    public int getWidth() {
+        return 177;
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CoolantRecipe recipe, IFocusGroup focuses) {
         builder
-                .addSlot(RecipeIngredientRole.INPUT,25 , (int) (getBackground().getHeight() * 0.5) -20)
+                .addSlot(RecipeIngredientRole.INPUT,25 , (int) (getHeight() * 0.5) -20)
                 .addFluidStack(recipe.getInput().getMatchingFluidStacks().get(0).getFluid(),1000)
                 .setBackground(getRenderedSlot(),-1,-1);
     }
@@ -61,8 +66,8 @@ public class CoolingRecipeCategory implements IRecipeCategory<CoolantRecipe> {
     @Override
     public void draw(CoolantRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         JEIAssistant assistant = new JEIAssistant(guiGraphics);
-        int diodeX = (int) (getBackground().getWidth() * 0.6);
-        int condenserX = (int) (getBackground().getWidth() * 0.3);
+        int diodeX = (int) (getWidth() * 0.6);
+        int condenserX = (int) (getWidth() * 0.3);
 
         assistant.animatedBlock(AllBlocks.DIODE.getDefaultState(), diodeX,18);
         assistant.animatedBlock(AllBlocks.CONDENSER.getDefaultState(), condenserX,18);

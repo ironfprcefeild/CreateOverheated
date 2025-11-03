@@ -1,6 +1,7 @@
 package net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Objects;
 
-import static com.simibubi.create.content.fluids.tank.BoilerHeaters.registerHeater;
+import com.simibubi.create.content.fluids.tank.BoilerHeaters;
 
 public class BlazeAbsorberBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public BlazeAbsorberBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -78,7 +79,7 @@ public class BlazeAbsorberBlockEntity extends SmartBlockEntity implements IHaveG
 
     public static void addToBoilerHeaters(){
         Overheated.LOGGER.info("Adding the Blaze Absorber to Boiler Heaters");
-        registerHeater(AllBlocks.BLAZE_ABSORBER.getId(), (level, pos, state) -> {
+        BoilerHeater.REGISTRY.register(AllBlocks.BLAZE_ABSORBER.get(), (level, pos, state) -> {
             try {
                 BlazeAbsorberBlockEntity absorber = ((BlazeAbsorberBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));
                 return absorber.heatAmount >= 1 ? absorber.heatAmount : 0;

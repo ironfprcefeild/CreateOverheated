@@ -27,6 +27,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Overheated.MODID)
 public class Overheated
@@ -35,12 +37,14 @@ public class Overheated
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final OverheatedRegistrate REGISTRATE = new OverheatedRegistrate(MODID);
+
+
     public Overheated()
     {
-
+        //Theese Errors are just here sorry
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+        IEventBus modEventBus = FMLJavaModLoadingContext.get()
+                .getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -99,7 +103,7 @@ public class Overheated
     }
 
     public static ResourceLocation asResource(String path) {
-        return new ResourceLocation(MODID, path);
+        return fromNamespaceAndPath(MODID, path);
     }
 
 

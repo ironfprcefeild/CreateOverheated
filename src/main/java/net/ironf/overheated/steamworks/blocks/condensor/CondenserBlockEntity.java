@@ -1,6 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;

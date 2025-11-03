@@ -1,8 +1,8 @@
 package net.ironf.overheated.laserOptics.Diode;
 
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.api.registry.SimpleRegistry;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.foundation.utility.AttachedRegistry;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
@@ -20,11 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class DiodeHeaters {
     //This is an adapted style of creates Boiler Heater Code
-    private static final AttachedRegistry<Block, Heater> BLOCK_HEATERS = new AttachedRegistry<>(ForgeRegistries.BLOCKS);
-
-    public static void registerHeater(ResourceLocation block, Heater heater) {
-        BLOCK_HEATERS.register(block, heater);
-    }
+    private static final SimpleRegistry<Block, Heater> BLOCK_HEATERS = SimpleRegistry.create();
 
     public static void registerHeater(Block block, Heater heater) {
         BLOCK_HEATERS.register(block, heater);

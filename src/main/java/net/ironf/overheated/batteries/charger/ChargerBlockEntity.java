@@ -1,7 +1,8 @@
 package net.ironf.overheated.batteries.charger;
 
 import com.simibubi.create.AllBlockEntityTypes;
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.BoilerHeaters;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
@@ -81,7 +82,6 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
         super.tick();
         if (tickTimer-- <= 0 && !level.isClientSide){
             tickTimer = 20;
-            System.out.println(progress);
             progress += Math.abs(getSpeed());
             if (progress >= 15360){
                 progress = performCharge() ? 0 : 15104;
@@ -104,7 +104,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
 
             //Look For Heating
             BlockPos below = getBlockPos().below();
-            float heat = BoilerHeaters.getActiveHeat(level, below, level.getBlockState(below));
+            float heat = BoilerHeater.findHeat(level, below, level.getBlockState(below));
             //Overheated.LOGGER.info("Trying to transform or charge. Heat: " + heat);
             //Overheated.LOGGER.info("Item Handler, " + BusyItemHandler.getStackInSlot(0).getDescriptionId() +" " + BusyItemHandler.getStackInSlot(0).getCount());
 

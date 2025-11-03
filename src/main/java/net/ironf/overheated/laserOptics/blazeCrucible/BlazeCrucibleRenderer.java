@@ -6,13 +6,13 @@ import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
-import com.simibubi.create.foundation.block.render.SpriteShiftEntry;
+import net.createmod.catnip.animation.AnimationTickHolder;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.render.SpriteShiftEntry;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
-import com.simibubi.create.foundation.utility.AngleHelper;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.renderer.LightTexture;
@@ -105,7 +105,7 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
             uScroll = uScroll - Math.floor(uScroll);
             uScroll = uScroll * spriteWidth / 2;
 
-            SuperByteBuffer flameBuffer = CachedBufferer.partial(AllPartialModels.BLAZE_BURNER_FLAME, blockState);
+            SuperByteBuffer flameBuffer = CachedBuffers.partial(AllPartialModels.BLAZE_BURNER_FLAME, blockState);
             if (modelTransform != null)
                 flameBuffer.transform(modelTransform);
             flameBuffer.shiftUVScrolling(spriteShift, (float) uScroll, (float) vScroll);
@@ -114,7 +114,7 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
 
         var blazeModel = getBlazeModel(heatLevel);
 
-        SuperByteBuffer blazeBuffer = CachedBufferer.partial(blazeModel, blockState);
+        SuperByteBuffer blazeBuffer = CachedBuffers.partial(blazeModel, blockState);
         if (modelTransform != null)
             blazeBuffer.transform(modelTransform);
         blazeBuffer.translate(0, headY, 0);
@@ -135,14 +135,14 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
                 default -> net.ironf.overheated.AllPartialModels.BLAZE_OVERHEAT_RODS_2;
             };
 
-            SuperByteBuffer rodsBuffer = CachedBufferer.partial(rodsModel, blockState);
+            SuperByteBuffer rodsBuffer = CachedBuffers.partial(rodsModel, blockState);
             if (modelTransform != null)
                 rodsBuffer.transform(modelTransform);
             rodsBuffer.translate(0, offset1 + animation + .125f, 0)
                     .light(LightTexture.FULL_BRIGHT)
                     .renderInto(ms, solid);
 
-            SuperByteBuffer rodsBuffer2 = CachedBufferer.partial(rodsModel2, blockState);
+            SuperByteBuffer rodsBuffer2 = CachedBuffers.partial(rodsModel2, blockState);
             if (modelTransform != null)
                 rodsBuffer2.transform(modelTransform);
             rodsBuffer2.translate(0, offset2 + animation - 3 / 16f, 0)

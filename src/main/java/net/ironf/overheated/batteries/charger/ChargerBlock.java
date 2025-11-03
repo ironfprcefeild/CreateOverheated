@@ -1,5 +1,6 @@
 package net.ironf.overheated.batteries.charger;
 
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class ChargerBlock extends KineticBlock implements IBE<ChargerBlockEntity> {
+public class ChargerBlock extends DirectionalKineticBlock implements IBE<ChargerBlockEntity> {
     public ChargerBlock(Properties p_49795_) {
         super(p_49795_);
     }
@@ -31,26 +32,27 @@ public class ChargerBlock extends KineticBlock implements IBE<ChargerBlockEntity
         return AllBlockEntities.CHARGER.get();
     }
 
-    //BS
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(FACING));
-    }
 
-    @Nullable
+    //Blockstate
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+        Direction preferred = getPreferredFacing(context);
+        if ((context.getPlayer() != null && context.getPlayer()
+                .isShiftKeyDown()) || preferred == null)
+            return super.getStateForPlacement(context);
+        return defaultBlockState().setValue(FACING, preferred);
     }
+
+    // IRotate:
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return state.getValue(FACING) == face;
+        return face == state.getValue(FACING);
     }
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(FACING).getAxis();
+        return state.getValue(FACING)
+                .getAxis();
     }
 }

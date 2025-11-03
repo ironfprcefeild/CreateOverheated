@@ -98,7 +98,7 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<CondenserRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(Overheated.MODID, "condensing");
+                Overheated.asResource("condensing");
 
         @Override
         public CondenserRecipe fromJson(ResourceLocation id, JsonObject pSerializedRecipe) {

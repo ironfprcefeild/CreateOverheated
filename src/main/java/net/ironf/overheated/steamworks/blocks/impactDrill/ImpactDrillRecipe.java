@@ -107,7 +107,7 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<ImpactDrillRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(Overheated.MODID, "impact_drilling");
+                Overheated.asResource( "impact_drilling");
 
         @Override
         public ImpactDrillRecipe fromJson(ResourceLocation id, JsonObject j) {

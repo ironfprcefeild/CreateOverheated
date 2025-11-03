@@ -1,8 +1,5 @@
 package net.ironf.overheated.cooling.chillChannel.adjuster;
 
-import com.simibubi.create.CreateClient;
-import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
-import com.simibubi.create.content.redstone.displayLink.target.DisplayTarget;
 import net.ironf.overheated.cooling.chillChannel.network.IChillChannelHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -13,11 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -89,27 +83,10 @@ public class ChannelWrenchItem extends Item {
         BlockPos selectedPos = BlockPos.of(stackTag.getLong("initialpos"));
 
         if (!selectedPos.equals(lastShownPos)) {
-            lastShownAABB = getBounds(selectedPos);
             lastShownPos = selectedPos;
         }
 
-        CreateClient.OUTLINER.showAABB("target", lastShownAABB)
-                .colored(0x34e8eb)
-                .lineWidth(1 / 16f);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private static AABB getBounds(BlockPos pos) {
-        Level world = Minecraft.getInstance().level;
-        DisplayTarget target = AllDisplayBehaviours.targetOf(world, pos);
 
-        if (target != null)
-            return target.getMultiblockBounds(world, pos);
-
-        BlockState state = world.getBlockState(pos);
-        VoxelShape shape = state.getShape(world, pos);
-        return shape.isEmpty() ? new AABB(BlockPos.ZERO)
-                : shape.bounds()
-                .move(pos);
-    }
 }

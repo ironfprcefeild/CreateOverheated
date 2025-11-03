@@ -3,7 +3,7 @@ package net.ironf.overheated.utility.registration;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.utility.Iterate;
+import net.createmod.catnip.data.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -62,6 +62,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static net.ironf.overheated.gasses.GasMapper.*;
+import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class OverheatedRegistrate extends CreateRegistrate {
     public OverheatedRegistrate(String modid) {
@@ -179,7 +180,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
         public FluidRegistration overrideTexture(String override){
-            return overrideTexture(new ResourceLocation(Parent.getModid(),override));
+            return overrideTexture(fromNamespaceAndPath(Parent.getModid(),override));
         }
 
         public FluidRegistration bucketModelLocation(String set){
@@ -238,13 +239,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             ResourceLocation textureLocation =
                     textureOverride == null
-                            ? new ResourceLocation(Parent.getModid(),"block/fluids/" + name )
+                            ? fromNamespaceAndPath(Parent.getModid(),"block/fluids/" + name )
                             : textureOverride;
 
             FLUID_TYPE = registerFluidType(name,
                     fluidTypeProperties,
                     textureLocation,
-                    hasFlowingTexture ? new ResourceLocation(Parent.getModid(),"block/fluids/" + name + "_flow") : textureLocation,
+                    hasFlowingTexture ? fromNamespaceAndPath(Parent.getModid(),"block/fluids/" + name + "_flow") : textureLocation,
                     textureLocation,tintColor,gb);
 
             FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
@@ -491,7 +492,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             makeBlockItems.put(toReturn,false);
             if (textureOver != null){
-                blockModelOverride.put(toReturn,new ResourceLocation(Parent.getModid(),textureOver));
+                blockModelOverride.put(toReturn,fromNamespaceAndPath(Parent.getModid(),textureOver));
             }
             return toReturn;
 

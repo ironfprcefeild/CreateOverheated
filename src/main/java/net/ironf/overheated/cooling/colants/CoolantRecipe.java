@@ -93,7 +93,7 @@ public class CoolantRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<CoolantRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(Overheated.MODID, "cooling");
+                Overheated.asResource("cooling");
 
         @Override
         public CoolantRecipe fromJson(ResourceLocation id, JsonObject pSerializedRecipe) {

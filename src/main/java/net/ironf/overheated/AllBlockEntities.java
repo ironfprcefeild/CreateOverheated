@@ -1,10 +1,10 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.content.kinetics.base.HalfShaftVisual;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.batteries.charger.ChargerBlockEntity;
 import net.ironf.overheated.batteries.charger.ChargerBlockEntityRenderer;
-import net.ironf.overheated.batteries.charger.ChargerShaftInstance;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
@@ -14,7 +14,6 @@ import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
 import net.ironf.overheated.gasses.GasHood.GasHoodBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
 import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntityRenderer;
-import net.ironf.overheated.laserOptics.Diode.DiodeCogInstance;
 import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
@@ -39,7 +38,7 @@ public class AllBlockEntities {
     //Turbine
     public static final BlockEntityEntry<turbineEndBlockEntity> TURBINE_END = REGISTRATE
             .blockEntity("turbine_end", turbineEndBlockEntity::new)
-            .visual(() -> HalfShaftVisual::new, false)
+            .visual(() -> SingleAxisRotatingVisual::shaft, false)
             .renderer(() -> turbineEndRenderer::new)
             .validBlocks(AllBlocks.TURBINE_END)
             .register();
@@ -62,8 +61,7 @@ public class AllBlockEntities {
     //Laser Diode
     public static final BlockEntityEntry<DiodeBlockEntity> DIODE = REGISTRATE
             .blockEntity("diode", DiodeBlockEntity::new)
-            .visual(() -> DiodeCogInstance::new)
-            .renderer(() -> DiodeBlockEntityRenderer::new)
+            .visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.ARM_COG), false)            .renderer(() -> DiodeBlockEntityRenderer::new)
             .validBlocks(AllBlocks.DIODE)
             .register();
     //Diode Junction
@@ -169,12 +167,15 @@ public class AllBlockEntities {
             .register();
 
     //Charger
+
     public static final BlockEntityEntry<ChargerBlockEntity> CHARGER = REGISTRATE
             .blockEntity("charger", ChargerBlockEntity::new)
-            .visual(() -> ChargerShaftInstance::new)
+            .visual(() -> SingleAxisRotatingVisual::shaft, false)
             .renderer(() -> ChargerBlockEntityRenderer::new)
             .validBlocks(AllBlocks.CHARGER)
             .register();
+
+
 
 
     public static void register(){

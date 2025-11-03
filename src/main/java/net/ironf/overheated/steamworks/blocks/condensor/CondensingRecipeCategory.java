@@ -26,7 +26,7 @@ import static com.simibubi.create.compat.jei.category.CreateRecipeCategory.getRe
 public class CondensingRecipeCategory implements IRecipeCategory<CondenserRecipe> {
 
     private final IGuiHelper helper;
-    public final static ResourceLocation UID = new ResourceLocation(Overheated.MODID, "laser_cooling");
+    public final static ResourceLocation UID = Overheated.asResource("laser_cooling");
     public CondensingRecipeCategory(IGuiHelper helper) {
         this.helper = helper;
     }
@@ -47,8 +47,12 @@ public class CondensingRecipeCategory implements IRecipeCategory<CondenserRecipe
     }
 
     @Override
-    public IDrawable getBackground() {
-        return new EmptyBackground(177,125);
+    public int getWidth() {
+        return 177;
+    }
+    @Override
+    public int getHeight() {
+        return 125;
     }
 
     @Override

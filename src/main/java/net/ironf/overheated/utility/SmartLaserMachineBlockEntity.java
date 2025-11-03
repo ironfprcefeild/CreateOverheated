@@ -1,7 +1,6 @@
 package net.ironf.overheated.utility;
 
-import com.simibubi.create.foundation.utility.Iterate;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
+import net.createmod.catnip.data.Iterate;import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

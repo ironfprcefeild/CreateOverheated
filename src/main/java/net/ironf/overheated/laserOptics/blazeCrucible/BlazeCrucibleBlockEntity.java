@@ -1,11 +1,17 @@
 package net.ironf.overheated.laserOptics.blazeCrucible;
 
+import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.content.fluids.tank.BoilerHeaters;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.AngleHelper;
-import com.simibubi.create.foundation.utility.VecHelper;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
+
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.animation.LerpedFloat.Chaser;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.math.VecHelper;
+
 import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
@@ -26,7 +32,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.List;
 import java.util.Objects;
 
-import static com.simibubi.create.content.fluids.tank.BoilerHeaters.registerHeater;
 
 public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
 
@@ -121,7 +126,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
 
     public static void addToBoilerHeaters(){
         Overheated.LOGGER.info("Adding the Blaze Crucible to Boiler Heaters");
-        registerHeater(AllBlocks.BLAZE_CRUCIBLE.getId(), (level, pos, state) -> {
+        BoilerHeater.REGISTRY.register(AllBlocks.BLAZE_CRUCIBLE.get(), (level, pos, state) -> {
             try {
                 BlazeCrucibleBlockEntity crucible = ((BlazeCrucibleBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));
                 int timeHeated = crucible.timeHeated;

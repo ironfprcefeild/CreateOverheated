@@ -24,14 +24,14 @@ import java.util.Objects;
 public class JEIPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(Overheated.MODID, "jei_plugin");
+        return Overheated.asResource("jei_plugin");
     }
 
 
     public static RecipeType<CoolantRecipe> COOLING_TYPE =
-            new RecipeType<>(new ResourceLocation(Overheated.MODID, "cooling"), CoolantRecipe.class);
+            new RecipeType<>(Overheated.asResource( "cooling"), CoolantRecipe.class);
     public static RecipeType<CondenserRecipe> CONDENSING_TYPE =
-            new RecipeType<>(new ResourceLocation(Overheated.MODID, "condensing"), CondenserRecipe.class);
+            new RecipeType<>(Overheated.asResource( "condensing"), CondenserRecipe.class);
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {

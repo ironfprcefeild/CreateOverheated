@@ -21,6 +21,7 @@ public class AllBatteryItems {
         Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] BATTERIES = new ItemEntry[]
             {batteryEntry("Empty"),
             batteryEntry("LV"),

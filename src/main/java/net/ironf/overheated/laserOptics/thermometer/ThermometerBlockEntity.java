@@ -1,6 +1,6 @@
 package net.ironf.overheated.laserOptics.thermometer;
 
-import com.simibubi.create.content.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;

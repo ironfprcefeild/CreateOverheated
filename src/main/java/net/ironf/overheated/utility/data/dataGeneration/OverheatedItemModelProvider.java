@@ -27,8 +27,8 @@ public class OverheatedItemModelProvider extends ItemModelProvider {
     private ItemModelBuilder simpleItem(RegistryObject<Item> item, @Nullable String textureOverride) {
 
         return withExistingParent(item.getId().getPath(),
-                new ResourceLocation("item/generated")).texture("layer0",
-                    new ResourceLocation(Overheated.MODID,"item/" + (textureOverride == null ? item.getId().getPath() : textureOverride)));
+                Overheated.asResource("item/generated")).texture("layer0",
+                    Overheated.asResource("item/" + (textureOverride == null ? item.getId().getPath() : textureOverride)));
     }
 
     @Override

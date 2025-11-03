@@ -1,6 +1,6 @@
 package net.ironf.overheated.laserOptics.mirrors;
 
-import com.simibubi.create.foundation.utility.AttachedRegistry;
+import com.simibubi.create.api.registry.SimpleRegistry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
@@ -40,11 +40,7 @@ public class mirrorRegister {
         return doReflection(incoming,level,pos,level.getBlockState(pos),heatData);
     }
 
-    private static final AttachedRegistry<Block, Reflector> MIRRORS = new AttachedRegistry<>(ForgeRegistries.BLOCKS);
-
-    public static void registerReflector(ResourceLocation block, Reflector reflector) {
-        MIRRORS.register(block, reflector);
-    }
+    private static final SimpleRegistry<Block, Reflector> MIRRORS = SimpleRegistry.create();
 
     public static void registerReflector(Block block, Reflector reflector) {
         MIRRORS.register(block,reflector);

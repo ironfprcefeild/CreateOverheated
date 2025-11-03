@@ -2,8 +2,8 @@ package net.ironf.overheated.batteries.charger;
 
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -14,6 +14,6 @@ public class ChargerBlockEntityRenderer extends KineticBlockEntityRenderer<Charg
 
     @Override
     protected SuperByteBuffer getRotatedModel(ChargerBlockEntity be, BlockState state) {
-        return CachedBufferer.partial(AllPartialModels.SHAFT_HALF,state);
+        return CachedBuffers.partial(AllPartialModels.SHAFT_HALF,state);
     }
 }

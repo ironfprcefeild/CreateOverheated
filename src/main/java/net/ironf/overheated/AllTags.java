@@ -1,6 +1,6 @@
 package net.ironf.overheated;
 
-import com.simibubi.create.foundation.utility.Lang;
+import net.createmod.catnip.lang.Lang;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -15,6 +15,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Collections;
 
+import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+
 
 public class AllTags {
     //The majority of this boilerplate comes from create
@@ -23,7 +25,7 @@ public class AllTags {
     }
 
     public static <T> TagKey<T> forgeTag(IForgeRegistry<T> registry, String path) {
-        return optionalTag(registry, new ResourceLocation("forge", path));
+        return optionalTag(registry, fromNamespaceAndPath("forge", path));
     }
 
     public static TagKey<Block> forgeBlockTag(String path) {
@@ -82,7 +84,7 @@ public class AllTags {
         }
 
         AllBlockTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
-            ResourceLocation id = new ResourceLocation(namespace.id, path == null ? Lang.asId(name()) : path);
+            ResourceLocation id = fromNamespaceAndPath(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
                 tag = optionalTag(ForgeRegistries.BLOCKS, id);
             } else {
