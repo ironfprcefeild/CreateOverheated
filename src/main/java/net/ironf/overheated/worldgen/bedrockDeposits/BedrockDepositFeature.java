@@ -1,8 +1,8 @@
 package net.ironf.overheated.worldgen.bedrockDeposits;
 
 import com.mojang.serialization.Codec;
-import net.createmod.catnip.data.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

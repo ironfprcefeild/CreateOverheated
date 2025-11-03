@@ -1,6 +1,5 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
-import com.simibubi.create.compat.jei.EmptyBackground;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;

@@ -1,7 +1,8 @@
 package net.ironf.overheated.mixin;
 
 import com.simibubi.create.content.kinetics.fan.IAirCurrentSource;
-import net.createmod.catnip.data.Iterate;import net.ironf.overheated.cooling.IAirCurrentReader;
+import net.createmod.catnip.data.Iterate;
+import net.ironf.overheated.cooling.IAirCurrentReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;

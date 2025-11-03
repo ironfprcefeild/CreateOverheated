@@ -2,7 +2,8 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.createmod.catnip.data.Iterate;import net.ironf.overheated.Overheated;
+import net.createmod.catnip.data.Iterate;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;

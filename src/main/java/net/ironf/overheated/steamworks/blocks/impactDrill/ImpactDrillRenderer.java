@@ -2,8 +2,9 @@ package net.ironf.overheated.steamworks.blocks.impactDrill;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
+import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.createmod.catnip.render.CachedBuffers;
-import net.createmod.catnip.render.SuperByteBuffer;import dev.engine_room.flywheel.api.visualization.VisualizationManager;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.ironf.overheated.AllPartialModels;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

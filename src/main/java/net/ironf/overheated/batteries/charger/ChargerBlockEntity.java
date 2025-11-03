@@ -3,7 +3,6 @@ package net.ironf.overheated.batteries.charger;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.content.fluids.tank.BoilerHeaters;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
 import net.ironf.overheated.batteries.AllBatteryItems;

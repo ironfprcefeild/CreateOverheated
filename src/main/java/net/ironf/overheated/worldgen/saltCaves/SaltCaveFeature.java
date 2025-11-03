@@ -1,8 +1,8 @@
 package net.ironf.overheated.worldgen.saltCaves;
 
 import com.mojang.serialization.Codec;
-import net.createmod.catnip.data.Iterate;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;

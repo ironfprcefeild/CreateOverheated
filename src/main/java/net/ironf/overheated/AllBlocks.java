@@ -36,7 +36,6 @@ import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelDirectio
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelHorizontalDirectionalBlockStateGen;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelSpunBlockStateGen;
 import net.ironf.overheated.utility.registration.AllSpriteShifts;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IronBarsBlock;

@@ -20,8 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Objects;
 
-import com.simibubi.create.content.fluids.tank.BoilerHeaters;
-
 public class BlazeAbsorberBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public BlazeAbsorberBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

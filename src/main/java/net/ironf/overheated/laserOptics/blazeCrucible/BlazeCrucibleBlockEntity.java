@@ -1,18 +1,13 @@
 package net.ironf.overheated.laserOptics.blazeCrucible;
 
 import com.simibubi.create.api.boiler.BoilerHeater;
-import com.simibubi.create.content.fluids.tank.BoilerHeaters;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-
+import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.createmod.catnip.animation.LerpedFloat;
-import net.createmod.catnip.animation.LerpedFloat.Chaser;
-import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
-
-import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.minecraft.client.Minecraft;
