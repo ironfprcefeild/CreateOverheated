@@ -1,4 +1,4 @@
-package net.ironf.overheated.batteries.charger;
+package net.ironf.overheated.batteries.discharger;
 
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
@@ -11,25 +11,9 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ChargerBlock extends DirectionalKineticBlock implements IBE<ChargerBlockEntity> {
-    public ChargerBlock(Properties p_49795_) {
-        super(p_49795_);
-    }
-
-    //BE
-    @Override
-    public Class<ChargerBlockEntity> getBlockEntityClass() {
-        return ChargerBlockEntity.class;
-    }
-
-    @Override
-    public BlockEntityType<? extends ChargerBlockEntity> getBlockEntityType() {
-        return AllBlockEntities.CHARGER.get();
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        IBE.onRemove(state, worldIn, pos, newState);
+public class DischargerBlock extends DirectionalKineticBlock implements IBE<DischargerBlockEntity> {
+    public DischargerBlock(Properties properties) {
+        super(properties);
     }
 
     //Blockstate
@@ -53,5 +37,21 @@ public class ChargerBlock extends DirectionalKineticBlock implements IBE<Charger
     public Direction.Axis getRotationAxis(BlockState state) {
         return state.getValue(FACING)
                 .getAxis();
+    }
+
+    //BE
+    @Override
+    public Class<DischargerBlockEntity> getBlockEntityClass() {
+        return DischargerBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends DischargerBlockEntity> getBlockEntityType() {
+        return AllBlockEntities.DISCHARGER.get();
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        IBE.onRemove(state, worldIn, pos, newState);
     }
 }

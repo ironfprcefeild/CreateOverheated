@@ -272,6 +272,9 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         currentPressure = tag.getInt("pressure");
         laserTimer = tag.getInt("laserTimer");
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
+        InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
+        OutputItemHandler.deserializeNBT(tag.getCompound("outputItems"));
+
     }
 
 
@@ -283,6 +286,9 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         tag.putInt("pressure",currentPressure);
         tag.putInt("laserTimer",laserTimer);
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
+        tag.put("inputItems", InputItemHandler.serializeNBT());
+        tag.put("outputItems", OutputItemHandler.serializeNBT());
+
 
 
     }

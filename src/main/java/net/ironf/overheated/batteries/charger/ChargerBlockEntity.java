@@ -4,12 +4,20 @@ import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import com.simibubi.create.content.logistics.depot.DepotBehaviour;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
+import com.simibubi.create.foundation.item.ItemHelper;
 import net.ironf.overheated.batteries.AllBatteryItems;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,6 +28,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation {
     public ChargerBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
@@ -69,6 +78,12 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
         return super.getCapability(cap, side);
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        ItemHelper.dropContents(getLevel(), getBlockPos(), BusyItemHandler);
+    }
+
 
     ///Doing Stuff
 
@@ -79,7 +94,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     @Override
     public void tick() {
         super.tick();
-        if (tickTimer-- <= 0 && !level.isClientSide){
+        if (tickTimer-- <= 0){
             tickTimer = 20;
             progress += Math.abs(getSpeed());
             if (progress >= 15360){
@@ -92,33 +107,25 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
 
         BlockEntity BE = level.getBlockEntity(getBlockPos().above());
         if (BE != null && BE.getType() == AllBlockEntityTypes.DEPOT.get()) {
-            DepotBlockEntity DPBE = ((DepotBlockEntity) BE);
-            ItemStack depotItem = DPBE.getHeldItem();
-            if (!depotItem.isEmpty()){
-                return false;
-            }
-
-            LazyOptional<IItemHandler> DepotHandler = DPBE.getCapability(ForgeCapabilities.ITEM_HANDLER,Direction.UP);
-
+            DepotBehaviour DPB = ((DepotBlockEntity) BE).getBehaviour(DepotBehaviour.TYPE);
 
             //Look For Heating
             BlockPos below = getBlockPos().below();
             float heat = BoilerHeater.findHeat(level, below, level.getBlockState(below));
-            //Overheated.LOGGER.info("Trying to transform or charge. Heat: " + heat);
-            //Overheated.LOGGER.info("Item Handler, " + BusyItemHandler.getStackInSlot(0).getDescriptionId() +" " + BusyItemHandler.getStackInSlot(0).getCount());
+            //Make ToInsert
+            TransportedItemStack toInsert = new TransportedItemStack(AllBatteryItems.getBattery((int) heat+1).asStack(1));
+
+            //Make sure the stack can fit into the depot
+            if (DPB.insert(toInsert,true) != ItemStack.EMPTY){return false;}
 
             if (heat >= 1 && BusyItemHandler.getStackInSlot(0).is(AllBatteryItems.getBatteryItem((int)heat)) && BusyItemHandler.getStackInSlot(0).getCount() >= 4) {
                 //Transform
-                //Overheated.LOGGER.info("Transforming");
-                DepotHandler.ifPresent(ih ->
-                        ih.insertItem(0,AllBatteryItems.getBattery((int)heat+1).asStack(1),false));
+                DPB.insert(toInsert,false);
                 BusyItemHandler.extractItem(0,4,false);
                 return true;
-            } else if (heat == -1 && BusyItemHandler.extractItem(0,1,true) == AllBatteryItems.getBattery(0).asStack(1)) {
+            } else if (heat == -1 && BusyItemHandler.getStackInSlot(0).is(AllBatteryItems.getBatteryItem(0)) && BusyItemHandler.getStackInSlot(0).getCount() >= 1) {
                 //Charge Empty
-                //Overheated.LOGGER.info("Charging Empty");
-                DepotHandler.ifPresent(ih ->
-                        ih.insertItem(0, AllBatteryItems.getBattery(1).asStack(1), false));
+                DPB.insert(toInsert, false);
                 BusyItemHandler.extractItem(0, 1, false);
                 return true;
             }
@@ -127,10 +134,18 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     }
 
     @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.progress").append(progress + "/ 15360")));
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        return true;
+    }
+
+    @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
         tickTimer = tag.getInt("tick_timer");
         progress = tag.getFloat("charge_progress");
+        BusyItemHandler.deserializeNBT(tag.getCompound("items"));
     }
 
     @Override
@@ -138,5 +153,6 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
         super.write(tag, clientPacket);
         tag.putInt("tick_timer",tickTimer);
         tag.putFloat("charge_progress",progress);
+        tag.put("items", BusyItemHandler.serializeNBT());
     }
 }

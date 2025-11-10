@@ -1,6 +1,6 @@
 {
-  "itemgroup.overheated.base": "Overheated",
-  "itemgroup.overheated.steam_buckets_tab": "Steam Buckets",
+  "itemGroup.overheated.base": "Overheated",
+  "itemGroup.overheated.steam_buckets_tab": "Steam Buckets",
 
   "coverheated.turbine.info_header": "--- Turbine Info ---",
   "coverheated.turbine.radius": "Radius: ",
@@ -93,6 +93,10 @@
   "coverheated.geothermal.heating.superheated": "Providing Superheated Steam",
   "coverheated.geothermal.steam_buildup": "Temperature Buildup: ",
 
+  "coverheated.discharger.thermal_duration": "Heating Time Left: ",
+  "coverheated.discharger.kinetic_duration": "Rotation Time Left: ",
+  "coverheated.discharger.decreasing_by": "Decreasing by ",
+
   "coverheated.tooltip.heat": "Heat: ",
   "coverheated.tooltip.superheat": "Superheat: ",
   "coverheated.tooltip.overheat": "Overheat: ",
@@ -179,7 +183,7 @@
   "block.coverheated.reinforced_industrial_iron": "Block of Reinforced Industrial Iron",
   "block.coverheated.sludge": "Sludge",
   "block.coverheated.solar_panel": "Solar Panel",
-  "block.coverheated.blaze_absorber": "Solar Absorber",
+  "block.coverheated.solar_absorber": "Solar Absorber",
   "block.coverheated.split_mirror": "Split Mirror",
   "block.coverheated.steam_high": "Steam High",
   "block.coverheated.steam_insane": "Steam Insane",

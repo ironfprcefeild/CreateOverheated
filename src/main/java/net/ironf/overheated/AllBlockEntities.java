@@ -5,6 +5,8 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.batteries.charger.ChargerBlockEntity;
 import net.ironf.overheated.batteries.charger.ChargerBlockEntityRenderer;
+import net.ironf.overheated.batteries.discharger.DischargerBlockEntity;
+import net.ironf.overheated.batteries.discharger.DischargerBlockEntityRenderer;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
@@ -175,7 +177,13 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.CHARGER)
             .register();
 
-
+    //Discharger
+    public static final BlockEntityEntry<DischargerBlockEntity> DISCHARGER = REGISTRATE
+            .blockEntity("discharger", DischargerBlockEntity::new)
+            .visual(() -> SingleAxisRotatingVisual::shaft, false)
+            .renderer(() -> DischargerBlockEntityRenderer::new)
+            .validBlocks(AllBlocks.DISCHARGER)
+            .register();
 
 
     public static void register(){
