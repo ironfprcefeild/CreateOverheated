@@ -40,16 +40,16 @@ public class GoggleHelper {
         } else {
             tooltip.add(addIndent(Component.translatable("coverheated.tooltip.heat")
                     .append(easyFloat(h.Heat,decimals))
-                    .withStyle(ChatFormatting.RED), 1));
+                    .withStyle(h.Heat > 0 ? ChatFormatting.RED : GRAY), 1));
             if (displayUpToLevel >= 2) {
                 tooltip.add(addIndent(Component.translatable("coverheated.tooltip.superheat")
                         .append(easyFloat(h.SuperHeat,decimals))
-                        .withStyle(ChatFormatting.RED), 1));
+                        .withStyle(h.SuperHeat > 0 ? ChatFormatting.BLUE : GRAY), 1));
             }
             if (displayUpToLevel >= 4) {
                 tooltip.add(addIndent(Component.translatable("coverheated.tooltip.overheat")
                         .append(easyFloat(h.OverHeat,decimals))
-                        .withStyle(ChatFormatting.RED), 1));
+                        .withStyle(h.OverHeat > 0 ? ChatFormatting.LIGHT_PURPLE : GRAY), 1));
             }
         }
     }
