@@ -1,0 +1,13 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "coverheated:steel_nugget"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:industrial_sheet"
+    }
+  ]
+}

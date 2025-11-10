@@ -48,7 +48,7 @@ public class AllSteamFluids {
                 .tintColor(0x33B3FF)
                 .overrideTexture("block/fluids/steam")
                 .addBucketToSteamTabOnly()
-                .bucketModelLocation("steam_bucket")
+                .bucketModelLocation("item/steam_bucket")
                 .setGas(REGISTRATE.gasBlock(name)
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)

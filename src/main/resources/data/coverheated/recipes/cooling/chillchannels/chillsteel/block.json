@@ -7,11 +7,11 @@
     ],
     "key": {
         "i": {
-            "item": "coverheated:chill_steel"
+            "item": "coverheated:chillsteel_ingot"
         }
     },
     "result": {
-        "item": "coverheated:chill_steel_block",
+        "item": "coverheated:chillsteel_block",
         "count": 1
     }
 }

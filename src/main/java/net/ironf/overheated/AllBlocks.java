@@ -152,7 +152,7 @@ public class AllBlocks {
                     .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
                     .simpleItem()
                     .defaultLoot()
-                    .lang("Block of Reinforced Industrial Iron")
+                    .lang("Block of Industrial Sheets")
                     .register();
     public static final BlockEntry<Block> STURDY_SHEET_BLOCK =
             REGISTRATE.block("sturdy_sheet_block", Block::new)
@@ -166,33 +166,7 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Sturdy Sheet Block")
                     .register();
-    public static final BlockEntry<Block> BLAZESTEEL_BLOCK =
-            REGISTRATE.block("blazesteel_block", Block::new)
-                    .initialProperties(() -> Blocks.IRON_BLOCK)
-                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
-                            .requiresCorrectToolForDrops()
-                            .sound(SoundType.ANCIENT_DEBRIS)
-                            .strength(5f))
-                    .transform(pickaxeOnly())
-                    .blockstate(simpleCubeAll("blazesteel_block"))
-                    .simpleItem()
-                    .defaultLoot()
-                    .lang("Block of Blazesteel")
-                    .register();
 
-    public static final BlockEntry<Block> CHILL_STEEL_BLOCK =
-            REGISTRATE.block("chill_steel_block", Block::new)
-                    .initialProperties(() -> Blocks.IRON_BLOCK)
-                    .properties(p -> p.mapColor(MapColor.COLOR_LIGHT_BLUE)
-                            .requiresCorrectToolForDrops()
-                            .sound(SoundType.POWDER_SNOW)
-                            .strength(3.5f))
-                    .transform(pickaxeOnly())
-                    .blockstate(simpleCubeAll("chill_steel_block"))
-                    .simpleItem()
-                    .defaultLoot()
-                    .lang("Block of Chillsteel")
-                    .register();
 
     //TODO make it render properly
     public static final BlockEntry<Block> BLAZEGLASS  =

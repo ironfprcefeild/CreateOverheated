@@ -2,11 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "coverheated:chillsteel_block"
+      "item": "coverheated:steel_block"
     }
   ],
   "result": {
-    "item": "coverheated:chillsteel_ingot",
+    "item": "coverheated:steel_ingot",
     "count": 9
   }
 }

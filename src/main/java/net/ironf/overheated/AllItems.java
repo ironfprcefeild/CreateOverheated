@@ -4,10 +4,13 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.MapColor;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -21,15 +24,23 @@ public class AllItems {
     public static final ItemEntry<Item> INCOMPLETE_INDUSTRIAL_SHEET = craftingIngredient("incomplete_industrial_sheet","Incomplete Industrial Sheet");
 
     //Nihilite Stuff
-    public static final ItemEntry<Item> NIHILTE_INGOT = craftingIngredient("nihilite_ingot","Nihilite Ingot");
-    public static final ItemEntry<Item> NIHILTE_NUGGET = craftingIngredient("nihilite_nugget","Nihilite Nugget");
+    public static final OverheatedRegistrate.MetallicSet NIHILITE =
+            REGISTRATE.MakeMetallicSet("Nihilite", p -> p.mapColor(MapColor.COLOR_CYAN)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.AMETHYST_CLUSTER)
+                    .strength(5f));
+
     public static final ItemEntry<Item> NIHILTE_GLOBULE = craftingIngredient("nihilite_globule","Nihilite Globule");
     public static final ItemEntry<Item> CRUSHED_NIHILITE = craftingIngredient("crushed_nihilite","Crushed Nihilite");
 
 
     //Blazesteel and Laser stuff
-    public static final ItemEntry<Item> BLAZESTEEL_INGOT = craftingIngredient("blazesteel_ingot","Blazesteel Ingot");
-    public static final ItemEntry<Item> BLAZESTEEL_NUGGET = craftingIngredient("blazesteel_nugget","Blazesteel Nugget");
+    public static final OverheatedRegistrate.MetallicSet BLAZESTEEL =
+            REGISTRATE.MakeMetallicSet("Blazesteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.ANCIENT_DEBRIS)
+                    .strength(5f));
+
     public static final ItemEntry<Item> BLAZEGLASS_FIXTURE = craftingIngredient("blazeglass_fixture","Blazeglass Fixture");
     public static final ItemEntry<Item> ANTILASER_PLATE = craftingIngredient("antilaser_plate","Anti-laser Plate");
     public static final ItemEntry<Item> INCOMPLETE_LASER_CASING = craftingIngredient("incomplete_laser_casing","Incomplete Laser Casing");
@@ -76,8 +87,12 @@ public class AllItems {
             .lang("Chill Channel Adjuster")
             .register();
 
-    public static final ItemEntry<Item> CHILL_STEEL = craftingIngredient("chill_steel","Chillsteel Ingot");
-    public static final ItemEntry<Item> CHILL_STEEL_NUGGET = craftingIngredient("chill_steel_nugget","Chillsteel Nugget");
+    public static final OverheatedRegistrate.MetallicSet CHILLSTEEL =
+            REGISTRATE.MakeMetallicSet("Chillsteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.POWDER_SNOW)
+                    .strength(3.5f));
+
     public static final ItemEntry<Item> ICE_DIAMOND = craftingIngredient("ice_diamond","Ice Diamond");
 
     //Geothermium Stuff
@@ -86,15 +101,33 @@ public class AllItems {
     public static final ItemEntry<Item> GEOTHERMIUM_POWDERS = craftingIngredient("geothermium_powders","Geothermium Powders");
     public static final ItemEntry<Item> NETHER_GEOTHERMIUM_POWDERS = craftingIngredient("nether_geothermium_powders","Nether Geothermium Powders");
 
+    //Redstonite & Transformer Components
+    public static final ItemEntry<Item> REDSTONITE_CRYSTAL = craftingIngredient("redstonite_crystal","Redstonite Crystal");
+    public static final ItemEntry<Item> TRANSFORMER_COMPONENTS = craftingIngredient("transformer_components","Transformer Components");
+
+
+    //Steel
+    public static final OverheatedRegistrate.MetallicSet STEEL =
+            REGISTRATE.MakeMetallicSet("Steel", p -> p.mapColor(MapColor.COLOR_GRAY)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL)
+                    .strength(5f));
     //Batteries
     static {
         AllBatteryItems.register();
     }
+    public static final ItemEntry<Item> BATTERY_CATHODE = craftingIngredient("battery_cathode","Battery Cathode");
+    public static final ItemEntry<Item> BATTERY_ANODE = craftingIngredient("battery_anode","Battery Anode");
+
+    public static final ItemEntry<Item> INCOMPLETE_CATHODE = craftingIngredient("incomplete_cathode","Incomplete Battery Cathode");
+    public static final ItemEntry<Item> INCOMPLETE_ANODE = craftingIngredient("incomplete_anode","Incomplete Battery Anode");
 
 
     public static ItemEntry<Item> craftingIngredient(String id,String lang){
         return REGISTRATE.item(id,Item::new).lang(lang).register();
     }
+
+
     public static void register(){
 
     }

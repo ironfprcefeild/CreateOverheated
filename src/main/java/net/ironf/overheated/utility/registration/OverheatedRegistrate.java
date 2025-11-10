@@ -3,8 +3,12 @@ package net.ironf.overheated.utility.registration;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.data.recipe.CommonMetal;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.Overheated;
@@ -20,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -39,8 +44,10 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -57,10 +64,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
+import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
+import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
+import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.*;
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
@@ -84,6 +96,35 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
 
+
+    //Helpers
+    public ItemEntry<Item> craftingIngredient(String id,String lang){
+        return item(id,Item::new).lang(lang).register();
+    }
+    public class MetallicSet {
+        public final ItemEntry<Item> ingot;
+        public final ItemEntry<Item> nugget;
+        public final BlockEntry<Block> block;
+        public MetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
+            String id = name.toLowerCase().replace(" ","_");
+            this.ingot = craftingIngredient(id + "_ingot",name + " Ingot");
+            this.nugget = craftingIngredient(id + "_nugget",name + " Nugget");
+            this.block = block(id + "_block", Block::new)
+                    .properties(bProperties)
+                    .transform(pickaxeOnly())
+                    .blockstate(simpleCubeAll(id + "_block"))
+                    .simpleItem()
+                    .defaultLoot()
+                    .tag(BlockTags.NEEDS_IRON_TOOL)
+                    .tag(Tags.Blocks.STORAGE_BLOCKS)
+                    .tag(BlockTags.BEACON_BASE_BLOCKS)
+                    .lang("Block of " + name)
+                    .register();
+        }
+    }
+    public MetallicSet MakeMetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
+        return new MetallicSet(name,bProperties);
+    }
 
 
     //Datagen

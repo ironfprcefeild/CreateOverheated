@@ -2,9 +2,11 @@ package net.ironf.overheated.utility.data.dataGeneration;
 
 import net.ironf.overheated.Overheated;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -23,17 +25,19 @@ public class OverheatedItemModelProvider extends ItemModelProvider {
     public Collection<RegistryObject<Item>> Items;
     public HashMap<RegistryObject<? extends Item>,String> modelOverride;
 
-    private ItemModelBuilder simpleItem(RegistryObject<Item> item, @Nullable String textureOverride) {
+    private ItemModelBuilder simpleItem(Item item, @Nullable String textureOverride) {
 
-        return withExistingParent(item.getId().getPath(),
-                Overheated.asResource("item/generated")).texture("layer0",
-                    Overheated.asResource("item/" + (textureOverride == null ? item.getId().getPath() : textureOverride)));
+        return (textureOverride == null)
+            ? basicItem(item)
+            : getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0",textureOverride);
     }
 
     @Override
     protected void registerModels() {
         for (RegistryObject<Item> I : Items){
-            simpleItem(I, modelOverride.getOrDefault(I, null));
+            simpleItem(I.get(), modelOverride.getOrDefault(I, null));
         }
     }
 }

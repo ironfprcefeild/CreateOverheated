@@ -18,14 +18,6 @@ public class AllFluids {
         REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
-    /*
-    IDs of registered Fluids:
-    purified_water
-    blaze_nectar
-    sludge
-    liquid_nihilite
-    magmafreeze
-     */
 
     public static final OverheatedRegistrate.FluidRegistration STRAY_SAUCE =
             REGISTRATE.SimpleFluid("stray_sauce")
@@ -85,5 +77,14 @@ public class AllFluids {
                     .explosionResistance(200f)
                     .slopeFindDistance(6)
                     .Register(p -> p.canDrown(true));
+
+    public static final OverheatedRegistrate.FluidRegistration AKRYCITIC_ACID =
+            REGISTRATE.SimpleFluid("akrycitic_acid")
+                    .tintColor(0x553E9B)
+                    .levelDecreasePerBlock(1)
+                    .tickRate(25)
+                    .explosionResistance(200f)
+                    .slopeFindDistance(12)
+                    .Register(p -> p.canDrown(true).supportsBoating(false).viscosity(10));
 
 }

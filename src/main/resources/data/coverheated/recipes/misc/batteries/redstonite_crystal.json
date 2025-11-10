@@ -1,0 +1,23 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "ingredients": [
+    {
+      "item": "create:zinc_ingot",
+      "count": 1
+    },
+    {
+      "item": "create:polished_rose_quartz",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "coverheated:redstonite_crystal",
+      "count": 1
+    }
+  ],
+  "heat_added": 32,
+  "ticks_taken": 200,
+  "pressure": 3,
+  "laser_heat": 4
+}

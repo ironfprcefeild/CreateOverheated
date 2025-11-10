@@ -1,0 +1,29 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "r": {
+      "item": "coverheated:redstonite_crystal"
+    },
+    "b": {
+      "item": "coverheated:lv_battery"
+    },
+    "e": {
+      "item": "create:electron_tube"
+    },
+    "c": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "pattern": [
+    " beb ",
+    "cc cc",
+    "rr rr",
+    "cc cc",
+    " beb "
+  ],
+  "result": {
+    "count": 2,
+    "item": "coverheated:transformer_components"
+  }
+}

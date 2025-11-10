@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " ss",
-    "rds",
-    "r  "
+    " s ",
+    "rrr",
+    "sfs"
   ],
   "key": {
     "r": {
       "item": "minecraft:end_rod"
     },
-    "d": {
-      "item": "minecraft:diamond"
-    },
     "s": {
       "item": "coverheated:chillsteel_ingot"
+    },
+    "f": {
+      "item": "coverheated:cooler"
     }
   },
   "result": {
-    "item": "coverheated:channel_wrench",
+    "item": "coverheated:channel_absorber",
     "count": 1
   }
 }

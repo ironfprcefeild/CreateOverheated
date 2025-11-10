@@ -8,6 +8,7 @@ import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.logistics.depot.DepotBehaviour;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
 import com.simibubi.create.foundation.item.ItemHelper;
+import net.ironf.overheated.AllItems;
 import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.utility.GoggleHelper;
@@ -16,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -81,7 +83,11 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     @Override
     public void destroy() {
         super.destroy();
-        ItemHelper.dropContents(getLevel(), getBlockPos(), BusyItemHandler);
+        BlockPos pos = getBlockPos();
+        ItemHelper.dropContents(getLevel(), pos, BusyItemHandler);
+        if (canTransform) {
+            Containers.dropItemStack(getLevel(), pos.getX(), pos.getY(), pos.getZ(), new ItemStack(AllItems.TRANSFORMER_COMPONENTS, 1));
+        }
     }
 
 
@@ -91,6 +97,8 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     float progress = 0;
     int tickTimer = 20;
 
+    boolean canTransform = false;
+
     @Override
     public void tick() {
         super.tick();
@@ -99,6 +107,10 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
             progress += Math.abs(getSpeed());
             if (progress >= 15360){
                 progress = performCharge() ? 0 : 15104;
+            }
+            if (!canTransform && BusyItemHandler.getStackInSlot(0).is(AllItems.TRANSFORMER_COMPONENTS.get())){
+                canTransform = true;
+                BusyItemHandler.extractItem(0,1,false);
             }
         }
     }
@@ -118,7 +130,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
             //Make sure the stack can fit into the depot
             if (DPB.insert(toInsert,true) != ItemStack.EMPTY){return false;}
 
-            if (heat >= 1 && BusyItemHandler.getStackInSlot(0).is(AllBatteryItems.getBatteryItem((int)heat)) && BusyItemHandler.getStackInSlot(0).getCount() >= 4) {
+            if (canTransform && heat >= 1 && BusyItemHandler.getStackInSlot(0).is(AllBatteryItems.getBatteryItem((int)heat)) && BusyItemHandler.getStackInSlot(0).getCount() >= 4) {
                 //Transform
                 DPB.insert(toInsert,false);
                 BusyItemHandler.extractItem(0,4,false);
@@ -136,6 +148,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.progress").append(progress + "/ 15360")));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.transformer." +(canTransform ? "present" : "absent") )));
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return true;
     }
@@ -145,6 +158,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
         super.read(tag, clientPacket);
         tickTimer = tag.getInt("tick_timer");
         progress = tag.getFloat("charge_progress");
+        canTransform = tag.getBoolean("can_transform");
         BusyItemHandler.deserializeNBT(tag.getCompound("items"));
     }
 
@@ -153,6 +167,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
         super.write(tag, clientPacket);
         tag.putInt("tick_timer",tickTimer);
         tag.putFloat("charge_progress",progress);
+        tag.putBoolean("can_transform",canTransform);
         tag.put("items", BusyItemHandler.serializeNBT());
     }
 }

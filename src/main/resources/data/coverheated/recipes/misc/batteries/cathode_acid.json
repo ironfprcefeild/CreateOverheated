@@ -1,0 +1,65 @@
+
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "coverheated:steel_nugget"
+  },
+  "loops": 2,
+  "results": [
+    {
+      "item": "coverheated:battery_cathode",
+      "count": 2
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        },
+        {
+          "item": "create:copper_nugget"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        }
+      ]
+    },
+    {     "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        },
+        {
+          "amount": 100,
+          "fluid": "coverheated:akrycitic_acid",
+          "nbt": {}
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_cathode"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "item": "coverheated:incomplete_cathode"
+  }
+}

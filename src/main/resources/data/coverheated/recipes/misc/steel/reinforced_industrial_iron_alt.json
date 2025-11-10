@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "coverheated:steel_nugget"
+    },
+    {
+      "item": "coverheated:industrial_sheet"
+    },
+    {
+      "item": "coverheated:industrial_sheet"
+    }
+  ],
+  "result": {
+    "item": "coverheated:reinforced_industrial_iron",
+    "count": 2
+  }
+}
