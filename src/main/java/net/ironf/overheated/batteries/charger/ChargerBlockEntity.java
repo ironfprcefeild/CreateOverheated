@@ -10,16 +10,13 @@ import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.batteries.AllBatteryItems;
-import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.utility.GoggleHelper;
-import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,7 +113,6 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
     }
 
     public boolean performCharge() {
-
         BlockEntity BE = level.getBlockEntity(getBlockPos().above());
         if (BE != null && BE.getType() == AllBlockEntityTypes.DEPOT.get()) {
             DepotBehaviour DPB = ((DepotBlockEntity) BE).getBehaviour(DepotBehaviour.TYPE);
@@ -147,7 +143,7 @@ public class ChargerBlockEntity extends KineticBlockEntity implements IHaveGoggl
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.progress").append(progress + "/ 15360")));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.progress").append(progress + "/15360")));
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.charger.transformer." +(canTransform ? "present" : "absent") )));
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return true;

@@ -77,6 +77,22 @@
       ]
     },
     {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "coverheated:industrial_sheet"
+        }
+      ],
+      "results": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
       "type": "create:pressing",
       "ingredients": [
         {
