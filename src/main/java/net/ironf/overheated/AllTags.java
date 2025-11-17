@@ -62,7 +62,12 @@ public class AllTags {
     public enum AllBlockTags {
         CHAMBER_BORDER,
         COOLING_TOWER_BORDER,
-        DRILL_SCAFFOLD
+        DRILL_SCAFFOLD,
+
+        IBF_VALID,
+        IBF_SERVANT,
+        IBF_SERVANT_TOP,
+        IBF_SERVANT_BOTTOM
         ;
         public final TagKey<Block> tag;
         public final boolean alwaysDatagen;

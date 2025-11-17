@@ -1,9 +1,11 @@
-package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace;
+package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,12 +19,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
 
 
-    ////Vanilla Stuff so im not whined at
+    //// Vanilla Stuff so im not whined at
     //Theese methods should not be used.
     @Override public boolean matches(SimpleContainer p_44002_, Level p_44003_) {return false;}
     @Override public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {return ItemStack.EMPTY;}
@@ -40,6 +43,9 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
     public RecipeSerializer<?> getSerializer() {
         return IndustrialBlastingRecipe.Serializer.INSTANCE;
     }
+
+
+
     public static class Type implements RecipeType<IndustrialBlastingRecipe> {
         private Type() {}
 
@@ -54,6 +60,9 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
     private final NonNullList<FluidIngredient> ingredients;
     private final FluidStack output;
     private final BlastFurnaceStatus requirements;
+    private final int duration;
+
+    public int getDuration() {return duration;}
 
     public BlastFurnaceStatus getRequirements() {
         return requirements;
@@ -67,12 +76,60 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
         return ingredients;
     }
 
-    public IndustrialBlastingRecipe(ResourceLocation id, FluidStack Output, NonNullList<FluidIngredient> inputs, BlastFurnaceStatus requirements){
+    public BlastFurnaceStatus getStatusRequirement(){return requirements;}
+
+    public IndustrialBlastingRecipe(ResourceLocation id, FluidStack Output, NonNullList<FluidIngredient> inputs, BlastFurnaceStatus requirements, int duration){
         this.id = id;
         this.output = Output;
         this.ingredients = inputs;
         this.requirements = requirements;
+        this.duration = duration;
     }
+
+    public boolean testRecipe(BlastFurnaceControllerBlockEntity ibf, boolean simulate) {
+        //Status match?
+        if (!requirements.compareWith(ibf.BFData,null,true)){
+            return false;
+        }
+
+        //Contain Input Fluids
+        int totalDrain = 0;
+        for (FluidIngredient fi : ingredients){
+            int drained = ibf.MainTank.drainFluidIng(fi, IFluidHandler.FluidAction.SIMULATE);
+            if (drained != fi.getRequiredAmount()){
+                //We don't have enough of a fluid
+                return false;
+            }
+            totalDrain += drained;
+        }
+
+        //Fluids Have Room?
+        if (ibf.MainTank.contained + output.getAmount() - totalDrain > ibf.MainTank.capacity){
+            return false;
+        }
+
+        /// We are good to execute the recipe
+        if (simulate){
+            return true;
+        }
+
+        //This drains steam (or oxygen) and updates status
+        requirements.compareWith(ibf,false);
+
+        //Drain inputs
+        for (FluidIngredient fi : ingredients){
+            ibf.MainTank.drainFluidIng(fi, IFluidHandler.FluidAction.EXECUTE);
+        }
+
+        //Fill output
+        ibf.MainTank.fill(output, IFluidHandler.FluidAction.EXECUTE);
+
+        return true;
+
+    }
+
+
+
 
     public static class Serializer implements RecipeSerializer<IndustrialBlastingRecipe>{
         public static final Serializer INSTANCE = new Serializer();
@@ -83,21 +140,41 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
         public IndustrialBlastingRecipe fromJson(ResourceLocation id, JsonObject j) {
             JsonArray ingredients = GsonHelper.getAsJsonArray(j, "ingredients");
             NonNullList<FluidIngredient> inputs = NonNullList.withSize(ingredients.size(), FluidIngredient.EMPTY);
+
+            for (int i = 0; i < inputs.size(); i++) {
+                inputs.set(i, FluidIngredient.deserialize(ingredients.get(i)));
+            }
+
             return new IndustrialBlastingRecipe(id,
                     FluidIngredient.deserialize(GsonHelper.getAsJsonObject(j,"output")).getMatchingFluidStacks().get(0),
                     inputs,
-                    new BlastFurnaceStatus(GsonHelper.getAsJsonObject(j,"status"))
-            );
+                    new BlastFurnaceStatus(GsonHelper.getAsJsonObject(j,"status")),
+                    GsonHelper.getAsInt(j,"duration"));
+        }
+
+        /* Network Order
+            ingredient size
+            ingredients
+            output
+            requirement
+            duration
+         */
+        @Override
+        public @Nullable IndustrialBlastingRecipe fromNetwork(ResourceLocation loc, FriendlyByteBuf buf) {
+            NonNullList<FluidIngredient> inputs = NonNullList.withSize(buf.readInt(),FluidIngredient.EMPTY);
+            inputs.replaceAll(ignored -> FluidIngredient.read(buf));
+            return new IndustrialBlastingRecipe(loc,FluidStack.readFromPacket(buf),inputs,BlastFurnaceStatus.readFromBuffer(buf), buf.readInt());
         }
 
         @Override
-        public @Nullable IndustrialBlastingRecipe fromNetwork(ResourceLocation p_44105_, FriendlyByteBuf p_44106_) {
-            return null;
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf p_44101_, IndustrialBlastingRecipe p_44102_) {
-
+        public void toNetwork(FriendlyByteBuf buf, IndustrialBlastingRecipe recipe) {
+            buf.writeInt(recipe.getIngredients().size());
+            for (FluidIngredient ing : recipe.getFluidIngredients()) {
+                ing.write(buf);
+            }
+            recipe.getOutput().writeToPacket(buf);
+            recipe.getStatusRequirement().writeToBuffer(buf);
+            buf.writeInt(recipe.duration);
         }
     }
 }

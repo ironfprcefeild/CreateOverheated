@@ -82,21 +82,22 @@ public class AllSteamFluids {
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
     public static @NonnullType Fluid[][] Steams;
 
-    public static void prepareSteamArray(){
+
+    public static void prepareSteamArray() {
         Overheated.LOGGER.info("Preparing Steam Utility Array");
         Steams = new Fluid[][]{
                 {DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get()},
                 {STEAM_LOW.SOURCE.get().getSource(), HEATED_STEAM_LOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_LOW.SOURCE.get().getSource(), OVERHEATED_STEAM_LOW.SOURCE.get().getSource()},
-                {STEAM_MID.SOURCE.get().getSource(),HEATED_STEAM_MID.SOURCE.get().getSource(),SUPERHEATED_STEAM_MID.SOURCE.get().getSource(),OVERHEATED_STEAM_MID.SOURCE.get().getSource()},
-                {STEAM_HIGH.SOURCE.get().getSource(),HEATED_STEAM_HIGH.SOURCE.get().getSource(),SUPERHEATED_STEAM_HIGH.SOURCE.get().getSource(),OVERHEATED_STEAM_HIGH.SOURCE.get().getSource()},
-                {STEAM_INSANE.SOURCE.get().getSource(),HEATED_STEAM_INSANE.SOURCE.get().getSource(),SUPERHEATED_STEAM_INSANE.SOURCE.get().getSource(),OVERHEATED_STEAM_INSANE.SOURCE.get().getSource()}
+                {STEAM_MID.SOURCE.get().getSource(), HEATED_STEAM_MID.SOURCE.get().getSource(), SUPERHEATED_STEAM_MID.SOURCE.get().getSource(), OVERHEATED_STEAM_MID.SOURCE.get().getSource()},
+                {STEAM_HIGH.SOURCE.get().getSource(), HEATED_STEAM_HIGH.SOURCE.get().getSource(), SUPERHEATED_STEAM_HIGH.SOURCE.get().getSource(), OVERHEATED_STEAM_HIGH.SOURCE.get().getSource()},
+                {STEAM_INSANE.SOURCE.get().getSource(), HEATED_STEAM_INSANE.SOURCE.get().getSource(), SUPERHEATED_STEAM_INSANE.SOURCE.get().getSource(), OVERHEATED_STEAM_INSANE.SOURCE.get().getSource()}
         };
     }
 
 
 
     public static void register(){
-
+        Overheated.LOGGER.info("Overheated is Registering Steams and Distilled Water");
     }
 
 
@@ -117,6 +118,7 @@ public class AllSteamFluids {
         }
         return 0;
     }
+
 
     public static int getSteamHeat(Fluid s){
         int h = 0;
@@ -139,6 +141,7 @@ public class AllSteamFluids {
         return getSteamPressure(fluid);
     }
 
+
     public static int getSteamHeat(FluidStack s){
         Fluid fluid = s.getFluid();
         if (fluid instanceof EmptyFluid){
@@ -146,5 +149,7 @@ public class AllSteamFluids {
         }
         return getSteamHeat(fluid);
     }
+
+
 
 }

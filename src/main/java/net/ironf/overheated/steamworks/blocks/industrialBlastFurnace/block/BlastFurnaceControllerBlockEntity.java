@@ -1,0 +1,324 @@
+package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block;
+
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.createmod.catnip.outliner.Outliner;
+import net.ironf.overheated.Overheated;
+import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.BlastFurnaceMultiblock;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.MultiblockData;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.MultiblockResult;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialBlastingRecipe;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialMeltingRecipe;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.BlastFurnaceServantBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
+public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+
+    public BlastFurnaceControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    /// Multiblock
+    MultiblockData MBData = null;
+    MultiblockResult lastAssemblyResult = MultiblockResult.ERROR(null,"block.coverheated.multiblock.error.unassembled");
+
+    //This gathers new information about the size and assigns servant BE's.
+    public void updateMultiblock(){
+        //Decouple Servants
+        if (MBData != null){
+            for (BlockPos servantPos : MBData.servantPositions){
+                BlockEntity BE = level.getBlockEntity(servantPos);
+                if (BE instanceof BlastFurnaceServantBlockEntity servantBE){
+                    servantBE.decoupleController();
+                }
+            }
+            MBData.servantPositions.clear();
+        }
+
+        BlastFurnaceMultiblock bfm = new BlastFurnaceMultiblock();
+
+        //This will be null if we failed to assemble the multiblock.
+        //This will recouple servants if we succeeded
+        MBData = bfm.assembleMultiblock(level,this);
+        lastAssemblyResult = bfm.status;
+        if (!lastAssemblyResult.success()){
+            //We failed to assemble, servants should no longer be able to access this
+            return;
+        }
+
+        //Resolve fluid tanks for new size
+        int newSize = MBData.innerArea();
+        if (newSize != currentSize){
+            currentSize = newSize;
+
+            MainTank.setCapacity(currentSize * 4000);
+
+            FluidStack oldSteam = SteamTank.getPrimaryHandler().getFluid();
+            SteamTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldSteam.getAmount(),currentSize*4000)));
+            SteamTank.getPrimaryHandler().setCapacity(currentSize * 4000);
+
+            FluidStack oldOxygen = OxygenTank.getPrimaryHandler().getFluid();
+            OxygenTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldOxygen.getAmount(),currentSize*4000)));
+            OxygenTank.getPrimaryHandler().setCapacity(currentSize * 4000);
+            
+        }
+        
+    }
+
+    public void removeServant(BlockPos bp){
+        MBData.servantPositions.remove(bp);
+    }
+
+    /// Fluid Handlers
+    public LazyOptional<IFluidHandler> SteamLazyFluidHandler  = LazyOptional.empty();
+    public LazyOptional<IFluidHandler> OxygenLazyFluidHandler  = LazyOptional.empty();
+
+    public LazyOptional<IFluidHandler> MainTankFluidHandler = LazyOptional.empty();
+
+    public SmartFluidTankBehaviour SteamTank;
+    public SmartFluidTankBehaviour OxygenTank;
+
+    public BlastFurnaceTank MainTank;
+
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+
+        behaviours.add(SteamTank = SmartFluidTankBehaviour.single(this, 0));
+        behaviours.add(OxygenTank = SmartFluidTankBehaviour.single(this, 0));
+
+
+    }
+
+
+    /// Item Handlers
+
+    private LazyOptional<IItemHandler> InputLazyItemHandler = LazyOptional.empty();
+    private final ItemStackHandler InputItemHandler = new ItemStackHandler(16) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+        }
+    };
+
+    public IItemHandler getInputItems() {
+        return InputItemHandler;
+    }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        InputLazyItemHandler = LazyOptional.of(() -> InputItemHandler);
+        SteamLazyFluidHandler = LazyOptional.of(() -> SteamTank.getPrimaryHandler());
+        OxygenLazyFluidHandler = LazyOptional.of(() -> OxygenTank.getPrimaryHandler());
+
+        MainTankFluidHandler = LazyOptional.of(() -> MainTank);
+    }
+
+    /// Capabilities!
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        InputLazyItemHandler.invalidate();
+        SteamLazyFluidHandler.invalidate();
+        OxygenLazyFluidHandler.invalidate();
+        MainTankFluidHandler.invalidate();
+    }
+
+     ///Processing
+    //Every tick we should do normal processing stuff, the handlers in here should be able to do all that behavoir
+    public BlastFurnaceStatus BFData;
+
+
+
+    public int tickTimer = 0;
+
+    //0 = no recipe, 1 = melting, 2 = alloying.
+    public int recipeStatus = 0;
+    public int recipeTimer = 0;
+    public int recipeThreshold = -1;
+
+
+    
+    public int currentSize = 0;
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        /// Update Multiblock & operate
+        if (tickTimer-- <= 0){
+            updateMultiblock();
+            syncBFData();
+            tickTimer = 20;
+
+            //We should do nothing if we failed, and sadly cancel the recipe
+            if (!lastAssemblyResult.success()){
+                cancelRecipe();
+                return;
+            }
+
+            //Start new recipe if you can
+            if (recipeStatus == 0) {
+                startNewRecipe();
+            } else if (recipeStatus > 0){
+                //A recipe is active
+                recipeTimer += (BFData.PressureLevel + BFData.steamHeat);
+                if (recipeTimer >= recipeThreshold){
+                    finishRecipe();
+                }
+            }
+        }
+    }
+
+    public ResourceLocation currentRecipe = null;
+    public void startNewRecipe(){
+        for (IndustrialMeltingRecipe r : level.getRecipeManager().getAllRecipesFor(IndustrialMeltingRecipe.Type.INSTANCE)){
+            if(r.testRecipe(this,true)){
+                currentRecipe = r.getId();
+                recipeThreshold = r.getDuration();
+                return;
+            }
+        }
+        for (IndustrialBlastingRecipe r : level.getRecipeManager().getAllRecipesFor(IndustrialBlastingRecipe.Type.INSTANCE)){
+            if(r.testRecipe(this,true)){
+                currentRecipe = r.getId();
+                recipeThreshold = r.getDuration();
+                return;
+            }
+        }
+    }
+
+    //Double check requirements
+    //Complete the recipe if you can
+    public void finishRecipe(){
+        if (currentRecipe == null || recipeStatus == 0)
+            return;
+        level.getRecipeManager().byKey(currentRecipe).ifPresent(
+            (recipeStatus == 1)
+                ? (
+                recipe -> ((IndustrialMeltingRecipe) recipe).testRecipe(this,false)
+                )
+                : (
+                recipe -> ((IndustrialBlastingRecipe) recipe).testRecipe(this,false)
+                )
+        );
+        cancelRecipe();
+    }
+
+    //Completely cancel the recipe
+    public void cancelRecipe(){
+        recipeThreshold = -1;
+        recipeTimer = 0;
+        recipeStatus = 0;
+        currentRecipe = null;
+    }
+
+    public void syncBFData() {
+        FluidStack steam = SteamTank.getPrimaryHandler().getFluid();
+        BFData.SteamAmount = steam.getAmount();
+        BFData.PressureLevel = AllSteamFluids.getSteamPressure(steam);
+        BFData.steamHeat = AllSteamFluids.getSteamHeat(steam);
+        BFData.OxygenAmount = OxygenTank.getPrimaryHandler().getFluidAmount();
+
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        if (lastAssemblyResult.error()){
+            tooltip.add(Component.translatable("coverheated.ibf.invalid_multiblock"));
+            tooltip.add(Component.translatable(lastAssemblyResult.message()));
+            tooltip.add(Component.literal(lastAssemblyResult.errorPos().toString()));
+            if (lastAssemblyResult != null) {
+                Outliner.getInstance().showAABB(this, new AABB(lastAssemblyResult.errorPos()), 1000);
+            }
+        } else {
+            containedFluidTooltip(tooltip,isPlayerSneaking,SteamLazyFluidHandler);
+            containedFluidTooltip(tooltip,isPlayerSneaking,OxygenLazyFluidHandler);
+
+        }
+        return true;
+
+    }
+
+    /*
+        tickTimer
+        meltingTimer
+        meltingThreshold
+        AlloyingTimer
+        AlloyingThreshold
+        CurrentSize
+
+        BlastFurnaceStatus
+        BlastFurnaceTank
+
+        MultiBlockData
+        LastAssemblyResult
+
+        CurrentRecipe
+
+         */
+    @Override
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        tickTimer = tag.getInt("ticktimer");
+        recipeTimer = tag.getInt("recipetimer");
+        recipeThreshold = tag.getInt("recipethreshold");
+        recipeStatus = tag.getInt("recipestatus");
+        currentSize = tag.getInt("currentsize");
+
+        BFData = BlastFurnaceStatus.readTag(tag,"bfstatus");
+        MainTank.readTag(tag,"maintank");
+
+        MBData.readTag(tag,"multiblockdata",this);
+        lastAssemblyResult = MultiblockResult.Read(tag,"assemblystatus");
+
+        currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
+
+    }
+
+    @Override
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
+        tag.putInt("ticktimer",tickTimer);
+        tag.putInt("recipetimer",recipeTimer);
+        tag.putInt("recipethreshold",recipeThreshold);
+        tag.putInt("recipestatus",recipeStatus);
+        tag.putInt("currentsize",currentSize);
+
+        BFData.writeTag(tag,"bfstatus");
+        MainTank.writeTag(tag,"maintank");
+
+        MBData.writeTag(tag,"multiblockdata");
+        lastAssemblyResult.write(tag,"assemblystatus");
+
+        tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
+
+    }
+}

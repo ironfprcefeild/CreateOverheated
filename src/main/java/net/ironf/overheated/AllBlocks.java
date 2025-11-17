@@ -689,10 +689,22 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    //Reinforced Bricks
+    public static final BlockEntry<Block> REINFORCED_BRICKS =
+            REGISTRATE.block("reinforced_bricks", Block::new)
+                    .initialProperties(() -> Blocks.BRICKS)
+                    .properties(p -> p
+                            .requiresCorrectToolForDrops()
+                            .strength(3f))
+                    .transform(pickaxeOnly())
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Reinforced Bricks")
+                    .register();
 
     /////Everything Else
 
-    //Salt Cave Blocks
+
 
 
     public static void register(){
