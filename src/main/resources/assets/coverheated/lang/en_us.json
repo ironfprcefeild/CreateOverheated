@@ -119,6 +119,9 @@
   "coverheated.tooltip.cooling.outside": "From outside sources: ",
   "coverheated.tooltip.cooling.passive": "From passive sources: ",
 
+  "coverheated.tooltip.total_capacity": "Total Capacity ",
+
+
   "coverheated.cooler.header": "--- Passing on Cooling to Faced Block ---",
   "coverheated.cooler.no_coolant": "No Coolant",
 

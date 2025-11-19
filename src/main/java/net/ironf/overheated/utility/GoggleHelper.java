@@ -1,11 +1,17 @@
 package net.ironf.overheated.utility;
 
+import com.simibubi.create.foundation.utility.CreateLang;
 import joptsimple.internal.Strings;
+import net.createmod.catnip.lang.LangBuilder;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static net.minecraft.ChatFormatting.GRAY;
 import static net.minecraft.ChatFormatting.WHITE;
@@ -54,6 +60,41 @@ public class GoggleHelper {
         }
     }
 
+    //This is just a modification of create's contained fluid tool tip tweaked to be a bit more flexible.
+    public static boolean containedFluidArrayTooltip(List<Component> tooltip, List<FluidStack> fluids, int capacity){
+
+        LangBuilder mb = CreateLang.translate("generic.unit.millibuckets");
+        CreateLang.translate("gui.goggles.fluid_container")
+                .forGoggles(tooltip);
+
+        int contained = 0;
+        for (FluidStack fluidStack : fluids) {
+            if (fluidStack.isEmpty())
+                continue;
+            contained += fluidStack.getAmount();
+            CreateLang.fluidName(fluidStack)
+                    .style(ChatFormatting.GRAY)
+                    .forGoggles(tooltip, 1);
+
+            CreateLang.builder()
+                    .add(CreateLang.number(fluidStack.getAmount())
+                            .add(mb)
+                            .style(ChatFormatting.GOLD))
+                    .forGoggles(tooltip, 1);
+        }
+
+        CreateLang.translate("coverheated.gui.total_capacity")
+                .add(CreateLang.number(contained)
+                        .add(mb)
+                        .style(ChatFormatting.GOLD))
+                .text(ChatFormatting.GRAY, " / ")
+                .add(CreateLang.number(capacity)
+                        .add(mb)
+                        .style(ChatFormatting.DARK_GRAY))
+                .forGoggles(tooltip, 1);
+
+        return true;
+    }
 
     public static void newLine(List<Component> tooltip){
         tooltip.add(Component.literal(""));

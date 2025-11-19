@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.minecraft.core.NonNullList;
@@ -104,7 +105,8 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
         }
 
         //Fluids Have Room?
-        if (ibf.MainTank.contained + output.getAmount() - totalDrain > ibf.MainTank.capacity){
+        boolean outputIsGas = GasMapper.isGas(output) && output.getFluid().getFluidType().getDensity() < 0;
+        if (!outputIsGas && ibf.MainTank.contained + output.getAmount() - totalDrain > ibf.MainTank.capacity){
             return false;
         }
 
@@ -122,7 +124,11 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
         }
 
         //Fill output
-        ibf.MainTank.fill(output, IFluidHandler.FluidAction.EXECUTE);
+        if (outputIsGas){
+            ibf.createGas(output);
+        } else {
+            ibf.MainTank.fill(output, IFluidHandler.FluidAction.EXECUTE);
+        }
 
         return true;
 

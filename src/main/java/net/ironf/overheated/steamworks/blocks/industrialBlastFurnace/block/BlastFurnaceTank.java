@@ -15,7 +15,7 @@ import java.util.List;
 public class BlastFurnaceTank implements IFluidHandler {
     /// Wild Wacky Fluid Handling
 
-    private final List<FluidStack> fluids = new ArrayList<>();
+    public final List<FluidStack> fluids = new ArrayList<>();
     public int capacity;
     public int contained;
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.minecraft.core.NonNullList;
@@ -60,7 +61,7 @@ public class IndustrialMeltingRecipe implements Recipe<SimpleContainer> {
         //Fluids have room?
         int totalFill = 0;
         for (FluidStack fs : getOutput()){
-            totalFill += fs.getAmount();
+            totalFill += (GasMapper.isGas(fs)) ? 0 : (fs.getAmount());
         }
         if (ibf.MainTank.contained + totalFill > ibf.MainTank.capacity){
             return false;
@@ -75,8 +76,14 @@ public class IndustrialMeltingRecipe implements Recipe<SimpleContainer> {
         //This removes the input item
         ibf.getInputItems().extractItem(matchingSlot,1,false);
         //This adds the output fluid
+
         for (FluidStack fs : getOutput()){
-            ibf.MainTank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
+            if (GasMapper.InvFluidGasMap.containsKey(fs.getFluid().getFluidType()) && fs.getFluid().getFluidType().getDensity() < 0){
+                //Gasses
+                ibf.createGas(fs);
+            } else {
+                ibf.MainTank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
+            }
         }
         return true;
     }

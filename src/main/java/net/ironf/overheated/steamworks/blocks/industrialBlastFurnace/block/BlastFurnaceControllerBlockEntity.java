@@ -2,11 +2,10 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.outliner.Outliner;
-import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.BlastFurnaceMultiblock;
@@ -15,29 +14,31 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialBlastingRecipe;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialMeltingRecipe;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.BlastFurnaceServantBlockEntity;
-import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
+import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.Main;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
-public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+
+public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IGasPlacer {
 
     public BlastFurnaceControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -193,6 +194,11 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
                     finishRecipe();
                 }
             }
+
+            //See if we need to outgas
+            if (!GasQueue.isEmpty()){
+                releaseGasses();
+            }
         }
     }
 
@@ -239,6 +245,44 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         currentRecipe = null;
     }
 
+    ArrayList<FluidStack> GasQueue = new ArrayList<>();
+    public void createGas(FluidStack gas){
+        GasQueue.add(gas);
+    }
+
+    public void releaseGasses(){
+        Iterator<BlockPos> emptyGasOutputs = MBData.getOutGasPositions(level);
+        if (emptyGasOutputs.hasNext()) {
+            for (FluidStack fs : GasQueue) {
+                if (!emptyGasOutputs.hasNext()) {
+                    return;
+                }
+                if (fs.getAmount() >= 1000) {
+                    placeGasBlock(emptyGasOutputs.next(), fs, level);
+                    fs.shrink(1000);
+                }
+            }
+        } else {
+            //This john might explode
+            int explosionDamage = 0;
+            for (FluidStack fs : GasQueue) {
+                if (fs.getAmount() >= 1000) {
+                    explosionDamage++;
+                }
+            }
+            if (explosionDamage > 0){
+                //This john will explode! Loop over this again until all gasses have been released
+                causeExplosion(explosionDamage);
+                releaseGasses();
+            }
+        }
+    }
+
+    public void causeExplosion(int power){
+        Vec3 pos = MBData.bounds.getCenter();
+        level.explode(null,pos.x,pos.y,pos.z,power, Level.ExplosionInteraction.TNT);
+    }
+
     public void syncBFData() {
         FluidStack steam = SteamTank.getPrimaryHandler().getFluid();
         BFData.SteamAmount = steam.getAmount();
@@ -252,15 +296,21 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         if (lastAssemblyResult.error()){
-            tooltip.add(Component.translatable("coverheated.ibf.invalid_multiblock"));
-            tooltip.add(Component.translatable(lastAssemblyResult.message()));
-            tooltip.add(Component.literal(lastAssemblyResult.errorPos().toString()));
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.invalid_multiblock")));
+            tooltip.add(addIndent(Component.translatable(lastAssemblyResult.message())));
+            tooltip.add(addIndent(Component.literal(lastAssemblyResult.errorPos().toString())));
             if (lastAssemblyResult != null) {
                 Outliner.getInstance().showAABB(this, new AABB(lastAssemblyResult.errorPos()), 1000);
             }
         } else {
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.steam_tanks")));
             containedFluidTooltip(tooltip,isPlayerSneaking,SteamLazyFluidHandler);
             containedFluidTooltip(tooltip,isPlayerSneaking,OxygenLazyFluidHandler);
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.main_tank")));
+            GoggleHelper.containedFluidArrayTooltip(tooltip, MainTank.fluids, MainTank.capacity);
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.gas_queue")));
+            GoggleHelper.containedFluidArrayTooltip(tooltip, GasQueue, 0);
+
 
         }
         return true;
@@ -283,6 +333,8 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
         CurrentRecipe
 
+        GasQueue
+
          */
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -301,6 +353,13 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
 
+        GasQueue.clear();
+        ListTag gasses = tag.getList("gasqueue", Tag.TAG_COMPOUND);
+        for (int i = 0; i < gasses.size(); i++) {
+            FluidStack toAdd = FluidStack.loadFluidStackFromNBT(gasses.getCompound(i));
+            if (toAdd.isEmpty()) {continue;}
+            GasQueue.add(toAdd);
+        }
     }
 
     @Override
@@ -319,6 +378,14 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         lastAssemblyResult.write(tag,"assemblystatus");
 
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
+
+        ListTag list = new ListTag();
+        for (FluidStack liquid : GasQueue) {
+            CompoundTag fluidTag = new CompoundTag();
+            liquid.writeToNBT(fluidTag);
+            list.add(fluidTag);
+        }
+        tag.put("gasqueue", list);
 
     }
 }

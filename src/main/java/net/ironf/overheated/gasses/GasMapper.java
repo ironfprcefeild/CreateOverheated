@@ -3,6 +3,7 @@ package net.ironf.overheated.gasses;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -17,7 +18,10 @@ public class GasMapper {
     public static HashMap<OverheatedRegistrate.FluidRegistration,RegistryObject<? extends GasBlock>> InvGasMap = new HashMap<>();
     public static HashMap<FluidType,RegistryObject<? extends GasBlock>> InvFluidGasMap = new HashMap<>();
 
+    public static ArrayList<FluidType> lightGasses = new ArrayList<>();
+
     public static ArrayList<RegistryObject<?extends GasBlock>> nonCapturableGases = new ArrayList<>();
+
     public static void prepareGasBlockInfo(){
         Overheated.LOGGER.info("Preparing Gas Block Info");
         for (RegistryObject<? extends GasBlock> gb : GasMap.keySet()){
@@ -29,7 +33,20 @@ public class GasMapper {
         for (RegistryObject<?extends GasBlock> gb : nonCapturableGases){
             RawGasMap.remove(gb.get().defaultBlockState());
         }
+    }
 
+    public static boolean isGas(FluidStack fs){
+        return InvFluidGasMap.containsKey(fs.getFluid().getFluidType());
+    }
+
+
+    public static boolean isHeavyGas(FluidStack fs){
+        return InvFluidGasMap.containsKey(fs.getFluid().getFluidType());
+    }
+
+
+    public static boolean isLightGas(FluidStack fs){
+        return InvFluidGasMap.containsKey(fs.getFluid().getFluidType());
     }
 
 

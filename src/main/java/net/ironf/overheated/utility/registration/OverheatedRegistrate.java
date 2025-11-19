@@ -15,6 +15,7 @@ import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
@@ -264,6 +265,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public RegistryObject<GasBlock> gb = null;
         public boolean gasHoodCapturable = true;
 
+
         public FluidRegistration setGas(RegistryObject<GasBlock> gasBlock){
             gb = gasBlock;
             isGas = true;
@@ -480,6 +482,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
             gfg = g;
             return this;
         }
+
+        //Gasses that flow upwards by default should have negative density
         public gasBlockEntry<T> defaultFlow(Direction set){
             direction = set;
             return this;

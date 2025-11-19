@@ -8,6 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import static net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.BlastFurnaceMultiblock.isAir;
 
 public class MultiblockData {
 
@@ -85,4 +88,20 @@ public class MultiblockData {
         }
     }
 
+    public Iterator<BlockPos> getOutGasPositions(Level level) {
+        ArrayList<BlockPos> readyPos = new ArrayList<>();
+        BlockPos from = minInsidePos.above();
+        BlockPos to = maxInsidePos.above();
+
+       int y = from.getY();
+        for (int x = from.getX() + 1; x < to.getX(); x++) {
+            for (int z = from.getZ() + 1; z < to.getZ(); z++) {
+                if (isAir(level, new BlockPos(x, y, z))) {
+                    readyPos.add(new BlockPos(x, y, z));
+                }
+            }
+        }
+
+        return readyPos.iterator();
+    }
 }

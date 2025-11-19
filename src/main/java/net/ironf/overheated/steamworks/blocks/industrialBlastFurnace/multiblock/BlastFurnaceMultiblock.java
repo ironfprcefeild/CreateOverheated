@@ -151,6 +151,7 @@ public class BlastFurnaceMultiblock {
         }
 
         ///Check for clearance for gas escape
+        /*
         MultiblockResult topResult = checkLayer(level,from.above(topOffset),to.above(topOffset),false,true,servantPositions);
         if (!topResult.success()){
             this.status = topResult;
@@ -158,6 +159,8 @@ public class BlastFurnaceMultiblock {
         } else {
             setNoError();
         }
+
+         */
 
         ///Calculate final bounds
         BlockPos maxPos = to.above(topOffset-1);
