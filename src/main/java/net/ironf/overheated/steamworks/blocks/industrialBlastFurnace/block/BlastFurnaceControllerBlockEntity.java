@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.outliner.Outliner;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
@@ -15,6 +16,7 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.Indu
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialMeltingRecipe;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.BlastFurnaceServantBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.Main;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +25,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,16 +52,13 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     MultiblockResult lastAssemblyResult = MultiblockResult.ERROR(null,"block.coverheated.multiblock.error.unassembled");
 
     //This gathers new information about the size and assigns servant BE's.
-    public void updateMultiblock(){
+    public void updateMultiblock(boolean forceCheckSize){
+        Overheated.LOGGER.info("updating multiblock");
+
         //Decouple Servants
+        ArrayList<BlockPos> oldServants = new ArrayList<>();
         if (MBData != null){
-            for (BlockPos servantPos : MBData.servantPositions){
-                BlockEntity BE = level.getBlockEntity(servantPos);
-                if (BE instanceof BlastFurnaceServantBlockEntity servantBE){
-                    servantBE.decoupleController();
-                }
-            }
-            MBData.servantPositions.clear();
+            oldServants.addAll(MBData.servantPositions);
         }
 
         BlastFurnaceMultiblock bfm = new BlastFurnaceMultiblock();
@@ -69,26 +69,44 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         lastAssemblyResult = bfm.status;
         if (!lastAssemblyResult.success()){
             //We failed to assemble, servants should no longer be able to access this
+            for (BlockPos blockPos : oldServants) {
+                BlockEntity BE = level.getBlockEntity(blockPos);
+                if (BE instanceof BlastFurnaceServantBlockEntity servantBE) {
+                    servantBE.updateController(null);
+                }
+            }
+
             return;
+        }
+
+        for (BlockPos blockPos : oldServants){
+            //unbind if no longer a servant
+            //new servants are added and bound when creating the multiblock
+            if (!MBData.servantPositions.contains(blockPos)){
+                BlockEntity BE = level.getBlockEntity(blockPos);
+                if (BE instanceof BlastFurnaceServantBlockEntity servantBE) {
+                    servantBE.updateController(null);
+                }
+            }
         }
 
         //Resolve fluid tanks for new size
         int newSize = MBData.innerArea();
-        if (newSize != currentSize){
+        if (newSize != currentSize || forceCheckSize){
             currentSize = newSize;
 
-            MainTank.setCapacity(currentSize * 4000);
+            MainTank.setCapacity(currentSize * 6000);
 
             FluidStack oldSteam = SteamTank.getPrimaryHandler().getFluid();
             SteamTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldSteam.getAmount(),currentSize*4000)));
-            SteamTank.getPrimaryHandler().setCapacity(currentSize * 4000);
+            SteamTank.getPrimaryHandler().setCapacity(currentSize * 2000);
 
             FluidStack oldOxygen = OxygenTank.getPrimaryHandler().getFluid();
             OxygenTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldOxygen.getAmount(),currentSize*4000)));
-            OxygenTank.getPrimaryHandler().setCapacity(currentSize * 4000);
+            OxygenTank.getPrimaryHandler().setCapacity(currentSize * 2000);
             
         }
-        
+        Overheated.LOGGER.info(MBData.servantPositions.size()+"");
     }
 
     public void removeServant(BlockPos bp){
@@ -104,7 +122,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public SmartFluidTankBehaviour SteamTank;
     public SmartFluidTankBehaviour OxygenTank;
 
-    public BlastFurnaceTank MainTank;
+    public BlastFurnaceTank MainTank = new BlastFurnaceTank();
 
 
     @Override
@@ -126,6 +144,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             setChanged();
         }
     };
+    public LazyOptional<IItemHandler> getInputLazyItemHandler(){return InputLazyItemHandler;}
 
     public IItemHandler getInputItems() {
         return InputItemHandler;
@@ -136,7 +155,6 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         InputLazyItemHandler = LazyOptional.of(() -> InputItemHandler);
         SteamLazyFluidHandler = LazyOptional.of(() -> SteamTank.getPrimaryHandler());
         OxygenLazyFluidHandler = LazyOptional.of(() -> OxygenTank.getPrimaryHandler());
-
         MainTankFluidHandler = LazyOptional.of(() -> MainTank);
     }
 
@@ -151,13 +169,19 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         MainTankFluidHandler.invalidate();
     }
 
-     ///Processing
+    @Override
+    public void initialize() {
+        super.initialize();
+        updateMultiblock(true);
+    }
+
+    ///Processing
     //Every tick we should do normal processing stuff, the handlers in here should be able to do all that behavoir
-    public BlastFurnaceStatus BFData;
+    public BlastFurnaceStatus BFData = BlastFurnaceStatus.empty();
 
 
 
-    public int tickTimer = 0;
+    public int tickTimer = 1;
 
     //0 = no recipe, 1 = melting, 2 = alloying.
     public int recipeStatus = 0;
@@ -174,7 +198,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
         /// Update Multiblock & operate
         if (tickTimer-- <= 0){
-            updateMultiblock();
+            updateMultiblock(false);
             syncBFData();
             tickTimer = 20;
 
@@ -256,10 +280,11 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             for (FluidStack fs : GasQueue) {
                 if (!emptyGasOutputs.hasNext()) {
                     return;
-                }
-                if (fs.getAmount() >= 1000) {
+                } else if (fs.getAmount() >= 1000) {
                     placeGasBlock(emptyGasOutputs.next(), fs, level);
                     fs.shrink(1000);
+                } else {
+                    fs.shrink(1);
                 }
             }
         } else {
@@ -293,22 +318,35 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     }
 
     @Override
+    public void remove() {
+        super.remove();
+        if (MBData != null) {
+            for (BlockPos bp : MBData.servantPositions) {
+                if (level.getBlockEntity(bp) instanceof BlastFurnaceServantBlockEntity bfsbe){
+                    bfsbe.updateController(null);
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         if (lastAssemblyResult.error()){
             tooltip.add(addIndent(Component.translatable("coverheated.ibf.invalid_multiblock")));
             tooltip.add(addIndent(Component.translatable(lastAssemblyResult.message())));
-            tooltip.add(addIndent(Component.literal(lastAssemblyResult.errorPos().toString())));
-            if (lastAssemblyResult != null) {
+            if (lastAssemblyResult.errorPos() != null) {
+                tooltip.add(addIndent(Component.literal(lastAssemblyResult.errorPos().toString())));
                 Outliner.getInstance().showAABB(this, new AABB(lastAssemblyResult.errorPos()), 1000);
+
             }
         } else {
-            tooltip.add(addIndent(Component.translatable("coverheated.ibf.steam_tanks")));
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.steam_tanks").withStyle(s -> s.withColor(ChatFormatting.AQUA).withBold(true))));
             containedFluidTooltip(tooltip,isPlayerSneaking,SteamLazyFluidHandler);
             containedFluidTooltip(tooltip,isPlayerSneaking,OxygenLazyFluidHandler);
-            tooltip.add(addIndent(Component.translatable("coverheated.ibf.main_tank")));
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.main_tank").withStyle(s->s.withColor(ChatFormatting.GOLD).withBold(true))));
             GoggleHelper.containedFluidArrayTooltip(tooltip, MainTank.fluids, MainTank.capacity);
-            tooltip.add(addIndent(Component.translatable("coverheated.ibf.gas_queue")));
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.gas_queue").withStyle(s->s.withColor(ChatFormatting.GRAY).withBold(true))));
             GoggleHelper.containedFluidArrayTooltip(tooltip, GasQueue, 0);
 
 
@@ -328,6 +366,8 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         BlastFurnaceStatus
         BlastFurnaceTank
 
+        ItemHandler
+
         MultiBlockData
         LastAssemblyResult
 
@@ -345,10 +385,19 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         recipeStatus = tag.getInt("recipestatus");
         currentSize = tag.getInt("currentsize");
 
+
         BFData = BlastFurnaceStatus.readTag(tag,"bfstatus");
         MainTank.readTag(tag,"maintank");
 
-        MBData.readTag(tag,"multiblockdata",this);
+        tag.put("inputItems", InputItemHandler.serializeNBT());
+
+        if (!tag.getBoolean("mbdatapresent")){
+            MBData = null;
+        }
+        if (MBData != null) {
+            MBData = new MultiblockData(tag, "multiblockdata", this);
+        }
+
         lastAssemblyResult = MultiblockResult.Read(tag,"assemblystatus");
 
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
@@ -371,10 +420,21 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         tag.putInt("recipestatus",recipeStatus);
         tag.putInt("currentsize",currentSize);
 
-        BFData.writeTag(tag,"bfstatus");
+        BFData.writeTag(tag, "bfstatus");
+
+
         MainTank.writeTag(tag,"maintank");
 
-        MBData.writeTag(tag,"multiblockdata");
+        InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
+
+
+        if (MBData != null) {
+            MBData.writeTag(tag, "multiblockdata");
+            tag.putBoolean("mbdatapresent",true);
+        } else {
+            tag.putBoolean("mbdatapresent",false);
+        }
+
         lastAssemblyResult.write(tag,"assemblystatus");
 
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");

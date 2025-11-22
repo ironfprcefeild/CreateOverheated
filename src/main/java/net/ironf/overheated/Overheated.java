@@ -41,7 +41,8 @@ public class Overheated
 
     public Overheated()
     {
-        //Theese Errors are just here sorry
+        //Theee Errors are just here I'm sorry
+        //If anyone knows what I'm supposed to do please tell me.
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
         IEventBus modEventBus = FMLJavaModLoadingContext.get()
                 .getModEventBus();

@@ -1,6 +1,7 @@
 package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock;
 
 import net.createmod.catnip.data.Iterate;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,12 +56,13 @@ public class BlastFurnaceMultiblock {
         //We have this else because there should only be one controller per multiblock
         //The controller block IS NOT in the IBF valid tag,
         // so if we find a non-matching block, only return true if we are at the controller position
+            //TODO i added the controller to the tag, but idk why this doesn't work
         } else return b == controllerPosition;
     }
 
     public static boolean isValidNonServant(Level level, BlockPos b){
         BlockState bs = level.getBlockState(b);
-        return  (IBF_VALID.matches(bs) && !IBF_VALID.matches(bs));
+        return  (IBF_VALID.matches(bs) && !IBF_SERVANT.matches(bs));
     }
 
 
@@ -72,9 +74,7 @@ public class BlastFurnaceMultiblock {
     public MultiblockData assembleMultiblock(Level level, BlockPos controllerPosition){
         return assembleMultiblock(level,controllerPosition,level.getBlockState(controllerPosition).getValue(BlockStateProperties.HORIZONTAL_FACING));
     }
-    private BlockPos controllerPosition;
     public MultiblockData assembleMultiblock(Level level, BlockPos controllerPosition, Direction facing){
-        this.controllerPosition = controllerPosition;
         ///Make arraylist to store servants
         ArrayList<BlockPos> servantPositions = new ArrayList<>();
 
@@ -112,7 +112,7 @@ public class BlastFurnaceMultiblock {
         BlockPos to = center.offset(edges[EAST],0,edges[SOUTH]);
 
         ///Check the "middle" layer
-        MultiblockResult MiddleResult = checkLayer(level, from, to, false, false,servantPositions);
+        MultiblockResult MiddleResult = checkLayer(level,controllerPosition , from, to, false, false,servantPositions);
         if (!MiddleResult.success()) {
             this.status = MiddleResult;
             return null;
@@ -123,12 +123,12 @@ public class BlastFurnaceMultiblock {
         ///Check downwards till we reach the floor.
         // floorOffset is incremented one more time than is valid, so it actually finds the floor
         int floorOffset = 1;
-        while (floorOffset < 32 && checkLayer(level,from.below(floorOffset),to.below(floorOffset),false,false,servantPositions) == MultiblockResult.VALID){
+        while (floorOffset < 32 && checkLayer(level,controllerPosition,from.below(floorOffset),to.below(floorOffset),false,false,servantPositions) == MultiblockResult.VALID){
             floorOffset++;
         }
 
         ///Now check for the floor, if the floor is invalid, we throw an error
-        MultiblockResult FloorResult = checkLayer(level,from.below(floorOffset),to.below(floorOffset),true,false,servantPositions);
+        MultiblockResult FloorResult = checkLayer(level,controllerPosition,from.below(floorOffset),to.below(floorOffset),true,false,servantPositions);
         if (!FloorResult.success()){
             this.status = FloorResult;
             return null;
@@ -140,7 +140,7 @@ public class BlastFurnaceMultiblock {
         //Top Offset will be equal to the number of blocks needed to move up to reach the gas escape position
         //The gas escape zone must be fully empty on inner blocks, but does not care about edges
         int topOffset = 1;
-        while (topOffset < 32 && checkLayer(level,from.above(topOffset),to.above(topOffset),false,false,servantPositions) == MultiblockResult.VALID){
+        while (topOffset < 32 && checkLayer(level,controllerPosition,from.above(topOffset),to.above(topOffset),false,false,servantPositions) == MultiblockResult.VALID){
             topOffset++;
         }
 
@@ -168,6 +168,7 @@ public class BlastFurnaceMultiblock {
 
         /// Validate Servants
         for (BlockPos servantPos : servantPositions){
+            Overheated.LOGGER.info("validating servant");
             //Fluid Drains / Arc Attachments are fine where ever
             //Steam Intakes must be on the bottom layer
             //Item Ducts must be on the top
@@ -176,7 +177,9 @@ public class BlastFurnaceMultiblock {
             int layerType = (servantPos.getY() == maxPos.getY()) ? (1) : (servantPos.getY() == minPos.getY() ? -1 : 0);
             if ((IBF_SERVANT_TOP.matches(bs) && layerType != 1) || (IBF_SERVANT_BOTTOM.matches(bs) && layerType != -1)){
                 setError(servantPos,"servant_wrong_layer");
+                return null;
             }
+
         }
 
 
@@ -186,7 +189,7 @@ public class BlastFurnaceMultiblock {
 
     ///Checks a single layer
     // Do not set both floorLayer and IgnoreEdges to true.
-    public MultiblockResult checkLayer(Level level, BlockPos from, BlockPos to, boolean floorLayer, boolean ignoreEdges, ArrayList<BlockPos> servantPositions){
+    public MultiblockResult checkLayer(Level level, BlockPos controllerPos, BlockPos from, BlockPos to, boolean floorLayer, boolean ignoreEdges, ArrayList<BlockPos> servantPositions){
        //Make sure it is loaded
         if (!level.hasChunksAt(from, to)) {
             return MultiblockResult.ERROR(null,"not_loaded");
@@ -221,20 +224,20 @@ public class BlastFurnaceMultiblock {
         ArrayList<BlockPos> candidateServants = new ArrayList<>();
 
         //Check Edges
-        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-        Predicate<BlockPos> wallCheck = pos -> isValidBlock(level, pos,controllerPosition,candidateServants);
+        Predicate<BlockPos> wallCheck = pos -> isValidBlock(level, pos,controllerPos,candidateServants);
         for (int x = from.getX(); x < to.getX(); x++) {
-            if (!wallCheck.test(mutable.set(x, y, from.getZ()))) return MultiblockResult.ERROR(mutable.immutable(), "invalid_wall_block");
-            if (!wallCheck.test(mutable.set(x, y, to.getZ()))) return MultiblockResult.ERROR(mutable.immutable(), "invalid_wall_block");
+            if (!wallCheck.test(new BlockPos(x, y, from.getZ()))) return MultiblockResult.ERROR(new BlockPos(x, y, from.getZ()), "invalid_wall_block");
+            if (!wallCheck.test(new BlockPos(x, y, to.getZ()))) return MultiblockResult.ERROR(new BlockPos(x, y, to.getZ()), "invalid_wall_block");
         }
         for (int z = from.getZ(); z < to.getZ(); z++) {
-            if (!wallCheck.test(mutable.set(from.getX(), y, z))) return MultiblockResult.ERROR(mutable.immutable(), "invalid_wall_block");
-            if (!wallCheck.test(mutable.set(to.getX(), y, z))) return MultiblockResult.ERROR(mutable.immutable(), "invalid_wall_block");
+            if (!wallCheck.test(new BlockPos(from.getX(), y, z))) return MultiblockResult.ERROR(new BlockPos(from.getX(), y, z), "invalid_wall_block");
+            if (!wallCheck.test(new BlockPos(to.getX(), y, z))) return MultiblockResult.ERROR(new BlockPos(to.getX(), y, z), "invalid_wall_block");
         }
 
 
         servantPositions.addAll(candidateServants);
-        removeDuplicates(servantPositions);
+        Overheated.LOGGER.info("layer " + y + " has " + candidateServants.size() + " servants");
+        //removeDuplicates(servantPositions);
         return MultiblockResult.VALID;
     }
 

@@ -150,6 +150,12 @@ public class AllSteamFluids {
         return getSteamHeat(fluid);
     }
 
+    public static boolean isSteam(FluidStack s){
+        return isSteam(s.getFluid());
+    }
+    public static boolean isSteam(Fluid s){
+        return (getSteamPressure(s) > 0);
+    }
 
 
 }

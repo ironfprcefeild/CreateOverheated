@@ -21,13 +21,18 @@ public record MultiblockResult(boolean success, BlockPos errorPos, String messag
                 tag.contains(s+"blockpos")
                         ? BlockPos.of(tag.getLong(s+"blockpos"))
                         : null,
-                tag.getString(s+"messagekey"));
+                tag.contains(s+"messagekey")
+                        ? tag.getString(s+"messagekey")
+                        : null
+                );
     }
     public void write(CompoundTag tag,String s){
         tag.putBoolean(s+"valid",success);
         if (errorPos != null){
             tag.putLong(s+"blockpos",errorPos.asLong());
         }
-        tag.putString(s+"messagekey",message);
+        if (message != null){
+            tag.putString(s+"messagekey",message);
+        }
     }
 }

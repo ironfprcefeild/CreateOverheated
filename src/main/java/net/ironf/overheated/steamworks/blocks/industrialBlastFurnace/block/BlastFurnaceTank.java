@@ -15,9 +15,11 @@ import java.util.List;
 public class BlastFurnaceTank implements IFluidHandler {
     /// Wild Wacky Fluid Handling
 
+
+
     public final List<FluidStack> fluids = new ArrayList<>();
-    public int capacity;
-    public int contained;
+    public int capacity = 0;
+    public int contained = 0;
 
     public void setCapacity(int newCapacity){
         if (newCapacity > capacity){
@@ -26,7 +28,7 @@ public class BlastFurnaceTank implements IFluidHandler {
             //We have to kill some fluids >:)
             int needToDrain = (capacity - newCapacity);
             while (needToDrain > 0){
-                int perTank = Math.floorDiv(needToDrain, fluids.size());
+                int perTank = Math.floorDiv(needToDrain, Math.max(fluids.size(),1));
                 for (int i = 0; i < fluids.size() && needToDrain > 0; i++){
                     int drained = Math.min(fluids.get(i).getAmount(),Math.min(perTank,needToDrain));
                     fluids.get(i).shrink(drained);
@@ -82,6 +84,7 @@ public class BlastFurnaceTank implements IFluidHandler {
         }
         return filled;
     }
+
 
     public boolean boolFill(FluidStack resource,FluidAction action){
         return resource.getAmount() == fill(resource,action);

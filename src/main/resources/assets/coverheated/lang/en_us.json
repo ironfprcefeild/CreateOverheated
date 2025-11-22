@@ -130,6 +130,12 @@
   "coverheated.pressure_chamber.time_left": "Seconds until recipe finished: ",
   "coverheated.pressure_chamber.no_recipe": "No Recipe in chamber",
 
+  "coverheated.ibf.steam_tanks": "Steam and Oxygen",
+  "coverheated.ibf.main_tank": "Main Tank",
+  "coverheated.ibf.gas_queue": "Gasses",
+  "create.coverheated.gui.total_capacity": "Total Capacity: ",
+
+
   "coverheated.jei.cooling.recipe_category": "Cooling",
   "coverheated.jei.cooling.quality": "Quality",
   "coverheated.jei.cooling.power": "Power",

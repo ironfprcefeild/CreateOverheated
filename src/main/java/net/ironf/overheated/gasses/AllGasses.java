@@ -13,6 +13,7 @@ public class AllGasses {
     }
     //TODO make proper texture for morkite and gasses instead of the placeholder in the resources right now
     // (Morkite is using steam bucket as placeholder)
+    //TODO Also make actual tint colors
 
     public static final OverheatedRegistrate.FluidRegistration morkite = REGISTRATE.SimpleFluid("morkite")
             .tintColor(0x33B3FF)
@@ -53,6 +54,18 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(0)
                     .tickDelays(2,3)
+                    .explosionSafety(0)
+                    .register())
+            .Register(p -> p.density(-1));
+
+    public static final OverheatedRegistrate.FluidRegistration oxygen = REGISTRATE.SimpleFluid("oxygen")
+            .tintColor(0x33B3FF)
+            .overrideTexture("steam")
+            .makeGasUnCapturable()
+            .setGas(REGISTRATE.gasBlock("oxygen")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(3)
+                    .tickDelays(1,5)
                     .explosionSafety(0)
                     .register())
             .Register(p -> p.density(-1));

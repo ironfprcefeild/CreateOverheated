@@ -26,6 +26,11 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlock;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.ItemDuct.ItemDuctBlock;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlock;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlockEntity;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
@@ -689,6 +694,7 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    /// IBF
     //Reinforced Bricks
     public static final BlockEntry<Block> REINFORCED_BRICKS =
             REGISTRATE.block("reinforced_bricks", Block::new)
@@ -702,9 +708,39 @@ public class AllBlocks {
                     .lang("Reinforced Bricks")
                     .register();
 
-    /////Everything Else
+    public static final BlockEntry<BlastFurnaceControllerBlock> INDUSTRIAL_BLAST_FURNACE_CONTROLLER = REGISTRATE
+            .block("blast_furnace_controller", BlastFurnaceControllerBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .register();
+    public static final BlockEntry<FluidDuctBlock> FLUID_DUCT = REGISTRATE
+            .block("fluid_duct", FluidDuctBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .register();
+    public static final BlockEntry<ItemDuctBlock> ITEM_DUCT = REGISTRATE
+            .block("item_duct", ItemDuctBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .register();
 
 
+    /// Evrything else
 
 
     public static void register(){

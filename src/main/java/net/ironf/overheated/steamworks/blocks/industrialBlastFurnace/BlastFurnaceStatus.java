@@ -147,4 +147,9 @@ public class BlastFurnaceStatus {
         buf.writeInt(batteryCharges[2]);
         buf.writeInt(batteryCharges[3]);
     }
+
+    public static BlastFurnaceStatus empty(){
+        return new BlastFurnaceStatus(0,0,0,0,
+                new int[]{0,0,0,0});
+    }
 }
