@@ -45,6 +45,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
     public BlastFurnaceControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        MainTank = new BlastFurnaceTank(this);
     }
 
     /// Multiblock
@@ -117,21 +118,20 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public LazyOptional<IFluidHandler> SteamLazyFluidHandler  = LazyOptional.empty();
     public LazyOptional<IFluidHandler> OxygenLazyFluidHandler  = LazyOptional.empty();
 
+
     public LazyOptional<IFluidHandler> MainTankFluidHandler = LazyOptional.empty();
 
     public SmartFluidTankBehaviour SteamTank;
     public SmartFluidTankBehaviour OxygenTank;
 
-    public BlastFurnaceTank MainTank = new BlastFurnaceTank();
+    public BlastFurnaceTank MainTank;
 
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
         behaviours.add(SteamTank = SmartFluidTankBehaviour.single(this, 0));
         behaviours.add(OxygenTank = SmartFluidTankBehaviour.single(this, 0));
-
-
+        behaviours.add(MainTank = BlastFurnaceTank.create(this));
     }
 
 
@@ -201,6 +201,9 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             updateMultiblock(false);
             syncBFData();
             tickTimer = 20;
+
+            //Move Steam and Oxygen from Main Tank
+
 
             //We should do nothing if we failed, and sadly cancel the recipe
             if (!lastAssemblyResult.success()){
@@ -345,7 +348,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             containedFluidTooltip(tooltip,isPlayerSneaking,SteamLazyFluidHandler);
             containedFluidTooltip(tooltip,isPlayerSneaking,OxygenLazyFluidHandler);
             tooltip.add(addIndent(Component.translatable("coverheated.ibf.main_tank").withStyle(s->s.withColor(ChatFormatting.GOLD).withBold(true))));
-            GoggleHelper.containedFluidArrayTooltip(tooltip, MainTank.fluids, MainTank.capacity);
+            MainTank.addToGoggleTooltip(tooltip);
             tooltip.add(addIndent(Component.translatable("coverheated.ibf.gas_queue").withStyle(s->s.withColor(ChatFormatting.GRAY).withBold(true))));
             GoggleHelper.containedFluidArrayTooltip(tooltip, GasQueue, 0);
 
@@ -387,7 +390,6 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
 
         BFData = BlastFurnaceStatus.readTag(tag,"bfstatus");
-        MainTank.readTag(tag,"maintank");
 
         tag.put("inputItems", InputItemHandler.serializeNBT());
 
@@ -421,9 +423,6 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         tag.putInt("currentsize",currentSize);
 
         BFData.writeTag(tag, "bfstatus");
-
-
-        MainTank.writeTag(tag,"maintank");
 
         InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
 

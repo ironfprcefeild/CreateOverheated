@@ -6,20 +6,12 @@
   "loops": 2,
   "results": [
     {
-      "chance": 25.0,
+      "chance": 15.0,
       "item": "coverheated:industrial_sheet"
     },
     {
-      "chance": 40.0,
+      "chance": 85.0,
       "item": "minecraft:iron_nugget"
-    },
-    {
-      "chance": 10.0,
-      "item": "minecraft:iron_ingot"
-    },
-    {
-      "chance": 25.0,
-      "item": "create:industrial_iron_block"
     }
   ],
   "sequence": [

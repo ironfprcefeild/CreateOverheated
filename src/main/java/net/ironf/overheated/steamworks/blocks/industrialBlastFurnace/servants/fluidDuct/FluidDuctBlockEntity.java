@@ -51,31 +51,43 @@ public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity {
     @Override
     public void onLoad() {
         super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-
+        lazyFluidHandler = LazyOptional.of(() -> tank.getPrimaryHandler());
     }
+
     @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
+    public void invalidate() {
+        super.invalidate();
         lazyFluidHandler.invalidate();
     }
+
+
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 
+        if (cap == ForgeCapabilities.FLUID_HANDLER && controllerPos != null) {
+            if (level.getBlockEntity(controllerPos) instanceof BlastFurnaceControllerBlockEntity ibf) {
+                return ibf.MainTank.getCapability().cast();
+            }
+        }
+        /*
         if (cap == ForgeCapabilities.FLUID_HANDLER) {
             return tank.getCapability().cast();
         }
+
+         */
         return super.getCapability(cap, side);
     }
 
-    public int tickTimer = 80;
+    public int tickTimer = 20;
+
 
     @Override
     public void tick() {
         super.tick();
+        /*
         if (tickTimer-- <= 0) {
-            tickTimer = 80;
+            tickTimer = 20;
             if (controllerPos != null && level.getBlockEntity(controllerPos) instanceof BlastFurnaceControllerBlockEntity IBF) {
                 if (isExtracting()) {
                     //Extracting a fluid
@@ -111,8 +123,11 @@ public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity {
                     }
                     tank.getPrimaryHandler().drain(insertedAmount, IFluidHandler.FluidAction.EXECUTE);
                 }
+
             }
         }
+
+         */
     }
 
     @Override
