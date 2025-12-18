@@ -1,0 +1,23 @@
+{
+  "type": "coverheated:industrial_blasting",
+  "ingredients": [
+    {
+      "amount": 2000,
+      "fluid": "minecraft:water"
+    },
+    {
+      "amount": 2000,
+      "fluid": "minecraft:lava"
+    }
+  ],
+  "output": {
+    "amount": 4000,
+    "fluid": "coverheated:distilled_water"
+  },
+  "status": {
+    "steam_pressure": 2,
+    "steam_amount": 2000,
+    "steam_heating": 0
+  },
+  "duration": 10
+}

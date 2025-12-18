@@ -45,7 +45,7 @@ public class MultiblockData {
 
         ArrayList<BlockPos> toRemove = new ArrayList<>();
         for (BlockPos bp : servantPositions) {
-            Overheated.LOGGER.info("looping over servant at " + bp.toShortString());
+            ///Overheated.LOGGER.info("looping over servant at " + bp.toShortString());
             if (controller.getLevel().getBlockEntity(bp) instanceof BlastFurnaceServantBlockEntity bfsbe) {
                 bfsbe.updateController(controllerPosition);
             } else {

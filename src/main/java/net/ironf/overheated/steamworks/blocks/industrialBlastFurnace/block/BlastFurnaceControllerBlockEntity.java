@@ -6,8 +6,10 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.outliner.Outliner;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.steamworks.SteamFluidIngredient;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.BlastFurnaceMultiblock;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.MultiblockData;
@@ -18,14 +20,12 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.Bl
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.Main;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,6 +41,7 @@ import java.util.*;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
+/// TODO Goggles don't work. Fluids arent saved on reload (idk why). And fluid extraction with filters is bugged
 public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IGasPlacer {
 
     public BlastFurnaceControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -54,7 +55,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
     //This gathers new information about the size and assigns servant BE's.
     public void updateMultiblock(boolean forceCheckSize){
-        Overheated.LOGGER.info("updating multiblock");
+        //Overheated.LOGGER.info("updating multiblock");
 
         //Decouple Servants
         ArrayList<BlockPos> oldServants = new ArrayList<>();
@@ -107,7 +108,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             OxygenTank.getPrimaryHandler().setCapacity(currentSize * 2000);
             
         }
-        Overheated.LOGGER.info(MBData.servantPositions.size()+"");
+        //Overheated.LOGGER.info(MBData.servantPositions.size()+"");
     }
 
     public void removeServant(BlockPos bp){
@@ -131,7 +132,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         behaviours.add(SteamTank = SmartFluidTankBehaviour.single(this, 0));
         behaviours.add(OxygenTank = SmartFluidTankBehaviour.single(this, 0));
-        behaviours.add(MainTank = BlastFurnaceTank.create(this));
+        behaviours.add(MainTank = new BlastFurnaceTank(this));
     }
 
 
@@ -195,18 +196,16 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     @Override
     public void tick() {
         super.tick();
-
+        MainTank.tick();
         /// Update Multiblock & operate
         if (tickTimer-- <= 0){
             updateMultiblock(false);
             syncBFData();
             tickTimer = 20;
 
-            //Move Steam and Oxygen from Main Tank
-
-
             //We should do nothing if we failed, and sadly cancel the recipe
             if (!lastAssemblyResult.success()){
+                Overheated.LOGGER.info("Canceling Recipe");
                 cancelRecipe();
                 return;
             }
@@ -231,10 +230,13 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
     public ResourceLocation currentRecipe = null;
     public void startNewRecipe(){
+        Overheated.LOGGER.info("Trying to start Recipe");
         for (IndustrialMeltingRecipe r : level.getRecipeManager().getAllRecipesFor(IndustrialMeltingRecipe.Type.INSTANCE)){
             if(r.testRecipe(this,true)){
                 currentRecipe = r.getId();
                 recipeThreshold = r.getDuration();
+                recipeStatus = 1;
+                Overheated.LOGGER.info("Starting Melting Recipe");
                 return;
             }
         }
@@ -242,6 +244,8 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             if(r.testRecipe(this,true)){
                 currentRecipe = r.getId();
                 recipeThreshold = r.getDuration();
+                recipeStatus = 2;
+                Overheated.LOGGER.info("Starting Blasting Recipe");
                 return;
             }
         }
@@ -277,6 +281,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
         GasQueue.add(gas);
     }
 
+    //TODO test gas explosions and such
     public void releaseGasses(){
         Iterator<BlockPos> emptyGasOutputs = MBData.getOutGasPositions(level);
         if (emptyGasOutputs.hasNext()) {

@@ -1,6 +1,7 @@
 package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.logistics.chute.SmartChuteFilterSlotPositioning;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
@@ -11,7 +12,10 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.Blast
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.BlastFurnaceServantBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,116 +29,76 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.ironf.overheated.steamworks.AllSteamFluids.isSteam;
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity {
+public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity implements IWrenchable {
     public FluidDuctBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
-
+    //TODO remove unneeded nonsense and let this extract steam/oxygen. We could also add a steam vent that specifically gets steam and oxygen
     //Filter Slot
-    FilteringBehaviour filtering;
-    public boolean isExtracting(){
-        return !filtering.getFilter().isEmpty();
-    }
 
-    //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(filtering =
-                new FilteringBehaviour(this, new SmartChuteFilterSlotPositioning()));
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 1000));
+
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        lazyFluidHandler = LazyOptional.of(() -> tank.getPrimaryHandler());
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-        lazyFluidHandler.invalidate();
     }
 
 
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-
         if (cap == ForgeCapabilities.FLUID_HANDLER && controllerPos != null) {
             if (level.getBlockEntity(controllerPos) instanceof BlastFurnaceControllerBlockEntity ibf) {
-                return ibf.MainTank.getCapability().cast();
+                return switch (mode){
+                    case 1 -> ibf.SteamTank.getCapability().cast();
+                    case 2 -> ibf.OxygenTank.getCapability().cast();
+                    default -> ibf.MainTank.getCapability().cast();
+                };
             }
         }
-        /*
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-
-         */
         return super.getCapability(cap, side);
     }
 
-    public int tickTimer = 20;
+    //0 = main tank, 1 = steam tank, 2 = oxygen tank
+    public int mode = 0;
 
-
-    @Override
-    public void tick() {
-        super.tick();
-        /*
-        if (tickTimer-- <= 0) {
-            tickTimer = 20;
-            if (controllerPos != null && level.getBlockEntity(controllerPos) instanceof BlastFurnaceControllerBlockEntity IBF) {
-                if (isExtracting()) {
-                    //Extracting a fluid
-                    for (FluidStack fs : IBF.MainTank.fluids) {
-                        if (filtering.forFluids().test(fs)) {
-                            fs.shrink(tank.getPrimaryHandler().fill(fs, IFluidHandler.FluidAction.EXECUTE));
-                        }
-                        return;
-                    }
-                    if (filtering.forFluids().test(IBF.SteamTank.getPrimaryHandler().getFluid())){
-                        //Extracting Steam!
-                        SmartFluidTank steamTank = IBF.SteamTank.getPrimaryHandler();
-                        steamTank.drain(tank.getPrimaryHandler().fill(steamTank.getFluid(), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                    } else if (filtering.forFluids().test(IBF.OxygenTank.getPrimaryHandler().getFluid())){
-                        //Extracting Oxygen!
-                        SmartFluidTank OxygenTank = IBF.OxygenTank.getPrimaryHandler();
-                        OxygenTank.drain(tank.getPrimaryHandler().fill(OxygenTank.getFluid(), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                    }
-                } else {
-                    //Inserting a fluid
-                    int insertedAmount;
-                    FluidStack fluidStack = tank.getPrimaryHandler().getFluid();
-                    if (fluidStack.isEmpty()) {return;}
-                    if (isSteam(fluidStack) && (fluidStack.getFluid().isSame(IBF.SteamTank.getPrimaryHandler().getFluid().getFluid()) || IBF.SteamTank.getPrimaryHandler().getFluid().isEmpty())) {
-                        //Inserting a Steam
-                        insertedAmount = IBF.SteamTank.getPrimaryHandler().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                    } else if (fluidStack.getFluid().getFluidType() == AllGasses.oxygen.FLUID_TYPE.get()) {
-                        //Inserting Oxygen
-                        insertedAmount = IBF.OxygenTank.getPrimaryHandler().fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                    } else {
-                        //Inserting any old fluid
-                        insertedAmount = IBF.MainTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                    }
-                    tank.getPrimaryHandler().drain(insertedAmount, IFluidHandler.FluidAction.EXECUTE);
-                }
-
-            }
-        }
-
-         */
+    public void wrench() {
+        mode = (mode+1)%3;
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-
+        tooltip.add(Component.literal(mode+""));
+        tooltip.add(addIndent(Component.translatable("coverheated.ibf.fluid_duct.mode." +
+                switch(mode){
+                    case 1 -> "steam_tank";
+                    case 2 -> "oxygen_tank";
+                    default -> "main_tank";
+                })));
         return true;
+    }
+
+    @Override
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
+        tag.putInt("mode",mode);
+    }
+
+    @Override
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
+        mode = tag.getInt("mode");
     }
 }

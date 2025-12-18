@@ -168,7 +168,7 @@ public class BlastFurnaceMultiblock {
 
         /// Validate Servants
         for (BlockPos servantPos : servantPositions){
-            Overheated.LOGGER.info("validating servant");
+            ///Overheated.LOGGER.info("validating servant");
             //Fluid Drains / Arc Attachments are fine where ever
             //Steam Intakes must be on the bottom layer
             //Item Ducts must be on the top
@@ -236,7 +236,7 @@ public class BlastFurnaceMultiblock {
 
 
         servantPositions.addAll(candidateServants);
-        Overheated.LOGGER.info("layer " + y + " has " + candidateServants.size() + " servants");
+        ///Overheated.LOGGER.info("layer " + y + " has " + candidateServants.size() + " servants");
         //removeDuplicates(servantPositions);
         return MultiblockResult.VALID;
     }

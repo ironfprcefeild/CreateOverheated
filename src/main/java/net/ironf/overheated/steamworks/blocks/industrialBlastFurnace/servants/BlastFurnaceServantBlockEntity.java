@@ -22,7 +22,7 @@ public abstract class BlastFurnaceServantBlockEntity extends SmartBlockEntity im
 
     public BlockPos controllerPos;
     public void updateController(BlockPos bp){
-        Overheated.LOGGER.info("servant" + (bp == null ? "taken" : "given") + "controller");
+        ///Overheated.LOGGER.info("servant" + (bp == null ? "taken" : "given") + "controller");
         this.controllerPos = bp;
 
     }

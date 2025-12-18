@@ -23,6 +23,8 @@ import org.antlr.v4.codegen.model.Sync;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHandler {
@@ -42,20 +44,21 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
     }
 
     public void updateFluids() {
-        Overheated.LOGGER.info("Updating Fluids?");
+        //Overheated.LOGGER.info("Updating Fluids?");
         blockEntity.sendData();
         blockEntity.setChanged();
+
     }
 
     /// Syncing
     boolean updateQueued = false;
     public void queueUpdate(){
         updateQueued = true;
-        Overheated.LOGGER.info("Updated Queued");
+        //Overheated.LOGGER.info("Updated Queued");
     }
     public void tick(){
         if (updateQueued){
-            Overheated.LOGGER.info("Tying to update");
+            //Overheated.LOGGER.info("Tying to update");
             updateFluids();
             updateQueued = false;
         }
@@ -94,6 +97,13 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
     public int capacity = 0;
     public int contained = 0;
 
+    public void offsetFluids(){
+        FluidStack NewPosO = fluids.get(fluids.size()-1);
+        for (int i = 1; i < fluids.size(); i++) {
+            fluids.set(i,fluids.get(i-1));
+        }
+        fluids.set(0,NewPosO);
+    }
     public void setCapacity(int newCapacity){
         if (newCapacity > capacity){
             capacity = newCapacity;
@@ -179,9 +189,13 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
                     }
                 }
                 toReturn = new FluidStack(resource.getFluid(),drained);
+                break;
             }
         }
-        if (toRemove != FluidStack.EMPTY && action.execute()){
+        if (toReturn.isEmpty()){
+            offsetFluids();
+        }
+        if (toRemove != FluidStack.EMPTY && action.execute()) {
             fluids.remove(toRemove);
         }
         return toReturn;
@@ -189,10 +203,11 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
 
 
     //Returns a drained amount
-    public @NotNull Integer drainFluidIng(FluidIngredient resource, FluidAction action) {
+    public @NotNull FluidStack drainFluidIng(FluidIngredient resource, FluidAction action) {
         queueUpdate();
-        int drained = 0;
+        int drained;
         FluidStack toRemove = FluidStack.EMPTY;
+        FluidStack toReturn = FluidStack.EMPTY;
         for (FluidStack fs : fluids){
             if (resource.test(fs)){
                 drained = Math.min(fs.getAmount(),resource.getRequiredAmount());
@@ -200,15 +215,20 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
                     contained -= drained;
                     fs.shrink(drained);
                     if (fs.getAmount() <= 0){
-                        toRemove = fs.copy();
+                        toRemove = fs;
                     }
                 }
+                toReturn = new FluidStack(fs,drained);
+                break;
             }
+        }
+        if (toReturn.isEmpty()){
+            offsetFluids();
         }
         if (toRemove != FluidStack.EMPTY && action.execute()){
             fluids.remove(toRemove);
         }
-        return drained;
+        return toReturn;
     }
 
     @Override
@@ -224,8 +244,8 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
                 }
             }
             return new FluidStack(type,drained);
-
         } else {
+            offsetFluids();
             return FluidStack.EMPTY;
         }
     }

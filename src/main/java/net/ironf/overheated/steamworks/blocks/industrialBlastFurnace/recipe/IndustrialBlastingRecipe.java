@@ -96,7 +96,7 @@ public class IndustrialBlastingRecipe implements Recipe<SimpleContainer> {
         //Contain Input Fluids
         int totalDrain = 0;
         for (FluidIngredient fi : ingredients){
-            int drained = ibf.MainTank.drainFluidIng(fi, IFluidHandler.FluidAction.SIMULATE);
+            int drained = ibf.MainTank.drainFluidIng(fi, IFluidHandler.FluidAction.SIMULATE).getAmount();
             if (drained != fi.getRequiredAmount()){
                 //We don't have enough of a fluid
                 return false;

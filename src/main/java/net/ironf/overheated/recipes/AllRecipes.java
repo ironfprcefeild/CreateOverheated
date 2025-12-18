@@ -4,6 +4,8 @@ import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRecipe;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialBlastingRecipe;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialMeltingRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,6 +27,15 @@ public class AllRecipes {
             SERIALIZERS.register("impact_drilling", () -> ImpactDrillRecipe.Serializer.INSTANCE);
     public static final RegistryObject<RecipeSerializer<CondenserRecipe>> CONDENSER =
             SERIALIZERS.register("condensing", () -> CondenserRecipe.Serializer.INSTANCE);
+    public static final RegistryObject<RecipeSerializer<IndustrialBlastingRecipe>> INDUSTRIAL_BLASTING =
+            SERIALIZERS.register("industrial_blasting", () -> IndustrialBlastingRecipe.Serializer.INSTANCE);
+    public static final RegistryObject<RecipeSerializer<IndustrialMeltingRecipe>> INDUSTRIAL_MELTING =
+            SERIALIZERS.register("industrial_melting", () -> IndustrialMeltingRecipe.Serializer.INSTANCE);
+
+
+
+
+
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
     }
