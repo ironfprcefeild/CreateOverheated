@@ -702,8 +702,10 @@ public class AllBlocks {
                     .properties(p -> p
                             .requiresCorrectToolForDrops()
                             .strength(3f))
+                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
                     .transform(pickaxeOnly())
-                    .simpleItem()
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+
                     .defaultLoot()
                     .lang("Reinforced Bricks")
                     .register();

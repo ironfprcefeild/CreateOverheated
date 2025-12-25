@@ -3,27 +3,31 @@ package net.ironf.overheated.utility.registration;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.data.recipe.CommonMetal;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
+import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
-import net.ironf.overheated.gasses.GasMapper;
+import net.ironf.overheated.metalWorking.metalCasting.GoldenCastItem;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
+import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -45,7 +49,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.Tags;
@@ -65,7 +68,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -73,8 +75,12 @@ import java.util.function.UnaryOperator;
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
+import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasName;
+import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.*;
+import static net.ironf.overheated.utility.registration.RecipeBuilders.getMeltingRecipe;
+import static net.ironf.overheated.utility.registration.RecipeBuilders.getPouringRecipe;
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class OverheatedRegistrate extends CreateRegistrate {
@@ -98,37 +104,235 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
 
 
-    //Helpers
+    ////Helpers
     public ItemEntry<Item> craftingIngredient(String id,String lang){
         return item(id,Item::new).lang(lang).register();
     }
+
+    /// Metallic Sets
+
+    //Modded
+    public static int mbPerIngot = 81;
+    public static int meltTimePerIngot = 9;
     public class MetallicSet {
         public final ItemEntry<Item> ingot;
         public final ItemEntry<Item> nugget;
         public final BlockEntry<Block> block;
-        public MetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
-            String id = name.toLowerCase().replace(" ","_");
-            this.ingot = craftingIngredient(id + "_ingot",name + " Ingot");
-            this.nugget = craftingIngredient(id + "_nugget",name + " Nugget");
-            this.block = block(id + "_block", Block::new)
-                    .properties(bProperties)
-                    .transform(pickaxeOnly())
-                    .blockstate(simpleCubeAll(id + "_block"))
-                    .simpleItem()
-                    .defaultLoot()
-                    .tag(BlockTags.NEEDS_IRON_TOOL)
-                    .tag(Tags.Blocks.STORAGE_BLOCKS)
-                    .tag(BlockTags.BEACON_BASE_BLOCKS)
-                    .lang("Block of " + name)
+        public final OverheatedRegistrate.FluidRegistration molten;
+        public final ItemEntry<GoldenCastItem> castedIngot;
+
+        public final BlastFurnaceStatus meltingRequirement;
+        public final String id;
+
+        public final boolean existingMetal;
+        public MetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties,
+                           UnaryOperator<FluidType.Properties> fluidTypeProperties,
+                           BlastFurnaceStatus meltingRequirement,
+                           ItemEntry<Item> ingotOverride, ItemEntry<Item> nuggetOverride,BlockEntry<Block> blockOverride){
+            id = name.toLowerCase().replace(" ","_");
+
+            existingMetal = !(ingotOverride == null && nuggetOverride == null && blockOverride == null);
+
+            if (!existingMetal) {
+                this.ingot = craftingIngredient(id + "_ingot", name + " Ingot");
+                this.nugget = craftingIngredient(id + "_nugget", name + " Nugget");
+                this.block = (block(id + "_block", Block::new)
+                        .properties(bProperties)
+                        .transform(pickaxeOnly())
+                        .blockstate(simpleCubeAll(id + "_block"))
+                        .simpleItem()
+                        .defaultLoot()
+                        .tag(BlockTags.NEEDS_IRON_TOOL)
+                        .tag(Tags.Blocks.STORAGE_BLOCKS)
+                        .tag(BlockTags.BEACON_BASE_BLOCKS)
+                        .lang("Block of " + name)
+                        .register());
+            } else {
+                this.ingot = ingotOverride; this.nugget = nuggetOverride; this.block = blockOverride;
+            }
+            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
+                    .lang(name + "Ingot in Cast")
                     .register();
+            this.meltingRequirement = meltingRequirement;
+
+            molten = REGISTRATE.SimpleFluid("molten_"+id)
+                    .tintColor(0x25BE45)
+                    .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
+                    .Register(fluidTypeProperties);
+
+            OverheatedRecipeProvider.metallicSets.add(this);
+        }
+
+        public void buildRecipes(Consumer<FinishedRecipe> writer){
+            ResourceLocation parentRL = Overheated.asResource(id);
+            if (!existingMetal) {
+                //nugget -> ingot
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot)
+                        .requires(nugget, 9)
+                        .unlockedBy(getHasName(nugget), has(nugget))
+                        .save(writer, parentRL.withSuffix("_ingot_from_nugget"));
+                //ingot -> nugget
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+                        .requires(ingot)
+                        .unlockedBy(getHasName(ingot), has(ingot))
+                        .save(writer, parentRL.withSuffix("_nugget_from_ingot"));
+                //ingot -> block
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, block)
+                        .requires(ingot, 9)
+                        .unlockedBy(getHasName(ingot), has(ingot))
+                        .save(writer, parentRL.withSuffix("_block_from_ingot"));
+                //block -> ingot
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
+                        .requires(block)
+                        .unlockedBy(getHasName(block), has(block))
+                        .save(writer, parentRL.withSuffix("_ingot_from_block"));
+            }
+
+            //Melting
+            writer.accept(getMeltingRecipe(
+                    parentRL.withSuffix("_nugget_melting"),
+                    nugget.asStack(1),
+                    new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot/9)},
+                    meltingRequirement.changeSteamAmount(mbPerIngot/9 * 2),
+                    meltTimePerIngot/9));
+            writer.accept(getMeltingRecipe(
+                    parentRL.withSuffix("_ingot_melting"),
+                    ingot.asStack(1),
+                    new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot)},
+                    meltingRequirement.changeSteamAmount(mbPerIngot*2),
+                    meltTimePerIngot));
+            writer.accept(getMeltingRecipe(
+                    parentRL.withSuffix("_block_melting"),
+                    block.asStack(1),
+                    new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot*9)},
+                    meltingRequirement.changeSteamAmount(mbPerIngot*9*2),
+                    meltTimePerIngot*9));
+
+            //Casts
+            writer.accept(getPouringRecipe(
+                    parentRL.withSuffix("_sand_casting"),
+                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
+                    AllItems.EMPTY_SAND_CAST.asStack(1),
+                    ingot.asStack(1)));
+            writer.accept(getPouringRecipe(
+                    parentRL.withSuffix("_gold_casting"),
+                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
+                    AllItems.EMPTY_GOLD_CAST.asStack(1),
+                    castedIngot.asStack(1)));
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
+                    .requires(castedIngot)
+                    .unlockedBy(getHasName(castedIngot),has(castedIngot))
+                    .save(writer,parentRL.withSuffix("_cast_removal"));
+
+        }
+
+    }
+
+    public MetallicSet MakeMetallicSet(String name,
+                                       NonNullUnaryOperator<BlockBehaviour.Properties> bProperties,
+                                       UnaryOperator<FluidType.Properties> fluidTypeProperties,
+                                       BlastFurnaceStatus meltingRequirement,
+                                       ItemEntry<Item> ingotOverride, ItemEntry<Item> nuggetOverride,BlockEntry<Block> blockOverride){
+        return new MetallicSet(name,bProperties,fluidTypeProperties, meltingRequirement, ingotOverride,nuggetOverride,blockOverride);
+    }
+    public static UnaryOperator<FluidType.Properties> defaultMoltenProperties = (p -> p.canDrown(true)
+            .lightLevel(4)
+            .density(8)
+            .viscosity(200)
+            .canConvertToSource(false)
+            .temperature(200));
+    public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(0,2,1000,0, new int[]{0, 0, 0, 0});
+    //This one includes generic molten fluid properties
+    public MetallicSet MakeMetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
+        return MakeMetallicSet(name,bProperties, defaultMoltenProperties,defaultMeltingRequirement,null,null,null);
+    }
+
+    // Vanilla
+    public class vanillaMetallicSet{
+        public final Item ingot;
+        public final Item nugget;
+        public final Item block;
+        public final OverheatedRegistrate.FluidRegistration molten;
+        public final ItemEntry<GoldenCastItem> castedIngot;
+
+        public final BlastFurnaceStatus meltingRequirement;
+        public final String id;
+
+        public vanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties) {
+            this.ingot = ingot;
+            this.nugget = nugget;
+            this.block = block;
+            id = name.toLowerCase().replace(" ","_");
+
+            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
+                    .lang(name + " Ingot Casted")
+                    .register();
+            molten = REGISTRATE.SimpleFluid("molten_"+id)
+                    .tintColor(0x25BE45)
+                    .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
+                    .Register(fluidTypeProperties);
+
+            this.meltingRequirement = meltingRequirement;
+
+            OverheatedRecipeProvider.vanillaMetallicSets.add(this);
+        }
+
+        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+            ResourceLocation parentRL = Overheated.asResource(id);
+            if (nugget != null) {
+                writer.accept(getMeltingRecipe(
+                        parentRL.withSuffix("_nugget_melting"),
+                        nugget.getDefaultInstance(),
+                        new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot / 9)},
+                        meltingRequirement.changeSteamAmount(mbPerIngot / 9 * 2),
+                        meltTimePerIngot / 9));
+            }
+            if (ingot != null) {
+                writer.accept(getMeltingRecipe(
+                        parentRL.withSuffix("_ingot_melting"),
+                        ingot.getDefaultInstance(),
+                        new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot)},
+                        meltingRequirement.changeSteamAmount(mbPerIngot * 2),
+                        meltTimePerIngot));
+
+                //Casts
+
+                writer.accept(getPouringRecipe(
+                        parentRL.withSuffix("_sand_casting"),
+                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
+                        AllItems.EMPTY_SAND_CAST.asStack(1),
+                        ingot.getDefaultInstance()));
+                writer.accept(getPouringRecipe(
+                        parentRL.withSuffix("_gold_casting"),
+                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
+                        AllItems.EMPTY_GOLD_CAST.asStack(1),
+                        castedIngot.asStack(1)));
+                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
+                        .requires(castedIngot)
+                        .unlockedBy(getHasName(castedIngot),has(castedIngot))
+                        .save(writer,parentRL.withSuffix("_cast_removal"));
+            }
+            if (block != null) {
+                writer.accept(getMeltingRecipe(
+                        parentRL.withSuffix("_block_melting"),
+                        block.getDefaultInstance(),
+                        new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot * 9)},
+                        meltingRequirement.changeSteamAmount(mbPerIngot * 9 * 2),
+                        meltTimePerIngot * 9));
+            }
+
         }
     }
-    public MetallicSet MakeMetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
-        return new MetallicSet(name,bProperties);
+
+    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties){
+        return new vanillaMetallicSet(name,ingot,nugget,block,meltingRequirement,fluidTypeProperties);
+    }
+    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block){
+        return makeVanillaMetallicSet(name,ingot,nugget,block,defaultMeltingRequirement,defaultMoltenProperties);
     }
 
 
-    //Datagen
+    ///Datagen
     public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
     public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
     public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
@@ -155,6 +359,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     existingFileHelper,
                     BUCKET_ITEMS.getEntries(),
                     itemModelOverride));
+
+            generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
+                    packOutput));
+
+
         }
     }
 

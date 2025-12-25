@@ -98,11 +98,17 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
     public int contained = 0;
 
     public void offsetFluids(){
+        /*
+        if (fluids.size() <= 1){
+            return;
+        }
         FluidStack NewPosO = fluids.get(fluids.size()-1);
         for (int i = 1; i < fluids.size(); i++) {
             fluids.set(i,fluids.get(i-1));
         }
         fluids.set(0,NewPosO);
+
+         */
     }
     public void setCapacity(int newCapacity){
         if (newCapacity > capacity){
@@ -255,10 +261,9 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
     @Override
     public void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        String s = getType().getName();
-        capacity = tag.getInt(s+"capacity");
+        capacity = tag.getInt("capacity");
 
-        ListTag fluidTag = tag.getList(s+"fluids", Tag.TAG_COMPOUND);
+        ListTag fluidTag = tag.getList("fluids", Tag.TAG_COMPOUND);
         fluids.clear();
         contained = 0;
         for (int i = 0; i < fluidTag.size(); i++) {
@@ -276,15 +281,14 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
     @Override
     public void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        String s = getType().getName();
         ListTag list = new ListTag();
         for (FluidStack liquid : fluids) {
             CompoundTag fluidTag = new CompoundTag();
             liquid.writeToNBT(fluidTag);
             list.add(fluidTag);
         }
-        tag.put(s+"fluids", list);
-        tag.putInt(s+"capacity", capacity);
+        tag.put("fluids", list);
+        tag.putInt("capacity", capacity);
 
     }
 
@@ -293,7 +297,7 @@ public class BlastFurnaceTank extends BlockEntityBehaviour implements IFluidHand
         LangBuilder mb = CreateLang.translate("generic.unit.millibuckets");
         CreateLang.translate("gui.goggles.fluid_container")
                 .forGoggles(tooltip);
-
+        tooltip.add(Component.literal(contained+""));
         int contained = 0;
         for (FluidStack fluidStack : fluids) {
             if (fluidStack.isEmpty())

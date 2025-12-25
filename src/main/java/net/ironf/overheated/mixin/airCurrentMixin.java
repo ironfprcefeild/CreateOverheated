@@ -28,10 +28,6 @@ public class airCurrentMixin {
     }
 
 
-
-    //IDK why theese injections wont work, id like them too, they wont.
-
-
     //This injection lets us do stuff whenever affected handlers needs to be updated, which is whenever we want to update some effected block entities
 
     @Inject(method = "findAffectedHandlers", at = @At("HEAD"), remap = false)

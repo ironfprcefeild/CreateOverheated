@@ -6,10 +6,8 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.outliner.Outliner;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.steamworks.SteamFluidIngredient;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.BlastFurnaceMultiblock;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock.MultiblockData;
@@ -47,6 +45,15 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public BlastFurnaceControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         MainTank = new BlastFurnaceTank(this);
+
+        Inventory = new ItemStackHandler(4) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+            }
+        };
+        InputLazyItemHandler = LazyOptional.empty();
+
     }
 
     /// Multiblock
@@ -139,21 +146,16 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     /// Item Handlers
 
     private LazyOptional<IItemHandler> InputLazyItemHandler = LazyOptional.empty();
-    private final ItemStackHandler InputItemHandler = new ItemStackHandler(16) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-    };
+    private ItemStackHandler Inventory;
     public LazyOptional<IItemHandler> getInputLazyItemHandler(){return InputLazyItemHandler;}
 
     public IItemHandler getInputItems() {
-        return InputItemHandler;
+        return Inventory;
     }
     @Override
     public void onLoad() {
         super.onLoad();
-        InputLazyItemHandler = LazyOptional.of(() -> InputItemHandler);
+        InputLazyItemHandler = LazyOptional.of(() -> Inventory);
         SteamLazyFluidHandler = LazyOptional.of(() -> SteamTank.getPrimaryHandler());
         OxygenLazyFluidHandler = LazyOptional.of(() -> OxygenTank.getPrimaryHandler());
         MainTankFluidHandler = LazyOptional.of(() -> MainTank);
@@ -396,7 +398,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
         BFData = BlastFurnaceStatus.readTag(tag,"bfstatus");
 
-        tag.put("inputItems", InputItemHandler.serializeNBT());
+        tag.put("inputItems", Inventory.serializeNBT());
 
         if (!tag.getBoolean("mbdatapresent")){
             MBData = null;
@@ -416,6 +418,12 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             if (toAdd.isEmpty()) {continue;}
             GasQueue.add(toAdd);
         }
+
+        if (!clientPacket) {
+            Inventory.deserializeNBT(tag.getCompound("Inventory"));
+        }
+
+
     }
 
     @Override
@@ -429,7 +437,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
         BFData.writeTag(tag, "bfstatus");
 
-        InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
+        Inventory.deserializeNBT(tag.getCompound("inputItems"));
 
 
         if (MBData != null) {
@@ -450,6 +458,10 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
             list.add(fluidTag);
         }
         tag.put("gasqueue", list);
+
+        if (!clientPacket) {
+            tag.put("Inventory", Inventory.serializeNBT());
+        }
 
     }
 }

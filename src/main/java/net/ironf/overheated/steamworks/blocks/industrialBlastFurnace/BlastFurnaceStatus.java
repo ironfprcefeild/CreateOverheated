@@ -8,6 +8,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class BlastFurnaceStatus {
 
 
@@ -50,6 +53,26 @@ public class BlastFurnaceStatus {
         //This should not be used as a recipe requirement
         OxygenAmount = 0;
 
+    }
+
+    public JsonObject toJson(){
+        JsonObject j = new JsonObject();
+        for (int i = 0; i < batteryCharges.length; i++) {
+            if (batteryCharges[i] != 0){
+                j.addProperty("voltage_level",i);
+                j.addProperty("charge",batteryCharges[i]);
+                break;
+            }
+        }
+        j.addProperty("steam_amount",SteamAmount);
+        j.addProperty("steam_heating",steamHeat);
+        j.addProperty("steam_pressure",PressureLevel);
+        return j;
+    }
+
+    public BlastFurnaceStatus changeSteamAmount(int amount){
+        this.SteamAmount = amount;
+        return this;
     }
 
     //Tests the parameter with this object as the requirement

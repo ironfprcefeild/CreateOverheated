@@ -2,6 +2,7 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.simibubi.create.foundation.fluid.FluidHelper;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.ironf.overheated.Overheated;
@@ -132,9 +133,12 @@ public class IndustrialMeltingRecipe implements Recipe<SimpleContainer> {
         @Override
         public IndustrialMeltingRecipe fromJson(ResourceLocation id, JsonObject j) {
 
-            JsonArray rawOutputs = GsonHelper.getAsJsonArray(j, "ingredients");
+            JsonArray rawOutputs = GsonHelper.getAsJsonArray(j, "results");
             NonNullList<FluidStack> outputs = NonNullList.withSize(rawOutputs.size(), FluidStack.EMPTY);
-            rawOutputs.forEach(f -> outputs.add(FluidIngredient.deserialize(f).matchingFluidStacks.get(0)));
+
+            for (int i = 0; i < rawOutputs.size(); i++) {
+                outputs.set(i,FluidHelper.deserializeFluidStack(rawOutputs.get(i).getAsJsonObject()));
+            }
 
             return new IndustrialMeltingRecipe(id,
                     outputs,

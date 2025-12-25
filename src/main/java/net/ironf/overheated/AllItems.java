@@ -1,5 +1,6 @@
 package net.ironf.overheated;
 
+import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
@@ -9,10 +10,14 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
+import static net.ironf.overheated.utility.registration.OverheatedRegistrate.defaultMeltingRequirement;
+import static net.ironf.overheated.utility.registration.OverheatedRegistrate.defaultMoltenProperties;
 
 public class AllItems {
     static {
@@ -116,9 +121,36 @@ public class AllItems {
     static {
         AllBatteryItems.register();
     }
+
     public static final ItemEntry<Item> BATTERY_CATHODE = craftingIngredient("battery_cathode","Battery Cathode");
     public static final ItemEntry<Item> BATTERY_ANODE = craftingIngredient("battery_anode","Battery Anode");
 
+    //Molten Metals/Casts
+    public static final OverheatedRegistrate.MetallicSet ZINC_METALWORKS =
+            REGISTRATE.MakeMetallicSet("Zinc",null,
+                    defaultMoltenProperties,defaultMeltingRequirement,
+                    com.simibubi.create.AllItems.ZINC_INGOT, com.simibubi.create.AllItems.ZINC_NUGGET, AllBlocks.ZINC_BLOCK);
+
+    public static final OverheatedRegistrate.MetallicSet BRASS_METALWORKS =
+            REGISTRATE.MakeMetallicSet("Brass",null,
+                    defaultMoltenProperties,defaultMeltingRequirement,
+                    com.simibubi.create.AllItems.BRASS_INGOT, com.simibubi.create.AllItems.BRASS_NUGGET, AllBlocks.BRASS_BLOCK);
+
+    public static final OverheatedRegistrate.vanillaMetallicSet IRON_METALWORKS =
+            REGISTRATE.makeVanillaMetallicSet("Iron",Items.IRON_INGOT,Items.IRON_NUGGET,Items.IRON_BLOCK);
+    public static final OverheatedRegistrate.vanillaMetallicSet GOLD_METALWORKS =
+            REGISTRATE.makeVanillaMetallicSet("Gold",Items.GOLD_INGOT,Items.GOLD_NUGGET,Items.GOLD_BLOCK);
+    public static final OverheatedRegistrate.vanillaMetallicSet COPPER_METALWORKS =
+            REGISTRATE.makeVanillaMetallicSet("Copper",Items.COPPER_INGOT, null,Items.COPPER_BLOCK);
+
+
+
+    //Casts
+    public static final ItemEntry<Item> EMPTY_SAND_CAST = craftingIngredient("empty_sand_cast","Empty Sand Cast");
+    public static final ItemEntry<Item> EMPTY_GOLD_CAST = craftingIngredient("empty_gold_cast","Empty Gold Cast");
+
+
+    //Incomplete Items
     public static final ItemEntry<Item> INCOMPLETE_CATHODE = craftingIngredient("incomplete_cathode","Incomplete Battery Cathode");
     public static final ItemEntry<Item> INCOMPLETE_ANODE = craftingIngredient("incomplete_anode","Incomplete Battery Anode");
 

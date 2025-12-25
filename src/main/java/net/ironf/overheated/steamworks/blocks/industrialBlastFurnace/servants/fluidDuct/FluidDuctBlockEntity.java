@@ -60,6 +60,7 @@ public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity impleme
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.FLUID_HANDLER && controllerPos != null) {
             if (level.getBlockEntity(controllerPos) instanceof BlastFurnaceControllerBlockEntity ibf) {
+                ibf.setChanged();
                 return switch (mode){
                     case 1 -> ibf.SteamTank.getCapability().cast();
                     case 2 -> ibf.OxygenTank.getCapability().cast();
