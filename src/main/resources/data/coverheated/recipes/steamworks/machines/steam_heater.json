@@ -2,10 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "c": {
+      "item": "coverheated:condenser"
+    },
     "t": {
       "item": "create:fluid_tank"
     },
-    "c": {
+    "p": {
       "item": "coverheated:pressurized_casing"
     },
     "l": {
@@ -17,8 +20,8 @@
   },
   "pattern": [
     " b ",
-    "ctl",
-    "   "
+    "ptl",
+    "ccc"
   ],
   "result": {
     "item": "coverheated:pressure_heater"

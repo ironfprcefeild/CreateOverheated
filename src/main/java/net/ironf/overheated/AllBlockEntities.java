@@ -22,6 +22,8 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
+import net.ironf.overheated.nuclear.rods.control.ControlRodBlockEntity;
+import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
@@ -200,6 +202,19 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<ItemDuctBlockEntity> ITEM_DUCT = REGISTRATE
             .blockEntity("item_duct", ItemDuctBlockEntity::new)
             .validBlocks(AllBlocks.ITEM_DUCT)
+            .register();
+
+    //Fuel Rod
+    public static final BlockEntityEntry<FuelRodBlockEntity> FUEL_ROD = REGISTRATE
+            .blockEntity("fuel_rod", FuelRodBlockEntity::new)
+            .validBlocks(AllBlocks.URANIUM_FUEL_ROD)
+            .register();
+
+
+    //Control Rod
+    public static final BlockEntityEntry<ControlRodBlockEntity> CONTROL_ROD = REGISTRATE
+            .blockEntity("control_rod", ControlRodBlockEntity::new)
+            .validBlocks(AllBlocks.CONTROL_ROD)
             .register();
 
     public static void register(){

@@ -7,6 +7,7 @@ import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class AllSteamFluids {
                     .tickRate(20)
                     .explosionResistance(10f)
                     .slopeFindDistance(6)
+                    .hasFlowingTexture()
                     .Register(p -> p.canHydrate(false)
                             .canDrown(true)
                             .canSwim(true)
@@ -55,6 +57,7 @@ public class AllSteamFluids {
                         .defaultFlow(Direction.UP)
                         .explosionSafety(9 - (PressureLevel+HeatRating))
                         .overideTexturing("block/steam")
+                        .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));
     }
@@ -84,7 +87,7 @@ public class AllSteamFluids {
 
 
     public static void prepareSteamArray() {
-        Overheated.LOGGER.info("Preparing Steam Utility Array");
+        Overheated.LOGGER.info("O: Preparing Steam Utility Array");
         Steams = new Fluid[][]{
                 {DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get(), DISTILLED_WATER.SOURCE.get()},
                 {STEAM_LOW.SOURCE.get().getSource(), HEATED_STEAM_LOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_LOW.SOURCE.get().getSource(), OVERHEATED_STEAM_LOW.SOURCE.get().getSource()},

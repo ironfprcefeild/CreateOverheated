@@ -22,15 +22,15 @@ import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.nuclear.rods.control.ControlRodBlock;
+import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlock;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlock;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.ItemDuct.ItemDuctBlock;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlock;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlockEntity;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
@@ -195,6 +195,7 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Blazeglass Pane")
                     .register();
+    /// Casings
     public static final BlockEntry<CasingBlock> LASER_CASING = REGISTRATE.block("laser_casing", CasingBlock::new)
             .properties(p -> p.mapColor(MapColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK).strength(3f))
             .transform(BuilderTransformers.casing(() -> AllSpriteShifts.LASER_CASING))
@@ -205,9 +206,14 @@ public class AllBlocks {
             .transform(BuilderTransformers.casing(() -> AllSpriteShifts.PRESSURIZED_CASING))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
             .register();
+    public static final BlockEntry<CasingBlock> NUCLEAR_CASING = REGISTRATE.block("nuclear_casing", CasingBlock::new)
+            .properties(p -> p.mapColor(MapColor.COLOR_GRAY).sound(SoundType.METAL).strength(3f))
+            .transform(BuilderTransformers.casing(() -> AllSpriteShifts.NUCLEAR_CASING))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .register();
 
 
-    //Nihilte Stuff
+    ///Nihilte Stuff
     public static final BlockEntry<Block> NIHILITE_BLOCK =
             REGISTRATE.block("nihilite_block", Block::new)
                     .initialProperties(() -> Blocks.DIAMOND_BLOCK)
@@ -251,7 +257,7 @@ public class AllBlocks {
                     .lang("Nihborock")
                     .register();
 
-    //Geothermium
+    ///Geothermium
     public static final BlockEntry<Block> GEOTHERMIUM =
             REGISTRATE.block("geothermium", Block::new)
                     .initialProperties(() -> Blocks.DEEPSLATE)
@@ -279,7 +285,7 @@ public class AllBlocks {
                     .defaultLoot()
                     .lang("Nether Geothermium")
                     .register();
-    //Deposits
+    ///Deposits
     //Geothermal Vents and deposits
     public static final BlockEntry<GeothermalVentBlock> HEATED_VENT = REGISTRATE.block("heated_geothermal_vent", GeothermalVentBlock::new)
             .onRegister(easyConnectedTextures(AllSpriteShifts.HEATED_GEOTHERMAL_VENT))
@@ -741,6 +747,27 @@ public class AllBlocks {
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
             .register();
 
+    /// Fuel Rods & Regulators
+    public static final BlockEntry<FuelRodBlock> URANIUM_FUEL_ROD = REGISTRATE
+            .block("uranium_fuel_rod", FuelRodBlock::new)
+            .initialProperties(SharedProperties::softMetal)
+            .properties(p -> p.strength(3f))
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .register();
+
+    public static final BlockEntry<ControlRodBlock> CONTROL_ROD =
+            REGISTRATE.block("control_rod", ControlRodBlock::new)
+                    .initialProperties(() -> Blocks.IRON_BLOCK)
+                    .properties(p -> p
+                            .requiresCorrectToolForDrops()
+                            .strength(2f))
+                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+                    .transform(pickaxeOnly())
+                    .defaultLoot()
+                    .lang("Control Rod")
+                    .register();
 
     /// Evrything else
 

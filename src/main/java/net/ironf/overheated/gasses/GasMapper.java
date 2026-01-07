@@ -23,7 +23,7 @@ public class GasMapper {
     public static ArrayList<RegistryObject<?extends GasBlock>> nonCapturableGases = new ArrayList<>();
 
     public static void prepareGasBlockInfo(){
-        Overheated.LOGGER.info("Preparing Gas Block Info");
+        Overheated.LOGGER.info("O: Preparing Gas Block Info");
         for (RegistryObject<? extends GasBlock> gb : GasMap.keySet()){
             InvFluidGasMap.put(GasMap.get(gb).FLUID_TYPE.get(),gb);
         }

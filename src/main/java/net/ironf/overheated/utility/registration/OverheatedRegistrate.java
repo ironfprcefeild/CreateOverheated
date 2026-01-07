@@ -69,6 +69,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -400,6 +401,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         int tintColor = 0xFFFFFFFF;
         boolean hasFlowingTexture = false;
+        boolean isTransparent = false;
 
         int slopeFindDistance = 4;
         int levelDecreasePerBlock = 1;
@@ -419,9 +421,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
             Parent = parent;
         }
 
-        //Do not use with Texture Override
         public FluidRegistration hasFlowingTexture(){
             hasFlowingTexture = true;
+            return this;
+        }
+
+        public FluidRegistration makeTransparent(){
+            isTransparent = true;
             return this;
         }
 
@@ -487,6 +493,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
 
+        public static final ResourceLocation transparentLocation = Overheated.asResource("block/fluids/transparent_overlay");
         public FluidRegistration Register(UnaryOperator<FluidType.Properties> fluidTypeProperties) {
 
             ResourceLocation textureLocation =
@@ -494,11 +501,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             ? fromNamespaceAndPath(Parent.getModid(),"block/fluids/" + name )
                             : textureOverride;
 
+                    //fromNamespaceAndPath(Parent.getModid(),"block/fluids/" + name + "_flow")
             FLUID_TYPE = registerFluidType(name,
                     fluidTypeProperties,
-                    textureLocation,
-                    hasFlowingTexture ? fromNamespaceAndPath(Parent.getModid(),"block/fluids/" + name + "_flow") : textureLocation,
-                    textureLocation,tintColor,gb);
+                    isTransparent ? transparentLocation : textureLocation, //overlay   (flowing on next line)
+                    hasFlowingTexture ? textureLocation.withSuffix("_flow") : textureLocation,
+                    textureLocation, //still
+                    tintColor,gb);
 
             FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
 
@@ -576,13 +585,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
-                        /*
                         @Override
                         public int getTintColor() {
                             return tintColor;
                         }
-
-                         */
 
 
                     });
@@ -623,13 +629,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
-                        /*
                         @Override
                         public int getTintColor() {
                             return tintColor;
                         }
 
-                         */
+
                     });
                 }
                 @Override
@@ -686,9 +691,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public Direction direction;
 
         public GasFlowGetter gfg = null;
+        public Predicate<BlockState> passThroughPredicate = null;
 
         public gasBlockEntry<T> createGasFlowGetter(GasFlowGetter g){
             gfg = g;
+            return this;
+        }
+        public gasBlockEntry<T> passThroughPredicate(Predicate<BlockState> predicate){
+            passThroughPredicate = predicate;
             return this;
         }
 
@@ -730,6 +740,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             : direction);
                 }
             }
+            if (passThroughPredicate == null){
+                passThroughPredicate = BlockBehaviour.BlockStateBase::isAir;
+            }
             RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? altFactory :
@@ -742,7 +755,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .sound(SoundType.FUNGUS)
                             .isSuffocating(OverheatedRegistrate::always)
                             .noLootTable(),
-                            gfg, pressurizeChance, lowerTickDelay,upperTickDelay)));
+                            gfg, passThroughPredicate, pressurizeChance, lowerTickDelay,upperTickDelay)));
 
             makeBlockItems.put(toReturn,false);
             if (textureOver != null){

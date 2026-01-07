@@ -1,9 +1,12 @@
 package net.ironf.overheated.utility.registration;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.AllCTTypes;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.CTSpriteShifter;
 import com.simibubi.create.foundation.block.connected.CTType;
+import net.createmod.catnip.render.SpriteShiftEntry;
+import net.createmod.catnip.render.SpriteShifter;
 import net.ironf.overheated.Overheated;
 
 public class AllSpriteShifts {
@@ -11,8 +14,15 @@ public class AllSpriteShifts {
     public static final CTSpriteShiftEntry
             PRESSURIZED_CASING = omni("pressurized_casing"),
             LASER_CASING = omni("laser_casing"),
+            NUCLEAR_CASING = omni("nuclear_casing"),
             HEATED_GEOTHERMAL_VENT = omni("heated_geothermal_vent"),
             SUPERHEATED_GEOTHERMAL_VENT = omni("superheated_geothermal_vent");
+
+    public static final SpriteShiftEntry OVERHEATED_BURNER_FLAME =
+            SpriteShifter.get(  Create.asResource( "block/blaze_burner_flame"),
+                    Overheated.asResource("block/blaze_crucible_flame_overheated_scroll"));
+
+
 
     public static CTSpriteShiftEntry omni(String name) {
         return getCT(AllCTTypes.OMNIDIRECTIONAL, name);
@@ -31,5 +41,7 @@ public class AllSpriteShifts {
     private static CTSpriteShiftEntry getCT(CTType type, String blockTextureName) {
         return getCT(type, blockTextureName, blockTextureName);
     }
+
+    public static void init(){}
 
 }

@@ -76,7 +76,7 @@ public class BlazeAbsorberBlockEntity extends SmartBlockEntity implements IHaveG
     }
 
     public static void addToBoilerHeaters(){
-        Overheated.LOGGER.info("Adding the Blaze Absorber to Boiler Heaters");
+        Overheated.LOGGER.info("O: Adding the Blaze Absorber to Boiler Heaters");
         BoilerHeater.REGISTRY.register(AllBlocks.BLAZE_ABSORBER.get(), (level, pos, state) -> {
             try {
                 BlazeAbsorberBlockEntity absorber = ((BlazeAbsorberBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));

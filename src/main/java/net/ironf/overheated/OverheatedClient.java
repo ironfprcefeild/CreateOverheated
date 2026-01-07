@@ -1,5 +1,6 @@
 package net.ironf.overheated;
 
+import net.ironf.overheated.utility.registration.AllSpriteShifts;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 

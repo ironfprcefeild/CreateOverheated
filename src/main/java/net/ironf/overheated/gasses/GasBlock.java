@@ -10,16 +10,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Predicate;
+
 public class GasBlock extends Block {
-    public GasBlock(Properties p, GasFlowGetter gfg, int pressurizeChance, int lowerTickDelay, int upperTickDelay) {
+    public GasBlock(Properties p, GasFlowGetter gfg, Predicate<BlockState> flowThroughTest, int pressurizeChance, int lowerTickDelay, int upperTickDelay) {
         super(p);
         this.gasFlowGetter = gfg;
+        this.flowThroughTest = flowThroughTest;
         this.pressurizeChance = pressurizeChance;
         this.upperTickDelay = upperTickDelay;
         this.lowerTickDelay = lowerTickDelay;
     }
 
     protected final GasFlowGetter gasFlowGetter;
+    protected final Predicate<BlockState> flowThroughTest;
     protected final int pressurizeChance;
     protected final int upperTickDelay;
     protected final int lowerTickDelay;
@@ -32,17 +36,14 @@ public class GasBlock extends Block {
         level.scheduleTick(pos, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
     }
 
-
-
-
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
         BlockPos target = (gasFlowGetter.flowGas(randomSource,pos,world));
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
-            if (targetState == Blocks.AIR.defaultBlockState()) {
+            if (flowThroughTest.test(targetState)) {
                 world.setBlockAndUpdate(target, world.getBlockState(pos));
-                world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                world.setBlockAndUpdate(pos, targetState);
             } else {
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }

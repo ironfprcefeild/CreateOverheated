@@ -26,7 +26,7 @@ public class CoolingHandler implements ResourceManagerReloadListener {
         if (level == null){
             return;
         }
-        Overheated.LOGGER.info("Generating Coolant Recipe Helper");
+        Overheated.LOGGER.info("SO: Generating Coolant Recipe Helper");
         heatHandler.clear();
         List<CoolantRecipe> recipeList = createRecipeCollection();
         for (CoolantRecipe r : recipeList){

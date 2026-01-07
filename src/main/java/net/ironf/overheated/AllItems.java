@@ -5,13 +5,13 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.nuclear.radiation.GeigerCounterItem;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
@@ -148,6 +148,12 @@ public class AllItems {
     //Casts
     public static final ItemEntry<Item> EMPTY_SAND_CAST = craftingIngredient("empty_sand_cast","Empty Sand Cast");
     public static final ItemEntry<Item> EMPTY_GOLD_CAST = craftingIngredient("empty_gold_cast","Empty Gold Cast");
+
+    //Geiger Counter
+    public static final ItemEntry<GeigerCounterItem> GeigerCounter = REGISTRATE.item("geiger_counter", GeigerCounterItem::new)
+            .properties(p -> p.stacksTo(1))
+            .lang("Geiger Counter")
+            .register();
 
 
     //Incomplete Items

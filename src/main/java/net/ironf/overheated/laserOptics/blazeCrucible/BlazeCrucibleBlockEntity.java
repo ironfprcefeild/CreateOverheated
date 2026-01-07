@@ -120,7 +120,7 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
     }
 
     public static void addToBoilerHeaters(){
-        Overheated.LOGGER.info("Adding the Blaze Crucible to Boiler Heaters");
+        Overheated.LOGGER.info("O: Adding the Blaze Crucible to Boiler Heaters");
         BoilerHeater.REGISTRY.register(AllBlocks.BLAZE_CRUCIBLE.get(), (level, pos, state) -> {
             try {
                 BlazeCrucibleBlockEntity crucible = ((BlazeCrucibleBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));

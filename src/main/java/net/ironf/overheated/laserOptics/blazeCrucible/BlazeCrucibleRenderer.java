@@ -83,7 +83,7 @@ public class BlazeCrucibleRenderer extends SafeBlockEntityRenderer<BlazeCrucible
                     switch (heatLevel){
                         case 1 -> AllSpriteShifts.BURNER_FLAME;
                         case 2 -> AllSpriteShifts.SUPER_BURNER_FLAME;
-                        default -> net.ironf.overheated.AllSpriteShifts.OVERHEATED_BURNER_FLAME;
+                        default -> net.ironf.overheated.utility.registration.AllSpriteShifts.OVERHEATED_BURNER_FLAME;
                     };
             float spriteWidth = spriteShift.getTarget()
                     .getU1()

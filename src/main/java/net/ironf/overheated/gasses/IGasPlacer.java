@@ -11,7 +11,7 @@ public interface IGasPlacer {
 
     default void placeGasBlock( BlockPos pos, Block gb, Level level){
         level.setBlock(pos,gb.defaultBlockState(),3);
-        level.scheduleTick(pos,gb,2, TickPriority.HIGH);
+        level.scheduleTick(pos,gb,1, TickPriority.NORMAL);
     }
 
     default void placeGasBlock(BlockPos pos, OverheatedRegistrate.FluidRegistration gas, Level level){

@@ -1,0 +1,22 @@
+package net.ironf.overheated.nuclear.radiation;
+
+import net.ironf.overheated.Overheated;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+public class GeigerCounterItem extends Item {
+    public GeigerCounterItem(Properties p) {
+        super(p);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        int radiationDetected = RadiationMap.getRadiationIn(player.chunkPosition());
+        Overheated.LOGGER.info("{}", radiationDetected);
+        return super.use(level,player,hand);
+    }
+}

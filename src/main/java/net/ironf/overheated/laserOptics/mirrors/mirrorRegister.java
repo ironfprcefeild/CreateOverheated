@@ -58,7 +58,7 @@ public class mirrorRegister {
 
 
     public static void registerDefaults(){
-        Overheated.LOGGER.info("Registering Default Thermal Mirrors");
+        Overheated.LOGGER.info("O: Registering Default Thermal Mirrors");
 
         //Mirror
         registerReflector(AllBlocks.BASIC_MIRROR.get(), (incoming, level, pos, state, heat) -> {
