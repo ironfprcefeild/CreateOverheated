@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "create:shaft"
+    },
+    "c": {
+      "item": "create:andesite_casing"
+    },
+    "b": {
+      "item": "coverheated:steel_block"
+    }
+  },
+  "pattern": [
+    " s ",
+    " c ",
+    " b "
+  ],
+  "result": {
+    "item": "create:mechanical_press"
+  }
+}
