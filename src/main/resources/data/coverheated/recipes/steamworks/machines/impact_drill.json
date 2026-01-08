@@ -2,9 +2,6 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "t": {
-      "item": "create:fluid_tank"
-    },
     "c": {
       "item": "coverheated:pressurized_casing"
     },
@@ -16,11 +13,14 @@
     },
     "d": {
       "item": "create:mechanical_drill"
+    },
+    "b": {
+      "item": "coverheated:blowing_engine"
     }
   },
   "pattern": [
-    "ctc",
-    "mcm",
+    "cbc",
+    "cmc",
     "pdp"
   ],
   "result": {

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "coverheated:reinforced_industrial_iron"
+    },
+    "v": {
+      "item": "coverheated:steam_vent"
+    },
+    "n": {
+      "item": "create:nozzle"
+    },
+    "p": {
+      "item": "create:mechanical_press"
+    },
+    "g": {
+      "item": "coverheated:gas_hood"
+    },
+    "t": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "gng",
+    "vpv",
+    "iti"
+  ],
+  "result": {
+    "item": "coverheated:blowing_engine"
+  }
+}
