@@ -106,13 +106,10 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
             MainTank.setCapacity(currentSize * 6000);
 
-            FluidStack oldSteam = SteamTank.getPrimaryHandler().getFluid();
-            SteamTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldSteam.getAmount(),currentSize*4000)));
-            SteamTank.getPrimaryHandler().setCapacity(currentSize * 2000);
+            FluidStack oldAir = AirTank.getPrimaryHandler().getFluid();
+            AirTank.getPrimaryHandler().setFluid(new FluidStack(oldAir.getFluid(),Math.min(oldAir.getAmount(),currentSize*4000)));
+            AirTank.getPrimaryHandler().setCapacity(currentSize * 2000);
 
-            FluidStack oldOxygen = OxygenTank.getPrimaryHandler().getFluid();
-            OxygenTank.getPrimaryHandler().setFluid(new FluidStack(oldSteam.getFluid(),Math.min(oldOxygen.getAmount(),currentSize*4000)));
-            OxygenTank.getPrimaryHandler().setCapacity(currentSize * 2000);
             
         }
         //Overheated.LOGGER.info(MBData.servantPositions.size()+"");
@@ -123,22 +120,16 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     }
 
     /// Fluid Handlers
-    public LazyOptional<IFluidHandler> SteamLazyFluidHandler  = LazyOptional.empty();
-    public LazyOptional<IFluidHandler> OxygenLazyFluidHandler  = LazyOptional.empty();
-
-
+    public LazyOptional<IFluidHandler> AirLazyFluidHandler = LazyOptional.empty();
     public LazyOptional<IFluidHandler> MainTankFluidHandler = LazyOptional.empty();
 
-    public SmartFluidTankBehaviour SteamTank;
-    public SmartFluidTankBehaviour OxygenTank;
-
+    public SmartFluidTankBehaviour AirTank;
     public BlastFurnaceTank MainTank;
 
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(SteamTank = SmartFluidTankBehaviour.single(this, 0));
-        behaviours.add(OxygenTank = SmartFluidTankBehaviour.single(this, 0));
+        behaviours.add(AirTank = SmartFluidTankBehaviour.single(this, 0));
         behaviours.add(MainTank = new BlastFurnaceTank(this));
     }
 
@@ -156,8 +147,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public void onLoad() {
         super.onLoad();
         InputLazyItemHandler = LazyOptional.of(() -> Inventory);
-        SteamLazyFluidHandler = LazyOptional.of(() -> SteamTank.getPrimaryHandler());
-        OxygenLazyFluidHandler = LazyOptional.of(() -> OxygenTank.getPrimaryHandler());
+        AirLazyFluidHandler = LazyOptional.of(() -> AirTank.getPrimaryHandler());
         MainTankFluidHandler = LazyOptional.of(() -> MainTank);
     }
 
@@ -167,8 +157,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     public void invalidate() {
         super.invalidate();
         InputLazyItemHandler.invalidate();
-        SteamLazyFluidHandler.invalidate();
-        OxygenLazyFluidHandler.invalidate();
+        AirLazyFluidHandler.invalidate();
         MainTankFluidHandler.invalidate();
     }
 
@@ -217,7 +206,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
                 startNewRecipe();
             } else if (recipeStatus > 0){
                 //A recipe is active
-                recipeTimer += (BFData.PressureLevel + BFData.steamHeat);
+                recipeTimer += (BFData.airHeat*2);
                 if (recipeTimer >= recipeThreshold){
                     finishRecipe();
                 }
@@ -319,12 +308,9 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
     }
 
     public void syncBFData() {
-        FluidStack steam = SteamTank.getPrimaryHandler().getFluid();
-        BFData.SteamAmount = steam.getAmount();
-        BFData.PressureLevel = AllSteamFluids.getSteamPressure(steam);
-        BFData.steamHeat = AllSteamFluids.getSteamHeat(steam);
-        BFData.OxygenAmount = OxygenTank.getPrimaryHandler().getFluidAmount();
-
+        FluidStack air = AirTank.getPrimaryHandler().getFluid();
+        BFData.airAmount = air.getAmount();
+        BFData.airHeat = AllSteamFluids.getAirHeat(air.getFluid());
     }
 
     @Override
@@ -351,9 +337,8 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
             }
         } else {
-            tooltip.add(addIndent(Component.translatable("coverheated.ibf.steam_tanks").withStyle(s -> s.withColor(ChatFormatting.AQUA).withBold(true))));
-            containedFluidTooltip(tooltip,isPlayerSneaking,SteamLazyFluidHandler);
-            containedFluidTooltip(tooltip,isPlayerSneaking,OxygenLazyFluidHandler);
+            tooltip.add(addIndent(Component.translatable("coverheated.ibf.air_tank").withStyle(s -> s.withColor(ChatFormatting.AQUA).withBold(true))));
+            containedFluidTooltip(tooltip,isPlayerSneaking, AirLazyFluidHandler);
             tooltip.add(addIndent(Component.translatable("coverheated.ibf.main_tank").withStyle(s->s.withColor(ChatFormatting.GOLD).withBold(true))));
             MainTank.addToGoggleTooltip(tooltip);
             tooltip.add(addIndent(Component.translatable("coverheated.ibf.gas_queue").withStyle(s->s.withColor(ChatFormatting.GRAY).withBold(true))));

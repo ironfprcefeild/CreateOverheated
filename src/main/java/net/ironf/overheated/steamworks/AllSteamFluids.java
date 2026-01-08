@@ -170,6 +170,18 @@ public class AllSteamFluids {
         }
         return 0;
     }
+
+    public static int getAirHeat(Fluid s){
+        int h = 0;
+        for (Fluid heatLevel : HotAirs) {
+            if (heatLevel.isSame(s)){
+                return h;
+            }
+            h++;
+        }
+        return 0;
+    }
+
     public static int getSteamPressure(FluidStack s){
         Fluid fluid = s.getFluid();
         if (fluid instanceof EmptyFluid){
