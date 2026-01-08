@@ -130,6 +130,15 @@
   "coverheated.pressure_chamber.time_left": "Seconds until recipe finished: ",
   "coverheated.pressure_chamber.no_recipe": "No Recipe in chamber",
 
+  "coverheated.blowing_engine.error.flywheel_not_spinning": "No Flywheel spinning 2 blocks above this",
+  "coverheated.blowing_engine.error.no_steam": "No Steam in Input",
+  "coverheated.blowing_engine.error.no_output_tank": "No Output Tank above this",
+  "coverheated.blowing_engine.error.no_heating": "No Heating, add a Heater block below or use Heated Steam",
+  "coverheated.blowing_engine.error.no_room_in_output": "Output Tank is full",
+  "coverheated.blowing_engine.making": "Making ",
+  "coverheated.blowing_engine.hot_air_in": "mb of Hot air in ",
+  "coverheated.blowing_engine.steam_vent_requires": "This engine requires ",
+
   "coverheated.ibf.air_tank": "Hot Air",
   "coverheated.ibf.main_tank": "Main Tank",
   "coverheated.ibf.gas_queue": "Gasses",
