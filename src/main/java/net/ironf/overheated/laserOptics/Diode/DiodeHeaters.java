@@ -8,6 +8,7 @@ import net.ironf.overheated.batteries.discharger.DischargerBlockEntity;
 import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
+import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -81,33 +82,29 @@ public class DiodeHeaters {
         });
 
         registerHeater(net.ironf.overheated.AllBlocks.SOLAR_PANEL.get(), (level, pos, state) -> {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof SolarPanelBlockEntity){
-                return ((SolarPanelBlockEntity) be).getRecentReading();
-            }
-            return HeatData.empty();
-        });
-
-        registerHeater(net.ironf.overheated.AllBlocks.PRESSURE_HEATER.get(), (level, pos, state) -> {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof PressureHeaterBlockEntity){
-                return ((PressureHeaterBlockEntity) be).getRecentReading();
+            if (level.getBlockEntity(pos) instanceof SolarPanelBlockEntity spbe){
+                return spbe.getRecentReading();
             }
             return HeatData.empty();
         });
 
         registerHeater(net.ironf.overheated.AllBlocks.DIODE_JUNCTION.get(), (level, pos, state) -> {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof DiodeJunctionBlockEntity djbe){
+            if (level.getBlockEntity(pos) instanceof DiodeJunctionBlockEntity djbe){
                 return djbe.totalLaserHeat;
             }
             return HeatData.empty();
         });
 
         registerHeater(net.ironf.overheated.AllBlocks.DISCHARGER.get(), ((level, pos, state) -> {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof DischargerBlockEntity dbe){
+            if (level.getBlockEntity(pos) instanceof DischargerBlockEntity dbe){
                 return dbe.getGeneratedHeat();
+            }
+            return HeatData.empty();
+        }));
+
+        registerHeater(net.ironf.overheated.AllBlocks.CONDENSER.get(), ((level, pos, state) -> {
+            if (level.getBlockEntity(pos) instanceof CondenserBlockEntity cbe){
+                return cbe.getGeneratedHeat();
             }
             return HeatData.empty();
         }));

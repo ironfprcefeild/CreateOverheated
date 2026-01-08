@@ -95,29 +95,10 @@ public class PressureHeaterBlockEntity extends SmartMachineBlockEntity implement
             }
             if (laserHeatLevel > 0){
                 steamHeatMode(input);
-            } else {
-                steamCoolMode(input);
             }
-
         }
     }
 
-    public void steamCoolMode(IFluidTank input){
-        int readHeat = AllSteamFluids.getSteamHeat(input.getFluid());
-        if (readHeat > 0 && currentTemp <= 0) {
-            int pressure = AllSteamFluids.getSteamPressure(input.getFluid());
-            FluidStack toFill = AllSteamFluids.getSteamFromValues(pressure,0,10);
-            if (10 != tank.getPrimaryHandler().fill(toFill, IFluidHandler.FluidAction.SIMULATE)){
-                return;
-            }
-            recentReading = new HeatData(readHeat == 1 ? 1 : 0, readHeat == 2 ? 1 : 0, readHeat == 3 ? 1 : 0);
-            tank.getPrimaryHandler().fill(toFill, IFluidHandler.FluidAction.EXECUTE);
-            addTemp((float) Math.floor(Math.pow(3.5,readHeat+1)));
-            input.drain(10, IFluidHandler.FluidAction.EXECUTE);
-        } else {
-            recentReading = HeatData.empty();
-        }
-    }
     public void steamHeatMode(IFluidTank input){
         recentReading = HeatData.empty();
         int pressure = AllSteamFluids.getSteamPressure(input.getFluid());
@@ -125,6 +106,7 @@ public class PressureHeaterBlockEntity extends SmartMachineBlockEntity implement
         if (10 != tank.getPrimaryHandler().fill(toFill, IFluidHandler.FluidAction.SIMULATE)){
             return;
         }
+        addTemp((float) Math.floor(Math.pow(1.5,laserHeatLevel+1)));
         tank.getPrimaryHandler().fill(toFill,IFluidHandler.FluidAction.EXECUTE);
         input.drain(10, IFluidHandler.FluidAction.EXECUTE);
     }

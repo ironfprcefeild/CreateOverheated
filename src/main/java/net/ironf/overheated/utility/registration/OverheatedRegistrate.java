@@ -80,8 +80,8 @@ import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasNa
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.*;
-import static net.ironf.overheated.utility.registration.RecipeBuilders.getMeltingRecipe;
-import static net.ironf.overheated.utility.registration.RecipeBuilders.getPouringRecipe;
+import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getMeltingRecipe;
+import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getPouringRecipe;
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class OverheatedRegistrate extends CreateRegistrate {

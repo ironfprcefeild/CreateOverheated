@@ -3,6 +3,7 @@ package net.ironf.overheated.steamworks.blocks.condensor;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -59,6 +60,10 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
         return minTemp;
     }
 
+    public HeatData getGeneratedHeat() {
+        return generatedHeat;
+    }
+
     public static class Type implements RecipeType<CondenserRecipe> {
         private Type() {
         }
@@ -83,14 +88,15 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
     private final FluidStack output;
     private final Float minTemp;
     private final Float addTemp;
+    private final HeatData generatedHeat;
 
-
-    public CondenserRecipe(ResourceLocation id, FluidIngredient input, FluidStack output, Float minTemp, Float addTemp) {
+    public CondenserRecipe(ResourceLocation id, FluidIngredient input, FluidStack output, Float minTemp, Float addTemp, HeatData generatedHeat) {
         this.id = id;
         this.input = input;
         this.output = output;
         this.minTemp = minTemp;
         this.addTemp = addTemp;
+        this.generatedHeat = generatedHeat;
     }
 
 
@@ -110,7 +116,14 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             } else if (pSerializedRecipe.has("minTemp")){
                 minTemp = GsonHelper.getAsFloat(pSerializedRecipe,"minTemp");
             }
-            return new CondenserRecipe(id,fluid,output, minTemp, GsonHelper.getAsFloat(pSerializedRecipe,"addTemp"));
+            HeatData heat = HeatData.empty();
+            if (pSerializedRecipe.has("outputHeat")) {
+                int heatLevel = pSerializedRecipe.has("outputHeatLevel")
+                        ? GsonHelper.getAsInt(pSerializedRecipe, "outputHeatLevel")
+                        : pSerializedRecipe.has("overheat") ? 3 : (pSerializedRecipe.has("superheat") ? 2 : 0);
+                heat = new HeatData(heatLevel, GsonHelper.getAsInt(pSerializedRecipe, "outputHeat"));
+            }
+            return new CondenserRecipe(id,fluid,output, minTemp, GsonHelper.getAsFloat(pSerializedRecipe,"addTemp"), heat);
         }
 
         /*
@@ -119,6 +132,8 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             2. Fluidstack Output
             3. minTemp
             4. addTemp
+            5. Heatlevel
+            6. Heat amount
         */
 
         @Override
@@ -127,7 +142,9 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             FluidStack output = FluidStack.readFromPacket(buf);
             float minTemp = buf.readFloat();
             float addTemp = buf.readFloat();
-            return new CondenserRecipe(id, fluid, output, minTemp, addTemp);
+            int heatlevel = buf.readInt();
+            int heatAmount = buf.readInt();
+            return new CondenserRecipe(id, fluid, output, minTemp, addTemp, new HeatData(heatlevel,heatAmount));
         }
 
         @Override
@@ -136,6 +153,9 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             recipe.output.writeToPacket(buf);
             buf.writeFloat(recipe.minTemp);
             buf.writeFloat(recipe.addTemp);
+            int heatLevel = recipe.generatedHeat.getHeatLevelOfHighest();
+            buf.writeInt(heatLevel);
+            buf.writeInt((int) recipe.generatedHeat.getHeatOfLevel(heatLevel));
         }
     }
 }

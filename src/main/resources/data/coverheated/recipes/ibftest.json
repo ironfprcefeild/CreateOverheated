@@ -15,9 +15,8 @@
     "fluid": "coverheated:distilled_water"
   },
   "status": {
-    "steam_pressure": 2,
     "steam_amount": 2000,
-    "steam_heating": 0
+    "air_heating": 0
   },
   "duration": 10
 }

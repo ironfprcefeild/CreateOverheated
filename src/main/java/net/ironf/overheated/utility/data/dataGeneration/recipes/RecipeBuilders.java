@@ -1,9 +1,10 @@
-package net.ironf.overheated.utility.registration;
+package net.ironf.overheated.utility.data.dataGeneration.recipes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -69,6 +70,43 @@ public class RecipeBuilders {
                 j.add("status",requirements.toJson());
 
                 j.addProperty("duration",duration);
+            }
+
+            @Override
+            public ResourceLocation getId() {
+                return id;
+            }
+
+            @Override
+            public RecipeSerializer<?> getType() {
+                return AllRecipes.INDUSTRIAL_MELTING.get();
+            }
+
+            @Override
+            public @Nullable JsonObject serializeAdvancement() {
+                return null;
+            }
+
+            @Override
+            public @Nullable ResourceLocation getAdvancementId() {
+                return null;
+            }
+        };
+    }
+
+    public static FinishedRecipe getCondensingRecipe(ResourceLocation id, FluidStack input, FluidStack output, float minTemp, float addTemp, HeatData generatedHeat){
+        return new FinishedRecipe() {
+            @Override
+            public void serializeRecipeData(JsonObject j) {
+                j.add("input",FluidIngredient.fromFluid(input.getFluid(),input.getAmount()).serialize());
+                j.add("output",FluidIngredient.fromFluid(output.getFluid(),output.getAmount()).serialize());
+
+                j.addProperty("addTemp",addTemp);
+                j.addProperty("minTemp",minTemp);
+                int heatLevel = generatedHeat.getHeatLevelOfHighest();
+                j.addProperty("outputHeatLevel",heatLevel);
+                j.addProperty("outputHeat",generatedHeat.getHeatOfLevel(heatLevel));
+
             }
 
             @Override
