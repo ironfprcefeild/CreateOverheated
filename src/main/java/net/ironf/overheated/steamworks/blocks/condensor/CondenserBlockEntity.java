@@ -1,6 +1,7 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
@@ -8,10 +9,13 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.ironf.overheated.utility.SmartMachineBlockEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,8 +24,11 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
+import java.util.Objects;
 
 import static net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler.condensingHandler;
+import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
 public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {
 
@@ -32,6 +39,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
     int timer = 5;
     HeatData generated = HeatData.empty();
     int heatTimer = 75;
+    boolean conserveHeat = false;
     //Each condenser, when operating at perfect efficiency, uses about 1 Steam Vent
     @Override
     public void tick() {
@@ -41,7 +49,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
             generated = HeatData.empty();
         }
         if (timer-- == 0){
-            timer = 5;
+            timer = conserveHeat ? 75 : 5;
 
             //Get above tank
             IFluidTank above = getTank(Direction.UP);
@@ -63,14 +71,19 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                     below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                     above.drain(1, IFluidHandler.FluidAction.EXECUTE);
 
-                    heatTimer = 75;
+                    heatTimer = 76;
                     generated = bundle.outputHeat;
                 }
             }
         }
+
     }
     public HeatData getGeneratedHeat() {
         return generated;
+    }
+
+    public void wrench() {
+        conserveHeat = !conserveHeat;
     }
 
     @Override
@@ -89,6 +102,12 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tempAndCoolInfo(tooltip);
         GoggleHelper.heatTooltip(tooltip,generated, HeatDisplayType.SUPPLYING);
+        if (conserveHeat){
+            tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_1").withStyle(ChatFormatting.RED)));
+            tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_2").withStyle(ChatFormatting.RED),2));
+            tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_3").withStyle(ChatFormatting.RED),2));
+
+        }
         return true;
     }
 
@@ -107,6 +126,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
         timer = tag.getInt("timer");
         heatTimer = tag.getInt("heat_timer");
         generated = HeatData.readTag(tag,"generated_heat");
+        conserveHeat = tag.getBoolean("conserving");
     }
 
     @Override
@@ -114,6 +134,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
         super.write(tag, clientPacket);
         tag.putInt("timer",timer);
         tag.putInt("heat_timer",heatTimer);
+        tag.putBoolean("conserving",conserveHeat);
         HeatData.writeTag(tag,generated,"generated_heat");
     }
 

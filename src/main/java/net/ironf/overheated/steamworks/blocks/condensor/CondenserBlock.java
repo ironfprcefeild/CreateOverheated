@@ -1,9 +1,14 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
+import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlockEntity;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -11,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class CondenserBlock extends Block implements IBE<CondenserBlockEntity> {
+public class CondenserBlock extends Block implements IBE<CondenserBlockEntity>, IWrenchable {
     public CondenserBlock(Properties p) {
         super(p);
     }
@@ -35,5 +40,15 @@ public class CondenserBlock extends Block implements IBE<CondenserBlockEntity> {
     @Override
     public BlockEntityType<? extends CondenserBlockEntity> getBlockEntityType() {
         return AllBlockEntities.CONDENSER.get();
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof CondenserBlockEntity CBE) {
+            CBE.wrench();
+            return InteractionResult.SUCCESS;
+        } else {
+            return InteractionResult.FAIL;
+        }
     }
 }
