@@ -113,7 +113,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
     /// Metallic Sets
 
     //Modded
-    public static int mbPerIngot = 81;
+    public static int mbPerIngot = 144;
     public static int meltTimePerIngot = 9;
     public class MetallicSet {
         public final ItemEntry<Item> ingot;
