@@ -51,6 +51,9 @@ public class OverheatedRecipeProvider extends RecipeProvider {
             int h = 0;
             //loop over heat levels
             for (Fluid steam : AllSteamFluids.Steams[p]){
+                if (h+p == 0){
+                    continue;
+                }
                 writer.accept(getCondensingRecipe(
                     Overheated.asResource("steam_condensing/"+AllSteamFluids.heatingIDs[h]+"steam_"+AllSteamFluids.pressureIDs[p]),
                     new FluidStack(steam,1),

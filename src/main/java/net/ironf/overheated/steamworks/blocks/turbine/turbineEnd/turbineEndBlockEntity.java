@@ -118,7 +118,8 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                         //Drain the intake tank
                         intakeTank.getTankInventory().drain(drain, IFluidHandler.FluidAction.EXECUTE);
                         //Fill this tank
-                        tank.getPrimaryHandler().setFluid(AllSteamFluids.getSteamFromValues(pressureLevel - 1, 0,getFluidStack().getAmount() + drain));
+                        int heatLevel = AllSteamFluids.getSteamHeat(intakeTank.getTankInventory().getFluid());
+                        tank.getPrimaryHandler().setFluid(AllSteamFluids.getSteamFromValues(pressureLevel - 1, heatLevel,getFluidStack().getAmount() + drain));
                         //Update Drain value
                         thisSpinsDrain = drain;
                         //Indicate to reactivate

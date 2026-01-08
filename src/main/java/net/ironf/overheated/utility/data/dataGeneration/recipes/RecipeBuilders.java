@@ -116,7 +116,7 @@ public class RecipeBuilders {
 
             @Override
             public RecipeSerializer<?> getType() {
-                return AllRecipes.INDUSTRIAL_MELTING.get();
+                return AllRecipes.CONDENSER.get();
             }
 
             @Override
