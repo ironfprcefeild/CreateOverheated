@@ -721,8 +721,8 @@ public class AllBlocks {
                             .requiresCorrectToolForDrops()
                             .strength(3f))
                     .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-                    .transform(pickaxeOnly())
                     .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+                    .transform(pickaxeOnly())
 
                     .defaultLoot()
                     .lang("Reinforced Bricks")
@@ -765,7 +765,7 @@ public class AllBlocks {
             .initialProperties(SharedProperties::softMetal)
             .properties(p -> p.strength(3f))
             .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-            .defaultLoot()
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)            .defaultLoot()
             .transform(pickaxeOnly())
             .register();
 
@@ -776,12 +776,13 @@ public class AllBlocks {
                             .requiresCorrectToolForDrops()
                             .strength(2f))
                     .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)                    .transform(pickaxeOnly())
                     .transform(pickaxeOnly())
                     .defaultLoot()
                     .lang("Control Rod")
                     .register();
 
-    /// Evrything else
+    /// Everything else
 
 
     public static void register(){
