@@ -24,6 +24,7 @@ import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBl
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlock;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlock;
+import net.ironf.overheated.steamworks.blocks.blowingEngine.BlowingEngineBlock;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlock;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalVentBlock;
@@ -700,6 +701,17 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    /// Blowing Engine
+    public static final BlockEntry<BlowingEngineBlock> BLOWING_ENGINE = REGISTRATE
+            .block("blowing_engine", BlowingEngineBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .register();
     /// IBF
     //Reinforced Bricks
     public static final BlockEntry<Block> REINFORCED_BRICKS =

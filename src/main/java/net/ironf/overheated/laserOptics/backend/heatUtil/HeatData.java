@@ -161,6 +161,19 @@ public class HeatData {
             case 3: this.OverHeat += amount;
         }
     }
+
+    //Returns an int equal to the highest heatlevel
+    public int getHeatLevelOfHighest(){
+        if (this.OverHeat > 0){
+            return 3;
+        } else if (this.SuperHeat > 0){
+            return 2;
+        } else if (this.Heat > 0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
     //Combines Heat, moving them up levels
 
     public void combineHeat(){

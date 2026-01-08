@@ -24,6 +24,7 @@ import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBl
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlockEntity;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlockEntity;
+import net.ironf.overheated.steamworks.blocks.blowingEngine.BlowingEngineBlockEntity;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
@@ -190,6 +191,11 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.DISCHARGER)
             .register();
 
+    //Blowing Engine
+    public static final BlockEntityEntry<BlowingEngineBlockEntity> BLOWING_ENGINE = REGISTRATE
+            .blockEntity("blowing_engine", BlowingEngineBlockEntity::new)
+            .validBlocks(AllBlocks.BLOWING_ENGINE)
+            .register();
     //IBF!
     public static final BlockEntityEntry<BlastFurnaceControllerBlockEntity> BLAST_FURNACE_CONTROLLER = REGISTRATE
             .blockEntity("blast_furnace_controller", BlastFurnaceControllerBlockEntity::new)

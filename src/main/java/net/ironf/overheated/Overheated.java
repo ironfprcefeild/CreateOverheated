@@ -1,6 +1,7 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.Create;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasMapper;
@@ -69,9 +70,11 @@ public class Overheated
         modEventBus.addListener(Overheated::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
 
+        //This changes the default stress impact of the flywheel block
+
+
 
     }
-
 
     public static void init(final FMLCommonSetupEvent event)
     {
