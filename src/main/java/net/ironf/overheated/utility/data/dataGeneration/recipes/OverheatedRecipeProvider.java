@@ -46,6 +46,7 @@ public class OverheatedRecipeProvider extends RecipeProvider {
 
         /// Steam Condensing!
         //Loop over pressure levels
+        AllSteamFluids.prepareSteamArray();
         for (int p = 0; p <= 4; p++){
             int h = 0;
             //loop over heat levels
