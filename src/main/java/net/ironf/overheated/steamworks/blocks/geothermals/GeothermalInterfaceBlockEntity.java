@@ -52,7 +52,7 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
             //Updates heating status,
             heatingStatus = superHeated ? "superheated" : "heated";
             //Build up Steam
-            SteamBuildup += 5;
+            SteamBuildup += 10;
             if (SteamBuildup < 1000){
                 return;
             }
