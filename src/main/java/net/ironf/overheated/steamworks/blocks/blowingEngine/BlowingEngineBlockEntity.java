@@ -186,6 +186,8 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
        if (errorMessage != "") {
            tooltip.add(GoggleHelper.addIndent(
                    Component.translatable("coverheated.blowing_engine.error." + errorMessage)));
+           lastOutputAmount = 0;
+           lastHeatReading = 0;
        }
 
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
@@ -196,7 +198,7 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
                     .append(String.valueOf(lastOutputAmount)).append(Component.translatable("coverheated.blowing_engine.hot_air_in"))
                     .append(String.valueOf(tickTimer)).append(Component.translatable("coverheated.turbine.drain.ticks")),1));
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.blowing_engine.steam_vent_requires")
-                    .append(easyFloat((getFlyWheelSpeed() * 75)/10240))
+                    .append(easyFloat((float) (getFlyWheelSpeed() * 75) /10240))
                     .append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")),1));
              } else {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));

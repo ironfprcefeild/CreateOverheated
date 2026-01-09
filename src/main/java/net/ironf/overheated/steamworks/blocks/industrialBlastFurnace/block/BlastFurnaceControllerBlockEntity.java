@@ -196,7 +196,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
             //We should do nothing if we failed, and sadly cancel the recipe
             if (!lastAssemblyResult.success()){
-                Overheated.LOGGER.info("Canceling Recipe");
+                ///Overheated.LOGGER.info("Canceling Recipe");
                 cancelRecipe();
                 return;
             }
@@ -221,7 +221,7 @@ public class BlastFurnaceControllerBlockEntity extends SmartBlockEntity implemen
 
     public ResourceLocation currentRecipe = null;
     public void startNewRecipe(){
-        Overheated.LOGGER.info("Trying to start Recipe");
+        ///Overheated.LOGGER.info("Trying to start Recipe");
         for (IndustrialMeltingRecipe r : level.getRecipeManager().getAllRecipesFor(IndustrialMeltingRecipe.Type.INSTANCE)){
             if(r.testRecipe(this,true)){
                 currentRecipe = r.getId();
