@@ -14,9 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.*;
 import static net.ironf.overheated.utility.registration.OverheatedRegistrate.mbPerIngot;
-import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getMeltingRecipe;
-import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getCondensingRecipe;
 
 public class OverheatedRecipeProvider extends RecipeProvider {
     public OverheatedRecipeProvider(PackOutput p) {
@@ -44,6 +43,12 @@ public class OverheatedRecipeProvider extends RecipeProvider {
                 OverheatedRegistrate.defaultMeltingRequirement.changeSteamAmount(mbPerIngot / 9 * 2),
                 OverheatedRegistrate.meltTimePerIngot / 9));
 
+        //Gold Cast
+        writer.accept(getPouringRecipe(
+                Overheated.asResource("gold_cast"),
+                new FluidStack(net.ironf.overheated.AllItems.GOLD_METALWORKS.molten.SOURCE.get().getSource(),mbPerIngot),
+                AllItems.BRASS_INGOT.asStack(),
+                net.ironf.overheated.AllItems.BRASS_METALWORKS.castedIngot.asStack()));
         /// Steam Condensing!
         //Loop over pressure levels
         AllSteamFluids.prepareSteamArray();
