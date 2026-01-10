@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "amount": 50,
+      "fluid": "coverheated:heated_air",
+      "nbt": {}
+    },
+    {
+      "item": "create:iron_sheet"
+    }
+  ],
+  "results": [
+    {
+      "item": "create:weathered_iron_block",
+      "count": 4
+    }
+  ]
+}

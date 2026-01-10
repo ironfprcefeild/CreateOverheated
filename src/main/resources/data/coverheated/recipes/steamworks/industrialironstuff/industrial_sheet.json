@@ -6,11 +6,11 @@
   "loops": 2,
   "results": [
     {
-      "chance": 15.0,
+      "chance": 25.0,
       "item": "coverheated:industrial_sheet"
     },
     {
-      "chance": 85.0,
+      "chance": 75.0,
       "item": "minecraft:iron_nugget"
     }
   ],
