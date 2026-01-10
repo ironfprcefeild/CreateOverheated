@@ -31,15 +31,17 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
     float lastEff = 0;
     CoolingData output = CoolingData.empty();
     ChannelStatusBundle lastStatus = new ChannelStatusBundle();
+    boolean loopComplete = false;
     String errorMessage = "not.on.network";
     @Override
     public void tick() {
         if (timer-- == 0){
-            timer = 1210;
+            timer = 210;
             lastEff = 0;
             lastStatus = new ChannelStatusBundle();
             output = CoolingData.empty();
             errorMessage = "not.on.network";
+            loopComplete = false;
         }
     }
 
@@ -64,14 +66,22 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
         }
 
         //Set timer
-        timer = 1210;
+        timer = 210;
         lastEff = efficiency;
         lastStatus = status;
+
+        //Loop track
+        loopComplete = false;
 
         //Return
         //  we don't change ChannelMovingIn so that it continues in the same direction
         //  normal channels will change this to the direction they face
         return getBlockPos().relative(channelMovingIn);
+    }
+
+    @Override
+    public void acceptNetwork() {
+        loopComplete = true;
     }
 
     ///Cooling (other blocks)
@@ -104,6 +114,11 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
             tooltip.add(GoggleHelper.addIndent(
                     Component.translatable("coverheated.chill_channel.expeller.error." + errorMessage)));
         }
+        if (!loopComplete){
+            tooltip.add(GoggleHelper.addIndent(
+                    Component.translatable("coverheated.chill_channel.expeller.incomplete_loop")));
+        }
+
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status_at_point").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(lastStatus.usedCooling) + "/" + GoggleHelper.easyFloat(lastStatus.maximumCooling)).withStyle(lastStatus.getDelta() >= 0 ? ChatFormatting.AQUA : ChatFormatting.RED),1));
 

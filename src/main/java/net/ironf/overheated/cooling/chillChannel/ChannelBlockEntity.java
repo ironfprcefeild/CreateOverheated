@@ -20,6 +20,8 @@ public class ChannelBlockEntity extends SmartMachineBlockEntity {
         return getBlockPos().relative(channelMovingIn);
     }
 
+    public void acceptNetwork(){}
+
     @Override
     public boolean hasPassiveCooling() {
         return false;

@@ -28,7 +28,7 @@ public class ChannelCoreBlock extends Block implements IBE<ChannelCoreBlockEntit
     }
 
     //Block State
-    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder.add(FACING));
@@ -37,7 +37,7 @@ public class ChannelCoreBlock extends Block implements IBE<ChannelCoreBlockEntit
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
     }
 }
 

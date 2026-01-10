@@ -24,16 +24,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public ChannelCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-    }
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
     }
 
     public int tickTimer = 20;
@@ -75,7 +71,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         //If core is invalid, next attempt will come sooner, otherwise there is a full minute delay
         if (tickTimer-- == 0){
             updateValidity();
-            tickTimer = active ? 1200 : 20;
+            tickTimer = active ? 200 : 20;
             if (active){
                 //We are active, so we can drain coolant
                 tank.getPrimaryHandler().drain(flywheelPower, IFluidHandler.FluidAction.EXECUTE);
@@ -93,6 +89,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             flyWheel++;
             if (level.getBlockEntity(getBlockPos().relative(flyWheelsIn,flyWheel)) instanceof FlywheelBlockEntity FWBE){
                 flywheelPower += (int) Math.abs(FWBE.getSpeed());
+            } else {
+                break;
             }
         }
         if (flywheelPower == 0){
@@ -117,11 +115,13 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
 
         //Find the Position of the first Channel block
         BlockPos currentPos = getBlockPos().relative(channelMovingIn);
+        ArrayList<BlockPos> channelNodes = new ArrayList<>();
 
         //Loop, moving along channels
         while (maxChannels > 0){
             maxChannels--;
             if (level.getBlockEntity(currentPos) instanceof ChannelBlockEntity CBE){
+                channelNodes.add(currentPos);
                 currentPos = CBE.propagateChannel(status,networkEff,minTemp,channelMovingIn);
                 if (currentPos == null){
                     //Failure!
@@ -133,6 +133,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
                 this.active = status.getDelta() >= 0;
                 if (!this.active){
                     errorMessage = "not_enough_sources";
+                } else {
+                    errorMessage = "";
                 }
                 this.currentEff = networkEff;
                 this.currentMinTemp = minTemp;
@@ -143,27 +145,43 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             }
         }
         coolingUnits = status;
+
+        if (active){
+            for (BlockPos bp : channelNodes){
+                ((ChannelBlockEntity) level.getBlockEntity(bp)).acceptNetwork();
+            }
+        }
     }
 
     public void disable(String message){
-        errorMessage = "message";
+        errorMessage = message;
         active = false;
         coolingUnits = new ChannelStatusBundle();
+        coolingUnits.maximumCooling = 0;
+        coolingUnits.usedCooling = 0;
     }
     ///Fluid Handling
+    //Fluid Handling
     public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
     public SmartFluidTankBehaviour tank;
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 8000).allowExtraction().allowInsertion());
+    }
 
     @Override
     public void onLoad() {
         super.onLoad();
         this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
     }
+
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyFluidHandler.invalidate();
     }
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
 
@@ -185,7 +203,10 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(coolingUnits.usedCooling) + "/" + GoggleHelper.easyFloat(coolingUnits.maximumCooling)).withStyle(coolingUnits.getDelta() >= 0 ? ChatFormatting.AQUA : ChatFormatting.RED),1));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.mintemp").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(currentMinTemp)).withStyle(ChatFormatting.AQUA),1));
 
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.eff").append(String.valueOf(currentEff))));
         return true;
     }
 }

@@ -3,7 +3,6 @@ package net.ironf.overheated;
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.batteries.AllBatteryItems;
-import net.ironf.overheated.cooling.chillChannel.adjuster.ChannelWrenchItem;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.nuclear.radiation.GeigerCounterItem;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
@@ -86,11 +85,7 @@ public class AllItems {
     public static final ItemEntry<Item> TURBINE_COMPONENTS = craftingIngredient("turbine_components","Turbine Components");
 
 
-    //Chill Channel Stuff
-    public static final ItemEntry<ChannelWrenchItem> ChannelWrench = REGISTRATE.item("channel_wrench",ChannelWrenchItem::new)
-            .properties(p -> p.stacksTo(1))
-            .lang("Chill Channel Adjuster")
-            .register();
+
 
     public static final OverheatedRegistrate.MetallicSet CHILLSTEEL =
             REGISTRATE.MakeMetallicSet("Chillsteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
