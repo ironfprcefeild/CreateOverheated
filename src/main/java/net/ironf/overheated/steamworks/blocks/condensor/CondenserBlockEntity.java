@@ -38,18 +38,18 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
 
     int timer = 5;
     HeatData generated = HeatData.empty();
-    int heatTimer = 75;
+    int heatTimer = 7;
     boolean conserveHeat = false;
     //Each condenser, when operating at perfect efficiency, uses about 1 Steam Vent
     @Override
     public void tick() {
         super.tick();
         if (heatTimer-- == 0){
-            heatTimer = 75;
+            heatTimer = 7;
             generated = HeatData.empty();
         }
         if (timer-- == 0){
-            timer = conserveHeat ? 75 : 5;
+            timer = conserveHeat ? 7 : 5;
 
             //Get above tank
             IFluidTank above = getTank(Direction.UP);
@@ -64,15 +64,29 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                 IFluidTank below = getTank(Direction.DOWN);
                 if (below == null) return;
 
-                while (bundle.minTemp >= getCurrentTemp()
-                        && below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) == resultFluid.getAmount()
-                        && above.drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1) {
+                if (conserveHeat
+                    && bundle.minTemp >= getCurrentTemp()
+                    && below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) == resultFluid.getAmount()
+                    && above.drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1){
+
                     addTemp(bundle.addTemp);
                     below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                     above.drain(1, IFluidHandler.FluidAction.EXECUTE);
 
-                    heatTimer = 76;
+                    heatTimer = 8;
                     generated = bundle.outputHeat;
+
+                } else {
+                    while (bundle.minTemp >= getCurrentTemp()
+                            && below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) == resultFluid.getAmount()
+                            && above.drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1) {
+                        addTemp(bundle.addTemp);
+                        below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
+                        above.drain(1, IFluidHandler.FluidAction.EXECUTE);
+
+                        heatTimer = 8;
+                        generated = bundle.outputHeat;
+                    }
                 }
             }
         }
@@ -113,7 +127,9 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
 
     public IFluidTank getTank(Direction in){
         BlockPos pos = getBlockPos().relative(in);
-        if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(in);}
+        while (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {
+            pos = pos.relative(in);
+        }
 
         BlockEntity be = level.getBlockEntity(pos);
         FluidTankBlockEntity tank = (be instanceof FluidTankBlockEntity) ? ((FluidTankBlockEntity) be).getControllerBE() : null;

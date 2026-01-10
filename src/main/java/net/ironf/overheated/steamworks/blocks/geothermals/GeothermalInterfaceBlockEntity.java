@@ -125,6 +125,7 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
         super.read(tag, clientPacket);
         timer = tag.getInt("timer");
         heatingStatus = tag.getString("status");
+        SteamBuildup = tag.getInt("buildup");
     }
 
     @Override
@@ -132,5 +133,6 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
         super.write(tag, clientPacket);
         tag.putInt("timer",timer);
         tag.putString("status",heatingStatus);
+        tag.putInt("buildup",SteamBuildup);
     }
 }
