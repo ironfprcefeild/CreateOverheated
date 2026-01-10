@@ -7,9 +7,9 @@ import net.ironf.overheated.batteries.charger.ChargerBlockEntity;
 import net.ironf.overheated.batteries.charger.ChargerBlockEntityRenderer;
 import net.ironf.overheated.batteries.discharger.DischargerBlockEntity;
 import net.ironf.overheated.batteries.discharger.DischargerBlockEntityRenderer;
+import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
-import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlockEntity;
-import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlockEntity;
+import net.ironf.overheated.cooling.chillChannel.expeller.ChannelExpellerBlockEntity;
 import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
 import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlockEntity;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlockEntity;
@@ -121,10 +121,10 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.CHANNEL_CORE)
             .register();
 
-    //Chill Channel Absorber
-    public static final BlockEntityEntry<ChannelAbsorberBlockEntity> CHANNEL_ABSORBER = REGISTRATE
-            .blockEntity("channel_absorber", ChannelAbsorberBlockEntity::new)
-            .validBlocks(AllBlocks.CHANNEL_ABSORBER)
+    //Chill Channel
+    public static final BlockEntityEntry<ChannelBlockEntity> CHANNEL = REGISTRATE
+            .blockEntity("channel", ChannelBlockEntity::new)
+            .validBlocks(AllBlocks.CHANNEL)
             .register();
 
     //Chill Channel Expeller

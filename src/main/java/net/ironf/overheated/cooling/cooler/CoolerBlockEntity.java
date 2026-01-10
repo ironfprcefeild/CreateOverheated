@@ -81,7 +81,7 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
 
             && (effTracker > 0)
             && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
-            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL_ABSORBER.get())) {
+            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL.get())) {
 
             return collectCooling(myPos,facing);
         } else {

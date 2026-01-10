@@ -7,9 +7,9 @@ import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.ironf.overheated.batteries.charger.ChargerBlock;
 import net.ironf.overheated.batteries.discharger.DischargerBlock;
+import net.ironf.overheated.cooling.chillChannel.ChannelBlock;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
-import net.ironf.overheated.cooling.chillChannel.node.absorber.ChannelAbsorberBlock;
-import net.ironf.overheated.cooling.chillChannel.node.expeller.ChannelExpellerBlock;
+import net.ironf.overheated.cooling.chillChannel.expeller.ChannelExpellerBlock;
 import net.ironf.overheated.cooling.cooler.CoolerBlock;
 import net.ironf.overheated.cooling.coolingTower.CoolingTowerBlock;
 import net.ironf.overheated.cooling.heatsink.HeatSinkBlock;
@@ -415,17 +415,6 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
-    //Channel Absorber
-    public static final BlockEntry<ChannelAbsorberBlock> CHANNEL_ABSORBER = REGISTRATE
-            .block("channel_absorber", ChannelAbsorberBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.strength(3f))
-            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-            .defaultLoot()
-            .register();
 
     //Channel Expeller
     public static final BlockEntry<ChannelExpellerBlock> CHANNEL_EXPELLER = REGISTRATE
@@ -439,6 +428,17 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    //Channel Block
+    public static final BlockEntry<ChannelBlock> CHANNEL = REGISTRATE
+            .block("chill_channel", ChannelBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
     //Chill Steel Coil
     public static final BlockEntry<Block> CHILLSTEEL_COIL = REGISTRATE
             .block("chillsteel_coil", Block::new)

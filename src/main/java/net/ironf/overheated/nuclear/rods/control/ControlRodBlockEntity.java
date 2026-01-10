@@ -3,7 +3,7 @@ package net.ironf.overheated.nuclear.rods.control;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import net.ironf.overheated.cooling.chillChannel.network.ChannelSlotBox;
+import net.ironf.overheated.cooling.chillChannel.expeller.ChannelSlotBox;
 import net.ironf.overheated.nuclear.rods.ControlRodsRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

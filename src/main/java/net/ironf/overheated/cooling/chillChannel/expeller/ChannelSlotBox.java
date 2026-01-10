@@ -1,4 +1,4 @@
-package net.ironf.overheated.cooling.chillChannel.network;
+package net.ironf.overheated.cooling.chillChannel.expeller;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import net.createmod.catnip.math.VecHelper;

@@ -1,4 +1,4 @@
-package net.ironf.overheated.cooling.chillChannel.core;
+package net.ironf.overheated.cooling.chillChannel;
 
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
@@ -12,19 +12,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class ChannelCoreBlock extends Block implements IBE<ChannelCoreBlockEntity> {
-    public ChannelCoreBlock(Properties p_49795_) {
-        super(p_49795_);
-    }
-
-    @Override
-    public Class<ChannelCoreBlockEntity> getBlockEntityClass() {
-        return ChannelCoreBlockEntity.class;
-    }
-
-    @Override
-    public BlockEntityType<? extends ChannelCoreBlockEntity> getBlockEntityType() {
-        return AllBlockEntities.CHANNEL_CORE.get();
+public class ChannelBlock extends Block implements IBE<ChannelBlockEntity> {
+    public ChannelBlock(Properties p) {
+        super(p);
     }
 
     //Block State
@@ -39,5 +29,16 @@ public class ChannelCoreBlock extends Block implements IBE<ChannelCoreBlockEntit
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite());
     }
-}
 
+    /// BE
+
+    @Override
+    public Class<ChannelBlockEntity> getBlockEntityClass() {
+        return ChannelBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends ChannelBlockEntity> getBlockEntityType() {
+        return AllBlockEntities.CHANNEL.get();
+    }
+}
