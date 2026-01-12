@@ -66,7 +66,7 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
         }
 
         //Set timer
-        timer = 210;
+        timer = 250;
         lastEff = efficiency;
         lastStatus = status;
 
@@ -89,7 +89,7 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
         //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a cooler
         Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
-        if (facing.getOpposite() == in
+        if (loopComplete && facing.getOpposite() == in
                 && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
                 && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL.get())) {
             return output;
@@ -119,12 +119,12 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
                     Component.translatable("coverheated.chill_channel.expeller.incomplete_loop")));
         }
 
-        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status_at_point").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(lastStatus.usedCooling) + "/" + GoggleHelper.easyFloat(lastStatus.maximumCooling)).withStyle(lastStatus.getDelta() >= 0 ? ChatFormatting.AQUA : ChatFormatting.RED),1));
 
 
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.expelling_cooling_units").withStyle(ChatFormatting.WHITE)));
-        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(output.coolingUnits)).withStyle(ChatFormatting.AQUA),1));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(loopComplete ? output.coolingUnits : 0)).withStyle(ChatFormatting.AQUA),1));
 
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.expelling_mintemp").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(output.minTemp)).withStyle(ChatFormatting.AQUA),1));

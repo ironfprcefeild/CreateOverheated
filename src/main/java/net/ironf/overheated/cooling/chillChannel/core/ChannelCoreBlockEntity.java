@@ -5,6 +5,8 @@ import com.simibubi.create.content.kinetics.flywheel.FlywheelBlockEntity;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.createmod.catnip.outliner.Outliner;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.utility.GoggleHelper;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,6 +41,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
     public int flywheelPower = 0;
     public ChannelStatusBundle coolingUnits = new ChannelStatusBundle();
     public boolean active = true;
+    BlockPos highlightError;
     String errorMessage = "";
 
     @Override
@@ -74,7 +78,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             tickTimer = active ? 200 : 20;
             if (active){
                 //We are active, so we can drain coolant
-                tank.getPrimaryHandler().drain(flywheelPower, IFluidHandler.FluidAction.EXECUTE);
+                tank.getPrimaryHandler().drain((flywheelPower / 10), IFluidHandler.FluidAction.EXECUTE);
             }
         }
     }
@@ -110,7 +114,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         float networkEff = CoolingHandler.efficiencyHandler.get(fluidContained);
 
         //Prep Network Info
-        ChannelStatusBundle status = new ChannelStatusBundle();
+        coolingUnits.reset();
         int maxChannels = flywheelPower;
 
         //Find the Position of the first Channel block
@@ -122,15 +126,16 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             maxChannels--;
             if (level.getBlockEntity(currentPos) instanceof ChannelBlockEntity CBE){
                 channelNodes.add(currentPos);
-                currentPos = CBE.propagateChannel(status,networkEff,minTemp,channelMovingIn);
-                if (currentPos == null){
+                currentPos = CBE.propagateChannel(coolingUnits,networkEff,minTemp,channelMovingIn);
+                if (currentPos == null || !level.isInWorldBounds(currentPos)){
                     //Failure!
+                    Overheated.LOGGER.info("Error 1");
                     disable("incomplete_loop");
                     break;
                 }
-            } else if (currentPos == getBlockPos()){
+            } else if (compareBlockPos(currentPos,getBlockPos())){
                 //This means we have finished the loop!
-                this.active = status.getDelta() >= 0;
+                this.active = coolingUnits.getDelta() >= 0;
                 if (!this.active){
                     errorMessage = "not_enough_sources";
                 } else {
@@ -140,11 +145,12 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
                 this.currentMinTemp = minTemp;
                 break;
             } else {
+                Overheated.LOGGER.info("Error 2");
+                highlightError = currentPos;
                 disable("incomplete_loop");
                 break;
             }
         }
-        coolingUnits = status;
 
         if (active){
             for (BlockPos bp : channelNodes){
@@ -159,6 +165,10 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         coolingUnits = new ChannelStatusBundle();
         coolingUnits.maximumCooling = 0;
         coolingUnits.usedCooling = 0;
+    }
+
+    public boolean compareBlockPos(BlockPos a, BlockPos b){
+        return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
     }
     ///Fluid Handling
     //Fluid Handling
@@ -199,6 +209,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         if (errorMessage != "") {
             tooltip.add(GoggleHelper.addIndent(
                     Component.translatable("coverheated.chill_channel.error." + errorMessage)));
+            Outliner.getInstance().showAABB(this, new AABB(highlightError), 500);
+
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status").withStyle(ChatFormatting.WHITE)));
@@ -207,6 +219,9 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(currentMinTemp)).withStyle(ChatFormatting.AQUA),1));
 
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.eff").append(String.valueOf(currentEff))));
+
+
+
         return true;
     }
 }

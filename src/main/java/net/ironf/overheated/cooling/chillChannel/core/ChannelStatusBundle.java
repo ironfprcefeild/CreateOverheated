@@ -24,7 +24,10 @@ public class ChannelStatusBundle {
     public float getDelta(){
         return maximumCooling - usedCooling;
     }
-
+    public void reset(){
+        this.maximumCooling = 0;
+        this.usedCooling = 0;
+    }
     public ChannelStatusBundle duplicate() {
         ChannelStatusBundle toReturn = new ChannelStatusBundle();
         toReturn.usedCooling = this.usedCooling;
