@@ -434,9 +434,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .simpleItem()
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/chill_channel")::generate)
             .defaultLoot()
             .register();
     //Chill Steel Coil
