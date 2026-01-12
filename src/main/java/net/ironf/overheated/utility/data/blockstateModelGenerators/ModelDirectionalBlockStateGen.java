@@ -13,7 +13,12 @@ public class ModelDirectionalBlockStateGen extends ModelBlockStateGen {
 
     protected int getXRotation(BlockState state) {
         Direction facing = state.getValue(BlockStateProperties.FACING);
-        return facing == Direction.DOWN ? 180 : 0;
+        if (facing == Direction.UP){
+            return 270;
+        } else if (facing == Direction.DOWN){
+            return 90;
+        }
+        return 0;
     }
 
     protected int getYRotation(BlockState state) {
