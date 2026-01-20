@@ -86,6 +86,7 @@ public class AllItems {
 
 
 
+    //Chillsteel
 
     public static final OverheatedRegistrate.MetallicSet CHILLSTEEL =
             REGISTRATE.MakeMetallicSet("Chillsteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
@@ -94,6 +95,7 @@ public class AllItems {
                     .strength(3.5f));
 
     public static final ItemEntry<Item> ICE_DIAMOND = craftingIngredient("ice_diamond","Ice Diamond");
+    public static final ItemEntry<Item> CHANNEL_RELAY = craftingIngredient("chill_channel_relay","Channel Chill Relay");
 
     //Geothermium Stuff
     public static final ItemEntry<Item> GEOTHERMIUM_CHUNK = craftingIngredient("geothermium_chunk","Geothermium Chunk");

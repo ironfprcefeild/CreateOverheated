@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " r ",
+    " c ",
+    "nnn"
+  ],
+  "key": {
+    "c": {
+      "item": "create:copper_casing"
+    },
+    "r": {
+      "item": "coverheated:chill_channel_relay"
+    },
+    "n": {
+      "item": "coverheated:chillsteel_nugget"
+    }
+  },
+  "result": {
+    "item": "coverheated:chill_channel",
+    "count": 1
+  }
+}

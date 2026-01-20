@@ -1,7 +1,7 @@
 {
   "values": [
     "minecraft:iron_bars",
-    "coverheated:channel_absorber",
+    "coverheated:chill_channel",
     "coverheated:cooler",
     "coverheated:meter_extender",
     "create:andesite_bars",

@@ -1,22 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " r ",
-    "sss",
-    "dfd"
+    "cdc",
+    "ere",
+    "pdp"
   ],
   "key": {
-    "r": {
+    "e": {
       "item": "minecraft:end_rod"
     },
     "d": {
       "item": "minecraft:diamond"
     },
-    "s": {
-      "item": "coverheated:chillsteel_ingot"
+    "p": {
+      "item": "coverheated:channel_expeller"
     },
-    "f": {
-      "item": "coverheated:cooler"
+    "c": {
+      "item": "coverheated:chill_channel"
+    },
+    "r": {
+      "item": "coverheated:chill_channel_relay"
     }
   },
   "result": {

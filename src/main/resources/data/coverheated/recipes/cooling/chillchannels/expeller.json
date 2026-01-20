@@ -1,10 +1,24 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "coverheated:channel_absorber"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "idi",
+    "cac"
   ],
+  "key": {
+    "c": {
+      "item": "coverheated:chill_channel"
+    },
+    "a": {
+      "item": "create:copper_casing"
+    },
+    "i": {
+      "item": "coverheated:chillsteel_ingot"
+    },
+    "d": {
+      "item": "coverheated:ice_diamond"
+    }
+  },
   "result": {
     "item": "coverheated:channel_expeller",
     "count": 1
