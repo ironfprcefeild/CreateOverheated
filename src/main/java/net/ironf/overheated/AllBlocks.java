@@ -409,9 +409,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/channel_core")::generate)
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/channel_core")::generate)
             .defaultLoot()
             .register();
 
@@ -422,9 +422,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/channel_expeller")::generate)
             .defaultLoot()
             .register();
 
