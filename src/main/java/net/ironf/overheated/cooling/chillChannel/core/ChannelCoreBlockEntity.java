@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import net.createmod.catnip.outliner.Outliner;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
+import net.ironf.overheated.cooling.chillChannel.MutableDirection;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
@@ -75,7 +76,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         //If core is invalid, next attempt will come sooner, otherwise there is a full minute delay
         if (tickTimer-- == 0){
             updateValidity();
-            tickTimer = active ? 200 : 20;
+            tickTimer = active ? 80 : 20;
             if (active){
                 //We are active, so we can drain coolant
                 tank.getPrimaryHandler().drain((flywheelPower / 10), IFluidHandler.FluidAction.EXECUTE);
@@ -85,8 +86,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
 
     public void updateValidity(){
         //Update Flywheel Power
-        Direction channelMovingIn = level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING);
-        Direction flyWheelsIn = channelMovingIn.getOpposite();
+        MutableDirection channelMovingIn = new MutableDirection(level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
+        Direction flyWheelsIn = channelMovingIn.getImmutable().getOpposite();
         flywheelPower = 0;
         int flyWheel = 0;
         while (flyWheel <= 8){
@@ -118,7 +119,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         int maxChannels = flywheelPower;
 
         //Find the Position of the first Channel block
-        BlockPos currentPos = getBlockPos().relative(channelMovingIn);
+        BlockPos currentPos = getBlockPos().relative(channelMovingIn.getImmutable());
         ArrayList<BlockPos> channelNodes = new ArrayList<>();
 
         //Loop, moving along channels
@@ -209,7 +210,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         if (errorMessage != "") {
             tooltip.add(GoggleHelper.addIndent(
                     Component.translatable("coverheated.chill_channel.error." + errorMessage)));
-            Outliner.getInstance().showAABB(this, new AABB(highlightError), 500);
+            Outliner.getInstance().showAABB(this, new AABB(highlightError), 200);
 
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);

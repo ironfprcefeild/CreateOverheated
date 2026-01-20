@@ -7,6 +7,7 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
+import net.ironf.overheated.cooling.chillChannel.MutableDirection;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelStatusBundle;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
@@ -46,7 +47,7 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
     }
 
     @Override
-    public BlockPos propagateChannel(ChannelStatusBundle status, float efficiency, float minTemp, Direction channelMovingIn) {
+    public BlockPos propagateChannel(ChannelStatusBundle status, float efficiency, float minTemp, MutableDirection channelMovingIn) {
         //Calculate Expelled
         int expelled = expelScrollWheel.getValue();
         if (level.getBlockState(getBlockPos().relative(
@@ -76,7 +77,7 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
         //Return
         //  we don't change ChannelMovingIn so that it continues in the same direction
         //  normal channels will change this to the direction they face
-        return getBlockPos().relative(channelMovingIn);
+        return getBlockPos().relative(channelMovingIn.getImmutable());
     }
 
     @Override
