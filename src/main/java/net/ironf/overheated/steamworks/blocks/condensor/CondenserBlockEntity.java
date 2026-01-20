@@ -127,7 +127,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
 
     public IFluidTank getTank(Direction in){
         BlockPos pos = getBlockPos().relative(in);
-        while (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {
+        while (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get() || level.getBlockState(pos).getBlock() == AllBlocks.LASER_FILM.get()) {
             pos = pos.relative(in);
         }
 
