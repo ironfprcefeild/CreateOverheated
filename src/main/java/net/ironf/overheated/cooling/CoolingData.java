@@ -19,6 +19,11 @@ public class CoolingData {
         return new CoolingData(a.coolingUnits + b.coolingUnits, Math.min(a.minTemp, b.minTemp));
     }
 
+    public CoolingData setCoolingUnits(float newCU){
+        this.coolingUnits = newCU;
+        return this;
+    }
+
     public static CoolingData empty(){
         return new CoolingData(0,10000);
     }
