@@ -16,7 +16,7 @@ public class HeatData {
         this.OverHeat = OverHeat;
     }
 
-    public HeatData (int level, int amount){
+    public HeatData (int level, float amount){
         switch (level){
             case 1: this.Heat = amount; break;
             case 2: this.SuperHeat = amount; break;
@@ -191,6 +191,14 @@ public class HeatData {
     public void combineAllHeat(){
         combineHeat();
         combineSuperHeat();
+    }
+
+    public void useHeatOfLevel(int heatLevel, float amount){
+        switch (heatLevel){
+            case 1: this.Heat -= amount; break;
+            case 2: this.SuperHeat -= amount; break;
+            case 3: this.OverHeat -= amount; break;
+        }
     }
 
     //Maps Names to heat ratings and vice versa

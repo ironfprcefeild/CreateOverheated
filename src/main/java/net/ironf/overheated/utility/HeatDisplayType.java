@@ -5,4 +5,5 @@ public enum HeatDisplayType {
     ABSORB,  //Thermomoter
     SUPPLYING, //Solar Panel/Steam Heater
     READING, //Thermometer
+    TRANSFERRING
 }

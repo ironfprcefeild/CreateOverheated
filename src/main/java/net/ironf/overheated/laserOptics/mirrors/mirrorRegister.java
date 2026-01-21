@@ -3,6 +3,7 @@ package net.ironf.overheated.laserOptics.mirrors;
 import com.simibubi.create.api.registry.SimpleRegistry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
@@ -128,9 +129,15 @@ public class mirrorRegister {
         });
         //Can Handle Multiple Lasers
         registerReflector(AllBlocks.DIODE_JUNCTION.get(),(incoming,level,pos,state,heat) -> {
-            ILaserAbsorber be = ((ILaserAbsorber)(level.getBlockEntity(pos)));
-            be.setLaserHD(new HeatData(heat.useUpToOverHeat(),1),incoming);
+            DiodeJunctionBlockEntity be = ((DiodeJunctionBlockEntity)(level.getBlockEntity(pos)));
+            //Find heat drained
+            int heatLevel = heat.getHeatLevelOfHighest();
+            float heatAmount = Math.min(be.transferScrollWheel.getValue(),heat.getHeatOfLevel(heatLevel));
+            //Move heat into junction
+            be.setLaserHD(new HeatData(heatLevel,heatAmount),incoming);
             be.setLaserTimer(12,incoming);
+            //Remove Heat from laser
+            heat.useHeatOfLevel(heatLevel,heatAmount);
             return incoming;
         });
         //Replace all laser absorber blocks with the new smartlasermachine or a register here

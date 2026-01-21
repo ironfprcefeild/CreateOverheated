@@ -32,6 +32,7 @@ public class GoggleHelper {
             case ABSORB -> "absorb";
             case READING -> "reading";
             case SUPPLYING -> "supplying";
+            case TRANSFERRING -> "transferring";
         };
 
 
