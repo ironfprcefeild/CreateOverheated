@@ -38,18 +38,15 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
 
     int timer = 5;
     HeatData generated = HeatData.empty();
-    int heatTimer = 7;
+    int heatTimer = 75;
     boolean conserveHeat = false;
     //Each condenser, when operating at perfect efficiency, uses about 1 Steam Vent
     @Override
     public void tick() {
         super.tick();
-        if (heatTimer-- == 0){
-            heatTimer = 7;
-            generated = HeatData.empty();
-        }
+
         if (timer-- == 0){
-            timer = conserveHeat ? 7 : 5;
+            timer = conserveHeat ? 75 : 5;
 
             //Get above tank
             IFluidTank above = getTank(Direction.UP);
@@ -73,7 +70,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                     below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                     above.drain(1, IFluidHandler.FluidAction.EXECUTE);
 
-                    heatTimer = 8;
+                    heatTimer = 76;
                     generated = bundle.outputHeat;
 
                 } else {
@@ -84,10 +81,15 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                         below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
                         above.drain(1, IFluidHandler.FluidAction.EXECUTE);
 
-                        heatTimer = 8;
+                        heatTimer = 76;
                         generated = bundle.outputHeat;
                     }
                 }
+            }
+
+            if (heatTimer-- == 0){
+                heatTimer = 75;
+                generated = HeatData.empty();
             }
         }
 
