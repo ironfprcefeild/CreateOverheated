@@ -116,8 +116,8 @@ public class RadiationMap extends SavedData {
         while (strength > 0) {
             for (ChunkPos c : edgeChunks){
                 for (Vec2 d : chunkDirections){
-                    if (!edgeChunks.contains(chunkRelativeTo(c,d))){
-                        ChunkPos spreadTo = chunkRelativeTo(c,d);
+                    ChunkPos spreadTo = chunkRelativeTo(c,d);
+                    if (!edgeChunks.contains(spreadTo) && !newEdgeChunks.contains(spreadTo)){
                         newEdgeChunks.add(spreadTo);
                         setRadiationIn(spreadTo,getRadiationIn(spreadTo)+(sign * strength));
                     }
