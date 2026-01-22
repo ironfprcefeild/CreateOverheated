@@ -80,13 +80,11 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                     }
                 }
             }
-
-            if (heatTimer-- == 0){
-                heatTimer = 75;
-                generated = HeatData.empty();
-            }
         }
-
+        if (heatTimer-- == 0){
+            heatTimer = 75;
+            generated = HeatData.empty();
+        }
     }
     public HeatData getGeneratedHeat() {
         return generated;
@@ -117,6 +115,10 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_2").withStyle(ChatFormatting.RED),2));
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_3").withStyle(ChatFormatting.RED),2));
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_4").withStyle(ChatFormatting.RED),2));
+
+        }
+        if (isPlayerSneaking){
+            tooltip.add(addIndent(Component.translatable("coverheated.condenser.condensing_in").append(timer+""),2));
 
         }
         return true;

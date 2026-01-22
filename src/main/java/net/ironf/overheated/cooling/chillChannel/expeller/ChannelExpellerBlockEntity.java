@@ -90,9 +90,14 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
         //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a cooler
         Direction facing = getBlockState().getValue(BlockStateProperties.FACING);
-        if (loopComplete && facing.getOpposite() == in
-                && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())) {
+        if (!loopComplete || facing.getOpposite() != in){
+            return CoolingData.empty();
+        }
+        if (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get()) {
             return output;
+        } else if (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL.get()) {
+            return output.setCoolingUnits(
+                    output.coolingUnits / ((ChannelBlockEntity)level.getBlockEntity(cooledPos)).lastEfficiency);
         } else {
             return CoolingData.empty();
         }

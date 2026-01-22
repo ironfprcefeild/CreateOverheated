@@ -20,28 +20,12 @@ public class ChannelBlockEntity extends SmartMachineBlockEntity {
     }
 
      //Modifies channel state, and return the next blockpos to check
-    float lastEfficiency = 1f;
+    public float lastEfficiency = 1f;
     public BlockPos propagateChannel(ChannelStatusBundle status, float efficiency, float minTemp, MutableDirection channelMovingIn){
         status.addSource(getCoolingUnits()*efficiency);
         lastEfficiency = efficiency;
         channelMovingIn.setD(level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
         return getBlockPos().relative(channelMovingIn.getImmutable());
-    }
-
-    //This allows Expellers to transfer
-
-
-    @Override
-    public CoolingData getCoolingDataFromDirection(BlockPos pos, Level level, Direction d) {
-        BlockPos check = pos.relative(d);
-        BlockEntity be = level.getBlockEntity(check);
-        if (be instanceof ChannelExpellerBlockEntity cbe){
-            return cbe.getGeneratedCoolingData(check,pos,level,d).setCoolingUnits(cbe.getCoolingUnits()/lastEfficiency);
-        }
-        if (be instanceof ICoolingBlockEntity){
-            return (((ICoolingBlockEntity) be).getGeneratedCoolingData(check,pos,level,d));
-        }
-        return CoolingData.empty();
     }
 
     public void acceptNetwork(){}

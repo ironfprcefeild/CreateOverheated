@@ -210,7 +210,9 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         if (errorMessage != "") {
             tooltip.add(GoggleHelper.addIndent(
                     Component.translatable("coverheated.chill_channel.error." + errorMessage)));
-            Outliner.getInstance().showAABB(this, new AABB(highlightError), 200);
+            if (highlightError != null) {
+                Outliner.getInstance().showAABB(this, new AABB(highlightError), 200);
+            }
 
         }
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
