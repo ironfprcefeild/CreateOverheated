@@ -65,7 +65,7 @@ public class OverheatedRecipeProvider extends RecipeProvider {
                      */
                     AllSteamFluids.getSteamFromValues((h==0) ? 0 : p,0,(h==0) ? p*5 : 1),
                     0f,
-                    (h==0) ? (p*3) : ((float) Math.floor(Math.pow(3.5, h + 1))),
+                    (h==0) ? (p*3) : ((float) Math.floor(Math.pow(3, h + 1))),
                     new HeatData(h,1)));
                 h++;
             }

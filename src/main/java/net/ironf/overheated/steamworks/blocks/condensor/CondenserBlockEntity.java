@@ -60,15 +60,14 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
                 FluidStack resultFluid = bundle.output;
                 IFluidTank below = getTank(Direction.DOWN);
                 if (below == null) return;
-
                 if (conserveHeat
                     && bundle.minTemp >= getCurrentTemp()
                     && below.fill(resultFluid, IFluidHandler.FluidAction.SIMULATE) == resultFluid.getAmount()
-                    && above.drain(1, IFluidHandler.FluidAction.SIMULATE).getAmount() == 1){
+                    && above.drain(10, IFluidHandler.FluidAction.SIMULATE).getAmount() == 10){
 
                     addTemp(bundle.addTemp);
                     below.fill(resultFluid, IFluidHandler.FluidAction.EXECUTE);
-                    above.drain(1, IFluidHandler.FluidAction.EXECUTE);
+                    above.drain(10, IFluidHandler.FluidAction.EXECUTE);
 
                     heatTimer = 76;
                     generated = bundle.outputHeat;
@@ -122,6 +121,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_1").withStyle(ChatFormatting.RED)));
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_2").withStyle(ChatFormatting.RED),2));
             tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_3").withStyle(ChatFormatting.RED),2));
+            tooltip.add(addIndent(Component.translatable("coverheated.condenser.conserving_4").withStyle(ChatFormatting.RED),2));
 
         }
         return true;
