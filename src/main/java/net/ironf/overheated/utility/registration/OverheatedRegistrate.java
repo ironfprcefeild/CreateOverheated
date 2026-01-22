@@ -75,7 +75,6 @@ import java.util.function.UnaryOperator;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
-import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasName;
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 import static net.ironf.overheated.Overheated.REGISTRATE;

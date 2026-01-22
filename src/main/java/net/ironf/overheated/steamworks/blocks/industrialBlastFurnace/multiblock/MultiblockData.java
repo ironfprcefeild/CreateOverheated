@@ -6,7 +6,6 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.Bl
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;

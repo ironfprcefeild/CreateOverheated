@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.ironf.overheated.steamworks.AllSteamFluids.isSteam;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
 public class FluidDuctBlockEntity extends BlastFurnaceServantBlockEntity implements IWrenchable {

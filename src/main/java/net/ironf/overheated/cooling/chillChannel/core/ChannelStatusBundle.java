@@ -1,7 +1,6 @@
 package net.ironf.overheated.cooling.chillChannel.core;
 
 import net.minecraft.nbt.CompoundTag;
-import org.checkerframework.checker.units.qual.C;
 
 public class ChannelStatusBundle {
     public float maximumCooling = 0f;

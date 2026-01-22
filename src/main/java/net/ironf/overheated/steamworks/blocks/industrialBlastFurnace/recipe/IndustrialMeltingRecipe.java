@@ -3,7 +3,6 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.fluid.FluidHelper;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.item.ItemHelper;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.GasMapper;

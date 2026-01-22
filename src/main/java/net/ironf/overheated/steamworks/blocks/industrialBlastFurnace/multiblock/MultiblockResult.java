@@ -2,7 +2,6 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.multiblock
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 
 public record MultiblockResult(boolean success, BlockPos errorPos, String message) {
 

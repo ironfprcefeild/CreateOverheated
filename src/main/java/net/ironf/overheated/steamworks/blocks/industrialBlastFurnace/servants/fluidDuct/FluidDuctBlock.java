@@ -3,8 +3,6 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.f
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.ironf.overheated.AllBlockEntities;
-import net.ironf.overheated.laserOptics.Diode.DiodeBlockEntity;
-import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;

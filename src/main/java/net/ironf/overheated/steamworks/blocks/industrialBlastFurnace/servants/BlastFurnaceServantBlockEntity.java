@@ -2,7 +2,6 @@ package net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

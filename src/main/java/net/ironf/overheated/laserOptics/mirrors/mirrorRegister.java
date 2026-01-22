@@ -140,7 +140,6 @@ public class mirrorRegister {
             heat.useHeatOfLevel(heatLevel,heatAmount);
             return incoming;
         });
-        //Replace all laser absorber blocks with the new smartlasermachine or a register here
 
     }
 

@@ -3,7 +3,6 @@ package net.ironf.overheated.laserOptics.DiodeJunction;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import net.ironf.overheated.cooling.chillChannel.expeller.ChannelSlotBox;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;

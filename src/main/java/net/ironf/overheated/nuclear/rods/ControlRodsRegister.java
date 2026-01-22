@@ -3,7 +3,6 @@ package net.ironf.overheated.nuclear.rods;
 import com.simibubi.create.api.registry.SimpleRegistry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;

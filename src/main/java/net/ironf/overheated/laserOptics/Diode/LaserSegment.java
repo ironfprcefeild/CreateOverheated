@@ -64,7 +64,6 @@ public class LaserSegment {
         }
     }
 
-    //TODO add back damage
     public void tick(){
         Level level = laserSource.getLaserWorld();
         HeatData laserHeat = initialHD;

@@ -1,7 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.level.Level;

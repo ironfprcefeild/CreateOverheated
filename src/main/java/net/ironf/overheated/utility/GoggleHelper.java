@@ -7,11 +7,8 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static net.minecraft.ChatFormatting.GRAY;
 import static net.minecraft.ChatFormatting.WHITE;
