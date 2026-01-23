@@ -20,11 +20,11 @@ public class ChannelBlockEntity extends SmartMachineBlockEntity {
     }
 
      //Modifies channel state, and return the next blockpos to check
-    public float lastEfficiency = 1f;
+    public boolean applyEfficiency = true;
     public BlockPos propagateChannel(ChannelStatusBundle status, float efficiency, float minTemp, MutableDirection channelMovingIn){
-        status.addSource(getCoolingUnits()*efficiency);
-        lastEfficiency = efficiency;
+        status.addSource(getCoolingUnits()* (applyEfficiency ? efficiency : 1f));
         channelMovingIn.setD(level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
+        applyEfficiency = true;
         return getBlockPos().relative(channelMovingIn.getImmutable());
     }
 
@@ -43,13 +43,14 @@ public class ChannelBlockEntity extends SmartMachineBlockEntity {
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        lastEfficiency = tag.getFloat("lasteff");
+        applyEfficiency = tag.getBoolean("lasteff");
+
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        tag.putFloat("lasteff",lastEfficiency);
+        tag.putBoolean("lasteff",applyEfficiency);
     }
 }
 

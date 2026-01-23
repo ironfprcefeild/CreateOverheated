@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements ICoolingBlockEntity, IHaveGoggleInformation {
     public ChannelExpellerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -93,11 +94,11 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
         if (!loopComplete || facing.getOpposite() != in){
             return CoolingData.empty();
         }
-        if (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get()) {
+        if (level.getBlockState(cooledPos).getBlock() == AllBlocks.CHANNEL.get()) {
+            ((ChannelBlockEntity) Objects.requireNonNull(level.getBlockEntity(cooledPos))).applyEfficiency = false;
             return output;
-        } else if (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL.get()) {
-            return output.setCoolingUnits(
-                    output.coolingUnits / ((ChannelBlockEntity)level.getBlockEntity(cooledPos)).lastEfficiency);
+        } else if (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get()) {
+            return output;
         } else {
             return CoolingData.empty();
         }
