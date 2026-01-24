@@ -9,6 +9,7 @@
   },
   "mixins": [
     "boilerDataMixin",
-    "airCurrentMixin"
+    "airCurrentMixin",
+    "flywheelMixin"
   ]
 }

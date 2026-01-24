@@ -2,6 +2,10 @@
   "mappings": {
     "net/ironf/overheated/mixin/airCurrentMixin": {
       "findAffectedHandlers()z":"com/simibubi/create/content/kinetics/fan/AirCurrent"
+    },
+    "net/ironf/overheated/mixin/flywheelMixin": {
+      "calculateStressApplied()z":"com/simibubi/create/content/kinetics/flywheel/FlywheelBlockEntity",
+      "lastStressAppliedz": "com/simibubi/create/content/kinetics/base/KineticBlockEntity"
     }
   }
 }
