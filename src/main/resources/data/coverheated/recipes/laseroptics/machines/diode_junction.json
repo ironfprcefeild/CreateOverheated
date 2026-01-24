@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
-    "lfl",
-    "lcl"
+    " m ",
+    "mcf",
+    " f "
   ],
   "key": {
     "f": {
       "item": "coverheated:blazeglass_fixture"
     },
-    "l": {
-      "item": "coverheated:laser_film"
-    },
     "c": {
       "item": "coverheated:laser_casing"
+    },
+    "m": {
+      "item": "coverheated:basic_mirror"
     }
   },
   "result": {
-    "item": "coverheated:basic_mirror",
-    "count": 2
+    "item": "coverheated:diode_junction",
+    "count": 1
   }
 }

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "   ",
-    " f ",
+    "mfm",
     "wct"
   ],
   "key": {
@@ -14,6 +14,9 @@
     },
     "w": {
       "item": "create:cogwheel"
+    },
+    "m": {
+      "item": "coverheated:basic_mirror"
     },
     "t": {
       "item": "create:fluid_tank"
