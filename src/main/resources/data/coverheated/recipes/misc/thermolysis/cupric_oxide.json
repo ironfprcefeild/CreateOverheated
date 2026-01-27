@@ -1,0 +1,21 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "coverheated:copper_chloride"
+    },
+    {
+      "fluid": "coverheated:distilled_water",
+      "amount": 120
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:cupric_oxide"
+    },
+    {
+      "item": "coverheated:chlorine_crystal"
+    }
+  ]
+}

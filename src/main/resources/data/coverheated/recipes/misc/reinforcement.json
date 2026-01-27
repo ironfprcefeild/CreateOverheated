@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "coverheated:steel_ingot"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sgs",
+    "sss"
+  ],
+  "result": {
+    "item": "coverheated:reinforcement"
+  }
+}

@@ -57,6 +57,10 @@ public class AllItems {
     public static final ItemEntry<Item> TABLE_SALT = craftingIngredient("table_salt","Table Salt");
     public static final ItemEntry<Item> CHLORINE_CRYSTAL = craftingIngredient("chlorine_crystal","Chlorine Crystal");
 
+    //Thermolysis
+    public static final ItemEntry<Item> COPPER_CHLORIDE = craftingIngredient("copper_chloride","Copper Chloride");
+    public static final ItemEntry<Item> CUPRIC_OXIDE = craftingIngredient("cupric_oxide","Cupric Oxide");
+
     //Zombie Meat
     public static final ItemEntry<Item> RAW_ZOMBIE_MEAT = REGISTRATE.item("raw_zombie_meat",Item::new)
             .properties(

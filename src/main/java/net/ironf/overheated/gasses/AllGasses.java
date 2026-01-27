@@ -70,6 +70,18 @@ public class AllGasses {
                     .register())
             .Register(p -> p.density(-1));
 
+    public static final OverheatedRegistrate.FluidRegistration hydrogen = REGISTRATE.SimpleFluid("hydrogen")
+            .tintColor(0x33B3FF)
+            .overrideTexture("steam")
+            .makeGasUnCapturable()
+            .setGas(REGISTRATE.gasBlock("hydrogen")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(5)
+                    .tickDelays(1,3)
+                    .explosionSafety(0)
+                    .register())
+            .Register(p -> p.density(-1));
+
 
     public static void register(){
     }

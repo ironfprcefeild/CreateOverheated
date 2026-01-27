@@ -1,0 +1,27 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "coverheated:cupric_oxide"
+    }
+  ],
+  "results": [
+    {
+      "fluid": "coverheated:oxygen",
+      "amount": 40
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "coverheated:chlorine_crystal"
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    },
+    {
+      "item": "create:copper_nugget"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:copper_chloride"
+    },
+    {
+      "fluid": "coverheated:hydrogen",
+      "amount": 80
+    }
+  ]
+}

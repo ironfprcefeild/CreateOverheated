@@ -1,0 +1,20 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "superheated",
+  "ingredients": [
+    {
+      "fluid": "coverheated:superheated_steam_low",
+      "amount": 1000
+    }
+  ],
+  "results": [
+    {
+      "fluid": "coverheated:oxygen",
+      "amount": 10
+    },
+    {
+      "fluid": "coverheated:hydrogen",
+      "amount": 20
+    }
+  ]
+}
