@@ -584,10 +584,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
-                        @Override
-                        public int getTintColor() {
-                            return tintColor;
-                        }
 
 
                     });
@@ -626,11 +622,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         @Override
                         public ResourceLocation getOverlayTexture() {
                             return overlayTexture;
-                        }
-
-                        @Override
-                        public int getTintColor() {
-                            return tintColor;
                         }
 
 
