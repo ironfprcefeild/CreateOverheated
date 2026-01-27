@@ -113,8 +113,6 @@ public class AllItems {
                     .sound(SoundType.METAL)
                     .strength(5f));
 
-    public static final ItemEntry<Item> BATTERY_CATHODE = craftingIngredient("battery_cathode","Battery Cathode");
-    public static final ItemEntry<Item> BATTERY_ANODE = craftingIngredient("battery_anode","Battery Anode");
 
     //Molten Metals/Casts
     public static final OverheatedRegistrate.MetallicSet ZINC_METALWORKS =
