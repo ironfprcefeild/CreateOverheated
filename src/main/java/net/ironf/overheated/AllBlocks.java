@@ -33,6 +33,7 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fl
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
+import net.ironf.overheated.steamworks.blocks.reinforcement.ReinforcementBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.ironf.overheated.utility.data.SimpleBlockStateGenerators;
@@ -333,6 +334,18 @@ public class AllBlocks {
             .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/steam_vent")::generate)
             .defaultLoot()
             .register();
+
+    //Reinforcement
+    public static final BlockEntry<ReinforcementBlock> REINFORCEMENT = REGISTRATE
+            .block("reinforcement", ReinforcementBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(2f))
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(simpleCubeAll("placeholder"))
+            .defaultLoot()
+            .register();
+
 
     //Turbine
     public static final BlockEntry<Block> TURBINE_EXTENSION = REGISTRATE
