@@ -14,24 +14,15 @@ public class BlastFurnaceStatus {
     public int airAmount;
 
 
-    //This bit is probably going to change as batteries are worked on but I think it makes sense to put here now
-    public int[] batteryCharges;
 
-    public BlastFurnaceStatus(int heating, int airAmount, int[] charges){
+    public BlastFurnaceStatus(int heating, int airAmount){
         this.airHeat = heating;
         this.airAmount = airAmount;
-        this.batteryCharges = charges;
     }
 
     public BlastFurnaceStatus(JsonObject j){
 
-        //Charge
-        batteryCharges = new int[]{0, 0, 0, 0};
-        if (j.has("voltage_level") || j.has("charge")) {
-            int voltage_level = GsonHelper.getAsInt(j, "voltage_level");
-            int voltage_amount = GsonHelper.getAsInt(j,"charge");
-            batteryCharges[voltage_level] = voltage_amount;
-        }
+
         //Air
         airAmount = 0;
         airHeat = 0;
@@ -44,13 +35,7 @@ public class BlastFurnaceStatus {
 
     public JsonObject toJson(){
         JsonObject j = new JsonObject();
-        for (int i = 0; i < batteryCharges.length; i++) {
-            if (batteryCharges[i] != 0){
-                j.addProperty("voltage_level",i);
-                j.addProperty("charge",batteryCharges[i]);
-                break;
-            }
-        }
+
         j.addProperty("air_amount", airAmount);
         j.addProperty("air_heating", airHeat);
         return j;
@@ -65,18 +50,8 @@ public class BlastFurnaceStatus {
     //This assumes that the requirement (this) has all 0s in its charge array except for 1 spot.
     //When simulate is passed as true, this will attempt to drain air and batteries even if it cannot
     public boolean compareWith(BlastFurnaceStatus tested, BlastFurnaceControllerBlockEntity actUpon, boolean simulate){
-        if (tested.airHeat >= airHeat
-            && tested.drainAir(airAmount,simulate,actUpon)){
-            for (int i = 3; i >= 0 ; i--) {
-                if (tested.batteryCharges[i] < batteryCharges[i]){
-                    return false;
-                } else if (!simulate){
-                    tested.batteryCharges[i] -= batteryCharges[i];
-                }
-            }
-            return true;
-        }
-        return false;
+        return tested.airHeat >= airHeat
+                && tested.drainAir(airAmount, simulate, actUpon);
     }
 
     public boolean compareWith(BlastFurnaceControllerBlockEntity tested, boolean simulate){
@@ -105,15 +80,12 @@ public class BlastFurnaceStatus {
         tag.putInt(s +"ibfsairamount",write.airAmount);
         tag.putInt(s + "ibfsairheat",write.airHeat);
 
-        tag.putIntArray(s + "ibfscharges",write.batteryCharges);
     }
 
     public static BlastFurnaceStatus readTag(CompoundTag tag, String s){
         return new BlastFurnaceStatus(
                 tag.getInt(s+"ibfsairheat"),
-                tag.getInt(s+"ibfsairamount"),
-                tag.getIntArray(s + "ibfscharges")
-        );
+                tag.getInt(s+"ibfsairamount"));
     }
 
     /*
@@ -125,20 +97,14 @@ public class BlastFurnaceStatus {
         6. int  - iv Charges
      */
     public static BlastFurnaceStatus readFromBuffer(FriendlyByteBuf buf){
-        return new BlastFurnaceStatus(buf.readInt(),buf.readInt(),
-                new int[]{buf.readInt(),buf.readInt(),buf.readInt(),buf.readInt()});
+        return new BlastFurnaceStatus(buf.readInt(),buf.readInt());
     }
     public void writeToBuffer(FriendlyByteBuf buf){
         buf.writeInt(airHeat); 
         buf.writeInt(airAmount);
-        buf.writeInt(batteryCharges[0]);
-        buf.writeInt(batteryCharges[1]);
-        buf.writeInt(batteryCharges[2]);
-        buf.writeInt(batteryCharges[3]);
     }
 
     public static BlastFurnaceStatus empty(){
-        return new BlastFurnaceStatus(0,0,
-                new int[]{0,0,0,0});
+        return new BlastFurnaceStatus(0,0);
     }
 }
