@@ -241,7 +241,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             .viscosity(200)
             .canConvertToSource(false)
             .temperature(200));
-    public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(2,1000, new int[]{0, 0, 0, 0});
+    public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(2,1000);
     //This one includes generic molten fluid properties
     public MetallicSet MakeMetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
         return MakeMetallicSet(name,bProperties, defaultMoltenProperties,defaultMeltingRequirement,null,null,null);
