@@ -4,7 +4,6 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.registry.SimpleRegistry;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import net.ironf.overheated.Overheated;
-import net.ironf.overheated.batteries.discharger.DischargerBlockEntity;
 import net.ironf.overheated.laserOptics.DiodeJunction.DiodeJunctionBlockEntity;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
@@ -92,13 +91,6 @@ public class DiodeHeaters {
             }
             return HeatData.empty();
         });
-
-        registerHeater(net.ironf.overheated.AllBlocks.DISCHARGER.get(), ((level, pos, state) -> {
-            if (level.getBlockEntity(pos) instanceof DischargerBlockEntity dbe){
-                return dbe.getGeneratedHeat();
-            }
-            return HeatData.empty();
-        }));
 
         registerHeater(net.ironf.overheated.AllBlocks.CONDENSER.get(), ((level, pos, state) -> {
             if (level.getBlockEntity(pos) instanceof CondenserBlockEntity cbe){
