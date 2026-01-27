@@ -689,6 +689,21 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    public static final BlockEntry<Block> TRANSFORMER_COIL =
+            REGISTRATE.block("transformer_coil", Block::new)
+                    .initialProperties(() -> Blocks.COPPER_BLOCK)
+                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
+                            .requiresCorrectToolForDrops()
+                            .lightLevel((state) -> 2)
+                            .sound(SoundType.METAL)
+                            .strength(1f))
+                    .transform(pickaxeOnly())
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+                    .defaultLoot()
+                    .lang("Transformer Coil")
+                    .register();
+
     //
     public static final BlockEntry<DischargerBlock> DISCHARGER = REGISTRATE
             .block("discharger", DischargerBlock::new)

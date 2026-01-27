@@ -103,9 +103,8 @@ public class AllItems {
     public static final ItemEntry<Item> GEOTHERMIUM_POWDERS = craftingIngredient("geothermium_powders","Geothermium Powders");
     public static final ItemEntry<Item> NETHER_GEOTHERMIUM_POWDERS = craftingIngredient("nether_geothermium_powders","Nether Geothermium Powders");
 
-    //Redstonite & Transformer Components
+    //Redstonite
     public static final ItemEntry<Item> REDSTONITE_CRYSTAL = craftingIngredient("redstonite_crystal","Redstonite Crystal");
-    public static final ItemEntry<Item> TRANSFORMER_COMPONENTS = craftingIngredient("transformer_components","Transformer Components");
 
 
     //Steel

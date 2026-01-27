@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "isi",
+    "ibi",
+    "ece"
+  ],
+  "key": {
+    "b": {
+      "item": "coverheated:steel_block"
+    },
+    "e": {
+      "item": "coverheated:empty_battery"
+    },
+    "s": {
+      "item": "create:shaft"
+    },
+    "i": {
+      "item": "minecraft:copper_ingot"
+    },
+    "c": {
+      "item": "create:brass_casing"
+    }
+  },
+  "result": {
+    "item": "coverheated:charger",
+    "count": 1
+  }
+}
