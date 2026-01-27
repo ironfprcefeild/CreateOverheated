@@ -155,6 +155,7 @@
   "coverheated.jei.condensing.recipe_category": "Condensing",
   "coverheated.jei.condensing.temp": "Maximum Temperature",
   "coverheated.jei.condensing.gained_temp": "Temperature Increase",
+  "coverheated.jei.reinforcement": "Use Reinforcement",
 
   "block.coverheated.antilaser_plating": "Antilaser Plating",
   "block.coverheated.basic_mirror": "Basic Mirror",
