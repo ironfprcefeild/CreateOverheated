@@ -33,7 +33,6 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration SLUDGE =
             REGISTRATE.SimpleFluid("sludge")
-                    .tintColor(0x25BE45)
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(p -> p.canHydrate(false)
                                     .canDrown(true)
@@ -44,7 +43,8 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration PURIFIED_WATER =
             REGISTRATE.SimpleFluid("purified_water")
-                    .tintColor(0x33B3FF)
+                    .overrideTexture("block/fluids/distilled_water")
+                    .tintColor(0xAD33B3BE)
                     .levelDecreasePerBlock(2)
                     .tickRate(20)
                     .explosionResistance(10f)
@@ -56,7 +56,6 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration BLAZE_NECTAR =
             REGISTRATE.SimpleFluid("blaze_nectar")
-                    .tintColor(0x553E9B)
                     .levelDecreasePerBlock(2)
                     .tickRate(15)
                     .explosionResistance(100f)
@@ -71,7 +70,6 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration LIQUID_NIHILITE =
             REGISTRATE.SimpleFluid("liquid_nihilite")
-                    .tintColor(0x553E9B)
                     .levelDecreasePerBlock(2)
                     .tickRate(10)
                     .explosionResistance(200f)
@@ -80,7 +78,6 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration AKRYCITIC_ACID =
             REGISTRATE.SimpleFluid("akrycitic_acid")
-                    .tintColor(0x553E9B)
                     .levelDecreasePerBlock(1)
                     .tickRate(25)
                     .explosionResistance(200f)

@@ -12,6 +12,7 @@
     "airCurrentMixin",
     "flywheelMixin",
     "basinRecipeMixin",
-    "basinCategoryMixin"
+    "basinCategoryMixin",
+    "fluidRenderHelperMixin"
   ]
 }

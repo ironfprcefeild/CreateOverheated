@@ -28,7 +28,7 @@ public class AllItems {
 
     //Nihilite Stuff
     public static final OverheatedRegistrate.MetallicSet NIHILITE =
-            REGISTRATE.MakeMetallicSet("Nihilite", p -> p.mapColor(MapColor.COLOR_CYAN)
+            REGISTRATE.MakeMetallicSet("Nihilite", 0xFFFFFFFF, p -> p.mapColor(MapColor.COLOR_CYAN)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.AMETHYST_CLUSTER)
                     .strength(5f));
@@ -39,7 +39,7 @@ public class AllItems {
 
     //Blazesteel and Laser stuff
     public static final OverheatedRegistrate.MetallicSet BLAZESTEEL =
-            REGISTRATE.MakeMetallicSet("Blazesteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
+            REGISTRATE.MakeMetallicSet("Blazesteel", 0xFFFFFFFF, p -> p.mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.ANCIENT_DEBRIS)
                     .strength(5f));
@@ -92,7 +92,7 @@ public class AllItems {
     //Chillsteel
 
     public static final OverheatedRegistrate.MetallicSet CHILLSTEEL =
-            REGISTRATE.MakeMetallicSet("Chillsteel", p -> p.mapColor(MapColor.COLOR_ORANGE)
+            REGISTRATE.MakeMetallicSet("Chillsteel",0x99D2F5 , p -> p.mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.POWDER_SNOW)
                     .strength(3.5f));
@@ -112,7 +112,7 @@ public class AllItems {
 
     //Steel
     public static final OverheatedRegistrate.MetallicSet STEEL =
-            REGISTRATE.MakeMetallicSet("Steel", p -> p.mapColor(MapColor.COLOR_GRAY)
+            REGISTRATE.MakeMetallicSet("Steel", 0xFFFFFFFF,p -> p.mapColor(MapColor.COLOR_GRAY)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.METAL)
                     .strength(5f));
@@ -121,20 +121,20 @@ public class AllItems {
     //Molten Metals/Casts
     public static final OverheatedRegistrate.MetallicSet ZINC_METALWORKS =
             REGISTRATE.MakeMetallicSet("Zinc",null,
-                    defaultMoltenProperties,defaultMeltingRequirement,
+                    defaultMoltenProperties,0xFFFFFFFF,defaultMeltingRequirement,
                     com.simibubi.create.AllItems.ZINC_INGOT, com.simibubi.create.AllItems.ZINC_NUGGET, AllBlocks.ZINC_BLOCK);
 
     public static final OverheatedRegistrate.MetallicSet BRASS_METALWORKS =
             REGISTRATE.MakeMetallicSet("Brass",null,
-                    defaultMoltenProperties,defaultMeltingRequirement,
+                    defaultMoltenProperties,0xFFFFFFFF,defaultMeltingRequirement,
                     com.simibubi.create.AllItems.BRASS_INGOT, com.simibubi.create.AllItems.BRASS_NUGGET, AllBlocks.BRASS_BLOCK);
 
     public static final OverheatedRegistrate.vanillaMetallicSet IRON_METALWORKS =
-            REGISTRATE.makeVanillaMetallicSet("Iron",Items.IRON_INGOT,Items.IRON_NUGGET,Items.IRON_BLOCK);
+            REGISTRATE.makeVanillaMetallicSet("Iron",Items.IRON_INGOT,Items.IRON_NUGGET,Items.IRON_BLOCK,0xFFFFFFFF);
     public static final OverheatedRegistrate.vanillaMetallicSet GOLD_METALWORKS =
-            REGISTRATE.makeVanillaMetallicSet("Gold",Items.GOLD_INGOT,Items.GOLD_NUGGET,Items.GOLD_BLOCK);
+            REGISTRATE.makeVanillaMetallicSet("Gold",Items.GOLD_INGOT,Items.GOLD_NUGGET,Items.GOLD_BLOCK,0xFFFFFFFF);
     public static final OverheatedRegistrate.vanillaMetallicSet COPPER_METALWORKS =
-            REGISTRATE.makeVanillaMetallicSet("Copper",Items.COPPER_INGOT, null,Items.COPPER_BLOCK);
+            REGISTRATE.makeVanillaMetallicSet("Copper",Items.COPPER_INGOT, null,Items.COPPER_BLOCK,0xFFFFFFFF);
 
 
 

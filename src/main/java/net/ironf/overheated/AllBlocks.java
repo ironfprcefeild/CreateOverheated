@@ -41,10 +41,7 @@ import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelDirectio
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelHorizontalDirectionalBlockStateGen;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelSpunBlockStateGen;
 import net.ironf.overheated.utility.registration.AllSpriteShifts;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
@@ -173,8 +170,8 @@ public class AllBlocks {
 
 
     //TODO make it render properly
-    public static final BlockEntry<Block> BLAZEGLASS  =
-            REGISTRATE.block("blazeglass", Block::new)
+    public static final BlockEntry<GlassBlock> BLAZEGLASS  =
+            REGISTRATE.block("blazeglass", GlassBlock::new)
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).strength(1.5f))
                     .blockstate(simpleCubeAll("blazeglass"))

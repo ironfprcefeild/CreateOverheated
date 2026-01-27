@@ -13,10 +13,10 @@ public class AllGasses {
     }
     //TODO make proper texture for morkite and gasses instead of the placeholder in the resources right now
     // (Morkite is using steam bucket as placeholder)
-    //TODO Also make actual tint colors
+
 
     public static final OverheatedRegistrate.FluidRegistration morkite = REGISTRATE.SimpleFluid("morkite")
-            .tintColor(0x33B3FF)
+
             .setGas(REGISTRATE.gasBlock("morkite")
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
@@ -26,7 +26,7 @@ public class AllGasses {
             .Register(p -> p.density(8));
 
     public static final OverheatedRegistrate.FluidRegistration nihilite_gas = REGISTRATE.SimpleFluid("nihilite_gas")
-            .tintColor(0x33B3FF)
+
             .setGas(REGISTRATE.gasBlock("nihilite_gas")
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
@@ -47,8 +47,6 @@ public class AllGasses {
             .Register(p -> p.density(-3));
 
     public static final OverheatedRegistrate.FluidRegistration water_vapor = REGISTRATE.SimpleFluid("water_vapor")
-            .tintColor(0x33B3FF)
-            .overrideTexture("steam")
             .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("water_vapor")
                     .defaultFlow(Direction.UP)
@@ -59,11 +57,12 @@ public class AllGasses {
             .Register(p -> p.density(-1));
 
     public static final OverheatedRegistrate.FluidRegistration oxygen = REGISTRATE.SimpleFluid("oxygen")
-            .tintColor(0x33B3FF)
-            .overrideTexture("steam")
+            .overrideTexture("block/steam")
             .makeGasUnCapturable()
+            .tintColor(0xD77793FB)
             .setGas(REGISTRATE.gasBlock("oxygen")
                     .defaultFlow(Direction.UP)
+                    .overrideTexturing("block/steam")
                     .shiftChance(3)
                     .tickDelays(1,5)
                     .explosionSafety(0)
@@ -71,14 +70,15 @@ public class AllGasses {
             .Register(p -> p.density(-1));
 
     public static final OverheatedRegistrate.FluidRegistration hydrogen = REGISTRATE.SimpleFluid("hydrogen")
-            .tintColor(0x33B3FF)
-            .overrideTexture("steam")
+            .tintColor(0xDCDD0000)
+            .overrideTexture("block/steam")
             .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("hydrogen")
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,3)
                     .explosionSafety(0)
+                    .overrideTexturing("block/steam")
                     .register())
             .Register(p -> p.density(-1));
 

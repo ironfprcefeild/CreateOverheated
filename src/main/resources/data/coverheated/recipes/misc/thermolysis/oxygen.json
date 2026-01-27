@@ -12,16 +12,8 @@
       "amount": 40
     },
     {
-      "item": "create:copper_nugget"
-    },
-    {
-      "item": "create:copper_nugget"
-    },
-    {
-      "item": "create:copper_nugget"
-    },
-    {
-      "item": "create:copper_nugget"
+      "item": "create:copper_nugget",
+      "count": 4
     }
   ]
 }

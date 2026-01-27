@@ -26,7 +26,7 @@ public class AllSteamFluids {
 
     public static final OverheatedRegistrate.FluidRegistration DISTILLED_WATER =
             REGISTRATE.SimpleFluid("distilled_water")
-                    .tintColor(0x33B3FF)
+                    .tintColor(0xE433B3FF)
                     .levelDecreasePerBlock(2)
                     .tickRate(20)
                     .explosionResistance(10f)
@@ -46,8 +46,7 @@ public class AllSteamFluids {
     public static OverheatedRegistrate.FluidRegistration registerSteam(int PressureLevel, int HeatRating){
         String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel];
         return REGISTRATE.SimpleFluid(name)
-                .tintColor(0x33B3FF)
-                .overrideTexture("block/fluids/steam")
+                .overrideTexture("block/steam")
                 .addBucketToSteamTabOnly()
                 .bucketModelLocation("item/steam_bucket")
                 .setGas(REGISTRATE.gasBlock(name)
@@ -55,7 +54,7 @@ public class AllSteamFluids {
                         .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
                         .explosionSafety(9 - (PressureLevel+HeatRating))
-                        .overideTexturing("block/steam")
+                        .overrideTexturing("block/steam")
                         .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));
@@ -65,7 +64,7 @@ public class AllSteamFluids {
         String name = heatingIDs[HeatRating] + "air";
         return REGISTRATE.SimpleFluid(name)
                 .tintColor(0x33B3FF)
-                .overrideTexture("block/fluids/hot_air")
+                .overrideTexture("block/hot_air")
                 .addBucketToSteamTabOnly()
                 .bucketModelLocation("item/hot_air_bucket")
                 .setGas(REGISTRATE.gasBlock(name)
@@ -73,7 +72,7 @@ public class AllSteamFluids {
                         .tickDelays(2,8)
                         .defaultFlow(Direction.UP)
                         .explosionSafety(9 - (HeatRating))
-                        .overideTexturing("block/hot_air")
+                        .overrideTexturing("block/hot_air")
                         .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));

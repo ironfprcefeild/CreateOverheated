@@ -13,6 +13,7 @@ import net.ironf.overheated.nuclear.rods.ControlRodsRegister;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
+import net.ironf.overheated.utility.TranslucencyHandler;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraft.resources.ResourceLocation;
@@ -85,8 +86,8 @@ public class Overheated
         DiodeHeaters.registerDefaults();
         mirrorRegister.registerDefaults();
         ControlRodsRegister.registerDefaults();
-        //temBlockRenderTypes.setRenderLayer(AllSteamFluids.DISTILLED_WATER.SOURCE.get(), RenderType.waterMask());
-        //ItemBlockRenderTypes.setRenderLayer(AllSteamFluids.DISTILLED_WATER.SOURCE.get().getFlowing(), RenderType.waterMask());
+
+        TranslucencyHandler.addRenderLayers();
 
     }
 

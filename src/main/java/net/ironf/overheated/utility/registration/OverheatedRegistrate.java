@@ -1,5 +1,7 @@
 package net.ironf.overheated.utility.registration;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -21,6 +23,12 @@ import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvi
 import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -30,6 +38,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -65,6 +74,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,6 +137,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final boolean existingMetal;
         public MetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties,
                            UnaryOperator<FluidType.Properties> fluidTypeProperties,
+                           int tintColor,
                            BlastFurnaceStatus meltingRequirement,
                            ItemEntry<Item> ingotOverride, ItemEntry<Item> nuggetOverride,BlockEntry<Block> blockOverride){
             id = name.toLowerCase().replace(" ","_");
@@ -156,7 +167,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
             this.meltingRequirement = meltingRequirement;
 
             molten = REGISTRATE.SimpleFluid("molten_"+id)
-                    .tintColor(0x25BE45)
+                    .tintColor(tintColor)
+                    .overrideTexture("block/fluids/molten")
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(fluidTypeProperties);
 
@@ -231,9 +243,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public MetallicSet MakeMetallicSet(String name,
                                        NonNullUnaryOperator<BlockBehaviour.Properties> bProperties,
                                        UnaryOperator<FluidType.Properties> fluidTypeProperties,
+                                       int tintColor,
                                        BlastFurnaceStatus meltingRequirement,
                                        ItemEntry<Item> ingotOverride, ItemEntry<Item> nuggetOverride,BlockEntry<Block> blockOverride){
-        return new MetallicSet(name,bProperties,fluidTypeProperties, meltingRequirement, ingotOverride,nuggetOverride,blockOverride);
+        return new MetallicSet(name,bProperties,fluidTypeProperties,tintColor,meltingRequirement, ingotOverride,nuggetOverride,blockOverride);
     }
     public static UnaryOperator<FluidType.Properties> defaultMoltenProperties = (p -> p.canDrown(true)
             .lightLevel(4)
@@ -243,8 +256,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
             .temperature(200));
     public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(2,1000);
     //This one includes generic molten fluid properties
-    public MetallicSet MakeMetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
-        return MakeMetallicSet(name,bProperties, defaultMoltenProperties,defaultMeltingRequirement,null,null,null);
+    public MetallicSet MakeMetallicSet(String name, int tintColor, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
+        return MakeMetallicSet(name,bProperties, defaultMoltenProperties,tintColor,defaultMeltingRequirement,null,null,null);
     }
 
     // Vanilla
@@ -258,7 +271,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
 
-        public vanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties) {
+        public vanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties, int tintColor) {
             this.ingot = ingot;
             this.nugget = nugget;
             this.block = block;
@@ -268,7 +281,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .lang(name + " Ingot Casted")
                     .register();
             molten = REGISTRATE.SimpleFluid("molten_"+id)
-                    .tintColor(0x25BE45)
+                    .overrideTexture("block/fluids/molten")
+                    .tintColor(tintColor)
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(fluidTypeProperties);
 
@@ -324,11 +338,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
     }
 
-    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties){
-        return new vanillaMetallicSet(name,ingot,nugget,block,meltingRequirement,fluidTypeProperties);
+    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties, int tintColor){
+        return new vanillaMetallicSet(name,ingot,nugget,block,meltingRequirement,fluidTypeProperties,tintColor);
     }
-    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block){
-        return makeVanillaMetallicSet(name,ingot,nugget,block,defaultMeltingRequirement,defaultMoltenProperties);
+    public vanillaMetallicSet makeVanillaMetallicSet(String name, Item ingot, Item nugget, Item block, int tintColor){
+        return makeVanillaMetallicSet(name,ingot,nugget,block,defaultMeltingRequirement,defaultMoltenProperties,tintColor);
     }
 
 
@@ -386,6 +400,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
     }
     public static List<RegistryObject<? extends Item>> allBuckets = new ReferenceArrayList<>();
     public static List<RegistryObject<? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
+    public static List<RegistryObject<GasBlock>> transparentGasses = new ReferenceArrayList<>();
+    public static void applyGasTransparency(){
+        for (RegistryObject<GasBlock> gas : transparentGasses) {
+            ItemBlockRenderTypes.setRenderLayer(gas.get(), RenderType.translucent());
+        }
+    }
     public static class FluidRegistration {
         OverheatedRegistrate Parent;
         String name;
@@ -566,6 +586,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
                 private final int tintColor = Tint_Color;
 
+
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                     consumer.accept(new IClientFluidTypeExtensions() {
@@ -584,7 +605,28 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
+                        @Override
+                        public int getTintColor() {
+                            return tintColor;
+                        }
 
+                        private final Vector3f fogColor = new Vector3f(
+                                FastColor.ARGB32.red(tintColor),
+                                FastColor.ARGB32.green(tintColor),
+                                FastColor.ARGB32.blue(tintColor));
+
+                        @Override
+                        public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+                                                                int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                            return fogColor;
+                        }
+
+                        @Override
+                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick,
+                                                    float nearDistance, float farDistance, FogShape shape) {
+                            RenderSystem.setShaderFogStart(1f);
+                            RenderSystem.setShaderFogEnd(6f);
+                        }
 
                     });
                 }
@@ -624,7 +666,28 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             return overlayTexture;
                         }
 
+                        @Override
+                        public int getTintColor() {
+                            return tintColor;
+                        }
 
+                        private final Vector3f fogColor = new Vector3f(
+                                FastColor.ARGB32.red(tintColor),
+                                FastColor.ARGB32.green(tintColor),
+                                FastColor.ARGB32.blue(tintColor));
+
+                        @Override
+                        public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+                                                                int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                            return fogColor;
+                        }
+
+                        @Override
+                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick,
+                                                    float nearDistance, float farDistance, FogShape shape) {
+                            RenderSystem.setShaderFogStart(1f);
+                            RenderSystem.setShaderFogEnd(6f);
+                        }
                     });
                 }
                 @Override
@@ -641,6 +704,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     return createdBlock.get().defaultBlockState();
                 }
 
+                public int getTintColor() {
+                    return tintColor;
+                }
             });
         }
 
@@ -680,6 +746,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public int pressurizeChance;
         public Direction direction;
 
+        public boolean isBreathable = false;
+        public boolean seeThrough = true;
+
         public GasFlowGetter gfg = null;
         public Predicate<BlockState> passThroughPredicate = null;
 
@@ -715,10 +784,19 @@ public class OverheatedRegistrate extends CreateRegistrate {
             }
             return this;
         }
-        public gasBlockEntry<T> overideTexturing(String location){
+        public gasBlockEntry<T> overrideTexturing(String location){
             this.textureOver = location;
             return this;
         }
+        public gasBlockEntry<T> breathable(){
+            this.isBreathable = true;
+            return this;
+        }
+        public gasBlockEntry<T> notSeeThrough(){
+            this.seeThrough = false;
+            return this;
+        }
+
         public RegistryObject<GasBlock> register(){
             if (gfg == null){
                 if (shiftChance == 0){
@@ -743,7 +821,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             .replaceable()
                             .destroyTime(-1)
                             .sound(SoundType.FUNGUS)
-                            .isSuffocating(OverheatedRegistrate::always)
+                            .isSuffocating(isBreathable ? OverheatedRegistrate::never : OverheatedRegistrate::always)
+                            .isRedstoneConductor(OverheatedRegistrate::never)
+                            .isViewBlocking(seeThrough ? OverheatedRegistrate::never : OverheatedRegistrate::always)
                             .noLootTable(),
                             gfg, passThroughPredicate, pressurizeChance, lowerTickDelay,upperTickDelay)));
 
@@ -751,13 +831,24 @@ public class OverheatedRegistrate extends CreateRegistrate {
             if (textureOver != null){
                 blockModelOverride.put(toReturn,fromNamespaceAndPath(Parent.getModid(),textureOver));
             }
+
+            if (seeThrough){
+                transparentGasses.add(toReturn);
+            }
+
             return toReturn;
 
         }
 
     }
+
+
+
     private static boolean always(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
         return true;
+    }
+    private static boolean never(BlockState p_50775_, BlockGetter p_50776_, BlockPos p_50777_) {
+        return false;
     }
 
 
