@@ -3,10 +3,6 @@ package net.ironf.overheated;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
-import net.ironf.overheated.batteries.charger.ChargerBlockEntity;
-import net.ironf.overheated.batteries.charger.ChargerBlockEntityRenderer;
-import net.ironf.overheated.batteries.discharger.DischargerBlockEntity;
-import net.ironf.overheated.batteries.discharger.DischargerBlockEntityRenderer;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.expeller.ChannelExpellerBlockEntity;
@@ -174,22 +170,6 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.CHAMBER_CORE)
             .register();
 
-    //Charger
-
-    public static final BlockEntityEntry<ChargerBlockEntity> CHARGER = REGISTRATE
-            .blockEntity("charger", ChargerBlockEntity::new)
-            .visual(() -> SingleAxisRotatingVisual::shaft, false)
-            .renderer(() -> ChargerBlockEntityRenderer::new)
-            .validBlocks(AllBlocks.CHARGER)
-            .register();
-
-    //Discharger
-    public static final BlockEntityEntry<DischargerBlockEntity> DISCHARGER = REGISTRATE
-            .blockEntity("discharger", DischargerBlockEntity::new)
-            .visual(() -> SingleAxisRotatingVisual::shaft, false)
-            .renderer(() -> DischargerBlockEntityRenderer::new)
-            .validBlocks(AllBlocks.DISCHARGER)
-            .register();
 
     //Blowing Engine
     public static final BlockEntityEntry<BlowingEngineBlockEntity> BLOWING_ENGINE = REGISTRATE

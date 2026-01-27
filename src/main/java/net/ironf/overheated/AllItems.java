@@ -2,7 +2,6 @@ package net.ironf.overheated;
 
 import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import net.ironf.overheated.batteries.AllBatteryItems;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.nuclear.radiation.GeigerCounterItem;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
@@ -113,10 +112,6 @@ public class AllItems {
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.METAL)
                     .strength(5f));
-    //Batteries
-    static {
-        AllBatteryItems.register();
-    }
 
     public static final ItemEntry<Item> BATTERY_CATHODE = craftingIngredient("battery_cathode","Battery Cathode");
     public static final ItemEntry<Item> BATTERY_ANODE = craftingIngredient("battery_anode","Battery Anode");

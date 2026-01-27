@@ -5,8 +5,6 @@ import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import net.ironf.overheated.batteries.charger.ChargerBlock;
-import net.ironf.overheated.batteries.discharger.DischargerBlock;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlock;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelCoreBlock;
 import net.ironf.overheated.cooling.chillChannel.expeller.ChannelExpellerBlock;
@@ -677,44 +675,7 @@ public class AllBlocks {
             .register();
 
 
-    //Charger/Discharger
-    public static final BlockEntry<ChargerBlock> CHARGER = REGISTRATE
-            .block("charger", ChargerBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.sound(SoundType.COPPER).strength(3f))
-            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-            .defaultLoot()
-            .register();
 
-    public static final BlockEntry<Block> TRANSFORMER_COIL =
-            REGISTRATE.block("transformer_coil", Block::new)
-                    .initialProperties(() -> Blocks.COPPER_BLOCK)
-                    .properties(p -> p.mapColor(MapColor.COLOR_ORANGE)
-                            .requiresCorrectToolForDrops()
-                            .lightLevel((state) -> 2)
-                            .sound(SoundType.METAL)
-                            .strength(1f))
-                    .transform(pickaxeOnly())
-                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-                    .defaultLoot()
-                    .lang("Transformer Coil")
-                    .register();
-
-    //
-    public static final BlockEntry<DischargerBlock> DISCHARGER = REGISTRATE
-            .block("discharger", DischargerBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
-            .properties(p -> p.sound(SoundType.COPPER).strength(3f))
-            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-            .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-            .defaultLoot()
-            .register();
 
     /// Blowing Engine
     public static final BlockEntry<BlowingEngineBlock> BLOWING_ENGINE = REGISTRATE
