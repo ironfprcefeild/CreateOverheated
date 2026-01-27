@@ -6,6 +6,7 @@ import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
+import static net.ironf.overheated.steamworks.AllSteamFluids.DISTILLED_WATER;
 
 public class AllGasses {
     static {
@@ -65,6 +66,7 @@ public class AllGasses {
                     .overrideTexturing("block/steam")
                     .shiftChance(3)
                     .tickDelays(1,5)
+                    .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                     .explosionSafety(0)
                     .register())
             .Register(p -> p.density(-1));
@@ -79,6 +81,7 @@ public class AllGasses {
                     .tickDelays(1,3)
                     .explosionSafety(0)
                     .overrideTexturing("block/steam")
+                    .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                     .register())
             .Register(p -> p.density(-1));
 

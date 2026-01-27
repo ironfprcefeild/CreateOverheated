@@ -34,22 +34,6 @@ import static com.simibubi.create.content.processing.basin.BasinBlockEntity.getH
 @Mixin(com.simibubi.create.content.processing.basin.BasinRecipe.class)
 public class basinRecipeMixin {
 
-    /*
-    @Inject(method = "(BasinBlockEntity,Recipe<?>,boolean)com.simibubi.create.content.processing.basin.BasinRecipe.boolean", at = @At("HEAD"))
-    private static void onApply(BasinBlockEntity basin, Recipe<?> recipe, boolean test, CallbackInfoReturnable<Boolean> callBack) {
-        //Injection Here
-        Overheated.LOGGER.info("My Ass!");
-        if (recipe instanceof BasinRecipe
-                && ReinforcementHandler.requiresReinforcement.contains(recipe.getId().getPath())
-                && !basin.getLevel().getBlockState(basin.getBlockPos().below()).is(AllBlocks.REINFORCEMENT.get())){
-            //If this recipe requires reinforcement and there is no reinforcement we return false.
-            callBack.setReturnValue(false);
-        }
-
-    }
-
-     */
-
     private static boolean apply(BasinBlockEntity basin, Recipe<?> recipe, boolean test) {
         boolean isBasinRecipe = recipe instanceof BasinRecipe;
         boolean reinforcementPresent = basin.getLevel().getBlockState(basin.getBlockPos().above()).is(AllBlocks.REINFORCEMENT.get());

@@ -134,6 +134,8 @@ public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
                 return -1;
             }
         });
+        Overheated.LOGGER.info("O: Adding Laser Casing to Boiler Heaters");
+        BoilerHeater.REGISTRY.register(AllBlocks.LASER_CASING.get(), (level, pos, state) -> BoilerHeater.findHeat(level,pos.below(),level.getBlockState(pos.below())));
     }
 
     @Override
