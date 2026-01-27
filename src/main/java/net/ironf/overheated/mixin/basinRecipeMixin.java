@@ -53,8 +53,7 @@ public class basinRecipeMixin {
     private static boolean apply(BasinBlockEntity basin, Recipe<?> recipe, boolean test) {
         boolean isBasinRecipe = recipe instanceof BasinRecipe;
         boolean reinforcementPresent = basin.getLevel().getBlockState(basin.getBlockPos().above()).is(AllBlocks.REINFORCEMENT.get());
-        Overheated.LOGGER.info("Reinforcement: " + reinforcementPresent);
-        Overheated.LOGGER.info((recipe.getId().getPath()));
+
         if (isBasinRecipe
                 && ReinforcementHandler.requiresReinforcement.contains(recipe.getId().getPath())
                 && !reinforcementPresent){

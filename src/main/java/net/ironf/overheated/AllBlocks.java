@@ -33,7 +33,6 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fl
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
-import net.ironf.overheated.steamworks.blocks.reinforcement.ReinforcementBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
 import net.ironf.overheated.utility.data.SimpleBlockStateGenerators;
@@ -336,9 +335,9 @@ public class AllBlocks {
             .register();
 
     //Reinforcement
-    public static final BlockEntry<ReinforcementBlock> REINFORCEMENT = REGISTRATE
-            .block("reinforcement", ReinforcementBlock::new)
-            .initialProperties(SharedProperties::copperMetal)
+    public static final BlockEntry<Block> REINFORCEMENT = REGISTRATE
+            .block("reinforcement", Block::new)
+            .initialProperties(SharedProperties::netheriteMetal)
             .properties(p -> p.strength(2f))
             .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
             .transform(pickaxeOnly())
