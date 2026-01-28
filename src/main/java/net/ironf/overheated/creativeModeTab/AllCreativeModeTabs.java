@@ -113,9 +113,7 @@ public class AllCreativeModeTabs {
             List<ItemProviderEntry<?>> simpleExclusions = List.of(
                     AllItems.INCOMPLETE_INDUSTRIAL_SHEET,
                     AllItems.INCOMPLETE_PRESSURIZED_CASING,
-                    AllItems.INCOMPLETE_LASER_CASING,
-                    AllItems.INCOMPLETE_ANODE,
-                    AllItems.INCOMPLETE_CATHODE
+                   AllItems.INCOMPLETE_LASER_CASING
             );
 
             //!!!!// Exclude Certain Items by tag

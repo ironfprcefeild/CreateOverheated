@@ -1,0 +1,20 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "fluid": "coverheated:hydrogen",
+      "amount": 4
+    },
+    {
+      "fluid": "coverheated:nitrogen",
+      "amount": 1
+    }
+  ],
+  "results": [
+    {
+      "fluid": "coverheated:ammonia",
+      "amount": 5
+    }
+  ]
+}

@@ -149,10 +149,8 @@ public class AllItems {
             .register();
 
 
-    //Incomplete Items
-    public static final ItemEntry<Item> INCOMPLETE_CATHODE = craftingIngredient("incomplete_cathode","Incomplete Battery Cathode");
-    public static final ItemEntry<Item> INCOMPLETE_ANODE = craftingIngredient("incomplete_anode","Incomplete Battery Anode");
-
+    //Cinder Globule
+    public static final ItemEntry<Item> CINDER_GLOBULE = craftingIngredient("cinder_globule","Cinder Globule");
 
     public static ItemEntry<Item> craftingIngredient(String id,String lang){
         return REGISTRATE.item(id,Item::new).lang(lang).register();

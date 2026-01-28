@@ -1,0 +1,19 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "fluid": "coverheated:oxygen",
+      "amount": 2
+    },
+    {
+      "fluid": "coverheated:ammonia",
+      "amount": 2
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:bone_meal"
+    }
+  ]
+}

@@ -12,7 +12,10 @@ public class ReinforcementHandler {
         requiresReinforcement.add("misc/thermolysis/superheated");
         requiresReinforcement.add("misc/thermolysis/oxygen");
         requiresReinforcement.add("misc/thermolysis/hydrogen");
-
+        requiresReinforcement.add("misc/ammonia");
+        requiresReinforcement.add("misc/ammonia_bonemeal");
+        requiresReinforcement.add("misc/cinderfume/cinder_globule");
+        requiresReinforcement.add("misc/cinderfume/rod_from_cinder_globule");
 
     }
 

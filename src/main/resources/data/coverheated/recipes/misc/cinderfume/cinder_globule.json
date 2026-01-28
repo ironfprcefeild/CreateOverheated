@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+    "fluid": "coverheated:cinderfume",
+    "amount": 200
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:cinder_globule"
+    },
+    {
+      "fluid": "minecraft:lava",
+      "amount": 10
+    }
+  ]
+}
