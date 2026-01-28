@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
@@ -20,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -121,10 +123,25 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
                 return;
             }
 
+            //Atmospheric Extraction
+            Fluid alternateFluid = null;
+            if (level.getBlockState(getBlockPos().below()).is(AllBlocks.INTAKE_FILTER.get())){
+                alternateFluid = switch (level.dimension().toString()){
+                    case "ResourceKey[minecraft:dimension / minecraft:overworld]" ->
+                        heatingLevel >= 1 ? AllGasses.nitrogen.SOURCE.get().getSource() : null;
+                    case "ResourceKey[minecraft:dimension / minecraft:the_nether]" ->
+                            heatingLevel >= 2 ? AllGasses.cinderfume.SOURCE.get().getSource() : null;
+                    case "ResourceKey[minecraft:dimension / minecraft:the_end]" ->
+                            heatingLevel >= 3 ? AllGasses.voidaium.SOURCE.get().getSource() : null;
+                    default -> null;
+                };
+            }
+
             //Everything is good to go
             int fluidAmount = steamPressure+steamHeating*steamHeating;
             fluidAmount = oxyPresent ? fluidAmount * 3 : fluidAmount;
-            FluidStack airCreated = new FluidStack(AllSteamFluids.HotAirs[heatingLevel-1],fluidAmount);
+            FluidStack airCreated = new FluidStack(
+                    alternateFluid == null ? AllSteamFluids.HotAirs[heatingLevel-1] : alternateFluid,fluidAmount);
 
             if (outputTank.fill(airCreated, IFluidHandler.FluidAction.SIMULATE) == fluidAmount){
                 outputTank.fill(airCreated, IFluidHandler.FluidAction.EXECUTE);

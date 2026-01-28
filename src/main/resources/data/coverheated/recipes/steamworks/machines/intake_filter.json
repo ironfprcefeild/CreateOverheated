@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "coverheated:steel_ingot"
+    },
+    "n": {
+      "item": "create:nozzle"
+    },
+    "r": {
+      "item": "coverheated:redstonite_crystal"
+    }
+  },
+  "pattern": [
+    "sss",
+    "rrr",
+    "nnn"
+  ],
+  "result": {
+    "item": "coverheated:intake_filter"
+  }
+}

@@ -47,6 +47,39 @@ public class AllGasses {
                     .register())
             .Register(p -> p.density(-3));
 
+    public static final OverheatedRegistrate.FluidRegistration nitrogen = REGISTRATE.SimpleFluid("nitrogen")
+            .tintColor(0x33B3FF)
+            .overrideTexture("steam")
+            .setGas(REGISTRATE.gasBlock("nitrogen")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(10)
+                    .tickDelays(1,4)
+                    .explosionSafety(12)
+                    .register())
+            .Register(p -> p.density(-3));
+
+    public static final OverheatedRegistrate.FluidRegistration cinderfume = REGISTRATE.SimpleFluid("cinderfume")
+            .tintColor(0x33B3FF)
+            .overrideTexture("steam")
+            .setGas(REGISTRATE.gasBlock("cinderfume")
+                    .defaultFlow(Direction.DOWN)
+                    .shiftChance(3)
+                    .tickDelays(2,5)
+                    .explosionSafety(12)
+                    .register())
+            .Register(p -> p.density(4));
+
+    public static final OverheatedRegistrate.FluidRegistration voidaium = REGISTRATE.SimpleFluid("voidaium")
+            .tintColor(0x33B3FF)
+            .overrideTexture("steam")
+            .setGas(REGISTRATE.gasBlock("vodaium")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(5)
+                    .tickDelays(1,2)
+                    .explosionSafety(12)
+                    .register())
+            .Register(p -> p.density(-8));
+
     public static final OverheatedRegistrate.FluidRegistration water_vapor = REGISTRATE.SimpleFluid("water_vapor")
             .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("water_vapor")

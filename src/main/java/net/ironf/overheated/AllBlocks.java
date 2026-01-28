@@ -780,6 +780,7 @@ public class AllBlocks {
                     .lang("Control Rod")
                     .register();
 
+    /// Radiolyzer
     public static final BlockEntry<RadiolyzerBlock> RADIOLYZER =
             REGISTRATE.block("radiolyzer", RadiolyzerBlock::new)
                     .initialProperties(() -> Blocks.COPPER_BLOCK)
@@ -793,6 +794,17 @@ public class AllBlocks {
                     .lang("Radiolyzer")
                     .register();
 
+    /// Intake Filter
+    public static final BlockEntry<Block> INTAKE_FILTER =
+            REGISTRATE.block("intake_filter", Block::new)
+                    .initialProperties(() -> Blocks.WHITE_WOOL)
+                    .properties(p -> p
+                            .requiresCorrectToolForDrops())
+                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+                    .defaultLoot()
+                    .lang("Reinforced Bricks")
+                    .register();
     /// Everything else
 
 
