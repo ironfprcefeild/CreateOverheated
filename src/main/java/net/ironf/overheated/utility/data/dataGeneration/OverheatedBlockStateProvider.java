@@ -70,7 +70,7 @@ public class OverheatedBlockStateProvider extends BlockStateProvider {
                             .end()
                         .textureAll("#face")
                     .end()
-                    .texture("#face",faceLocation)
+                    .texture("face",faceLocation)
                     .parent(new ModelFile.UncheckedModelFile("block/block"))
                     .renderType("translucent");
             } else {
