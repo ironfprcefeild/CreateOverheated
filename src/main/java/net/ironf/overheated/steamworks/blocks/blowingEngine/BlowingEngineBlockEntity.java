@@ -8,11 +8,13 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +38,7 @@ import java.util.List;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
-public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {
     public BlowingEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -87,6 +89,10 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
                 tickTimer = 100;
                 return;
             }
+            if (currentTemp >= 50){
+                errorMessage ="too_hot";
+                return;
+            }
             //At Maximum speed, it takes a little less than 2 Steam Vents per Blowing Engine
             tickTimer = 1024 / flyWheelSpeed;
 
@@ -135,6 +141,9 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
                             heatingLevel >= 3 ? AllGasses.voidaium.SOURCE.get().getSource() : null;
                     default -> null;
                 };
+                if (alternateFluid != null){
+                    addTemp((float) Math.pow(3,heatingLevel+1));
+                }
             }
 
             //Everything is good to go
@@ -174,6 +183,16 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
         return (tank != null) ? tank.getTankInventory() : null;
     }
 
+    /// Cooling
+    @Override
+    public boolean doCooling() {
+        return true;
+    }
+
+    @Override
+    public CoolingData getPassiveCooling() {
+        return new CoolingData(4f,0f);
+    }
 
     /// Read/Write
     @Override
@@ -207,7 +226,9 @@ public class BlowingEngineBlockEntity extends SmartBlockEntity implements IHaveG
 
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         tooltip.add(addIndent(Component.translatable("coverheated.blowing_engine.heat").append(easyFloat(lastHeatReading)).withStyle(ChatFormatting.RED)));
-
+        if (currentTemp != 0f){
+            tempAndCoolInfo(tooltip);
+        }
         if (isPlayerSneaking) {
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.blowing_engine.making")
                     .append(String.valueOf(lastOutputAmount)).append(Component.translatable("coverheated.blowing_engine.hot_air_in"))
