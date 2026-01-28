@@ -76,6 +76,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -366,7 +367,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
                             existingFileHelper,
                             GAS_BLOCKS.getEntries(),
                             OverheatedRegistrate.makeBlockItems,
-                            OverheatedRegistrate.blockModelOverride));
+                            OverheatedRegistrate.blockModelOverride,
+                            TintedBlocks));
 
             generator.addProvider(event.includeClient(), new OverheatedItemModelProvider(
                     packOutput,
@@ -401,6 +403,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static List<RegistryObject<? extends Item>> allBuckets = new ReferenceArrayList<>();
     public static List<RegistryObject<? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
     public static List<RegistryObject<GasBlock>> transparentGasses = new ReferenceArrayList<>();
+    public static HashMap<RegistryObject<GasBlock>,Integer> blockTintColors = new HashMap<>();
+    public static ArrayList<RegistryObject<? extends Block>> TintedBlocks = new ArrayList<>();
     public static void applyGasTransparency(){
         for (RegistryObject<GasBlock> gas : transparentGasses) {
             ItemBlockRenderTypes.setRenderLayer(gas.get(), RenderType.translucent());
@@ -556,6 +560,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
                 InvGasMap.put(this,gb);
                 if (!gasHoodCapturable){
                     nonCapturableGases.add(gb);
+                }
+                if (tintColor != 0xFFFFFFFF){
+                    blockTintColors.put(gb,tintColor);
+                    TintedBlocks.add(gb);
                 }
             }
 

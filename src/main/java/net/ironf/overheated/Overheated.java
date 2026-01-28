@@ -3,6 +3,7 @@ package net.ironf.overheated;
 import com.mojang.logging.LogUtils;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
@@ -16,9 +17,14 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.utility.TranslucencyHandler;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -30,6 +36,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
@@ -131,6 +139,16 @@ public class Overheated
 
         }
 
+        @SubscribeEvent
+        public static void registerBlockColors(RegisterColorHandlersEvent.Block event){
+            for (RegistryObject<GasBlock> gb : OverheatedRegistrate.blockTintColors.keySet()){
+                event.register(getBlockColor(OverheatedRegistrate.blockTintColors.get(gb)),gb.get());
+            }
+        }
+
+        public static BlockColor getBlockColor(int tintColor){
+            return (p_92567_, p_92568_, p_92569_, p_92570_) -> tintColor;
+        }
 
     }
 

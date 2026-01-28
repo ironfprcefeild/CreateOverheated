@@ -37,10 +37,11 @@ public class AllGasses {
             .Register(p -> p.density(8));
 
     public static final OverheatedRegistrate.FluidRegistration ammonia = REGISTRATE.SimpleFluid("ammonia")
-            .tintColor(0x33B3FF)
-            .overrideTexture("steam")
+            .tintColor(0xCF00C957)
+            .overrideTexture("block/steam")
             .setGas(REGISTRATE.gasBlock("ammonia")
                     .defaultFlow(Direction.UP)
+                    .overrideTexturing("block/steam")
                     .shiftChance(5)
                     .tickDelays(2,5)
                     .explosionSafety(12)
@@ -48,10 +49,11 @@ public class AllGasses {
             .Register(p -> p.density(-3));
 
     public static final OverheatedRegistrate.FluidRegistration nitrogen = REGISTRATE.SimpleFluid("nitrogen")
-            .tintColor(0x33B3FF)
-            .overrideTexture("steam")
+            .tintColor(0xDDAF70A1)
+            .overrideTexture("block/steam")
             .setGas(REGISTRATE.gasBlock("nitrogen")
                     .defaultFlow(Direction.UP)
+                    .overrideTexturing("block/steam")
                     .shiftChance(10)
                     .tickDelays(1,4)
                     .explosionSafety(12)
@@ -72,7 +74,7 @@ public class AllGasses {
     public static final OverheatedRegistrate.FluidRegistration voidaium = REGISTRATE.SimpleFluid("voidaium")
             .tintColor(0x33B3FF)
             .overrideTexture("steam")
-            .setGas(REGISTRATE.gasBlock("vodaium")
+            .setGas(REGISTRATE.gasBlock("voidaium")
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,2)

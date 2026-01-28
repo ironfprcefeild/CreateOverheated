@@ -63,7 +63,6 @@ public class AllSteamFluids {
     public static OverheatedRegistrate.FluidRegistration registerHotAir(int HeatRating){
         String name = heatingIDs[HeatRating] + "air";
         return REGISTRATE.SimpleFluid(name)
-                .tintColor(0x33B3FF)
                 .overrideTexture("block/hot_air")
                 .addBucketToSteamTabOnly()
                 .bucketModelLocation("item/hot_air_bucket")
