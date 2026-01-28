@@ -188,18 +188,21 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
     }
 
     private boolean checkForValidity() {
+        int weakConnections = 0;
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     BlockPos lookAt = getBlockPos().offset(x, y, z);
                     BlockState state = level.getBlockState(lookAt);
-                    if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
+                    if (AllTags.AllBlockTags.WEAK_CHAMBER_BORDER.matches(state)){
+                        weakConnections++;
+                    } else if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
                         return false;
                     }
                 }
             }
         }
-        return true;
+        return weakConnections <= 6;
     }
 
     private void causeExplode() {

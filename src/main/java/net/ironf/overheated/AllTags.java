@@ -61,6 +61,7 @@ public class AllTags {
 
     public enum AllBlockTags {
         CHAMBER_BORDER,
+        WEAK_CHAMBER_BORDER,
         COOLING_TOWER_BORDER,
         DRILL_SCAFFOLD,
 

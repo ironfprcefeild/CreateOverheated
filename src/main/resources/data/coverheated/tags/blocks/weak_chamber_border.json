@@ -1,0 +1,14 @@
+{
+  "values": [
+    "coverheated:laser_film",
+    "coverheated:pressure_chamber_core",
+    "coverheated:cooler",
+    "coverheated:meter_extender",
+
+    "create:mechanical_pump",
+    "create:fluid_pipe",
+    "create:encased_fluid_pipe",
+    "create:glass_fluid_pipe",
+    "create:smart_chute"
+  ]
+}
