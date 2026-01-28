@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "h": {
+      "item": "create:chute"
+    },
+    "i": {
+      "item": "minecraft:copper_ingot"
+    },
+    "c": {
+      "item": "coverheated:nuclear_casing"
+    },
+    "r": {
+      "item": "coverheated:redstonite_crystal"
+    }
+  },
+  "pattern": [
+    "chc",
+    "rrr",
+    "iri"
+  ],
+  "result": {
+    "item": "coverheated:radiolyzer"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    },
+    {
+      "item": "coverheated:redstonite_crystal"
+    }
+  ],
+  "result": {
+    "item": "coverheated:redstonite_block"
+  }
+}

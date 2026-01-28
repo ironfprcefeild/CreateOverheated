@@ -169,6 +169,18 @@ public class AllBlocks {
                     .lang("Sturdy Sheet Block")
                     .register();
 
+    public static final BlockEntry<Block> REDSTONITE_BLOCK =
+            REGISTRATE.block("redstonite_block", Block::new)
+                    .initialProperties(SharedProperties::softMetal)
+                    .properties(p -> p.mapColor(MapColor.COLOR_RED)
+                            .sound(SoundType.AMETHYST)
+                            .requiresCorrectToolForDrops()
+                            .strength(4f))
+                    .transform(pickaxeOnly())
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Redstonite Block")
+                    .register();
 
     //TODO make it render properly
     public static final BlockEntry<GlassBlock> BLAZEGLASS  =
@@ -769,13 +781,13 @@ public class AllBlocks {
                     .register();
 
     public static final BlockEntry<RadiolyzerBlock> RADIOLYZER =
-            REGISTRATE.block("radiolyzer_block", RadiolyzerBlock::new)
+            REGISTRATE.block("radiolyzer", RadiolyzerBlock::new)
                     .initialProperties(() -> Blocks.COPPER_BLOCK)
                     .properties(p -> p
                             .requiresCorrectToolForDrops()
                             .strength(2f))
-                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)                    .transform(pickaxeOnly())
+                    .simpleItem()
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/radiolyzer")::generate)                    .transform(pickaxeOnly())
                     .transform(pickaxeOnly())
                     .defaultLoot()
                     .lang("Radiolyzer")

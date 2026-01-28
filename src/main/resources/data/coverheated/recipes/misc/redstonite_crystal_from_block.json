@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "coverheated:redstonite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "coverheated:redstonite_crystal"
+  }
+}
