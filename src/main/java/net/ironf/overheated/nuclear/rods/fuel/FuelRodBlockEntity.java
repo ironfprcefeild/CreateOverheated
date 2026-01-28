@@ -117,7 +117,7 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
             FRBE.Heat += amount;
             FRBE.propagateNeutrino(amount,d,1);
         } else if (level.getBlockState(getBlockPos().relative(d,offset)).is(AllBlocks.NUCLEAR_CASING.get())){
-            //No fuel rod, but casing, so we call this again with more offset (until we find a rod or other)
+            //No 0fuel rod, but casing, so we call this again with more offset (until we find a rod or other)
             propagateNeutrino(amount,d,offset+1);
         }
     }

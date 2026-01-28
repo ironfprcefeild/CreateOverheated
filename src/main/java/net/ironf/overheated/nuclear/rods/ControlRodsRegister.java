@@ -1,5 +1,6 @@
 package net.ironf.overheated.nuclear.rods;
 
+import com.mojang.datafixers.TypeRewriteRule;
 import com.simibubi.create.api.registry.SimpleRegistry;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
@@ -40,6 +41,7 @@ public class ControlRodsRegister {
         Overheated.LOGGER.info("O: Registering Default Control and Fuel Rods");
         registerBERegulator(AllBlocks.URANIUM_FUEL_ROD.get());
         registerBERegulator(AllBlocks.CONTROL_ROD.get());
+        registerBERegulator(AllBlocks.RADIOLYZER.get());
         registerSimpleRegulator(AllBlocks.NUCLEAR_CASING.get(),0);
     }
 

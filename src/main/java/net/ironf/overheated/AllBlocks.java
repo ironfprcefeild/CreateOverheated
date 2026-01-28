@@ -20,6 +20,7 @@ import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.nuclear.radiolyzer.RadiolyzerBlock;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlock;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlock;
 import net.ironf.overheated.steamworks.blocks.blowingEngine.BlowingEngineBlock;
@@ -765,6 +766,19 @@ public class AllBlocks {
                     .transform(pickaxeOnly())
                     .defaultLoot()
                     .lang("Control Rod")
+                    .register();
+
+    public static final BlockEntry<RadiolyzerBlock> RADIOLYZER =
+            REGISTRATE.block("radiolyzer_block", RadiolyzerBlock::new)
+                    .initialProperties(() -> Blocks.COPPER_BLOCK)
+                    .properties(p -> p
+                            .requiresCorrectToolForDrops()
+                            .strength(2f))
+                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)                    .transform(pickaxeOnly())
+                    .transform(pickaxeOnly())
+                    .defaultLoot()
+                    .lang("Radiolyzer")
                     .register();
 
     /// Everything else

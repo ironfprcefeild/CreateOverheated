@@ -18,6 +18,7 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
+import net.ironf.overheated.nuclear.radiolyzer.RadiolyzerBlockEntity;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlockEntity;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlockEntity;
 import net.ironf.overheated.steamworks.blocks.blowingEngine.BlowingEngineBlockEntity;
@@ -202,6 +203,13 @@ public class AllBlockEntities {
             .blockEntity("control_rod", ControlRodBlockEntity::new)
             .validBlocks(AllBlocks.CONTROL_ROD)
             .register();
+
+    //Radiolyzer
+    public static final BlockEntityEntry<RadiolyzerBlockEntity> RADIOLYZER = REGISTRATE
+            .blockEntity("radiolyzer", RadiolyzerBlockEntity::new)
+            .validBlocks(AllBlocks.RADIOLYZER)
+            .register();
+
 
     public static void register(){
 
