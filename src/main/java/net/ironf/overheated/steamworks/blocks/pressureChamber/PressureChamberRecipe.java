@@ -43,7 +43,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
 
         //Check if pressure is high enough and enough steam is in the chamber
         int chamberPressure = chamber.getPressure();
-        if (!(chamberPressure >= SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken)) {
+       if((combustion && chamber.combustionTimer < ticksTaken && !fullSimulate) || (!combustion && !(chamberPressure >= SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken))) {
             return false;
         }
 
@@ -173,6 +173,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     private final float heatAdded;
     private final int ticksTaken;
     private final int minimumHeatRating;
+    private final boolean combustion;
     private final NonNullList<Ingredient> inputs;
     private final NonNullList<ItemStack> outputs;
 
@@ -193,8 +194,11 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         return heatAdded;
     }
 
+    public boolean isCombustion() {
+        return combustion;
+    }
 
-    public PressureChamberRecipe(ResourceLocation id, int steamPressure, float laserHeat, float heatAdded, int ticksTaken, int minimumHeatRating,  NonNullList<Ingredient> inputs, NonNullList<ItemStack> outputs) {
+    public PressureChamberRecipe(ResourceLocation id, int steamPressure, float laserHeat, float heatAdded, int ticksTaken, int minimumHeatRating, NonNullList<Ingredient> inputs, NonNullList<ItemStack> outputs, boolean combustion) {
         this.id = id;
         this.SteamPressure = steamPressure;
         this.laserHeat = laserHeat;
@@ -203,6 +207,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         this.minimumHeatRating = minimumHeatRating;
         this.inputs = inputs;
         this.outputs = outputs;
+        this.combustion = combustion;
     }
 
     public static class Serializer implements RecipeSerializer<PressureChamberRecipe> {
@@ -236,7 +241,8 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                     GsonHelper.getAsInt(SerializedRecipe,"ticks_taken"),
                     minHeatRate,
                     inputs,
-                    outputs);
+                    outputs,
+                    GsonHelper.getAsBoolean(SerializedRecipe,"combustion"));
 
         }
 
@@ -251,6 +257,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             7     Added Heat
             8     Ticks Taken
             9     Heat Rate
+            10    Combustion
          */
         @Override
         public @Nullable PressureChamberRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
@@ -263,7 +270,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
                 outputs.set(i, buf.readItem());
             }
             return new PressureChamberRecipe(id,buf.readInt(),buf.readFloat(),buf.readFloat(),buf.readInt(), buf.readInt(),
-                    inputs,outputs);
+                    inputs,outputs,buf.readBoolean());
         }
 
         @Override
@@ -280,6 +287,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             buf.writeFloat(recipe.heatAdded);
             buf.writeInt(recipe.ticksTaken);
             buf.writeInt(recipe.minimumHeatRating);
+            buf.writeBoolean(recipe.combustion);
         }
     }
 

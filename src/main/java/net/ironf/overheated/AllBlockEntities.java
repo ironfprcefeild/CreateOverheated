@@ -30,6 +30,7 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.Blast
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.ItemDuct.ItemDuctBlockEntity;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlockEntity;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlockEntity;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
@@ -171,7 +172,11 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.CHAMBER_CORE)
             .register();
 
-
+    //Combustion Vent
+    public static final BlockEntityEntry<CombustionVentBlockEntity> COMBUSTION_VENT = REGISTRATE
+            .blockEntity("combustion_vent", CombustionVentBlockEntity::new)
+            .validBlocks(AllBlocks.COMBUSTION_VENT)
+            .register();
     //Blowing Engine
     public static final BlockEntityEntry<BlowingEngineBlockEntity> BLOWING_ENGINE = REGISTRATE
             .blockEntity("blowing_engine", BlowingEngineBlockEntity::new)

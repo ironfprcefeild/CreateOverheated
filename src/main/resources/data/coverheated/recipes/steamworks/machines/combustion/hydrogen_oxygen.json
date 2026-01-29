@@ -1,0 +1,16 @@
+{
+  "type": "coverheated:combustion",
+  "input_a": {
+    "amount": 50,
+    "fluid": "coverheated:oxygen"
+  },
+  "input_b": {
+    "amount": 100,
+    "fluid": "coverheated:hydrogen"
+  },
+  "output": {
+    "amount": 150,
+    "fluid": "coverheated:purified_water"
+  },
+  "time": 500
+}

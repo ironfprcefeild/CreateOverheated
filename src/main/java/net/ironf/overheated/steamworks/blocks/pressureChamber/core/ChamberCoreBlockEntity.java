@@ -3,10 +3,15 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber.core;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllTags;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionRecipe;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlock;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
@@ -17,17 +22,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
@@ -46,7 +54,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(InputTank = SmartFluidTankBehaviour.single(this, 10000));
+        behaviours.add(InputTank = SmartFluidTankBehaviour.single(this, 10000).allowInsertion().allowExtraction());
     }
     private LazyOptional<IItemHandler> InputLazyItemHandler = LazyOptional.empty();
     private final ItemStackHandler InputItemHandler = new ItemStackHandler(16) {
@@ -109,6 +117,11 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     public int validTimer = 10;
     public int recipeTimer = 0;
+
+    public int combustionTimer = 0;
+    public boolean regulateCombustion = false;
+    public ArrayList<BlockPos> ventLocations = new ArrayList<>();
+
     //The total heat coming from inputted lasers
     public int currentPressure = 0;
     public int laserTimer = 0;
@@ -119,9 +132,12 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
         //Burn through steam. The method also updates current pressure
         handleSteam();
+
+
         //Validity Check & Start new recipe if needed
         if (validTimer-- <= 0){
-            validTimer = 50;
+            validTimer = 40;
+
             if (checkForValidity()) {
                 if (recipeTimer == 0) {
                     startNewRecipe();
@@ -130,11 +146,15 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
                 //Cancel recipe if invalid
                 cancelRecipe();
             }
+            // Handle combustion
+            handleCombustion();
         }
 
 
         //Handle Heat
-        if ((currentTemp <= 0 ? 0 : currentTemp) * Math.max(1,currentPressure) > 1024){
+        if ((currentTemp <= 0 ? 0 : currentTemp)
+                * Math.max(1,currentPressure)
+                * Math.max(1,Math.min(combustionTimer,4)) > (1024)){
             causeExplode();
         }
 
@@ -163,7 +183,74 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     private void handleSteam(){
         currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
-        InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+        if (currentPressure > 0) {
+            InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+        }
+        if (combustionTimer > 0){
+            combustionTimer--;
+            if (regulateCombustion && combustionTimer == 0){
+                handleCombustion();
+            }
+            if (combustionTimer == 0 && recipeTimer > 0){
+                level.getRecipeManager().byKey(currentRecipe).ifPresent(
+                        recipe -> {
+                            if (((PressureChamberRecipe) recipe).isCombustion()){
+                                cancelRecipe();
+                            }
+                        });
+            }
+        }
+    }
+
+    public void handleCombustion(){
+
+        if ((!regulateCombustion || combustionTimer == 0) && ventLocations.size() == 2){
+
+            //Do some combustion
+            FluidStack inputA = getFromCombustionVent(ventLocations.get(0));
+            FluidStack inputB = getFromCombustionVent(ventLocations.get(1));
+            if (inputA == FluidStack.EMPTY || inputB == FluidStack.EMPTY){
+                return;
+            }
+            isSwapped = true;
+            for (CombustionRecipe recipe : level.getRecipeManager().getAllRecipesFor(CombustionRecipe.Type.INSTANCE)){
+                if ((testCombustion(inputA,inputB,recipe) || testCombustion(inputB,inputA,recipe))
+                    && InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
+                ) {
+                    //We're good to go
+                    InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                    combustionTimer = recipe.getCombustionTime();
+
+                    CombustionVentBlockEntity ventA = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(0));
+                    CombustionVentBlockEntity ventB = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(1));
+
+                    if (isSwapped){
+                        ventB.tank.getPrimaryHandler().drain(recipe.getInputFluidA().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventA.tank.getPrimaryHandler().drain(recipe.getInputFluidB().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    } else {
+                        ventA.tank.getPrimaryHandler().drain(recipe.getInputFluidA().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventB.tank.getPrimaryHandler().drain(recipe.getInputFluidB().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    currentPressure = 0;
+
+                    addHeat((float) (double) (recipe.getOutputFluid().getAmount() / 16));
+                }
+            }
+        }
+    }
+    boolean isSwapped = true;
+    public boolean testCombustion(FluidStack a, FluidStack b, CombustionRecipe r){
+        isSwapped = !isSwapped;
+        return r.getInputFluidA().test(a) && r.getInputFluidB().test(b);
+    }
+
+    public FluidStack getFromCombustionVent(BlockPos pos){
+        if (level.getBlockEntity(pos) instanceof CombustionVentBlockEntity CVBE){
+            return CVBE.tank.getPrimaryHandler().getFluid();
+        } else {
+            return FluidStack.EMPTY;
+        }
     }
 
     private void finishRecipe() {
@@ -189,20 +276,28 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     private boolean checkForValidity() {
         int weakConnections = 0;
+        regulateCombustion = false;
+        ventLocations.clear();
+
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
                     BlockPos lookAt = getBlockPos().offset(x, y, z);
                     BlockState state = level.getBlockState(lookAt);
-                    if (AllTags.AllBlockTags.WEAK_CHAMBER_BORDER.matches(state)){
+                    if (AllBlocks.COMBUSTION_VENT.has(state)){
+                        ventLocations.add(lookAt);
+                    } else if (AllBlocks.COMBUSTION_REGULATOR.has(state)){
+                        regulateCombustion = true;
+                    } else if (AllTags.AllBlockTags.WEAK_CHAMBER_BORDER.matches(state)){
                         weakConnections++;
                     } else if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
+                        //Overheated.LOGGER.info(lookAt.toShortString());
                         return false;
                     }
                 }
             }
         }
-        return weakConnections <= 6;
+        return weakConnections <= 6 && (ventLocations.size() == 2 || ventLocations.isEmpty());
     }
 
     private void causeExplode() {
@@ -246,7 +341,12 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
             tempAndCoolInfo(tooltip);
             tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.explode")));
-            tooltip.add(addIndent(Component.literal(String.valueOf(Math.ceil((double) 1024 /Math.max(1,currentPressure)))),1));
+            tooltip.add(addIndent(Component.literal(String.valueOf(Math.ceil((double) 1024 / (Math.max(1,currentPressure) * Math.max(1,Math.min(combustionTimer,4)))))),1));
+
+            if (combustionTimer > 0) {
+                tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.combustion_left")));
+                tooltip.add(addIndent(Component.literal(String.valueOf(Math.ceil((double) combustionTimer / 20))), 1));
+            }
 
             if (currentRecipe != null) {
                 tooltip.add(addIndent(Component.translatable("coverheated.pressure_chamber.time_left")));
@@ -275,8 +375,15 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         currentPressure = tag.getInt("pressure");
         laserTimer = tag.getInt("laserTimer");
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
+        isSwapped = tag.getBoolean("combustionSwapped");
+        regulateCombustion = tag.getBoolean("regulateCombustion");
         InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
         OutputItemHandler.deserializeNBT(tag.getCompound("outputItems"));
+        ventLocations.clear();
+        if (tag.getBoolean("validVents")){
+            ventLocations.add(BlockPos.of(tag.getLong("venta")));
+            ventLocations.add(BlockPos.of(tag.getLong("ventb")));
+        }
 
     }
 
@@ -291,8 +398,15 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
         tag.put("inputItems", InputItemHandler.serializeNBT());
         tag.put("outputItems", OutputItemHandler.serializeNBT());
+        tag.putBoolean("combustionSwapped",isSwapped);
+        tag.putBoolean("regulateCombustion",regulateCombustion);
 
-
-
+        if (ventLocations.size() != 2){
+            tag.putBoolean("validVents",false);
+        } else {
+            tag.putBoolean("validVents",true);
+            tag.putLong("venta",ventLocations.get(0).asLong());
+            tag.putLong("ventb",ventLocations.get(1).asLong());
+        }
     }
 }

@@ -16,6 +16,7 @@ public class ReinforcementHandler {
         requiresReinforcement.add("misc/ammonia_bonemeal");
         requiresReinforcement.add("misc/cinderfume/cinder_globule");
         requiresReinforcement.add("misc/cinderfume/rod_from_cinder_globule");
+        requiresReinforcement.add("misc/hydrogen_oxygen_combustion");
 
     }
 

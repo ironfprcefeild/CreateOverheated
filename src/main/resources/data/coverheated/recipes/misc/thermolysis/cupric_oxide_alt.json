@@ -6,7 +6,7 @@
       "item": "coverheated:copper_chloride"
     },
     {
-      "fluid": "coverheated:distilled_water",
+      "fluid": "coverheated:purified_water",
       "amount": 120
     }
   ],
@@ -15,8 +15,7 @@
       "item": "coverheated:cupric_oxide"
     },
     {
-      "item": "coverheated:chlorine_crystal",
-      "chance": 0.99
+      "item": "coverheated:chlorine_crystal"
     }
   ]
 }

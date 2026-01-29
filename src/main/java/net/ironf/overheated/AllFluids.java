@@ -33,7 +33,8 @@ public class AllFluids {
 
     public static final OverheatedRegistrate.FluidRegistration SLUDGE =
             REGISTRATE.SimpleFluid("sludge")
-                    .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
+                    .hasFlowingTexture()
+                    .levelDecreasePerBlock(1).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(p -> p.canHydrate(false)
                                     .canDrown(true)
                                     .canSwim(true)

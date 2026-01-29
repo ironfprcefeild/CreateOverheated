@@ -68,6 +68,13 @@
   "coverheated.pressure_chamber.crouch_for_chamber_info": "Crouch for Total Chamber Information",
   "coverheated.pressure_chamber.steam.input": "Taking In steam",
   "coverheated.pressure_chamber.steam.output": "Outputting steam",
+  "coverheated.pressure_chamber.explode": "Chamber will explode if Temperature Reaches: ",
+  "coverheated.pressure_chamber.invalid": "Chamber is not made of valid blocks",
+  "coverheated.pressure_chamber.time_left": "Seconds until recipe finished: ",
+  "coverheated.pressure_chamber.combustion_left": "Seconds until combustion expired: ",
+
+  "coverheated.pressure_chamber.no_recipe": "No Recipe in chamber",
+
 
   "coverheated.impact_drill.torque": "Current Drill Torque ",
   "coverheated.impact_drill.airflow": "Airflow On Drill",
@@ -129,10 +136,7 @@
   "coverheated.cooler.header": "--- Passing on Cooling to Faced Block ---",
   "coverheated.cooler.no_coolant": "No Coolant",
 
-  "coverheated.pressure_chamber.explode": "Chamber will explode if Temperature Reaches: ",
-  "coverheated.pressure_chamber.invalid": "Chamber is not made of valid blocks",
-  "coverheated.pressure_chamber.time_left": "Seconds until recipe finished: ",
-  "coverheated.pressure_chamber.no_recipe": "No Recipe in chamber",
+
 
   "coverheated.blowing_engine.error.flywheel_not_spinning": "No Flywheel spinning 2 blocks above this",
   "coverheated.blowing_engine.error.no_steam": "No Steam in Input",

@@ -14,5 +14,6 @@
   ],
   "heat_added": 32,
   "ticks_taken": 20,
-  "pressure": 2
+  "pressure": 2,
+  "combustion": false
 }

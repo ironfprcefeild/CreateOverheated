@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "v": {
+      "item": "coverheated:steam_vent"
+    },
+    "r": {
+      "item": "coverheated:reinforcement"
+    },
+    "i": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "pattern": [
+    "iri",
+    "cvc",
+    "iri"
+  ],
+  "result": {
+    "item": "coverheated:combustion_vent"
+  }
+}

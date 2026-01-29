@@ -32,6 +32,8 @@ import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.Blast
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.ItemDuct.ItemDuctBlock;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlock;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlock;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlock;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlock;
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
@@ -487,6 +489,26 @@ public class AllBlocks {
 
     public static final BlockEntry<ChamberCoreBlock> CHAMBER_CORE = REGISTRATE
             .block("pressure_chamber_core", ChamberCoreBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+    public static final BlockEntry<CombustionVentBlock> COMBUSTION_VENT = REGISTRATE
+            .block("combustion_vent", CombustionVentBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+    public static final BlockEntry<Block> COMBUSTION_REGULATOR = REGISTRATE
+            .block("combustion_regulator", Block::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)

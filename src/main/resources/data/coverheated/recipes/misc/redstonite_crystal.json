@@ -19,5 +19,6 @@
   "heat_added": 32,
   "ticks_taken": 200,
   "pressure": 3,
-  "laser_heat": 4
+  "laser_heat": 4,
+  "combustion": false
 }

@@ -76,9 +76,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -362,10 +360,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
             PackOutput packOutput = generator.getPackOutput();
             ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
+            Collection<RegistryObject<Block>> Blocks = GAS_BLOCKS.getEntries();
             generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
                             packOutput,
                             existingFileHelper,
-                            GAS_BLOCKS.getEntries(),
+                            Blocks,
                             OverheatedRegistrate.makeBlockItems,
                             OverheatedRegistrate.blockModelOverride,
                             TintedBlocks));
@@ -547,6 +546,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
                     () -> new LiquidBlock(SOURCE, block_properties));
+
 
 
             FLUID_PROPERTIES = new ForgeFlowingFluid

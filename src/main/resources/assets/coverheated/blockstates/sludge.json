@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "coverheated:block/sludge"
+      "model": "coverheated:block/fluids/sludge_flow"
     }
   }
 }

@@ -3,7 +3,10 @@
     "minecraft:copper_block",
     "minecraft:waxed_copper_block",
     "coverheated:steel_block",
-    "coverheated:channel",
-    "coverheated:channel_expeller"
+    "coverheated:chill_channel",
+    "coverheated:channel_expeller",
+    "coverheated:combustion_vent",
+    "coverheated:combustion_regulator"
+
   ]
 }
