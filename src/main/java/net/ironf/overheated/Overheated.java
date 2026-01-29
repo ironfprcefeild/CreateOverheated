@@ -1,6 +1,8 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.compat.jei.ConversionRecipe;
+import com.simibubi.create.compat.jei.category.MysteriousItemConversionCategory;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.gasses.GasBlock;
@@ -94,9 +96,7 @@ public class Overheated
         DiodeHeaters.registerDefaults();
         mirrorRegister.registerDefaults();
         ControlRodsRegister.registerDefaults();
-
         TranslucencyHandler.addRenderLayers();
-
     }
 
     @SubscribeEvent

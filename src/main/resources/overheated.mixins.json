@@ -13,6 +13,7 @@
     "flywheelMixin",
     "basinRecipeMixin",
     "basinCategoryMixin",
-    "fluidRenderHelperMixin"
+    "fluidRenderHelperMixin",
+    "strayMixin"
   ]
 }
