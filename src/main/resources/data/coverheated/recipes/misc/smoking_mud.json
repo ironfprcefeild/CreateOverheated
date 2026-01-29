@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smoking",
+  "ingredient": {
+    "item": "minecraft:mud"
+  },
+  "result": "minecraft:dirt",
+  "experience": 0,
+  "cookingtime": 100
+}

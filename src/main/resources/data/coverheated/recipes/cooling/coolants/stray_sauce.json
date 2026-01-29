@@ -1,0 +1,10 @@
+{
+  "type": "coverheated:cooling",
+  "input_fluid": {
+    "fluid": "coverheated:stray_sauce",
+    "amount": 1
+  },
+  "heat": 20,
+  "min_temp": 40,
+  "efficiency": 1.0
+}

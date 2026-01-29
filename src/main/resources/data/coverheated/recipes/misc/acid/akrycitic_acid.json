@@ -1,0 +1,13 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "fluid": "coverheated:akrycite",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "coverheated:akrycitic_acid",
+    "amount": 2
+  },
+  "minTemp": -40,
+  "addTemp": 10
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "coverheated:raw_endstone"
+  },
+  "result": "minecraft:end_stone"
+}

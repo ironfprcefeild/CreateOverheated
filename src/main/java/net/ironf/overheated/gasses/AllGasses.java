@@ -120,6 +120,31 @@ public class AllGasses {
                     .register())
             .Register(p -> p.density(-1));
 
+    public static final OverheatedRegistrate.FluidRegistration carbon_dioxide = REGISTRATE.SimpleFluid("carbon_dioxide")
+            .tintColor(0xCA000000)
+            .overrideTexture("block/steam")
+            .makeGasUnCapturable()
+            .setGas(REGISTRATE.gasBlock("carbon_dioxide")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(5)
+                    .tickDelays(1,3)
+                    .explosionSafety(0)
+                    .overrideTexturing("block/steam")
+                    .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
+                    .register())
+            .Register(p -> p.density(-1));
+
+    public static final OverheatedRegistrate.FluidRegistration akrycite = REGISTRATE.SimpleFluid("akrycite")
+            .makeGasUnCapturable()
+            .setGas(REGISTRATE.gasBlock("akrycite")
+                    .defaultFlow(Direction.UP)
+                    .shiftChance(5)
+                    .tickDelays(1,3)
+                    .explosionSafety(0)
+                    .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
+                    .register())
+            .Register(p -> p.density(-1));
+
 
     public static void register(){
     }

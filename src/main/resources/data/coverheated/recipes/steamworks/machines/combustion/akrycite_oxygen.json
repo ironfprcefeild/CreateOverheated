@@ -1,0 +1,16 @@
+{
+  "type": "coverheated:combustion",
+  "input_a": {
+    "amount": 100,
+    "fluid": "coverheated:carbon_dioxide"
+  },
+  "input_b": {
+    "amount": 100,
+    "fluid": "coverheated:oxygen"
+  },
+  "output": {
+    "amount": 100,
+    "fluid": "coverheated:akrycite"
+  },
+  "time": 300
+}

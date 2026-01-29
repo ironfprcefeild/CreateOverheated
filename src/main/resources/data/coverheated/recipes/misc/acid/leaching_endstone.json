@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:end_stone"
+    },
+    {
+      "amount": 100,
+      "fluid": "coverheated:akrycitic_acid",
+      "nbt": {}
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:leached_endstone"
+    }
+  ]
+}

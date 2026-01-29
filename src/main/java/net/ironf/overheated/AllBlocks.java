@@ -173,7 +173,7 @@ public class AllBlocks {
 
     public static final BlockEntry<Block> REDSTONITE_BLOCK =
             REGISTRATE.block("redstonite_block", Block::new)
-                    .initialProperties(SharedProperties::softMetal)
+                    .initialProperties(() -> Blocks.AMETHYST_BLOCK)
                     .properties(p -> p.mapColor(MapColor.COLOR_RED)
                             .sound(SoundType.AMETHYST)
                             .requiresCorrectToolForDrops()
@@ -182,6 +182,32 @@ public class AllBlocks {
                     .simpleItem()
                     .defaultLoot()
                     .lang("Redstonite Block")
+                    .register();
+
+    public static final BlockEntry<Block> LEACHED_ENDSTONE =
+            REGISTRATE.block("leached_endstone", Block::new)
+                    .initialProperties(() -> Blocks.END_STONE)
+                    .properties(p -> p.mapColor(MapColor.COLOR_YELLOW)
+                            .sound(SoundType.STONE)
+                            .requiresCorrectToolForDrops()
+                            .strength(4f))
+                    .transform(pickaxeOnly())
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Leached Endstone")
+                    .register();
+
+    public static final BlockEntry<Block> RAW_ENDSTONE =
+            REGISTRATE.block("raw_endstone", Block::new)
+                    .initialProperties(() -> Blocks.END_STONE)
+                    .properties(p -> p.mapColor(MapColor.COLOR_YELLOW)
+                            .sound(SoundType.STONE)
+                            .requiresCorrectToolForDrops()
+                            .strength(4f))
+                    .transform(pickaxeOnly())
+                    .simpleItem()
+                    .defaultLoot()
+                    .lang("Raw Endstone")
                     .register();
 
     //TODO make it render properly

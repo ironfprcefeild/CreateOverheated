@@ -87,6 +87,9 @@ public class AllItems {
     public static final ItemEntry<Item> INCOMPLETE_PRESSURIZED_CASING = craftingIngredient("incomplete_pressurized_casing","Incomplete Pressurized Casing");
     public static final ItemEntry<Item> TURBINE_COMPONENTS = craftingIngredient("turbine_components","Turbine Components");
 
+    //Fun with endstone
+    public static final ItemEntry<Item> ENDER_FLOUR = craftingIngredient("ender_flour","Ender Flour");
+    public static final ItemEntry<Item> ASURINE_POWDERS = craftingIngredient("asurine_powders","Ausrine Powders");
 
 
     //Chillsteel

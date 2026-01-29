@@ -1,0 +1,27 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    },
+    {
+      "item": "coverheated:asurine_powders",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diorite",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "create:asurine",
+      "count": 1
+    }
+  ],
+  "heat_added": 4,
+  "ticks_taken": 50,
+  "pressure": 2,
+  "combustion": false
+}
