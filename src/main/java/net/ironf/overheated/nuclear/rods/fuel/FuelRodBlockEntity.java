@@ -39,13 +39,15 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
     int dischargeTimer = 4;
 
     int decay = 0;
+    int decayTimer = 16;
     int Heat = 0;
     int neutrinos = 1;
 
     int directionChecked = 0;
 
+
     //TODO make fuel rods turn into decayed ones
-    //TODO make fuel rods retain their decay when mined
+    //TODO make fuel rods retain their decay when mined (blockstate BS)
     @Override
     public void tick() {
         super.tick();
@@ -68,7 +70,11 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
                     //Let's blow tf up >:)
                     causeMeltdown(Heat,getBlockPos());
                 } else if (Heat > 0) {
-                    decay++;
+                    decayTimer--;
+                    if (decayTimer == 0){
+                        decayTimer = 16;
+                        decay++;
+                    }
                     //Let's emit some steam :D
                     //Steam Values: 1-8 = unheated low, 9-16 = heated low, 17-24 = superheated mid, 25-32 = overheated mid, 33-40 = 2x Overheated mid, 41-48 = x3 Overheated High, 49-64 = x4 Overheated High
                     int steamPressure = Math.floorDiv(Heat, 16) + 1;
@@ -140,6 +146,8 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
         dischargeTimer = tag.getInt("dischargetimer");
         directionChecked = tag.getInt("directionChecked");
         decay = tag.getInt("decay");
+        decayTimer = tag.getInt("decay_timer");
+
     }
 
     @Override
@@ -151,6 +159,8 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
         tag.putInt("dischargetimer",dischargeTimer);
         tag.putInt("directionChecked",directionChecked);
         tag.putInt("decay",decay);
+        tag.putInt("decay_timer",decayTimer);
+
     }
 
     @Override

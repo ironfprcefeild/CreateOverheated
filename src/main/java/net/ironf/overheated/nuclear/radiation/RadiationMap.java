@@ -107,16 +107,19 @@ public class RadiationMap extends SavedData {
         strength--;
 
         ArrayList<ChunkPos> edgeChunks = new ArrayList<>();
+        ArrayList<ChunkPos> visited = new ArrayList<>();
         ArrayList<ChunkPos> newEdgeChunks = new ArrayList<>();
         edgeChunks.add(chunk);
+        visited.add(chunk);
 
         int sign = isAntiRad ? -1 : 1;
         while (strength > 0) {
             for (ChunkPos c : edgeChunks){
                 for (Vec2 d : chunkDirections){
                     ChunkPos spreadTo = chunkRelativeTo(c,d);
-                    if (!edgeChunks.contains(spreadTo) && !newEdgeChunks.contains(spreadTo)){
+                    if (!edgeChunks.contains(spreadTo) && !visited.contains(spreadTo)){
                         newEdgeChunks.add(spreadTo);
+                        visited.add(spreadTo);
                         setRadiationIn(spreadTo,getRadiationIn(spreadTo)+(sign * strength));
                     }
                 }
