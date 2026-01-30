@@ -97,6 +97,11 @@ public class Overheated
         mirrorRegister.registerDefaults();
         ControlRodsRegister.registerDefaults();
         TranslucencyHandler.addRenderLayers();
+
+        //Mysterious Conversion
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
+
     }
 
     @SubscribeEvent

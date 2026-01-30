@@ -43,9 +43,6 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new CondensingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 
 
-        //Mysterious Conversion
-        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
-                AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
 
     }
 

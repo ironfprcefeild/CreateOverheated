@@ -161,6 +161,9 @@
   "coverheated.jei.condensing.gained_temp": "Temperature Increase",
   "coverheated.jei.reinforcement": "Reinforced",
 
+  "item.coverheated.stray_sauce_bucket.conversion_explanation": "Use on a Stray",
+
+
   "block.coverheated.antilaser_plating": "Antilaser Plating",
   "block.coverheated.basic_mirror": "Basic Mirror",
   "block.coverheated.blaze_crucible": "Blaze Crucible",

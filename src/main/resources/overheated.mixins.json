@@ -14,6 +14,7 @@
     "basinRecipeMixin",
     "basinCategoryMixin",
     "fluidRenderHelperMixin",
-    "strayMixin"
+    "strayMixin",
+    "mysteriousConversionMixin"
   ]
 }
