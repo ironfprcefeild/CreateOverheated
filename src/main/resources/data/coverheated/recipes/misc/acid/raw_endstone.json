@@ -6,11 +6,11 @@
       "amount": 1
     },
     {
-      "fluid": "minecraft:dirt",
+      "item": "minecraft:dirt",
       "amount": 2
     },
     {
-      "fluid": "minecraft:stone",
+      "item": "minecraft:stone",
       "amount": 2
     }
   ],

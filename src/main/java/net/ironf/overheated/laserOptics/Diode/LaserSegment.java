@@ -1,5 +1,6 @@
 package net.ironf.overheated.laserOptics.Diode;
 
+import net.ironf.overheated.laserOptics.Diode.enriching.EnrichingHandler;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.minecraft.core.BlockPos;
@@ -8,6 +9,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -77,7 +79,16 @@ public class LaserSegment {
 
             //Dont do anything if its air besides rendering
             if (!hitState.isAir()) {
-                if (!mirrorRegister.isMirror(hitState) && hitState.getBlock().defaultDestroyTime() >= 0) {
+                if (EnrichingHandler.enrichmentHandler.containsKey(hitState.getBlock())){
+                    //Block that needs enriched
+                    Block hitBlock = hitState.getBlock();
+                    if (EnrichingHandler.enrichmentHeatLevel.get(hitBlock) >= laserHeat.getHeatLevelOfHighest()){
+                        breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*volatility));
+                        if (breakingCounter >= EnrichingHandler.enrichmentDelayHandler.get(hitState.getBlock())){
+                            level.setBlock(continueAt,EnrichingHandler.enrichmentHandler.get(hitState.getBlock()).defaultBlockState(),3);
+                        }
+                    }
+                } else if (!mirrorRegister.isMirror(hitState) && hitState.getBlock().defaultDestroyTime() >= 0) {
                     //Non-Mirror or breakable block.
                     breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*volatility));
                     double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;

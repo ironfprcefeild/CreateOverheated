@@ -1,0 +1,13 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "fluid": "coverheated:distilled_water",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "minecraft:water",
+    "amount": 1
+  },
+  "minTemp": 0,
+  "addTemp": 4
+}

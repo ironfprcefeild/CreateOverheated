@@ -1,0 +1,13 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "fluid": "coverheated:purified_water",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "coverheated:distilled_water",
+    "amount": 1
+  },
+  "minTemp": 0,
+  "addTemp": 4
+}

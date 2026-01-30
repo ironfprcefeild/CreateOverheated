@@ -377,9 +377,9 @@ public class AllBlocks {
             .block("reinforcement", Block::new)
             .initialProperties(SharedProperties::netheriteMetal)
             .properties(p -> p.strength(2f))
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(simpleCubeAll("placeholder"))
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/reinforcement")::generate)
             .defaultLoot()
             .register();
 

@@ -1,6 +1,5 @@
 {
   "type": "create:compacting",
-  "reinforce": "true",
   "ingredients": [
     {
       "amount": 1000,
