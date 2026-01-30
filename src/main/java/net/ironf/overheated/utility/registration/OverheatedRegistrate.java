@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.ExplodingGasBlock;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
@@ -28,7 +29,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -751,7 +751,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public int upperTickDelay;
         public int lowerTickDelay;
 
-        public int pressurizeChance;
+        public int explosionChance;
         public Direction direction;
 
         public boolean isBreathable = false;
@@ -784,11 +784,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
         //1 is maximum, the explosion risk is equal 1/(safety). A 0 or less indicates perfectly safe
-        public gasBlockEntry<T> explosionSafety(int safety) {
+        public gasBlockEntry<T> explosionRisk(int safety) {
             if (safety == 0){
-                pressurizeChance = -1;
+                explosionChance = -1;
             } else {
-                pressurizeChance = Math.max(safety, -1);
+                explosionChance = Math.max(safety, -1);
             }
             return this;
         }
@@ -821,19 +821,32 @@ public class OverheatedRegistrate extends CreateRegistrate {
             }
             RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
-                    useAlt ? altFactory :
-                    (() -> new GasBlock(
-                    BlockBehaviour.Properties.of()
-                            .noOcclusion()
-                            .noCollission()
-                            .replaceable()
-                            .destroyTime(-1)
-                            .sound(SoundType.FUNGUS)
-                            .isSuffocating(isBreathable ? OverheatedRegistrate::never : OverheatedRegistrate::always)
-                            .isRedstoneConductor(OverheatedRegistrate::never)
-                            .isViewBlocking(seeThrough ? OverheatedRegistrate::never : OverheatedRegistrate::always)
-                            .noLootTable(),
-                            gfg, passThroughPredicate, pressurizeChance, lowerTickDelay,upperTickDelay)));
+                    useAlt ? (altFactory) :
+                        (explosionChance == -1 ?
+                        (() -> new GasBlock(
+                        BlockBehaviour.Properties.of()
+                                .noOcclusion()
+                                .noCollission()
+                                .replaceable()
+                                .destroyTime(-1)
+                                .sound(SoundType.FUNGUS)
+                                .isSuffocating(isBreathable ? OverheatedRegistrate::never : OverheatedRegistrate::always)
+                                .isRedstoneConductor(OverheatedRegistrate::never)
+                                .isViewBlocking(seeThrough ? OverheatedRegistrate::never : OverheatedRegistrate::always)
+                                .noLootTable(),
+                                gfg, passThroughPredicate, lowerTickDelay,upperTickDelay))
+                        :(() -> new ExplodingGasBlock(
+                                BlockBehaviour.Properties.of()
+                                        .noOcclusion()
+                                        .noCollission()
+                                        .replaceable()
+                                        .destroyTime(-1)
+                                        .sound(SoundType.FUNGUS)
+                                        .isSuffocating(isBreathable ? OverheatedRegistrate::never : OverheatedRegistrate::always)
+                                        .isRedstoneConductor(OverheatedRegistrate::never)
+                                        .isViewBlocking(seeThrough ? OverheatedRegistrate::never : OverheatedRegistrate::always)
+                                        .noLootTable(),
+                                gfg, passThroughPredicate,explosionChance ,lowerTickDelay,upperTickDelay))));
 
             makeBlockItems.put(toReturn,false);
             if (textureOver != null){

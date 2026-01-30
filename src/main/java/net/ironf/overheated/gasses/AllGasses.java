@@ -22,7 +22,7 @@ public class AllGasses {
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
                     .tickDelays(5,8)
-                    .explosionSafety(0)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(8));
 
@@ -32,7 +32,7 @@ public class AllGasses {
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(2)
                     .tickDelays(2,8)
-                    .explosionSafety(10)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(8));
 
@@ -44,7 +44,7 @@ public class AllGasses {
                     .overrideTexturing("block/steam")
                     .shiftChance(5)
                     .tickDelays(2,5)
-                    .explosionSafety(12)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(-3));
 
@@ -56,7 +56,7 @@ public class AllGasses {
                     .overrideTexturing("block/steam")
                     .shiftChance(10)
                     .tickDelays(1,4)
-                    .explosionSafety(12)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(-3));
 
@@ -67,7 +67,7 @@ public class AllGasses {
                     .defaultFlow(Direction.DOWN)
                     .shiftChance(3)
                     .tickDelays(2,5)
-                    .explosionSafety(12)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(4));
 
@@ -78,7 +78,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,2)
-                    .explosionSafety(12)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(-8));
 
@@ -88,7 +88,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(0)
                     .tickDelays(2,3)
-                    .explosionSafety(0)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(-1));
 
@@ -102,7 +102,7 @@ public class AllGasses {
                     .shiftChance(3)
                     .tickDelays(1,5)
                     .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
-                    .explosionSafety(0)
+                    .explosionRisk(0)
                     .register())
             .Register(p -> p.density(-1));
 
@@ -114,7 +114,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,3)
-                    .explosionSafety(0)
+                    .explosionRisk(8)
                     .overrideTexturing("block/steam")
                     .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                     .register())
@@ -128,7 +128,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,3)
-                    .explosionSafety(0)
+                    .explosionRisk(0)
                     .overrideTexturing("block/steam")
                     .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                     .register())
@@ -140,7 +140,7 @@ public class AllGasses {
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
                     .tickDelays(1,3)
-                    .explosionSafety(0)
+                    .explosionRisk(0)
                     .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                     .register())
             .Register(p -> p.density(-1));

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.TickPriority;
@@ -12,28 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
-public class GasBlock extends AbstractGlassBlock {
-    public GasBlock(Properties p, GasFlowGetter gfg, Predicate<BlockState> flowThroughTest, int lowerTickDelay, int upperTickDelay) {
-        super(p);
-        this.gasFlowGetter = gfg;
-        this.flowThroughTest = flowThroughTest;
-
-        this.upperTickDelay = upperTickDelay;
-        this.lowerTickDelay = lowerTickDelay;
+public class ExplodingGasBlock extends GasBlock{
+    public ExplodingGasBlock(Properties p, GasFlowGetter gfg, Predicate<BlockState> flowThroughTest, int explosionChance, int lowerTickDelay, int upperTickDelay) {
+        super(p, gfg, flowThroughTest, lowerTickDelay, upperTickDelay);
+        this.explosionChance = explosionChance;
     }
 
-    protected final GasFlowGetter gasFlowGetter;
-    protected final Predicate<BlockState> flowThroughTest;
-    protected final int upperTickDelay;
-    protected final int lowerTickDelay;
-
-
-
-    @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState other_state, boolean bool) {
-        super.onPlace(state, level, pos, other_state, bool);
-        level.scheduleTick(pos, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
-    }
+    public int explosionChance;
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
@@ -47,14 +31,13 @@ public class GasBlock extends AbstractGlassBlock {
             } else {
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }
+            if (world.random.nextIntBetweenInclusive(0, explosionChance) == explosionChance){
+                //RAHH EXPLODE
+                world.explode(null,pos.getX(),pos.getY(),pos.getZ(),2f, Level.ExplosionInteraction.TNT);
+            }
         } else {
+            world.explode(null,pos.getX(),pos.getY(),pos.getZ(),2f, Level.ExplosionInteraction.TNT);
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
-
-
-
     }
-
-
-
 }
