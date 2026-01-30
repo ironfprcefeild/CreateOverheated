@@ -1,5 +1,6 @@
 package net.ironf.overheated.cooling.cooler;
 
+import com.mojang.datafixers.TypeRewriteRule;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
@@ -75,18 +76,21 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
 
     @Override
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
-        //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a cooler
+        //Checks to ensure that the cooler is facing into the cooled block, we have coolant,and not cooling a multiplying cooler
         Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        if (facing.getOpposite() == in
-
-            && (effTracker > 0)
-            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get())
-            && (level.getBlockState(cooledPos).getBlock() != AllBlocks.CHANNEL.get())) {
-
-            return collectCooling(myPos,facing);
-        } else {
-            return CoolingData.empty();
+        if (facing.getOpposite() == in) {
+            BlockState cooledState = level.getBlockState(cooledPos);
+            //If we're facing a cooler, only provide coolant if its efftracker is 1, to prevent free cooling
+            if (cooledState.is(AllBlocks.COOLER.get())) {
+                return ((CoolerBlockEntity) level.getBlockEntity(cooledPos)).effTracker == 1
+                        ? collectCooling(myPos, facing)
+                        : CoolingData.empty();
+            //Otherwise, provide coolant. unless we are facing a channel!
+            } else if (!cooledState.is(AllBlocks.CHANNEL.get())) {
+                return collectCooling(myPos, facing);
+            }
         }
+        return CoolingData.empty();
     }
 
     public CoolingData collectCooling(BlockPos myPos, Direction facing){
@@ -95,13 +99,11 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
         CoolingData toReturn = getCoolingData(myPos, level, directions.toArray(Direction[]::new));
 
         Fluid coolant = tank.getPrimaryHandler().getFluid().getFluid();
-        if (CoolingHandler.minTempHandler.containsKey(coolant)) {
-            toReturn.minTemp = CoolingHandler.minTempHandler.get(coolant);
-            toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
-            return toReturn;
-        } else {
-            return CoolingData.empty();
-        }
+
+        toReturn.minTemp = CoolingHandler.minTempHandler.getOrDefault(coolant,-10f);
+        toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
+
+        return toReturn;
     }
 
 
@@ -110,14 +112,14 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
     //Doing Stuff
 
     public int tickTimer = 5;
-    public float effTracker = 0;
+    public float effTracker = 1f;
     @Override
     public void tick() {
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 75;
             tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
-            effTracker = !tank.isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(tank.getPrimaryHandler().getFluid().getFluid(),0f) : 0f;
+            effTracker = !tank.isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(tank.getPrimaryHandler().getFluid().getFluid(),1f) : 1f;
         }
     }
 
@@ -141,18 +143,15 @@ public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICooli
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
-        if (effTracker > 0) {
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooler.header").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooler.header").withStyle(ChatFormatting.WHITE)));
 
-            CoolingData cooled = collectCooling(getBlockPos(),getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.cooling_units").withStyle(ChatFormatting.WHITE)));
-            tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooled.coolingUnits)).withStyle(ChatFormatting.AQUA), 1));
+        CoolingData cooled = collectCooling(getBlockPos(),getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.cooling_units").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooled.coolingUnits)).withStyle(ChatFormatting.AQUA), 1));
 
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.min_temp").withStyle(ChatFormatting.WHITE)));
-            tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooled.minTemp)).withStyle(ChatFormatting.AQUA), 1));
-        }else{
-            tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooler.no_coolant").withStyle(ChatFormatting.WHITE)));
-        }
+        tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.min_temp").withStyle(ChatFormatting.WHITE)));
+        tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(cooled.minTemp)).withStyle(ChatFormatting.AQUA), 1));
+
         return true;
     }
 }

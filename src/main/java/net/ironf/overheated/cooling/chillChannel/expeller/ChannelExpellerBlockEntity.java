@@ -9,6 +9,7 @@ import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.MutableDirection;
 import net.ironf.overheated.cooling.chillChannel.core.ChannelStatusBundle;
+import net.ironf.overheated.cooling.cooler.CoolerBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -100,7 +101,7 @@ public class ChannelExpellerBlockEntity extends ChannelBlockEntity implements IC
         } else if (level.getBlockState(cooledPos).getBlock() != AllBlocks.COOLER.get()) {
             return output;
         } else {
-            return CoolingData.empty();
+            return ((CoolerBlockEntity) level.getBlockEntity(cooledPos)).effTracker == 1 ? output : CoolingData.empty();
         }
     }
 
