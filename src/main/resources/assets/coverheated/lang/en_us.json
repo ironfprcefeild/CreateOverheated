@@ -162,6 +162,9 @@
   "coverheated.jei.reinforcement": "Reinforced",
 
   "item.coverheated.stray_sauce_bucket.conversion_explanation": "Use on a Stray",
+  "item.coverheated.nitrogen_bucket.conversion_explanation": "Use an Intake Filter in overworld",
+  "item.coverheated.cinderfume_bucket.conversion_explanation": "Use an Intake Filter in nether",
+  "item.coverheated.voidaium_bucket.conversion_explanation": "Use an Intake Filter in end",
 
 
   "block.coverheated.antilaser_plating": "Antilaser Plating",

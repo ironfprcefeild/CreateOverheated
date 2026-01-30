@@ -5,6 +5,7 @@ import com.simibubi.create.compat.jei.ConversionRecipe;
 import com.simibubi.create.compat.jei.category.MysteriousItemConversionCategory;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
+import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
@@ -23,6 +24,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -101,6 +103,12 @@ public class Overheated
         //Mysterious Conversion
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
                 AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.HEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.nitrogen.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.SUPERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.cinderfume.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.OVERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.voidaium.BUCKET.get().getDefaultInstance()));
 
     }
 

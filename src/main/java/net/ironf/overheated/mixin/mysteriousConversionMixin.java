@@ -21,7 +21,7 @@ public class mysteriousConversionMixin {
         if (explanation != null){
             graphics.drawString(Minecraft.getInstance().font,
                     explanation,
-                    52, 27,0xffffff, false);
+                    5, 39,0xffffff, false);
         }
 
     }
