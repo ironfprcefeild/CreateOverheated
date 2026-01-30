@@ -302,8 +302,8 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     private void causeExplode() {
         BlockPos pos = getBlockPos();
-        currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
-        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),6f * currentPressure, Level.ExplosionInteraction.TNT);
+        currentPressure = 1 + AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
+        level.explode(null,pos.getX(),pos.getY(),pos.getZ(),5f * currentPressure, Level.ExplosionInteraction.TNT);
     }
 
     public void addHeat(float heatAdded) {
