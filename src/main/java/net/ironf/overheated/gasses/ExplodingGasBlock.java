@@ -19,6 +19,7 @@ public class ExplodingGasBlock extends GasBlock{
 
     public int explosionChance;
 
+    //TODO hydrogen shouldn't explode while moving through anything but air
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
         BlockPos target = (gasFlowGetter.flowGas(randomSource,pos,world));
@@ -31,7 +32,7 @@ public class ExplodingGasBlock extends GasBlock{
             } else {
                 world.scheduleTick(pos, this, world.random.nextIntBetweenInclusive(lowerTickDelay, upperTickDelay), TickPriority.NORMAL);
             }
-            if (world.random.nextIntBetweenInclusive(0, explosionChance) == explosionChance){
+            if (targetState.isAir() && world.random.nextIntBetweenInclusive(0, explosionChance) == explosionChance){
                 //RAHH EXPLODE
                 world.explode(null,pos.getX(),pos.getY(),pos.getZ(),2f, Level.ExplosionInteraction.TNT);
             }
