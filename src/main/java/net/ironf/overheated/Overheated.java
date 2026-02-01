@@ -65,7 +65,9 @@ public class Overheated
                 .getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
+        //Events
         MinecraftForge.EVENT_BUS.register(this);
+        RadiationMap.subscribeEvents(MinecraftForge.EVENT_BUS);
 
         //CTOR
         REGISTRATE.registerEventListeners(modEventBus);
@@ -79,9 +81,6 @@ public class Overheated
         AllCreativeModeTabs.register(modEventBus);
         modEventBus.addListener(Overheated::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
-
-        //This changes the default stress impact of the flywheel block
-
 
 
     }
@@ -100,7 +99,7 @@ public class Overheated
         ControlRodsRegister.registerDefaults();
         TranslucencyHandler.addRenderLayers();
 
-        //Mysterious Conversion
+        //(Un)Mysterious Conversion
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
                 AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
         MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
@@ -121,14 +120,18 @@ public class Overheated
         CoolingHandler.generateHandler();
         CondensingRecipeHandler.setLevel(event.getServer().overworld());
         CondensingRecipeHandler.generateHandler();
-        loadRadiationInformation(event.getServer());
+        RadiationMap.RadiationHashMap.clear();
+        //loadRadiationInformation(event.getServer());
     }
+
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppedEvent event){
         LOGGER.info("SO: Overheated is closing on the server");
-        saveRadiationInformation(event.getServer());
+        RadiationMap.RadiationHashMap.clear();
     }
+
+    /*
 
     public void saveRadiationInformation(MinecraftServer server){
         LOGGER.info("SO: Saving Radiation Info");
@@ -140,6 +143,8 @@ public class Overheated
         RadiationMap data = RadiationMap.manage(server);
         RadiationMap.RadiationHashMap = data.getRadiationHashMap();
     }
+
+     */
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

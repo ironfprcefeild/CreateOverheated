@@ -4,6 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
 import net.ironf.overheated.nuclear.radiation.GeigerCounterItem;
+import net.ironf.overheated.nuclear.radiation.RadioactiveItem;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -149,6 +150,11 @@ public class AllItems {
     public static final ItemEntry<GeigerCounterItem> GeigerCounter = REGISTRATE.item("geiger_counter", GeigerCounterItem::new)
             .properties(p -> p.stacksTo(1))
             .lang("Geiger Counter")
+            .register();
+
+    public static final ItemEntry<RadioactiveItem> coriumChunk = REGISTRATE.item("corium_chunk", RadioactiveItem::new)
+            .properties(p -> p.stacksTo(1))
+            .lang("Corium")
             .register();
 
 
