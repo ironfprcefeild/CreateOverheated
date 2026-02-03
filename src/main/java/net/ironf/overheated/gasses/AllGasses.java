@@ -94,7 +94,6 @@ public class AllGasses {
 
     public static final OverheatedRegistrate.FluidRegistration oxygen = REGISTRATE.SimpleFluid("oxygen")
             .overrideTexture("block/steam")
-            .makeGasUnCapturable()
             .tintColor(0xD77793FB)
             .setGas(REGISTRATE.gasBlock("oxygen")
                     .defaultFlow(Direction.UP)
@@ -109,7 +108,6 @@ public class AllGasses {
     public static final OverheatedRegistrate.FluidRegistration hydrogen = REGISTRATE.SimpleFluid("hydrogen")
             .tintColor(0xDCDD0000)
             .overrideTexture("block/steam")
-            .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("hydrogen")
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
@@ -123,7 +121,6 @@ public class AllGasses {
     public static final OverheatedRegistrate.FluidRegistration carbon_dioxide = REGISTRATE.SimpleFluid("carbon_dioxide")
             .tintColor(0xCA000000)
             .overrideTexture("block/steam")
-            .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("carbon_dioxide")
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
@@ -135,7 +132,6 @@ public class AllGasses {
             .Register(p -> p.density(-1));
 
     public static final OverheatedRegistrate.FluidRegistration akrycite = REGISTRATE.SimpleFluid("akrycite")
-            .makeGasUnCapturable()
             .setGas(REGISTRATE.gasBlock("akrycite")
                     .defaultFlow(Direction.UP)
                     .shiftChance(5)
