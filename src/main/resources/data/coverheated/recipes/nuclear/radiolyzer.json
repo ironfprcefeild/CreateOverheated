@@ -5,8 +5,8 @@
     "h": {
       "item": "create:chute"
     },
-    "i": {
-      "item": "minecraft:copper_ingot"
+    "f": {
+      "item": "create:fluid_tank"
     },
     "c": {
       "item": "coverheated:nuclear_casing"
@@ -18,7 +18,7 @@
   "pattern": [
     "chc",
     "rrr",
-    "iri"
+    "rfr"
   ],
   "result": {
     "item": "coverheated:radiolyzer"
