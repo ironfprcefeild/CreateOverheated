@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,6 +59,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     boolean outtakeFull = false;
     boolean noIntake = false;
     boolean tooLong = false;
+    boolean combustionEngine = false;
     int recentLength;
     int recentRadius;
 
@@ -99,7 +101,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                     int pressureLevel = AllSteamFluids.getSteamPressure(intakeTank.getTankInventory().getFluid());
                     int drain = i * radius * 20;
 
-                    //if any of theese are true, the turbine is invalid or has stopped operating, so we set the drain to 0 and break
+                    //if any of these are true, the turbine is invalid or has stopped operating, so we set the drain to 0 and break
 
 
                    if (drain < 1){
@@ -130,6 +132,23 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                         //Break out of loop, no need to check further blocks
                         return;
                    }
+                } else if (AllBlocks.COMBUSTION_ENGINE.has(check) && level.getBlockEntity(bp.relative(turbineDirection)) instanceof ChamberCoreBlockEntity CoreBE){
+                    int drain = i * radius * 20;
+
+                    if (drain < 1){
+                        turbineTooSmall = true;
+                    } else if (CoreBE.combustionTimer < drain){
+                        turbineIntakeLow = true;
+                    } else {
+                        //We are operating a combustion engine wow wow wow
+                        combustionEngine = true;
+                        thisSpinsDrain = drain;
+                        reActivateSource = true;
+                        recentLength = i;
+                        recentRadius = radius;
+                        CoreBE.drainCombustion(drain);
+                        return;
+                    }
                 }
                 //If its any block besides a turbine, even if we ended early or reached a fluid tank then we stop the search
                 //This code is also reached when any of the big conditions are true
@@ -239,6 +258,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+
         if (turbineIntakePressureLow){
             tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.turbine.intake.low_pressure"))));
         } else if (turbineIntakeLow){
@@ -255,16 +275,22 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.info_header")));
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.length").append(String.valueOf(recentLength)),1));
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.radius").append(String.valueOf(recentRadius)),1));
+            if (combustionEngine){
+                tooltip.add(GoggleHelper.addIndent((Component.translatable("coverheated.turbine.combustion_mode"))));
+            }
             if (isPlayerSneaking) {
-                int Drain = recentLength * 20 * recentRadius;
-                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain.in")).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")),1));
-                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 40)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")),1));
-                if (Drain > 2560){
-                    tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"),1));
+                int Drain = recentLength * recentRadius * 20;
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain." + (combustionEngine ? "alt" : "in"))).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")), 1));
+                if (!combustionEngine){
+                    tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 40)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")), 1));
+                }
+                if (Drain > 2560) {
+                    tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"), 1));
                 }
             } else {
-                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));
+                tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"), 1));
             }
+
         }
         return true;
     }

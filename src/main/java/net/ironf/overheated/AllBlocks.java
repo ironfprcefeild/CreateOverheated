@@ -544,6 +544,17 @@ public class AllBlocks {
             .defaultLoot()
             .register();
 
+    public static final BlockEntry<Block> COMBUSTION_ENGINE = REGISTRATE
+            .block("combustion_engine", Block::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .defaultLoot()
+            .register();
+
 
 
 

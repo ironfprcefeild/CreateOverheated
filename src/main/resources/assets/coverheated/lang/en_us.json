@@ -7,6 +7,7 @@
   "coverheated.turbine.length": "Length: ",
   "coverheated.turbine.drain.amount": "Draining ",
   "coverheated.turbine.drain.in": "mb in ",
+  "coverheated.turbine.drain.alt": " combustion ticks in ",
   "coverheated.turbine.drain.ticks": " Ticks",
   "coverheated.turbine.drain.steam_vent.requires": "Requires ",
   "coverheated.turbine.drain.steam_vent.to_run": " Steam Vents to run",
@@ -19,6 +20,8 @@
   "coverheated.turbine.too_long": "Turbine Too Long",
   "coverheated.turbine.too_small": "Turbine is too Small, add Centers or Extensions",
   "coverheated.turbine.outtake_full": "Turbine Outtake is full, add a Pump or increase its speed.",
+  "coverheated.turbine.combustion_mode": "Combustion Mode, drains combustion time from attached chamber",
+
   "coverheated.steam_vent.distilling": "Vent is making Distilled Water",
   "coverheated.steam_vent.not_distilling": "Vent is making Steam",
   "coverheated.steam_vent.wrench": "Wrench to change modes",

@@ -120,6 +120,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     public int combustionTimer = 0;
     public boolean regulateCombustion = false;
+    public boolean buildCombustion = false;
     public ArrayList<BlockPos> ventLocations = new ArrayList<>();
 
     //The total heat coming from inputted lasers
@@ -218,9 +219,12 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
                     && InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
                 ) {
                     //We're good to go
-                    InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
-                    combustionTimer = recipe.getCombustionTime();
-
+                    if (buildCombustion){
+                        combustionTimer += recipe.getCombustionTime();
+                    } else {
+                        InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                        combustionTimer = recipe.getCombustionTime();
+                    }
                     CombustionVentBlockEntity ventA = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(0));
                     CombustionVentBlockEntity ventB = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(1));
 
@@ -277,6 +281,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
     private boolean checkForValidity() {
         int weakConnections = 0;
         regulateCombustion = false;
+        buildCombustion = false;
         ventLocations.clear();
 
         for (int x = -1; x < 2; x++) {
@@ -288,6 +293,8 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
                         ventLocations.add(lookAt);
                     } else if (AllBlocks.COMBUSTION_REGULATOR.has(state)){
                         regulateCombustion = true;
+                    } else if (AllBlocks.COMBUSTION_ENGINE.has(state)) {
+                        buildCombustion = true;
                     } else if (AllTags.AllBlockTags.WEAK_CHAMBER_BORDER.matches(state)){
                         weakConnections++;
                     } else if (!AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)) {
@@ -312,7 +319,9 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
     public void setTimer(int ticksTaken) {
         recipeTimer = ticksTaken;
     }
-
+    public void drainCombustion(int timeDrained){
+        combustionTimer = Math.max(combustionTimer-timeDrained,0);
+    }
 
     public float getHeating() {
         return totalLaserHeat.getTotalHeat();
@@ -377,6 +386,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         currentRecipe = !tag.getString("recipe").equals("null") ? ResourceLocation.tryParse(tag.getString("recipe")) : null;
         isSwapped = tag.getBoolean("combustionSwapped");
         regulateCombustion = tag.getBoolean("regulateCombustion");
+        buildCombustion = tag.getBoolean("buildCombustion");
         InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
         OutputItemHandler.deserializeNBT(tag.getCompound("outputItems"));
         ventLocations.clear();
@@ -400,6 +410,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         tag.put("outputItems", OutputItemHandler.serializeNBT());
         tag.putBoolean("combustionSwapped",isSwapped);
         tag.putBoolean("regulateCombustion",regulateCombustion);
+        tag.putBoolean("buildCombustion",buildCombustion);
 
         if (ventLocations.size() != 2){
             tag.putBoolean("validVents",false);
