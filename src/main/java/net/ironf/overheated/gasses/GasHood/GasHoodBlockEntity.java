@@ -38,7 +38,7 @@ public class GasHoodBlockEntity extends SmartBlockEntity {
         if (timer-- <= 0){
             timer = 10;
             BlockPos mypos = getBlockPos();
-            Direction faced = GasHoodBlock.getAttachedDirection(getBlockState()).getOpposite();
+            Direction faced = GasHoodBlock.getAttachedDirection(getBlockState());
             BlockState testedState = level.getBlockState(mypos.relative(faced));
             if (testedState != Blocks.AIR.defaultBlockState() && RawGasMap.containsKey(testedState)){
                 BlockEntity be = level.getBlockEntity(mypos.relative(faced.getOpposite()));
