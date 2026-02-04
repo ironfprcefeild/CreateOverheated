@@ -10,8 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 public interface IGasPlacer {
 
     default void placeGasBlock( BlockPos pos, Block gb, Level level){
-        level.setBlock(pos,gb.defaultBlockState(),3);
-        level.scheduleTick(pos,gb,1, TickPriority.NORMAL);
+        level.setBlock(pos,gb.defaultBlockState(),4);
+        //level.scheduleTick(pos,gb,4, TickPriority.NORMAL);
     }
 
     default void placeGasBlock(BlockPos pos, OverheatedRegistrate.FluidRegistration gas, Level level){
