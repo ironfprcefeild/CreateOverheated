@@ -7,6 +7,9 @@
     },
     "n": {
       "item": "create:steam_engine"
+    },
+    "t": {
+      "item": "coverheated:turbine_components"
     }
   },
   "pattern": [

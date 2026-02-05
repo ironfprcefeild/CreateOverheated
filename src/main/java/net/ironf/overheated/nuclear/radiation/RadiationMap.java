@@ -32,6 +32,7 @@ public class RadiationMap {
         if (RadiationHashMap.containsKey(myPos)){
             data.putInt("r"+(myPos),RadiationHashMap.get(myPos));
         }
+
         //Overheated.LOGGER.info("Saved Chunk Data");
     }
 
@@ -46,10 +47,10 @@ public class RadiationMap {
         //Overheated.LOGGER.info("Loaded Chunk Data");
     }
 
+
     @SubscribeEvent
     public static void unloadChunkData(ChunkEvent.Unload event){
-        //RadiationHashMap.remove(event.getChunk().getPos().toLong());
-        //Overheated.LOGGER.info("Unloaded Chunk Data");
+
     }
 
     /// Modifying Rad Map Utility Methods

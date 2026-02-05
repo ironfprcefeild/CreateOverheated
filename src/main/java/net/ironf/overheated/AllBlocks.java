@@ -45,6 +45,7 @@ import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelHorizont
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelSpunBlockStateGen;
 import net.ironf.overheated.utility.registration.AllSpriteShifts;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
@@ -528,9 +529,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(simpleCubeAll("combustion_vent"))
             .defaultLoot()
             .register();
     public static final BlockEntry<Block> COMBUSTION_REGULATOR = REGISTRATE
@@ -538,9 +539,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
+            .simpleItem()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .blockstate(simpleCubeAll("combustion_regulator"))
             .defaultLoot()
             .register();
 
@@ -549,9 +550,9 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
             .transform(pickaxeOnly())
-            .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .simpleItem()
+            .blockstate(simpleCubeAll("combustion_engine"))
             .defaultLoot()
             .register();
 
@@ -857,8 +858,7 @@ public class AllBlocks {
     public static final BlockEntry<Block> INTAKE_FILTER =
             REGISTRATE.block("intake_filter", Block::new)
                     .initialProperties(() -> Blocks.WHITE_WOOL)
-                    .properties(p -> p
-                            .requiresCorrectToolForDrops())
+                    .properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
                     .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
                     .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
                     .defaultLoot()

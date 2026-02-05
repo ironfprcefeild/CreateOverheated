@@ -7,12 +7,15 @@
     },
     "n": {
       "item": "create:nozzle"
+    },
+    "p": {
+      "item": "create:propeller"
     }
   },
   "pattern": [
     "n  ",
     "c  ",
-    "   "
+    "p  "
   ],
   "result": {
     "item": "coverheated:combustion_regulator"

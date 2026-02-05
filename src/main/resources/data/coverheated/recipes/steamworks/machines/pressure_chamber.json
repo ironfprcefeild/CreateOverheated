@@ -18,10 +18,13 @@
     },
     "i": {
       "item": "create:portable_storage_interface"
+    },
+    "b": {
+      "item": "coverheated:blowing_engine"
     }
   },
   "pattern": [
-    "i c i",
+    "i b i",
     "hcvch",
     "ct vc",
     "hctch",
