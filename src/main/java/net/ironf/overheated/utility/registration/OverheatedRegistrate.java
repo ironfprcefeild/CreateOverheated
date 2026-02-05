@@ -161,7 +161,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                 this.ingot = ingotOverride; this.nugget = nuggetOverride; this.block = blockOverride;
             }
             this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
-                    .lang(name + "Ingot in Cast")
+                    .lang(name + " Ingot in Cast")
                     .register();
             this.meltingRequirement = meltingRequirement;
 
