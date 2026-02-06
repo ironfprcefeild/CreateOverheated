@@ -62,6 +62,7 @@ import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -140,7 +141,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         @SubscribeEvent
         public static void gatherData(GatherDataEvent event) {
-            Overheated.LOGGER.info("Overheated Gathering Data");
+            Overheated.LOGGER.info("CO: Overheated Gathering Data");
             DataGenerator generator = event.getGenerator();
             PackOutput packOutput = generator.getPackOutput();
             ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
@@ -187,6 +188,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
+        public final String name;
 
         public final boolean existingMetal;
         public MetallicSet(String name, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties,
@@ -194,6 +196,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                            int tintColor,
                            BlastFurnaceStatus meltingRequirement,
                            ItemEntry<Item> ingotOverride, ItemEntry<Item> nuggetOverride,BlockEntry<Block> blockOverride){
+            this.name = ""+name;
             id = name.toLowerCase().replace(" ","_");
 
             existingMetal = !(ingotOverride == null && nuggetOverride == null && blockOverride == null);
@@ -225,6 +228,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .overrideTexture("block/fluids/molten")
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(fluidTypeProperties);
+
+            addLang("fluid",Overheated.asResource("molten_"+id),"Molten "+name);
+            addLang("item",Overheated.asResource("molten_"+id).withSuffix("_bucket"),"Molten " + name + " Bucket");
 
             OverheatedRecipeProvider.metallicSets.add(this);
         }
@@ -324,11 +330,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
+        public final String name;
 
         public vanillaMetallicSet(String name, Item ingot, Item nugget, Item block, BlastFurnaceStatus meltingRequirement, UnaryOperator<FluidType.Properties> fluidTypeProperties, int tintColor) {
             this.ingot = ingot;
             this.nugget = nugget;
             this.block = block;
+
+            this.name = ""+name;
             id = name.toLowerCase().replace(" ","_");
 
             this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
@@ -339,6 +348,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .tintColor(tintColor)
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(fluidTypeProperties);
+            addLang("fluid",Overheated.asResource("molten_"+id),"Molten "+name);
+            addLang("item",Overheated.asResource("molten_"+id).withSuffix("_bucket"),"Molten " + name + " Bucket");
+
 
             this.meltingRequirement = meltingRequirement;
 
@@ -388,7 +400,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         meltingRequirement.changeSteamAmount(mbPerIngot * 9 * 2),
                         meltTimePerIngot * 9));
             }
-
         }
     }
 
@@ -414,7 +425,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public Object handle;
         public boolean handleRegistrated;
 
-        public toolSet(String id, ItemEntry<Item> ingot, ItemEntry<Item> handle, Tier tier, float propertyTier){
+        public toolSet(String name, ItemEntry<Item> ingot, ItemEntry<Item> handle, Tier tier, float propertyTier){
+            id = name.toLowerCase().replace(" ","_");
             this.sword = GENERAL_ITEMS.register(id+"_sword",() -> new SwordItem(tier,3,-2.4f,new Item.Properties()));
             this.axe = GENERAL_ITEMS.register(id+"_axe", () -> new AxeItem(tier,7.0f-(propertyTier/2f),-3.0f,new Item.Properties()));
             this.shovel = GENERAL_ITEMS.register(id+"_shovel", () -> new ShovelItem(tier,1.5f,-3.0f,new Item.Properties()));
@@ -425,12 +437,19 @@ public class OverheatedRegistrate extends CreateRegistrate {
             items_for_tab.add(this.shovel);
             items_for_tab.add(this.pickaxe);
             items_for_tab.add(this.hoe);
-            this.id = id;
             this.ingot = ingot;
             this.handle = handle;
             ingotRegistrated = true;
             handleRegistrated = true;
             OverheatedRecipeProvider.toolSets.add(this);
+            addLang("item",Overheated.asResource(id).withSuffix("_sword"),name + " Sword");
+            addLang("item",Overheated.asResource(id).withSuffix("_axe"),name + " Axe");
+            addLang("item",Overheated.asResource(id).withSuffix("_shovel"),name + " Shovel");
+            addLang("item",Overheated.asResource(id).withSuffix("_hoe"),name + " Hoe");
+            addLang("item",Overheated.asResource(id).withSuffix("_pickaxe"),name + " Pickaxe");
+
+
+
         }
 
         public toolSet setVanillaHandle(Item Handle){
@@ -509,11 +528,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
     }
 
-    public toolSet makeToolset(String id, ItemEntry<Item> Ingot, ItemEntry<Item> Handle, Tier tier, float propertyTier){
-        return new toolSet(id,Ingot,Handle,tier,propertyTier);
+    public toolSet makeToolset(String name, ItemEntry<Item> Ingot, ItemEntry<Item> Handle, Tier tier, float propertyTier){
+        return new toolSet(name,Ingot,Handle,tier,propertyTier);
     }
-    public toolSet makeToolset(String id, ItemEntry<Item> Ingot, Tier tier, float propertyTier){
-        return new toolSet(id,Ingot,null,tier,propertyTier).setVanillaHandle(Items.STICK);
+    public toolSet makeToolset(String name, ItemEntry<Item> Ingot, Tier tier, float propertyTier){
+        return new toolSet(name,Ingot,null,tier,propertyTier).setVanillaHandle(Items.STICK);
     }
     public toolSet makeToolset(MetallicSet MS, Tier tier, float propertyTier){
         return new toolSet(MS.id,MS.ingot,null,tier,propertyTier).setVanillaHandle(Items.STICK);
