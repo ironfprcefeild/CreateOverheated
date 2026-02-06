@@ -26,6 +26,8 @@ public class OverheatedRecipeProvider extends RecipeProvider {
 
     public static ArrayList<OverheatedRegistrate.MetallicSet> metallicSets = new ArrayList<>();
     public static ArrayList<OverheatedRegistrate.vanillaMetallicSet> vanillaMetallicSets = new ArrayList<>();
+    public static ArrayList<OverheatedRegistrate.toolSet> toolSets = new ArrayList<>();
+
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer) {
         ///Metallic Sets
@@ -35,6 +37,14 @@ public class OverheatedRecipeProvider extends RecipeProvider {
         for (OverheatedRegistrate.vanillaMetallicSet Vms : vanillaMetallicSets){
             Vms.buildRecipes(writer);
         }
+
+        /// Tool sets
+        for (OverheatedRegistrate.toolSet Ts : toolSets){
+            Ts.buildRecipes(writer);
+        }
+
+        /// Misc Metal Works
+
         //Copper nugget Melting
         writer.accept(getMeltingRecipe(
                 Overheated.asResource("copper_nugget_melting"),
@@ -49,6 +59,7 @@ public class OverheatedRecipeProvider extends RecipeProvider {
                 new FluidStack(net.ironf.overheated.AllItems.GOLD_METALWORKS.molten.SOURCE.get().getSource(),mbPerIngot),
                 AllItems.BRASS_INGOT.asStack(),
                 net.ironf.overheated.AllItems.BRASS_METALWORKS.castedIngot.asStack()));
+
         /// Steam Condensing!
         //Loop over pressure levels
         AllSteamFluids.prepareSteamArray();

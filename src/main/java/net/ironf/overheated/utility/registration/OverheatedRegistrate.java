@@ -9,6 +9,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import io.netty.util.SuppressForbidden;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllItems;
@@ -35,15 +36,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -76,7 +76,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -108,9 +111,61 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public static final DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,Overheated.MODID);
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES,Overheated.MODID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,Overheated.MODID);
-    public static final DeferredRegister<Item> BUCKET_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
 
     public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
+
+    public static final DeferredRegister<Item> GENERAL_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
+    public static List<RegistryObject<? extends Item>> items_for_tab = new ReferenceArrayList<>();
+
+
+    @Override
+    public @NotNull CreateRegistrate registerEventListeners(IEventBus bus) {
+        GAS_BLOCKS.register(bus);
+        FEATURES.register(bus);
+        FLUID_BLOCKS.register(bus);
+        FLUID_TYPES.register(bus);
+        FLUIDS.register(bus);
+        GENERAL_ITEMS.register(bus);
+
+        return super.registerEventListeners(bus);
+    }
+
+    ///Datagen
+    public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
+    public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
+
+    @Mod.EventBusSubscriber(modid = Overheated.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class DataGenerators {
+
+        @SubscribeEvent
+        public static void gatherData(GatherDataEvent event) {
+            Overheated.LOGGER.info("Overheated Gathering Data");
+            DataGenerator generator = event.getGenerator();
+            PackOutput packOutput = generator.getPackOutput();
+            ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+            Collection<RegistryObject<Block>> Blocks = GAS_BLOCKS.getEntries();
+            generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
+                    packOutput,
+                    existingFileHelper,
+                    Blocks,
+                    OverheatedRegistrate.makeBlockItems,
+                    OverheatedRegistrate.blockModelOverride,
+                    TintedBlocks));
+
+            generator.addProvider(event.includeClient(), new OverheatedItemModelProvider(
+                    packOutput,
+                    existingFileHelper,
+                    GENERAL_ITEMS.getEntries(),
+                    itemModelOverride));
+
+            generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
+                    packOutput));
+
+
+        }
+    }
 
 
     ////Helpers
@@ -344,66 +399,141 @@ public class OverheatedRegistrate extends CreateRegistrate {
         return makeVanillaMetallicSet(name,ingot,nugget,block,defaultMeltingRequirement,defaultMoltenProperties,tintColor);
     }
 
+    /// Tool sets
+    public class toolSet{
+        public final RegistryObject<Item> sword;
+        public final RegistryObject<Item> axe;
+        public final RegistryObject<Item> shovel;
+        public final RegistryObject<Item> pickaxe;
+        public final RegistryObject<Item> hoe;
+        public final String id;
 
-    ///Datagen
-    public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
-    public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
-    public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
+        public Object ingot;
+        public boolean ingotRegistrated;
 
-    @Mod.EventBusSubscriber(modid = Overheated.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public class DataGenerators {
+        public Object handle;
+        public boolean handleRegistrated;
 
-        @SubscribeEvent
-        public static void gatherData(GatherDataEvent event) {
-            Overheated.LOGGER.info("Overheated Gathering Data");
-            DataGenerator generator = event.getGenerator();
-            PackOutput packOutput = generator.getPackOutput();
-            ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        public toolSet(String id, ItemEntry<Item> ingot, ItemEntry<Item> handle, Tier tier, float propertyTier){
+            this.sword = GENERAL_ITEMS.register(id+"_sword",() -> new SwordItem(tier,3,-2.4f,new Item.Properties()));
+            this.axe = GENERAL_ITEMS.register(id+"_axe", () -> new AxeItem(tier,7.0f-(propertyTier/2f),-3.0f,new Item.Properties()));
+            this.shovel = GENERAL_ITEMS.register(id+"_shovel", () -> new ShovelItem(tier,1.5f,-3.0f,new Item.Properties()));
+            this.pickaxe = GENERAL_ITEMS.register(id+"_pickaxe", () -> new PickaxeItem(tier,1,-2.8f,new Item.Properties()));
+            this.hoe = GENERAL_ITEMS.register(id+"_hoe", () -> new HoeItem(tier, (int) -propertyTier,Math.max(-propertyTier,0.0f),new Item.Properties()));
+            items_for_tab.add(this.sword);
+            items_for_tab.add(this.axe);
+            items_for_tab.add(this.shovel);
+            items_for_tab.add(this.pickaxe);
+            items_for_tab.add(this.hoe);
+            this.id = id;
+            this.ingot = ingot;
+            this.handle = handle;
+            ingotRegistrated = true;
+            handleRegistrated = true;
+            OverheatedRecipeProvider.toolSets.add(this);
+        }
 
-            Collection<RegistryObject<Block>> Blocks = GAS_BLOCKS.getEntries();
-            generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
-                            packOutput,
-                            existingFileHelper,
-                            Blocks,
-                            OverheatedRegistrate.makeBlockItems,
-                            OverheatedRegistrate.blockModelOverride,
-                            TintedBlocks));
+        public toolSet setVanillaHandle(Item Handle){
+            this.handle = Handle;
+            handleRegistrated = false;
+            return this;
+        }
+        public toolSet setVanillaIngots(Item Ingot){
+            this.ingot = Ingot;
+            ingotRegistrated = false;
+            return this;
+        }
 
-            generator.addProvider(event.includeClient(), new OverheatedItemModelProvider(
-                    packOutput,
-                    existingFileHelper,
-                    BUCKET_ITEMS.getEntries(),
-                    itemModelOverride));
+        @SuppressWarnings("unchecked")
+        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+            ResourceLocation parentRL = Overheated.asResource(id);
+            Item ingot = ingotRegistrated ? ((ItemEntry<Item>) this.ingot).get() : ((Item) this.ingot);
+            Item handle = handleRegistrated ? ((ItemEntry<Item>) this.handle).get() : ((Item) this.handle);
 
-            generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
-                    packOutput));
-
-
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,sword.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern(" i ")
+                    .pattern(" i ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_sword"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,axe.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern("ii ")
+                    .pattern("ih ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_axe"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,axe.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern(" ii")
+                    .pattern(" hi")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_axe_alt"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,shovel.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern(" i ")
+                    .pattern(" h ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_shovel"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,pickaxe.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern("iii")
+                    .pattern(" h ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_pickaxe"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,hoe.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern(" ii")
+                    .pattern(" h ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_hoe"));
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS,hoe.get())
+                    .define('i',ingot)
+                    .define('h', handle)
+                    .pattern("ii ")
+                    .pattern(" h ")
+                    .pattern(" h ")
+                    .unlockedBy(getHasName(ingot),has(ingot))
+                    .save(writer,parentRL.withSuffix("_hoe_alt"));
         }
     }
 
-    @Override
-    public @NotNull CreateRegistrate registerEventListeners(IEventBus bus) {
-        GAS_BLOCKS.register(bus);
-        FEATURES.register(bus);
-
-        FLUID_BLOCKS.register(bus);
-        FLUID_TYPES.register(bus);
-        FLUIDS.register(bus);
-        BUCKET_ITEMS.register(bus);
-
-        return super.registerEventListeners(bus);
+    public toolSet makeToolset(String id, ItemEntry<Item> Ingot, ItemEntry<Item> Handle, Tier tier, float propertyTier){
+        return new toolSet(id,Ingot,Handle,tier,propertyTier);
+    }
+    public toolSet makeToolset(String id, ItemEntry<Item> Ingot, Tier tier, float propertyTier){
+        return new toolSet(id,Ingot,null,tier,propertyTier).setVanillaHandle(Items.STICK);
+    }
+    public toolSet makeToolset(MetallicSet MS, Tier tier, float propertyTier){
+        return new toolSet(MS.id,MS.ingot,null,tier,propertyTier).setVanillaHandle(Items.STICK);
+    }
+    public toolSet makeToolset(MetallicSet MS, ItemEntry<Item> Handle, Tier tier, float propertyTier){
+        return new toolSet(MS.id,MS.ingot,Handle,tier,propertyTier);
     }
 
-    //Fluids
+
+
+    ///Fluids
     public FluidRegistration SimpleFluid(String name){
         return new FluidRegistration(this,name);
     }
-    public static List<RegistryObject<? extends Item>> allBuckets = new ReferenceArrayList<>();
     public static List<RegistryObject<? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
     public static List<RegistryObject<GasBlock>> transparentGasses = new ReferenceArrayList<>();
     public static HashMap<RegistryObject<GasBlock>,Integer> blockTintColors = new HashMap<>();
     public static ArrayList<RegistryObject<? extends Block>> TintedBlocks = new ArrayList<>();
+
+
     public static void applyGasTransparency(){
         for (RegistryObject<GasBlock> gas : transparentGasses) {
             ItemBlockRenderTypes.setRenderLayer(gas.get(), RenderType.translucent());
@@ -571,13 +701,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
         public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid, String bucketModelLocation, boolean addToSteamTab){
-            RegistryObject<BucketItem> toReturn = BUCKET_ITEMS.register(
+            RegistryObject<BucketItem> toReturn = GENERAL_ITEMS.register(
                     fluidName + "_bucket",
                     () -> new BucketItem(fluid,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
             if (addToSteamTab){
                 allSteamBuckets.add(toReturn);
             } else {
-                allBuckets.add(toReturn);
+                items_for_tab.add(toReturn);
             }
             if (bucketModelLocation != null){
                 itemModelOverride.put(toReturn,bucketModelLocation);

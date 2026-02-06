@@ -1,0 +1,28 @@
+{
+  "type": "create:mechanical_crafting",
+  "key": {
+    "f": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "b": {
+      "item": "coverheated:chill_channel_relay"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "s": {
+      "item": "coverheated:steel_ingot"
+    }
+  },
+  "pattern": [
+    "sbs",
+    "sbs",
+    "sbs",
+    "sfs",
+    "ddd"
+  ],
+  "result": {
+    "count": 2,
+    "item": "coverheated:chillsteel_handle"
+  }
+}

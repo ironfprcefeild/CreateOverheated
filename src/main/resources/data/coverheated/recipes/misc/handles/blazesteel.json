@@ -1,0 +1,28 @@
+{
+  "type": "create:mechanical_crafting",
+  "key": {
+    "b": {
+      "item": "minecraft:blaze_rod"
+    },
+    "f": {
+      "item": "coverheated:blazeglass_fixture"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "s": {
+      "item": "coverheated:steel_ingot"
+    }
+  },
+  "pattern": [
+    "sbs",
+    "sbs",
+    "sfs",
+    "sfs",
+    "ddd"
+  ],
+  "result": {
+    "count": 2,
+    "item": "coverheated:blazesteel_handle"
+  }
+}

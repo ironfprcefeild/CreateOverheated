@@ -25,7 +25,6 @@ public class OverheatedItemModelProvider extends ItemModelProvider {
     public HashMap<RegistryObject<? extends Item>,String> modelOverride;
 
     private ItemModelBuilder simpleItem(Item item, @Nullable String textureOverride) {
-
         return (textureOverride == null)
             ? basicItem(item)
             : getBuilder(item.toString())

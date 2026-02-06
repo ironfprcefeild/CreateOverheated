@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
@@ -33,6 +34,8 @@ public class AllItems {
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.AMETHYST_CLUSTER)
                     .strength(5f));
+    public static final OverheatedRegistrate.toolSet NIHILITE_TOOLS =
+            REGISTRATE.makeToolset(NIHILITE, Tiers.DIAMOND,3f);
 
     public static final ItemEntry<Item> NIHILTE_GLOBULE = craftingIngredient("nihilite_globule","Nihilite Globule");
     public static final ItemEntry<Item> CRUSHED_NIHILITE = craftingIngredient("crushed_nihilite","Crushed Nihilite");
@@ -44,6 +47,9 @@ public class AllItems {
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.ANCIENT_DEBRIS)
                     .strength(5f));
+    public static final ItemEntry<Item> BLAZESTEEL_HANDLE = craftingIngredient("blazesteel_handle","Blazesteel Handle");
+    public static final OverheatedRegistrate.toolSet BLAZESTEEL_TOOLS =
+            REGISTRATE.makeToolset(BLAZESTEEL, BLAZESTEEL_HANDLE, Tiers.NETHERITE,3f);
 
     public static final ItemEntry<Item> BLAZEGLASS_FIXTURE = craftingIngredient("blazeglass_fixture","Blazeglass Fixture");
     public static final ItemEntry<Item> ANTILASER_PLATE = craftingIngredient("antilaser_plate","Anti-laser Plate");
@@ -100,6 +106,9 @@ public class AllItems {
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.POWDER_SNOW)
                     .strength(3.5f));
+    public static final ItemEntry<Item> CHILLSTEEL_HANDLE = craftingIngredient("chillsteel_handle","Chillsteel Handle");
+    public static final OverheatedRegistrate.toolSet CHILLSTEEL_TOOLS =
+            REGISTRATE.makeToolset(CHILLSTEEL, CHILLSTEEL_HANDLE, Tiers.NETHERITE,3f);
 
     public static final ItemEntry<Item> ICE_DIAMOND = craftingIngredient("ice_diamond","Ice Diamond");
     public static final ItemEntry<Item> CHANNEL_RELAY = craftingIngredient("chill_channel_relay","Channel Chill Relay");

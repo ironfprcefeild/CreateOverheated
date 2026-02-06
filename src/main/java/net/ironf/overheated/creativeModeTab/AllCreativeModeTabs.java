@@ -26,10 +26,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -43,7 +40,7 @@ public class AllCreativeModeTabs {
                     .title(Component.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .icon(AllBlocks.DIODE::asStack)
-                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.allBuckets))
+                    .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.items_for_tab))
                     .build());
 
     public static final RegistryObject<CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
