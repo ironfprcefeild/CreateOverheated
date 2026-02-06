@@ -15,7 +15,7 @@
   "pattern": [
     "n  ",
     "c  ",
-    "   "
+    "t  "
   ],
   "result": {
     "item": "coverheated:combustion_engine"

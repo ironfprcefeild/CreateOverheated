@@ -6,7 +6,8 @@
     "coverheated:chill_channel",
     "coverheated:channel_expeller",
     "coverheated:combustion_vent",
-    "coverheated:combustion_regulator"
+    "coverheated:combustion_regulator",
+    "coverheated:combustion_engine"
 
   ]
 }
