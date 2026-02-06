@@ -1,17 +1,24 @@
 package net.ironf.overheated.utility.data.dataGeneration.recipes;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.compat.jei.ConversionRecipe;
+import com.simibubi.create.compat.jei.category.MysteriousItemConversionCategory;
+import net.ironf.overheated.AllFluids;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.*;
@@ -81,6 +88,25 @@ public class OverheatedRecipeProvider extends RecipeProvider {
                 h++;
             }
         }
+
+    }
+
+    public static HashMap<Item,Item> conversionRecipes = new HashMap<>();
+    public static void addMysteriousConversion(){
+        for (Item ROI : conversionRecipes.keySet()){
+            MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                    ROI.getDefaultInstance(),conversionRecipes.get(ROI).getDefaultInstance()));
+        }
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.HEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.nitrogen.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.SUPERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.cinderfume.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                AllSteamFluids.OVERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.voidaium.BUCKET.get().getDefaultInstance()));
+        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
+                net.ironf.overheated.AllItems.BRASS_METALWORKS.castedIngot.asStack(), net.ironf.overheated.AllItems.EMPTY_GOLD_CAST.asStack()));
 
     }
 }

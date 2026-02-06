@@ -44,12 +44,17 @@ public class AllSteamFluids {
 
 
     public static OverheatedRegistrate.FluidRegistration registerSteam(int PressureLevel, int HeatRating){
-        String name = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel];
-        return REGISTRATE.SimpleFluid(name)
+        String id = heatingIDs[HeatRating] + "steam_" + pressureIDs[PressureLevel];
+        String name = heatingNames[HeatRating] + pressureNames[PressureLevel] + " Pressure Steam";
+
+        REGISTRATE.addLang("fluid",Overheated.asResource(id),name);
+        REGISTRATE.addLang("item", Overheated.asResource(id).withSuffix("_bucket"),name + " Bucket");
+
+        return REGISTRATE.SimpleFluid(id)
                 .overrideTexture("block/steam")
                 .addBucketToSteamTabOnly()
                 .bucketModelLocation("item/steam_bucket")
-                .setGas(REGISTRATE.gasBlock(name)
+                .setGas(REGISTRATE.gasBlock(id)
                         .shiftChance(4)
                         .tickDelays(2,8 - PressureLevel)
                         .defaultFlow(Direction.UP)
@@ -61,12 +66,17 @@ public class AllSteamFluids {
     }
 
     public static OverheatedRegistrate.FluidRegistration registerHotAir(int HeatRating){
-        String name = heatingIDs[HeatRating] + "air";
-        return REGISTRATE.SimpleFluid(name)
+        String id = heatingIDs[HeatRating] + "air";
+        String name = heatingNames[HeatRating] + " Air";
+
+        REGISTRATE.addLang("fluid",Overheated.asResource(id),name);
+        REGISTRATE.addLang("item", Overheated.asResource(id).withSuffix("_bucket"),name + " Bucket");
+
+        return REGISTRATE.SimpleFluid(id)
                 .overrideTexture("block/hot_air")
                 .addBucketToSteamTabOnly()
                 .bucketModelLocation("item/hot_air_bucket")
-                .setGas(REGISTRATE.gasBlock(name)
+                .setGas(REGISTRATE.gasBlock(id)
                         .shiftChance(4)
                         .tickDelays(2,8)
                         .defaultFlow(Direction.UP)
@@ -80,6 +90,10 @@ public class AllSteamFluids {
 
     public static final String[] pressureIDs = {"superlow","low","mid","high","insane"};
     public static final String[] heatingIDs = {"","heated_","superheated_","overheated_"};
+
+
+    public static final String[] pressureNames = {"Superlow","Low","Mid","High","Insane"};
+    public static final String[] heatingNames = {"","Heated ","Superheated ","Overheated "};
 
     /// Steams
     public static final OverheatedRegistrate.FluidRegistration STEAM_LOW = registerSteam(1,0);

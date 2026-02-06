@@ -18,6 +18,7 @@ import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler;
 import net.ironf.overheated.utility.TranslucencyHandler;
+import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraft.client.color.block.BlockColor;
@@ -100,15 +101,7 @@ public class Overheated
         TranslucencyHandler.addRenderLayers();
 
         //(Un)Mysterious Conversion
-        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
-                AllFluids.SLUDGE.BUCKET.get().getDefaultInstance(),AllFluids.STRAY_SAUCE.BUCKET.get().getDefaultInstance()));
-        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
-                AllSteamFluids.HEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.nitrogen.BUCKET.get().getDefaultInstance()));
-        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
-                AllSteamFluids.SUPERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.cinderfume.BUCKET.get().getDefaultInstance()));
-        MysteriousItemConversionCategory.RECIPES.add(ConversionRecipe.create(
-                AllSteamFluids.OVERHEATED_STEAM_LOW.BUCKET.get().getDefaultInstance(), AllGasses.voidaium.BUCKET.get().getDefaultInstance()));
-
+        OverheatedRecipeProvider.addMysteriousConversion();
     }
 
     @SubscribeEvent
