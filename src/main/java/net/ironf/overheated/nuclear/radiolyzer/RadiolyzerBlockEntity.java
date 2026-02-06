@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.data.Iterate;
-import net.ironf.overheated.AllFluids;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.nuclear.rods.ControlRodsRegister;

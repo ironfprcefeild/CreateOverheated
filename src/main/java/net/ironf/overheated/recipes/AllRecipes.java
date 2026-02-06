@@ -2,7 +2,6 @@ package net.ironf.overheated.recipes;
 
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
-import net.ironf.overheated.metalWorking.metalCasting.MetalCastingRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRecipe;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.recipe.IndustrialBlastingRecipe;

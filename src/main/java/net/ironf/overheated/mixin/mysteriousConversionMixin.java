@@ -3,7 +3,6 @@ package net.ironf.overheated.mixin;
 import com.simibubi.create.compat.jei.ConversionRecipe;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import net.ironf.overheated.Overheated;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;

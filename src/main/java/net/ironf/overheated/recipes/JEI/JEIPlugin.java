@@ -1,7 +1,5 @@
 package net.ironf.overheated.recipes.JEI;
 
-import com.simibubi.create.compat.jei.ConversionRecipe;
-import com.simibubi.create.compat.jei.category.MysteriousItemConversionCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -9,8 +7,6 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.ironf.overheated.AllBlocks;
-import net.ironf.overheated.AllFluids;
-import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
 import net.ironf.overheated.cooling.colants.CoolingRecipeCategory;

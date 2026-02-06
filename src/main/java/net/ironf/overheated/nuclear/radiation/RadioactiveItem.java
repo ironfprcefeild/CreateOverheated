@@ -1,6 +1,5 @@
 package net.ironf.overheated.nuclear.radiation;
 
-import net.ironf.overheated.Overheated;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

@@ -1,11 +1,8 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.compat.jei.ConversionRecipe;
-import com.simibubi.create.compat.jei.category.MysteriousItemConversionCategory;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
@@ -22,12 +19,7 @@ import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipe
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,7 +34,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
@@ -117,27 +108,11 @@ public class Overheated
         //loadRadiationInformation(event.getServer());
     }
 
-
     @SubscribeEvent
     public void onServerStopping(ServerStoppedEvent event){
         LOGGER.info("SO: Overheated is closing on the server");
         RadiationMap.RadiationHashMap.clear();
     }
-
-    /*
-
-    public void saveRadiationInformation(MinecraftServer server){
-        LOGGER.info("SO: Saving Radiation Info");
-        RadiationMap data = RadiationMap.manage(server);
-        data.setRadiationMap(RadiationMap.RadiationHashMap);
-    }
-    public void loadRadiationInformation(MinecraftServer server){
-        LOGGER.info("SO: Loading Radiation Info");
-        RadiationMap data = RadiationMap.manage(server);
-        RadiationMap.RadiationHashMap = data.getRadiationHashMap();
-    }
-
-     */
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

@@ -1,7 +1,6 @@
 package net.ironf.overheated.mixin;
 
 import net.ironf.overheated.AllFluids;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,10 +9,7 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
-
-import java.util.logging.Level;
 
 @Mixin(net.minecraft.world.entity.monster.Stray.class)
 public abstract class strayMixin extends AbstractSkeleton {
