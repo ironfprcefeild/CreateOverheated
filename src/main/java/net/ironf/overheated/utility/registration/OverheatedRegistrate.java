@@ -346,7 +346,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     .tintColor(tintColor)
                     .levelDecreasePerBlock(2).tickRate(25).explosionResistance(100f).slopeFindDistance(3)
                     .Register(fluidTypeProperties);
-            addLang("fluid",Overheated.asResource("molten_"+id),"Molten "+name);
+            addLang("fluid_type",Overheated.asResource("molten_"+id),"Molten "+name);
             addLang("item",Overheated.asResource("molten_"+id).withSuffix("_bucket"),"Molten " + name + " Bucket");
 
 
