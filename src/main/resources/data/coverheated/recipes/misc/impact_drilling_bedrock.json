@@ -1,0 +1,13 @@
+{
+  "type": "coverheated:impact_drilling",
+  "input": {
+      "item": "minecraft:bedrock"
+    },
+  "output": {
+    "fluid": "coverheated:water_vapor",
+    "amount": 1
+  },
+  "minimum_torque": 50,
+  "torque_impact": 10,
+  "destroy_chance": 0.01
+}

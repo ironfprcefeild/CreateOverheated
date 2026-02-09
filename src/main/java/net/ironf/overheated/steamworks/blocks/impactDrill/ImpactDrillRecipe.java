@@ -72,9 +72,11 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
     private final float torqueNeeded;
     private final float heatNeeded;
     private final float torqueImpact;
-
+    private final int minPressure;
     private final FluidStack output;
     private final Ingredient input;
+
+    private final float destructionChance;
 
     public float getTorqueNeeded() {
         return torqueNeeded;
@@ -96,13 +98,21 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
         return torqueImpact;
     }
 
-    public ImpactDrillRecipe(ResourceLocation id, float torqueNeeded, float heatNeeded, float torqueImpact, FluidStack output, Ingredient input) {
+    public float getDestructionChance() {return destructionChance;}
+
+    public int getMinPressure() {
+        return minPressure;
+    }
+
+    public ImpactDrillRecipe(ResourceLocation id, float torqueNeeded, float heatNeeded, float torqueImpact, int minPressure, FluidStack output, Ingredient input, float destructionChance) {
         Id = id;
         this.torqueNeeded = torqueNeeded;
         this.heatNeeded = heatNeeded;
         this.torqueImpact = torqueImpact;
+        this.minPressure = minPressure;
         this.output = output;
         this.input = input;
+        this.destructionChance = destructionChance;
     }
     public static class Serializer implements RecipeSerializer<ImpactDrillRecipe> {
         public static final Serializer INSTANCE = new Serializer();
@@ -114,12 +124,16 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
             float torque = GsonHelper.getAsFloat(j,"minimum_torque");
             float torqueImpact = j.has("torque_impact") ? GsonHelper.getAsFloat(j,"torque_impact") : torque / 2;
             torqueImpact = torqueImpact > torque ? torque / 4 : torqueImpact;
+
+
             return new ImpactDrillRecipe(id,
                     torque,
                     j.has("heat") ? GsonHelper.getAsFloat(j,"heat") : 0,
                     torqueImpact,
+                    j.has("pressure") ? GsonHelper.getAsInt(j,"pressure") : 0,
                     FluidIngredient.deserialize(GsonHelper.getAsJsonObject(j,"output")).getMatchingFluidStacks().get(0),
-                    Ingredient.fromJson(GsonHelper.getAsJsonObject(j,"input")));
+                    Ingredient.fromJson(GsonHelper.getAsJsonObject(j,"input")),
+                    j.has("destroy_chance") ? GsonHelper.getAsFloat(j,"destroy_chance") : 0);
         }
 
         /*
@@ -127,28 +141,35 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
             1. torque
             2. heat
             3. torque impact
-            4. output
-            5. input
-
+            4. min pressure
+            5. output
+            6. input
+            7. Destruction Chance
          */
+
+
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, ImpactDrillRecipe recipe) {
             buf.writeFloat(recipe.getTorqueNeeded());
             buf.writeFloat(recipe.getHeatNeeded());
             buf.writeFloat(recipe.getTorqueImpact());
+            buf.writeInt(recipe.getMinPressure());
             recipe.getOutput().writeToPacket(buf);
             recipe.getInput().toNetwork(buf);
+            buf.writeFloat(recipe.getDestructionChance());
         }
 
         @Override
         public @Nullable ImpactDrillRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            float t = buf.readFloat();
-            float h = buf.readFloat();
-            float torqueImpact = buf.readFloat();
-            FluidStack o = buf.readFluidStack();
-            Ingredient i = Ingredient.fromNetwork(buf);
-            return  new ImpactDrillRecipe(id,t,h, torqueImpact, o,i);
+            return  new ImpactDrillRecipe(id,
+                    buf.readFloat(),
+                    buf.readFloat(),
+                    buf.readFloat(),
+                    buf.readInt(),
+                    buf.readFluidStack(),
+                    Ingredient.fromNetwork(buf),
+                    buf.readFloat());
         }
 
     }

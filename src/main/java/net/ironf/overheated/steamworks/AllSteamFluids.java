@@ -167,7 +167,6 @@ public class AllSteamFluids {
         return 0;
     }
 
-
     public static int getSteamHeat(Fluid s){
         int h = 0;
         for (Fluid[] steamLevel : Steams) {

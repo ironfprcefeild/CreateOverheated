@@ -5,6 +5,7 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
+import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
@@ -130,7 +131,7 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
                 //We have a recipe, lets do stuff
                 ImpactDrillRecipe recipe = orecipe.get();
                 //We have the torque and heat, and the gas fits
-                if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded()) {
+                if (currentTorque >= recipe.getTorqueNeeded() && currentHeating >= recipe.getHeatNeeded() && pressure >= recipe.getMinPressure()) {
                     output = getOutputPos();
                     if (output == null)
                         return;
@@ -145,6 +146,9 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
                     particles(output,level,true);
                     makeSound(SoundEvents.DRAGON_FIREBALL_EXPLODE,4f,1f);
 
+                    if (level.getRandom().nextFloat() < recipe.getDestructionChance()){
+                        level.setBlock(myPos.below().below(),Blocks.AIR.defaultBlockState(),3);
+                    }
                 }
             }
         }
@@ -210,7 +214,9 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
     }
 
     public float getAdjustedTemp(){
-        if (currentTemp >= 0){
+        if (currentTemp >= 256){
+            return ((512-currentTemp)/512);
+        } else if (currentTemp >= 0){
             return 0;
         }
         return Math.min(128,Math.abs(currentTemp));
@@ -219,14 +225,9 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
          return ((1+(currentHeating/12)) * (1+(getAdjustedTemp()/16)));
     }
 
-
     public float torqueLimit(){
         return (8 * (1+currentHeating) * (1+(getAdjustedTemp()/8)));
     }
-
-
-    //Laser Time
-
 
     //Recipe Stuff
     public static Optional<ImpactDrillRecipe> grabRecipe(Level level, ItemStack stack){
@@ -237,12 +238,15 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
     }
 
     //Cooling
-
     @Override
     public boolean doCooling() {
         return true;
     }
 
+    @Override
+    public CoolingData getPassiveCooling() {
+        return new CoolingData(4,0);
+    }
 
     //Read / Writes
 

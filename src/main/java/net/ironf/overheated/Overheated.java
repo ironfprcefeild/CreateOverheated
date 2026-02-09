@@ -105,7 +105,6 @@ public class Overheated
         CondensingRecipeHandler.setLevel(event.getServer().overworld());
         CondensingRecipeHandler.generateHandler();
         RadiationMap.RadiationHashMap.clear();
-        //loadRadiationInformation(event.getServer());
     }
 
     @SubscribeEvent
