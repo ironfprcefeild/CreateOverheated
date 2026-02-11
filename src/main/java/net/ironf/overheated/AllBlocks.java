@@ -37,6 +37,7 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBl
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlock;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanBlock;
 import net.ironf.overheated.utility.data.SimpleBlockStateGenerators;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelBlockStateGen;
 import net.ironf.overheated.utility.data.blockstateModelGenerators.ModelDirectionalBlockStateGen;
@@ -409,6 +410,16 @@ public class AllBlocks {
 
     public static final BlockEntry<turbineEndBlock> TURBINE_END = REGISTRATE
             .block("turbine_end", turbineEndBlock::new)
+            .initialProperties(SharedProperties::copperMetal)
+            .properties(p -> p.strength(3f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .simpleItem()
+            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/turbine_end")::generate)
+            .defaultLoot()
+            .register();
+
+    public static final BlockEntry<turbineFanBlock> TURBINE_FAN = REGISTRATE
+            .block("turbine_fan", turbineFanBlock::new)
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)

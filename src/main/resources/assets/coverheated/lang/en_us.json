@@ -21,6 +21,9 @@
   "coverheated.turbine.too_small": "Turbine is too Small, add Centers or Extensions",
   "coverheated.turbine.outtake_full": "Turbine Outtake is full, add a Pump or increase its speed.",
   "coverheated.turbine.combustion_mode": "Combustion Mode, drains combustion time from attached chamber",
+  "coverheated.turbine.fan": "Acting as a Fan, provide SU",
+  "coverheated.turbine.airflow": "Airflow from Fan",
+
 
   "coverheated.steam_vent.distilling": "Vent is making Distilled Water",
   "coverheated.steam_vent.not_distilling": "Vent is making Steam",

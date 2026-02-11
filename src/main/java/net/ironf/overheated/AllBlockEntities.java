@@ -36,6 +36,7 @@ import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlock
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanBlockEntity;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -47,6 +48,11 @@ public class AllBlockEntities {
             .visual(() -> SingleAxisRotatingVisual::shaft, false)
             .renderer(() -> turbineEndRenderer::new)
             .validBlocks(AllBlocks.TURBINE_END)
+            .register();
+
+    public static final BlockEntityEntry<turbineFanBlockEntity> TURBINE_FAN = REGISTRATE
+            .blockEntity("turbine_fan", turbineFanBlockEntity::new)
+            .validBlocks(AllBlocks.TURBINE_FAN)
             .register();
 
     //Steam vent

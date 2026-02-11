@@ -1,7 +1,6 @@
 {
   "replace": "false",
   "values": [
-    "coverheated:heat_sink",
-    "coverheated:cooling_tower"
+    "coverheated:heat_sink"
   ]
 }
