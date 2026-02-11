@@ -39,7 +39,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     //Kinetics
     @Override
     public float getGeneratedSpeed() {
-        return convertToDirection(Math.min(256,thisSpinsDrain / 10), getBlockState().getValue(turbineEndBlock.FACING));
+        return convertToDirection(thisSpinsDrain, getBlockState().getValue(turbineEndBlock.FACING));
     }
 
     @Override
@@ -283,9 +283,6 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                 tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.amount").append(String.valueOf(Drain)).append(Component.translatable("coverheated.turbine.drain." + (combustionEngine ? "alt" : "in"))).append(String.valueOf(lazyTickCounter)).append(Component.translatable("coverheated.turbine.drain.ticks")), 1));
                 if (!combustionEngine){
                     tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.steam_vent.requires").append(String.valueOf(Drain / 40)).append(Component.translatable("coverheated.turbine.drain.steam_vent.to_run")), 1));
-                }
-                if (Drain > 2560) {
-                    tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.drain.too_much"), 1));
                 }
             } else {
                 tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"), 1));
