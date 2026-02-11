@@ -37,7 +37,7 @@ public class ChannelCoreBlock extends Block implements IBE<ChannelCoreBlockEntit
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
     }
 }
 

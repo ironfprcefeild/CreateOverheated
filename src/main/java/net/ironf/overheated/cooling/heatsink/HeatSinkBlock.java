@@ -27,7 +27,7 @@ public class HeatSinkBlock extends Block implements IBE<HeatSinkBlockEntity> {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
+        return this.defaultBlockState().setValue(FACING, context.getPlayer().isShiftKeyDown() ? context.getNearestLookingDirection().getOpposite() : context.getNearestLookingDirection());
     }
     //Block Entity
 

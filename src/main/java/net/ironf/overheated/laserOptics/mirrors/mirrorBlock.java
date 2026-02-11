@@ -24,7 +24,7 @@ public class mirrorBlock extends Block implements IWrenchable {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isCrouching() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING,  context.getPlayer().isShiftKeyDown() ?  context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
     }
 
 }

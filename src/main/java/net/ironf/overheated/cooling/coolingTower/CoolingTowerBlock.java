@@ -37,10 +37,7 @@ public class CoolingTowerBlock extends Block implements IBE<CoolingTowerBlockEnt
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction facing = (context.getPlayer() != null && context.getPlayer().isCrouching()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite();
-        if (facing == Direction.UP || facing == Direction.DOWN){
-            facing = context.getPlayer().isCrouching() ? context.getHorizontalDirection().getOpposite() : context.getHorizontalDirection();
-        }
+        Direction facing = (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
         return this.defaultBlockState().setValue(FACING, facing);
     }
 }
