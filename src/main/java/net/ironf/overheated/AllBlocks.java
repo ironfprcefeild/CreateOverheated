@@ -872,7 +872,7 @@ public class AllBlocks {
                     .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
                     .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
                     .defaultLoot()
-                    .lang("Reinforced Bricks")
+                    .lang("Intake Filter")
                     .register();
     /// Everything else
 

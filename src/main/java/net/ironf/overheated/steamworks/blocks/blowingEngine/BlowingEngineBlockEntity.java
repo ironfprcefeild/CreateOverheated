@@ -129,7 +129,7 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
 
             //Atmospheric Extraction
             Fluid alternateFluid = null;
-            if (level.getBlockState(getBlockPos().below()).is(AllBlocks.INTAKE_FILTER.get())){
+            if (level.getBlockState(getBlockPos().below(oxyPresent ? 2 : 1)).is(AllBlocks.INTAKE_FILTER.get())){
                 alternateFluid = switch (level.dimension().toString()){
                     case "ResourceKey[minecraft:dimension / minecraft:overworld]" ->
                         heatingLevel >= 1 ? AllGasses.nitrogen.SOURCE.get().getSource() : null;

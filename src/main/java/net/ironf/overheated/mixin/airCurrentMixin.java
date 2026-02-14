@@ -35,7 +35,7 @@ public class airCurrentMixin {
         BlockPos start = source.getAirCurrentPos();
         affectedBlockEntities.clear();
         int limit = publicGetLimit();
-        for (int i = 1; i <= limit; i++) {
+        for (int i = 1; i <= limit+1; i++) {
             for (int offset : Iterate.zeroAndOne) {
                 BlockPos pos = start.relative(direction, i)
                         .below(offset);

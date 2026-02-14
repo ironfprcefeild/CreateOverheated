@@ -17,10 +17,6 @@ public class ImpactDrillRenderer extends SafeBlockEntityRenderer<ImpactDrillBloc
     }
 
     @Override
-    public boolean shouldRenderOffScreen(ImpactDrillBlockEntity p_112306_) {
-        return true;
-    }
-    @Override
     protected void renderSafe(ImpactDrillBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
         if (VisualizationManager.supportsVisualization(be.getLevel()))
             return;

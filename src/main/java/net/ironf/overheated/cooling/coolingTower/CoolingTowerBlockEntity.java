@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation, IGasPlacer {
@@ -44,7 +45,9 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     int tickTimer = 75;
     int vaporCounter = 5;
     float sunken = 0;
+    int height = 0;
     float recentCoolingUnits = 0f;
+
 
     @Override
     public void tick() {
@@ -55,12 +58,12 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
             fanTimer--;
         }
         if (tickTimer-- < 1){
-            IFluidTank tank = getTank();
+            IFluidTank tank = checkForValidity();
+            int drain = 5*height;
             if (tank != null
                     && AllSteamFluids.getSteamPressure(tank.getFluid().getFluid()) >= 1
-                    && tank.getFluidAmount() >= 5
-                    && checkForValidity()){
-                tank.drain(5, IFluidHandler.FluidAction.EXECUTE);
+                    && tank.getFluidAmount() >= drain){
+                tank.drain(drain, IFluidHandler.FluidAction.EXECUTE);
                 recentCoolingUnits = 12800 * sunken;
                 if (vaporCounter-- < 1) {
                     vaporCounter = 5;
@@ -73,23 +76,52 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         }
     }
 
-    public boolean checkForValidity(){
+    //Returns the tank if the tower is valid, returns null otherwise
+    public IFluidTank checkForValidity(){
         BlockPos pos = getBlockPos();
         BlockState aboveState = level.getBlockState(pos.above());
         if (aboveState == Blocks.AIR.defaultBlockState() ||
                 (aboveState == AllGasses.water_vapor.gb.get().defaultBlockState() && level.getBlockState(pos.above().above()) == Blocks.AIR.defaultBlockState())){
+            //Check Borders around top
             for (int x = -1; x <= 1; x++) {
                 for (int y = -1; y <= 1 ; y++) {
                     if (!AllTags.AllBlockTags.COOLING_TOWER_BORDER.matches(level.getBlockState(pos.offset(x,0,y)))){
                         if(!(x==0 && y==0)){
-                            return false;
+                            return null;
                         }
                     }
                 }
             }
-            return true;
+            //Calculate Height
+            BlockPos centerPos;
+            for (int depth = 1; depth <= 12; depth++) {
+                centerPos = getBlockPos().below(depth);
+                if (!checkBorders(centerPos)){
+                    height = depth;
+                    break;
+                }
+            }
+            return getTank(getBlockPos().below(height));
         }
-        return false;
+        return null;
+    }
+
+    public boolean checkBorders(BlockPos pos){
+        BlockState state;
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1 ; y++) {
+                state = level.getBlockState(pos.offset(x,0,y));
+                if (x == 0 && y == 0) {
+                    if (AllTags.AllBlockTags.CHAMBER_BORDER.matches(state)){
+                        continue;
+                    }
+                } else if (AllTags.AllBlockTags.COOLING_TOWER_BORDER.matches(state)){
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -99,6 +131,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         fanTimer = tag.getInt("fantimer");
         tickTimer = tag.getInt("ticktimer");
         vaporCounter = tag.getInt("vaporcounter");
+        height = tag.getInt("height");
         sunken = tag.getFloat("sunken");
         recentCoolingUnits = tag.getFloat("recentcoolingunits");
     }
@@ -109,18 +142,19 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
         tag.putInt("fantimer",fanTimer);
         tag.putInt("ticktimer",tickTimer);
         tag.putInt("vaporcounter",vaporCounter);
+        tag.putInt("height",height);
         tag.putFloat("sunken",sunken);
         tag.putFloat("recentcoolingunits",recentCoolingUnits);
     }
 
-    public IFluidTank getTank(){
-        return (level.getBlockEntity(getBlockPos().relative(Direction.DOWN)) instanceof FluidTankBlockEntity fbe) ? fbe.getControllerBE().getTankInventory() : null;
+    public IFluidTank getTank(BlockPos at){
+        return (level.getBlockEntity(at) instanceof FluidTankBlockEntity fbe) ? fbe.getControllerBE().getTankInventory() : null;
     }
 
     //Air Current Reading
     @Override
     public void update(float strength, Direction incoming) {
-        sunken = Math.abs(strength)/256;
+        sunken = Math.min(height,Math.abs(strength)/256);
         fanTimer = 5;
     }
 
@@ -129,7 +163,7 @@ public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolin
     public CoolingData getGeneratedCoolingData(BlockPos myPos, BlockPos cooledPos, Level level, Direction in) {
         Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (facing.getOpposite() == in){
-            return new CoolingData(recentCoolingUnits,-20f);
+            return new CoolingData(recentCoolingUnits,0f);
         } else {
             return CoolingData.empty();
         }
