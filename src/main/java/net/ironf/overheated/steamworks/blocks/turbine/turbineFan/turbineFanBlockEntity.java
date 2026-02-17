@@ -106,7 +106,6 @@ public class turbineFanBlockEntity extends SmartBlockEntity implements IAirCurre
                 }
             }
             //Turn them all on if it can work
-            System.out.println(toActivate.size());
             if (toActivate.size() <= spinRadius){
                 for (BlockPos fanPos : toActivate){
                     ((turbineFanBlockEntity) level.getBlockEntity(fanPos))

@@ -2,15 +2,20 @@ package net.ironf.overheated.utility.registration;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.ponder.CreatePonderPlugin;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.ExplodingGasBlock;
@@ -18,6 +23,7 @@ import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.metalWorking.metalCasting.GoldenCastItem;
+import net.ironf.overheated.ponder.OverheatedPonderPlugin;
 import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
@@ -79,10 +85,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 import static com.simibubi.create.foundation.data.BlockStateGen.simpleCubeAll;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
@@ -129,6 +132,15 @@ public class OverheatedRegistrate extends CreateRegistrate {
         return super.registerEventListeners(bus);
     }
 
+    /// Ponder Lang
+    private static void providePonderLang(BiConsumer<String, String> consumer) {
+        // Register this since FMLClientSetupEvent does not run during datagen
+
+    }
+
+
+
+
     ///Datagen
     public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
     public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
@@ -161,6 +173,15 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
             generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
                     packOutput));
+
+
+            //Ponder Lang
+            REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+                BiConsumer<String, String> langConsumer = provider::add;
+                PonderIndex.addPlugin(new OverheatedPonderPlugin());
+                PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
+            });
+
 
 
         }

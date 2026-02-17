@@ -423,8 +423,8 @@ public class AllBlocks {
             .initialProperties(SharedProperties::copperMetal)
             .properties(p -> p.strength(3f))
             .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
-            .simpleItem()
-            .blockstate(new ModelDirectionalBlockStateGen((ctx, prov, state) -> "block/turbine_end")::generate)
+            .blockstate(simpleCubeAll("placeholder"))
+            .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
             .defaultLoot()
             .register();
     //Condenser

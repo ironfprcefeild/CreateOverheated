@@ -1,6 +1,7 @@
 package net.ironf.overheated.mixin;
 
 import net.ironf.overheated.AllFluids;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
