@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sc",
+    "LL",
+    "sa"
+  ],
+  "key": {
+    "L": {
+      "item": "create:bound_cardboard_block"
+    },
+    "c": {
+      "item": "create:cogwheel"
+    },
+    "s": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "a": {
+      "item": "create:andesite_casing"
+    }
+  },
+  "result": {
+    "item": "coverheated:bellow"
+  }
+}

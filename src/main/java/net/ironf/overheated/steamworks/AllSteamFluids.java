@@ -66,8 +66,8 @@ public class AllSteamFluids {
     }
 
     public static OverheatedRegistrate.FluidRegistration registerHotAir(int HeatRating){
-        String id = heatingIDs[HeatRating] + "air";
-        String name = heatingNames[HeatRating] + " Air";
+        String id = HeatRating == 0 ? "air_gas" :  heatingIDs[HeatRating] + "air";
+        String name = heatingNames[HeatRating] + "Air";
 
         REGISTRATE.addLang("fluid",Overheated.asResource(id),name);
         REGISTRATE.addLang("item", Overheated.asResource(id).withSuffix("_bucket"),name + " Bucket");
@@ -116,11 +116,11 @@ public class AllSteamFluids {
     public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_STEAM_SUPERLOW = registerSteam(0,2);
     public static final OverheatedRegistrate.FluidRegistration OVERHEATED_STEAM_SUPERLOW = registerSteam(0,3);
 
-    /// Hot Airs
+    /// (Hot) Airs
+    public static final OverheatedRegistrate.FluidRegistration AIR = registerHotAir(0);
     public static final OverheatedRegistrate.FluidRegistration HEATED_HOT_AIR = registerHotAir(1);
     public static final OverheatedRegistrate.FluidRegistration SUPERHEATED_HOT_AIR = registerHotAir(2);
     public static final OverheatedRegistrate.FluidRegistration OVERHEATED_HOT_AIR = registerHotAir(3);
-
 
     //An array containing all steams, first sorted by pressure (0-4) then by heat (0-3)
     public static @NonnullType Fluid[][] Steams;

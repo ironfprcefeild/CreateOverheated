@@ -235,7 +235,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
                     currentPressure = 0;
 
-                    addHeat((float) (double) (recipe.getOutputFluid().getAmount() / 16));
+                    addHeat((float) (double) (recipe.getOutputFluid().getAmount() * (recipe.getLaserHeat()+1) / 16));
                 }
             }
         }
@@ -243,7 +243,8 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
     boolean isSwapped = true;
     public boolean testCombustion(FluidStack a, FluidStack b, CombustionRecipe r){
         isSwapped = !isSwapped;
-        return r.getInputFluidA().test(a) && r.getInputFluidB().test(b);
+        return (r.getInputFluidA().test(a) && r.getInputFluidB().test(b)) &&
+                (getHeatRating() >= r.getHeatRating() && getHeatRating() >= r.getLaserHeat());
     }
 
     public FluidStack getFromCombustionVent(BlockPos pos){

@@ -18,6 +18,8 @@ import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleRenderer;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlockEntity;
+import net.ironf.overheated.metalWorking.bellow.BellowBlockEntity;
+import net.ironf.overheated.metalWorking.bellow.BellowBlockEntityRenderer;
 import net.ironf.overheated.nuclear.radiolyzer.RadiolyzerBlockEntity;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlockEntity;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlockEntity;
@@ -189,6 +191,12 @@ public class AllBlockEntities {
     public static final BlockEntityEntry<BlowingEngineBlockEntity> BLOWING_ENGINE = REGISTRATE
             .blockEntity("blowing_engine", BlowingEngineBlockEntity::new)
             .validBlocks(AllBlocks.BLOWING_ENGINE)
+            .register();
+    //Bellow
+    public static final BlockEntityEntry<BellowBlockEntity> BELLOW = REGISTRATE
+            .blockEntity("bellow", BellowBlockEntity::new)
+            .validBlocks(AllBlocks.BELLOW)
+            .renderer(() -> BellowBlockEntityRenderer::new)
             .register();
     //IBF!
     public static final BlockEntityEntry<BlastFurnaceControllerBlockEntity> BLAST_FURNACE_CONTROLLER = REGISTRATE

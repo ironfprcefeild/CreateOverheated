@@ -20,6 +20,7 @@ import net.ironf.overheated.laserOptics.mirrors.mirrorBlock;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlock;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlock;
 import net.ironf.overheated.laserOptics.thermometer.ThermometerBlock;
+import net.ironf.overheated.metalWorking.bellow.BellowBlock;
 import net.ironf.overheated.nuclear.radiolyzer.RadiolyzerBlock;
 import net.ironf.overheated.nuclear.rods.control.ControlRodBlock;
 import net.ironf.overheated.nuclear.rods.fuel.FuelRodBlock;
@@ -779,6 +780,17 @@ public class AllBlocks {
             .defaultLoot()
             .transform(pickaxeOnly())
             .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
+            .register();
+
+    public static final BlockEntry<BellowBlock> BELLOW = REGISTRATE
+            .block("bellow", BellowBlock::new)
+            .initialProperties(SharedProperties::wooden)
+            .properties(p -> p.noOcclusion().strength(2f))
+            .tag(AllTags.AllBlockTags.WRENCH_PICKUP.tag)
+            .simpleItem()
+            .defaultLoot()
+            .transform(pickaxeOnly())
+            .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/bellow")::generate)
             .register();
     /// IBF
     //Reinforced Bricks

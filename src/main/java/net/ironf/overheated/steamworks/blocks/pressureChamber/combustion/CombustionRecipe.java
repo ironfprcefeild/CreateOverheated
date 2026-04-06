@@ -71,12 +71,25 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
         return combustionTime;
     }
 
-    public CombustionRecipe(ResourceLocation id, FluidIngredient inputFluidA, FluidIngredient inputFluidB, FluidStack outputFluid, Integer combustionTime) {
+    private final float laserHeat;
+    private final int heatRating;
+
+    public float getLaserHeat() {
+        return laserHeat;
+    }
+
+    public int getHeatRating() {
+        return heatRating;
+    }
+
+    public CombustionRecipe(ResourceLocation id, FluidIngredient inputFluidA, FluidIngredient inputFluidB, FluidStack outputFluid, Integer combustionTime, float laserHeat, int heatRating) {
         this.id = id;
         this.inputFluidA = inputFluidA;
         this.inputFluidB = inputFluidB;
         this.outputFluid = outputFluid;
         this.combustionTime = combustionTime;
+        this.laserHeat = laserHeat;
+        this.heatRating = heatRating;
     }
 
 
@@ -106,11 +119,13 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
 
         @Override
         public CombustionRecipe fromJson(ResourceLocation id, JsonObject j) {
+            int minHeatRate = j.has(   "overheat") ? 3 : (j.has("superheat") ? 2 : 0);
+            float laserHeat =  (j.has("laser_heat") ? GsonHelper.getAsFloat(j, "laser_heat") : 0);
             return new CombustionRecipe(id,
                     FluidIngredient.deserialize(GsonHelper.getAsJsonObject(j, "input_a")),
                     FluidIngredient.deserialize(GsonHelper.getAsJsonObject(j, "input_b")),
                     FluidIngredient.deserialize(GsonHelper.getAsJsonObject(j, "output")).getMatchingFluidStacks().get(0),
-                    GsonHelper.getAsInt(j, "time"));
+                    GsonHelper.getAsInt(j, "time"),laserHeat,minHeatRate);
         }
 
         /*
@@ -127,6 +142,8 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
                     FluidIngredient.read(buf),
                     FluidIngredient.read(buf),
                     FluidStack.readFromPacket(buf),
+                    buf.readInt(),
+                    buf.readFloat(),
                     buf.readInt()
             );
         }
@@ -137,6 +154,8 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
             recipe.inputFluidB.write(buf);
             recipe.outputFluid.writeToPacket(buf);
             buf.writeInt(recipe.combustionTime);
+            buf.writeFloat(recipe.laserHeat);
+            buf.writeFloat(recipe.heatRating);
         }
     }
 }

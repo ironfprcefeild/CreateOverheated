@@ -7,6 +7,9 @@ public class AllPartialModels {
     public static final PartialModel
         IMPACT_DRILL_HEAD = block("impact_drill_head"),
 
+        BELLOW_HEAD = block("bellow_head"),
+
+        //TODO make the turbine fans look good
         SMALL_TURBINE_FAN = block("small_turbine_fan"),
         MEDIUM_TURBINE_FAN = block("medium_turbine_fan"),
         LARGE_TURBINE_FAN = block("large_turbine_fan"),
