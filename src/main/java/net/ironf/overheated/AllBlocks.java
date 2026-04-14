@@ -789,21 +789,6 @@ public class AllBlocks {
             .transform(pickaxeOnly())
             .blockstate(new ModelHorizontalDirectionalBlockStateGen((ctx, prov, state) -> "block/bellow")::generate)
             .register();
-    /// IBF
-    //Reinforced Bricks
-    public static final BlockEntry<Block> REINFORCED_BRICKS =
-            REGISTRATE.block("reinforced_bricks", Block::new)
-                    .initialProperties(() -> Blocks.BRICKS)
-                    .properties(p -> p
-                            .requiresCorrectToolForDrops()
-                            .strength(3f))
-                    .item().model((ctx,prov) -> prov.getExistingFile(Overheated.asResource("placeholder"))).build()
-                    .blockstate(new ModelBlockStateGen((ctx, prov, state) -> "block/place_holder")::generate)
-                    .transform(pickaxeOnly())
-
-                    .defaultLoot()
-                    .lang("Reinforced Bricks")
-                    .register();
 
     /// Fuel Rods & Regulators
     public static final BlockEntry<FuelRodBlock> URANIUM_FUEL_ROD = REGISTRATE

@@ -65,10 +65,7 @@ public class AllTags {
         COOLING_TOWER_BORDER,
         DRILL_SCAFFOLD,
 
-        IBF_VALID,
-        IBF_SERVANT,
-        IBF_SERVANT_TOP,
-        IBF_SERVANT_BOTTOM
+        INSULATOR
         ;
         public final TagKey<Block> tag;
         public final boolean alwaysDatagen;
