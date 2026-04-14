@@ -38,7 +38,10 @@ public class GasBlock extends AbstractGlassBlock {
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
         BlockPos target = (gasFlowGetter.flowGas(randomSource,pos,world));
+        flowInto(target,state,world,pos,randomSource);
+    }
 
+    public void flowInto(BlockPos target, @NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource){
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (flowThroughTest.test(targetState)) {
@@ -50,9 +53,6 @@ public class GasBlock extends AbstractGlassBlock {
         } else {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
-
-
-
     }
 
 
