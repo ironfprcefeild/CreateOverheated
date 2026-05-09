@@ -12,7 +12,7 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.Combust
 import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
-import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
+import net.ironf.overheated.utility.machines.LaserMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,14 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -37,53 +32,33 @@ import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation {
+public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements IHaveGoggleInformation {
     public ChamberCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-
-
-    //Item & Fluid Handling
-
-    public LazyOptional<IFluidHandler> InputLazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour InputTank;
+    @Override
+    public int getFluidCapacity() {
+        return 10000;
+    }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(InputTank = SmartFluidTankBehaviour.single(this, 10000).allowInsertion().allowExtraction());
+    public int getFluidTankCount() {
+        return 2;
     }
-    private LazyOptional<IItemHandler> InputLazyItemHandler = LazyOptional.empty();
-    private final ItemStackHandler InputItemHandler = new ItemStackHandler(16) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-    };
-    private LazyOptional<IItemHandler> OutputLazyItemHandler = LazyOptional.empty();
-    private final ItemStackHandler OutputItemHandler = new ItemStackHandler(16) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-    };
-    public IItemHandler getInputItems() {
-        return InputItemHandler;
-    }
+
     @Override
-    public void onLoad() {
-        super.onLoad();
-        InputLazyItemHandler = LazyOptional.of(() -> InputItemHandler);
-        OutputLazyItemHandler = LazyOptional.of(() -> OutputItemHandler);
-        InputLazyFluidHandler = LazyOptional.of(() -> InputTank.getPrimaryHandler());
+    public int getInventoryCount() {
+        return 2;
     }
+
     @Override
-    public void invalidate() {
-        super.invalidate();
-        InputLazyItemHandler.invalidate();
-        OutputLazyItemHandler.invalidate();
-        InputLazyFluidHandler.invalidate();
+    public int getItemStackCapacity() {
+        return 16;
     }
+
+
+    /*
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction side) {
@@ -100,11 +75,13 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         return super.getCapability(cap, side);
     }
 
+     */
+
     //Add items to the chamber, or simulate it, returning true if it worked.
     public boolean acceptOutputs(List<ItemStack> recipeOutputItems, boolean simulate) {
         //Loops through items tacks
         for (ItemStack itemStack : recipeOutputItems) {
-            if (!ItemHandlerHelper.insertItemStacked(OutputItemHandler, itemStack.copy(), simulate).isEmpty()) {
+            if (!ItemHandlerHelper.insertItemStacked(outputInventory(), itemStack.copy(), simulate).isEmpty()) {
                 return false;
             }
         }
@@ -180,9 +157,9 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
     }
 
     private void handleSteam(){
-        currentPressure = AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
+        currentPressure = AllSteamFluids.getSteamPressure(inputTank().getFluid());
         if (currentPressure > 0) {
-            InputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+            inputTank().drain(1, IFluidHandler.FluidAction.EXECUTE);
         }
         if (combustionTimer > 0){
             combustionTimer--;
@@ -213,13 +190,13 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
             isSwapped = true;
             for (CombustionRecipe recipe : level.getRecipeManager().getAllRecipesFor(CombustionRecipe.Type.INSTANCE)){
                 if ((testCombustion(inputA,inputB,recipe) || testCombustion(inputB,inputA,recipe))
-                    && InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
+                    && inputTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
                 ) {
                     //We're good to go
                     if (buildCombustion){
                         combustionTimer += recipe.getCombustionTime();
                     } else {
-                        InputTank.getPrimaryHandler().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                        inputTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
                         combustionTimer = recipe.getCombustionTime();
                     }
                     CombustionVentBlockEntity ventA = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(0));
@@ -307,7 +284,7 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     private void causeExplode() {
         BlockPos pos = getBlockPos();
-        currentPressure = 1 + AllSteamFluids.getSteamPressure(InputTank.getPrimaryHandler().getFluid());
+        currentPressure = 1 + AllSteamFluids.getSteamPressure(inputTank().getFluid());
         level.explode(null,pos.getX(),pos.getY(),pos.getZ(),5f * currentPressure, Level.ExplosionInteraction.TNT);
     }
 
@@ -341,9 +318,8 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         if (checkForValidity()) {
-            containedFluidTooltip(tooltip, isPlayerSneaking, InputLazyFluidHandler);
-
             GoggleHelper.heatTooltip(tooltip, totalLaserHeat, HeatDisplayType.ABSORB);
 
             tempAndCoolInfo(tooltip);
@@ -385,8 +361,6 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         isSwapped = tag.getBoolean("combustionSwapped");
         regulateCombustion = tag.getBoolean("regulateCombustion");
         buildCombustion = tag.getBoolean("buildCombustion");
-        InputItemHandler.deserializeNBT(tag.getCompound("inputItems"));
-        OutputItemHandler.deserializeNBT(tag.getCompound("outputItems"));
         ventLocations.clear();
         if (tag.getBoolean("validVents")){
             ventLocations.add(BlockPos.of(tag.getLong("venta")));
@@ -404,8 +378,6 @@ public class ChamberCoreBlockEntity extends SmartLaserMachineBlockEntity impleme
         tag.putInt("pressure",currentPressure);
         tag.putInt("laserTimer",laserTimer);
         tag.putString("recipe",currentRecipe != null ? currentRecipe.getPath() : "null");
-        tag.put("inputItems", InputItemHandler.serializeNBT());
-        tag.put("outputItems", OutputItemHandler.serializeNBT());
         tag.putBoolean("combustionSwapped",isSwapped);
         tag.putBoolean("regulateCombustion",regulateCombustion);
         tag.putBoolean("buildCombustion",buildCombustion);

@@ -5,9 +5,9 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.utility.machines.CooledMachineBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,16 +16,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
 import static net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeHandler.condensingHandler;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {
+public class CondenserBlockEntity extends CooledMachineBlockEntity implements IHaveGoggleInformation {
 
     public CondenserBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -44,7 +44,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
             timer = conserveHeat ? 75 : 5;
 
             //Get above tank
-            IFluidTank above = getTank(Direction.UP);
+            IFluidTank above = getOtherTank(Direction.UP);
             if (above == null) return;
             //Get fluid above the tank, return if the fluid cannot be condensed
             FluidStack input = above.getFluid();
@@ -53,7 +53,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
             if (bundle != null && bundle.minTemp >= getCurrentTemp()) {
                 //Get the appropriate resulting fluid, get the tank below, compare the info. If tank is null or fluids do not match, return
                 FluidStack resultFluid = bundle.output;
-                IFluidTank below = getTank(Direction.DOWN);
+                IFluidTank below = getOtherTank(Direction.DOWN);
                 if (below == null) return;
                 if (conserveHeat
                     && bundle.minTemp >= getCurrentTemp()
@@ -124,7 +124,7 @@ public class CondenserBlockEntity extends SmartMachineBlockEntity implements IHa
         return true;
     }
 
-    public IFluidTank getTank(Direction in){
+    public IFluidTank getOtherTank(Direction in){
         BlockPos pos = getBlockPos().relative(in);
         while (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get() || level.getBlockState(pos).getBlock() == AllBlocks.LASER_FILM.get()) {
             pos = pos.relative(in);

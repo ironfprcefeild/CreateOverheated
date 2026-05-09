@@ -6,25 +6,24 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 
 public class AllRecipes {
 
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
-            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Overheated.MODID);
-    public static final RegistryObject<RecipeSerializer<CoolantRecipe>> COOLANT =
+            DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Overheated.MODID);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CoolantRecipe>> COOLANT =
             SERIALIZERS.register("cooling", () -> CoolantRecipe.Serializer.INSTANCE);
-    public static final RegistryObject<RecipeSerializer<PressureChamberRecipe>> PRESSURE_CHAMBER =
+    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<PressureChamberRecipe>> PRESSURE_CHAMBER =
             SERIALIZERS.register("pressure_chamber", () -> PressureChamberRecipe.Serializer.INSTANCE);
-    public static final RegistryObject<RecipeSerializer<ImpactDrillRecipe>> IMPACT_DRILL =
+    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ImpactDrillRecipe>> IMPACT_DRILL =
             SERIALIZERS.register("impact_drilling", () -> ImpactDrillRecipe.Serializer.INSTANCE);
-    public static final RegistryObject<RecipeSerializer<CondenserRecipe>> CONDENSER =
+    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<CondenserRecipe>> CONDENSER =
             SERIALIZERS.register("condensing", () -> CondenserRecipe.Serializer.INSTANCE);
     /*
     public static final RegistryObject<RecipeSerializer<IndustrialBlastingRecipe>> INDUSTRIAL_BLASTING =
@@ -33,7 +32,7 @@ public class AllRecipes {
             SERIALIZERS.register("industrial_melting", () -> IndustrialMeltingRecipe.Serializer.INSTANCE);
 
      */
-    public static final RegistryObject<RecipeSerializer<CombustionRecipe>> COMBUSTION =
+    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<CombustionRecipe>> COMBUSTION =
             SERIALIZERS.register("combustion", () -> CombustionRecipe.Serializer.INSTANCE);
 
 

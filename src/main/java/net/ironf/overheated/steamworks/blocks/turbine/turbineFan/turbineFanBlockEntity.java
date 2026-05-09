@@ -13,6 +13,7 @@ import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -142,10 +143,11 @@ public class turbineFanBlockEntity extends SmartBlockEntity implements IAirCurre
         airCurrent.tick();
     }
 
+
     /// Read/Write
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag,  HolderLookup.Provider r, boolean clientPacket) {
+        super.read(tag, r, clientPacket);
         if (clientPacket)
             airCurrent.rebuild();
         lastTurbineSpin = tag.getInt("last_spin");
@@ -156,8 +158,8 @@ public class turbineFanBlockEntity extends SmartBlockEntity implements IAirCurre
     }
 
     @Override
-    public void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    public void write(CompoundTag tag,  HolderLookup.Provider r, boolean clientPacket) {
+        super.write(tag, r, clientPacket);
         tag.putInt("last_spin",lastTurbineSpin);
         tag.putInt("last_radius",lastTurbineRadius);
         tag.putBoolean("reverse",shouldReverseSpin);

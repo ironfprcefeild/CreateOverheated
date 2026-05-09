@@ -1,8 +1,8 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber.combustion;
 
 import com.google.gson.JsonObject;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.Overheated;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +13,9 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class CombustionRecipe implements Recipe<SimpleContainer> {
@@ -26,9 +28,10 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
+    public ItemStack assemble(SimpleContainer simpleContainer, HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
+
 
     @Override
     public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
@@ -36,17 +39,14 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
+
 
     /// Actual Recipe Time
     private final ResourceLocation id;
 
-    @Override
-    public ResourceLocation getId() {
-        return this.id;
-    }
 
     private final FluidIngredient inputFluidA;
     private final FluidIngredient inputFluidB;
@@ -61,7 +61,7 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
 
     private final FluidStack outputFluid;
 
-    public FluidStack getOutputFluid() {
+    public net.neoforged.neoforge.fluids.FluidStack getOutputFluid() {
         return outputFluid;
     }
 

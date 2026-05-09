@@ -71,23 +71,23 @@ public class AllItems {
     //Zombie Meat
     public static final ItemEntry<Item> RAW_ZOMBIE_MEAT = REGISTRATE.item("raw_zombie_meat",Item::new)
             .properties(
-                    p -> p.food(new FoodProperties.Builder().nutrition(4).meat().saturationMod(0.1f).effect(new MobEffectInstance(MobEffects.HUNGER,600,0),0.35F).build()))
+                    p -> p.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.1f).effect(new MobEffectInstance(MobEffects.HUNGER,600,0),0.35F).build()))
             .register();
 
     public static final ItemEntry<Item> COOKED_ZOMBIE_MEAT = REGISTRATE.item("cooked_zombie_meat",Item::new)
             .properties(
-                    p -> p.food(new FoodProperties.Builder().nutrition(10).meat().saturationMod(0.4f).build()))
+                    p -> p.food(new FoodProperties.Builder().nutrition(10).saturationModifier(0.4f).build()))
             .register();
 
     //Steamed Hams
     public static final ItemEntry<Item> STEAMED_HAM = REGISTRATE.item("steamed_ham",Item::new)
             .properties(p -> p.food(new FoodProperties.Builder()
-                    .nutrition(8).meat().saturationMod(0.6f).build()))
+                    .nutrition(8).saturationModifier(0.6f).build()))
             .register();
 
     public static final ItemEntry<Item> STEAMED_HAM_SANDWICH = REGISTRATE.item("steamed_ham_sandwich",Item::new)
             .properties(p -> p.food(new FoodProperties.Builder()
-                    .nutrition(13).meat().saturationMod(0.6f).build()))
+                    .nutrition(13).saturationModifier(0.6f).build()))
             .register();
 
     //Steam Stuff

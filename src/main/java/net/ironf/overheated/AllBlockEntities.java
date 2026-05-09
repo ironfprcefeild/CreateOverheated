@@ -37,6 +37,8 @@ import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanRenderer;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -218,5 +220,11 @@ public class AllBlockEntities {
 
     public static void register(){
 
+    }
+
+    //TODO put all capabale BE's here
+    public static void RegisterAllCapabilities(RegisterCapabilitiesEvent event){
+        Overheated.LOGGER.info("O: Registering Capabilities on all Block Entities");
+        steamVentBlockEntity.registerCapabilities(event,STEAM_VENT,true,0);
     }
 }

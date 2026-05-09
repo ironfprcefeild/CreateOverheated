@@ -6,7 +6,7 @@ import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.metalWorking.HeatedBlock;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
-import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
+import net.ironf.overheated.utility.machines.LaserMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ThermometerBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation {
+public class ThermometerBlockEntity extends LaserMachineBlockEntity implements IHaveGoggleInformation {
     public ThermometerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

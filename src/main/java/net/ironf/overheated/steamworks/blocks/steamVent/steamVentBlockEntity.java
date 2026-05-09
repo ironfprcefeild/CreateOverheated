@@ -3,41 +3,33 @@ package net.ironf.overheated.steamworks.blocks.steamVent;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.BoilerData;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class steamVentBlockEntity extends CapableMachineBlockEntity implements IHaveGoggleInformation {
     public steamVentBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         source = new WeakReference<>(null);
     }
 
 
+
     //Getting Boiler Tank (stolen from steam engine code)
     public WeakReference<FluidTankBlockEntity> source;
-    public FluidTankBlockEntity getTank() {
+    public FluidTankBlockEntity getOtherTank() {
         FluidTankBlockEntity tank = source.get();
         if (tank == null || tank.isRemoved()) {
             if (tank != null)
@@ -52,51 +44,15 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         return tank.getControllerBE();
     }
 
-    //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
 
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000).forbidInsertion());
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.lazyFluidHandler.invalidate();
-    }
-
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.FLUID_HANDLER && side == this.getBlockState().getValue(BlockStateProperties.FACING).getOpposite()) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
-    public void setFluid(FluidStack stack) {
-        this.tank.getPrimaryHandler().setFluid(stack);
-    }
-    public FluidStack getFluidStack() {
-        return this.tank.getPrimaryHandler().getFluid();
-    }
-
-
-    //Doing Things
+    ///Doing Things
 
     float processingTicks = 75;
     boolean isSlow = false;
     @Override
     public void tick() {
         super.tick();
-        FluidTankBlockEntity tank = getTank();
+        FluidTankBlockEntity tank = getOtherTank();
         if (tank != null) {
             BoilerData boiler = tank.boiler;
             int tier = getActualHeat(boiler,tank);
@@ -123,17 +79,22 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
         return getActualHeat(controller.boiler,controller);
     }
 
+
+    public int getFluidCapacity() {
+        return 1000;
+    }
+
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
+        super.read(tag, r, clientPacket);
         this.processingTicks = tag.getFloat("processing_ticks");
         this.isSlow = tag.getBoolean("is_slow");
 
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider r,  boolean clientPacket) {
+        super.write(tag, r, clientPacket);
         tag.putFloat("processing_ticks",this.processingTicks);
         tag.putBoolean("is_slow",this.isSlow);
 
@@ -141,10 +102,10 @@ public class steamVentBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         if (isSlow) {
             tooltip.add(addIndent(Component.translatable("coverheated.steam_vent.slow")));
         }
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
         return true;
     }
 

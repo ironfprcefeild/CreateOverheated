@@ -8,8 +8,8 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
+import net.ironf.overheated.utility.machines.CooledMachineBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoolerBlockEntity extends SmartMachineBlockEntity implements ICoolingBlockEntity, IHaveGoggleInformation {
+public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICoolingBlockEntity, IHaveGoggleInformation {
     public CoolerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

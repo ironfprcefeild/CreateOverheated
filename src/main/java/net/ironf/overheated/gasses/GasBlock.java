@@ -2,19 +2,16 @@ package net.ironf.overheated.gasses;
 
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.createmod.catnip.data.Iterate;
-import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TintedGlassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class GasBlock extends AbstractGlassBlock {
+public class GasBlock extends TintedGlassBlock {
     public GasBlock(Properties p, GasFlowGetter gfg, Predicate<BlockState> flowThroughTest, int lowerTickDelay, int upperTickDelay) {
         super(p);
         this.gasFlowGetter = gfg;

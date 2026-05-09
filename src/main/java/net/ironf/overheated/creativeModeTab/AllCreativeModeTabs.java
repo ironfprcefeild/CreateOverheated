@@ -18,13 +18,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class AllCreativeModeTabs {
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Overheated.MODID);
 
-    public static final RegistryObject<CreativeModeTab> OVERHEATED_TAB = REGISTER.register("overheatedtab",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OVERHEATED_TAB = REGISTER.register("overheatedtab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
@@ -46,7 +46,7 @@ public class AllCreativeModeTabs {
                     .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.items_for_tab))
                     .build());
 
-    public static final RegistryObject<CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.overheated.steam_bucket_tab"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
@@ -93,14 +93,14 @@ public class AllCreativeModeTabs {
         }
 
         private final boolean addItems;
-        private final RegistryObject<CreativeModeTab> tabFilter;
-        List<RegistryObject<? extends Item>> extraItems = null;
+        private final DeferredHolder<CreativeModeTab, CreativeModeTab> tabFilter;
+        List<DeferredHolder<Item,? extends Item>> extraItems = null;
 
-        public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter) {
+        public RegistrateDisplayItemsGenerator(boolean addItems, DeferredHolder<CreativeModeTab, CreativeModeTab> tabFilter) {
             this.addItems = addItems;
             this.tabFilter = tabFilter;
         }
-        public RegistrateDisplayItemsGenerator(boolean addItems, RegistryObject<CreativeModeTab> tabFilter, List<RegistryObject<? extends Item>> ExtraItems) {
+        public RegistrateDisplayItemsGenerator(boolean addItems, DeferredHolder<CreativeModeTab, CreativeModeTab> tabFilter, List<DeferredHolder<Item,? extends Item>> ExtraItems) {
             this.addItems = addItems;
             this.tabFilter = tabFilter;
             this.extraItems = ExtraItems;
@@ -110,7 +110,7 @@ public class AllCreativeModeTabs {
             Set<Item> exclusions = new ReferenceOpenHashSet<>();
 
             //!!!!// Exclude Certain Items
-            List<ItemProviderEntry<?>> simpleExclusions = List.of(
+            List<ItemProviderEntry<?,?>> simpleExclusions = List.of(
                     AllItems.INCOMPLETE_INDUSTRIAL_SHEET,
                     AllItems.INCOMPLETE_PRESSURIZED_CASING,
                    AllItems.INCOMPLETE_LASER_CASING
@@ -121,7 +121,7 @@ public class AllCreativeModeTabs {
 
             );
 
-            for (ItemProviderEntry<?> entry : simpleExclusions) {
+            for (ItemProviderEntry<?,?> entry : simpleExclusions) {
                 exclusions.add(entry.asItem());
             }
 
@@ -139,7 +139,7 @@ public class AllCreativeModeTabs {
             List<RegistrateDisplayItemsGenerator.ItemOrdering> orderings = new ReferenceArrayList<>();
 
             //!!!!// Put some items before others
-            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleBeforeOrderings = new java.util.HashMap<>(Map.of(
+            Map<ItemProviderEntry<?,?>, ItemProviderEntry<?,?>> simpleBeforeOrderings = new java.util.HashMap<>(Map.of(
                     AllBlocks.SUPERHEAT_DIMMER, AllBlocks.OVERHEAT_DIMMER,
                     AllBlocks.DIODE, AllBlocks.BLAZE_CRUCIBLE,
                     AllBlocks.TURBINE_CENTER, AllBlocks.TURBINE_END,
@@ -155,7 +155,7 @@ public class AllCreativeModeTabs {
             simpleBeforeOrderings.put(AllItems.STEAMED_HAM,AllItems.STEAMED_HAM_SANDWICH);
 
             //!!!!// Put some items after others
-            Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleAfterOrderings = Map.of(
+            Map<ItemProviderEntry<?,?>, ItemProviderEntry<?,?>> simpleAfterOrderings = Map.of(
 
             );
 
@@ -174,7 +174,7 @@ public class AllCreativeModeTabs {
             Map<Item, Function<Item, ItemStack>> factories = new Reference2ReferenceOpenHashMap<>();
 
             //!!!!// Add custom item stacks for certain items for NBT data
-            Map<ItemProviderEntry<?>, Function<Item, ItemStack>> simpleFactories = Map.of(
+            Map<ItemProviderEntry<?,?>, Function<Item, ItemStack>> simpleFactories = Map.of(
 
             );
 
@@ -196,7 +196,7 @@ public class AllCreativeModeTabs {
 
 
             //!!!!// Add visibility functions for certain items, controlling in what tabs it can  be found (like search tab only)
-            Map<ItemProviderEntry<?>, CreativeModeTab.TabVisibility> simpleVisibilities = Map.of(
+            Map<ItemProviderEntry<?,?>, CreativeModeTab.TabVisibility> simpleVisibilities = Map.of(
             );
 
 
@@ -234,7 +234,7 @@ public class AllCreativeModeTabs {
             }
 
             if (extraItems != null) {
-                for (RegistryObject<? extends Item> i : extraItems) {
+                for (DeferredHolder<Item,? extends Item> i : extraItems) {
                     items.add(i.get());
                 }
             }
@@ -245,8 +245,8 @@ public class AllCreativeModeTabs {
 
         private List<Item> collectBlocks(Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Block> entry : Overheated.REGISTRATE.getAll(Registries.BLOCK)) {
-                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter))
+            for (RegistryEntry<Block, ? extends Block> entry : Overheated.REGISTRATE.getAll(Registries.BLOCK)) {
+                if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
                     continue;
                 Item item = entry.get()
                         .asItem();
@@ -261,8 +261,8 @@ public class AllCreativeModeTabs {
 
         private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Item> entry : Overheated.REGISTRATE.getAll(Registries.ITEM)) {
-                if (!CreateRegistrate.isInCreativeTab(entry, tabFilter))
+            for (RegistryEntry<Item, ? extends Item> entry : Overheated.REGISTRATE.getAll(Registries.ITEM)) {
+                if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
                     continue;
                 Item item = entry.get();
                 if (item instanceof BlockItem)

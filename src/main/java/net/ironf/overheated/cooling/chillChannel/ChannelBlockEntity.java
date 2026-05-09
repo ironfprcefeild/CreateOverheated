@@ -1,14 +1,14 @@
 package net.ironf.overheated.cooling.chillChannel;
 
 import net.ironf.overheated.cooling.chillChannel.core.ChannelStatusBundle;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
+import net.ironf.overheated.utility.machines.CooledMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class ChannelBlockEntity extends SmartMachineBlockEntity {
+public class ChannelBlockEntity extends CooledMachineBlockEntity {
     public ChannelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

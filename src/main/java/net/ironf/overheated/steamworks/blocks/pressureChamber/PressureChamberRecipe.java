@@ -2,12 +2,16 @@ package net.ironf.overheated.steamworks.blocks.pressureChamber;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
@@ -17,7 +21,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -32,18 +36,24 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
 
         return false;
     }
+
+    @Override
+    public ItemStack assemble(SimpleContainer simpleContainer, HolderLookup.Provider provider) {
+        return null;
+    }
+
     //IF simulate is true, returns true if recipe is valid for the chamber
     //IF simulate is false, returns true if recipe is valid for the chamber, but also will execute the recipe
     //IF set timer is true, and the recipe would return true, the chambers timer will be set
     public boolean testRecipe(ChamberCoreBlockEntity chamber, boolean fullSimulate, boolean setTimer){
         //Get input items
-        IItemHandler availableItems = chamber.getInputItems();
+        IItemHandler availableItems = chamber.inputInventory();
         if (availableItems == null)
             return false;
 
         //Check if pressure is high enough and enough steam is in the chamber
         int chamberPressure = chamber.getPressure();
-       if((combustion && chamber.combustionTimer < ticksTaken && !fullSimulate) || (!combustion && !(chamberPressure >= SteamPressure && chamber.InputTank.getPrimaryHandler().getFluid().getAmount() >= ticksTaken))) {
+       if((combustion && chamber.combustionTimer < ticksTaken && !fullSimulate) || (!combustion && !(chamberPressure >= SteamPressure && chamber.inputTank().getFluid().getAmount() >= ticksTaken))) {
             return false;
         }
 
@@ -124,11 +134,6 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return inputs;
     }
@@ -140,10 +145,9 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         return true;
     }
 
-    //This method should not be used for this multi-output recipe
     @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return ItemStack.EMPTY;
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return null;
     }
 
     @Override
@@ -214,6 +218,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
                 Overheated.asResource("pressure_chamber");
+
 
         @Override
         public PressureChamberRecipe fromJson(ResourceLocation id, JsonObject SerializedRecipe) {
@@ -288,6 +293,16 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             buf.writeInt(recipe.ticksTaken);
             buf.writeInt(recipe.minimumHeatRating);
             buf.writeBoolean(recipe.combustion);
+        }
+
+        @Override
+        public MapCodec<PressureChamberRecipe> codec() {
+            return null;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, PressureChamberRecipe> streamCodec() {
+            return null;
         }
     }
 

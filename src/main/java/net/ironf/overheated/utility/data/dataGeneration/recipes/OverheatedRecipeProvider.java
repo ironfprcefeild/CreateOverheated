@@ -10,11 +10,10 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -10,8 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Collections;
 
@@ -20,7 +18,7 @@ import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class AllTags {
     //The majority of this boilerplate comes from create
-    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
+    public static <T> TagKey<T> optionalTag(IRegistryExtension<T> registry, ResourceLocation id) {
         return registry.tags().createOptionalTagKey(id, Collections.emptySet());
     }
 

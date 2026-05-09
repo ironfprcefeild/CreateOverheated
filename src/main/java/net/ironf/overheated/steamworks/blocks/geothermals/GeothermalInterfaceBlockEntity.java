@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,10 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -27,7 +25,7 @@ import java.util.List;
 import static net.ironf.overheated.steamworks.AllSteamFluids.DISTILLED_WATER;
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class GeothermalInterfaceBlockEntity extends CapableMachineBlockEntity implements IHaveGoggleInformation {
     public GeothermalInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -57,10 +55,10 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
                 return;
             }
             BlockPos above = getBlockPos().above();
-            if (tank.getPrimaryHandler().getFluid().getFluid() == DISTILLED_WATER.SOURCE.get()
-                    && tank.getPrimaryHandler().getFluidAmount() >= 1000
+            if (Tank().getFluid().getFluid() == DISTILLED_WATER.SOURCE.get()
+                    && Tank().getFluidAmount() >= 1000
                     && level.getBlockState(above) == Blocks.AIR.defaultBlockState()){
-                tank.getPrimaryHandler().drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                Tank().drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 SteamBuildup = 0;
                 level.setBlock(above, GasMapper.InvGasMap.get(superHeated ? AllSteamFluids.SUPERHEATED_STEAM_MID : AllSteamFluids.HEATED_STEAM_MID).get().defaultBlockState(), 3);
             }
@@ -82,39 +80,17 @@ public class GeothermalInterfaceBlockEntity extends SmartBlockEntity implements 
     }
 
     //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
+
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 2000));
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-
-    }
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyFluidHandler.invalidate();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
+    public int getFluidCapacity() {
+        return 2000;
     }
 
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         tooltip.add(addIndent(Component.translatable("coverheated.geothermal.heating." + heatingStatus).withStyle(ChatFormatting.RED)));
         tooltip.add(addIndent(Component.translatable("coverheated.geothermal.steam_buildup").append(String.valueOf(SteamBuildup + "/1000")).withStyle(ChatFormatting.WHITE)));
         return true;

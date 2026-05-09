@@ -3,16 +3,14 @@ package net.ironf.overheated.steamworks.blocks.blowingEngine;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.flywheel.FlywheelBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.machines.CooledMachineBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
-import net.ironf.overheated.utility.SmartMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,54 +20,27 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
-public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements IHaveGoggleInformation {
+public class BlowingEngineBlockEntity extends CooledMachineBlockEntity implements IHaveGoggleInformation {
     public BlowingEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     /// Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour inputTank;
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
-        behaviours.add(inputTank = SmartFluidTankBehaviour.single(this, 1000));
+    public int getFluidCapacity() {
+        return 1000;
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.inputTank.getPrimaryHandler());
-
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.lazyFluidHandler.invalidate();
-    }
-
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return inputTank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
 
     /// Processing
     public int tickTimer = 20;
@@ -94,21 +65,21 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
             //At Maximum speed, it takes a little less than 2 Steam Vents per Blowing Engine
             tickTimer = 1024 / flyWheelSpeed;
 
-            int steamPressure = AllSteamFluids.getSteamPressure(inputTank.getPrimaryHandler().getFluid());
+            int steamPressure = AllSteamFluids.getSteamPressure(Tank().getFluid());
             if (steamPressure <= 0){
                 errorMessage = "no_steam";
                 return;
             }
-            int steamHeating =  AllSteamFluids.getSteamHeat(inputTank.getPrimaryHandler().getFluid());
+            int steamHeating =  AllSteamFluids.getSteamHeat(Tank().getFluid());
 
-            IFluidTank outputTank = getTank(Direction.UP);
+            IFluidTank outputTank = getOtherTank(Direction.UP);
             if (outputTank == null){
                 //No Output Tank
                 errorMessage = "no_output_tank";
                 return;
             }
 
-            IFluidTank oxygenTank = getTank(Direction.DOWN);
+            IFluidTank oxygenTank = getOtherTank(Direction.DOWN);
             boolean oxyPresent = oxygenTank != null
                     && AllGasses.oxygen.SOURCE.get().isSame(oxygenTank.getFluid().getFluid())
                     && oxygenTank.getFluidAmount() >= 2;
@@ -152,7 +123,7 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
 
             if (outputTank.fill(airCreated, IFluidHandler.FluidAction.SIMULATE) == fluidAmount){
                 outputTank.fill(airCreated, IFluidHandler.FluidAction.EXECUTE);
-                inputTank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+                Tank().drain(1, IFluidHandler.FluidAction.EXECUTE);
                 if (oxyPresent){
                     oxygenTank.drain(2, IFluidHandler.FluidAction.EXECUTE);
                 }
@@ -172,7 +143,7 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
         }
     }
 
-    public IFluidTank getTank(Direction in){
+    public IFluidTank getOtherTank(Direction in){
         BlockPos pos = getBlockPos().relative(in);
         if (level.getBlockState(pos).getBlock() == AllBlocks.PRESSURIZED_CASING.get()) {pos = pos.relative(in);}
 
@@ -222,7 +193,7 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
            lastHeatReading = 0;
        }
 
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+       super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         tooltip.add(addIndent(Component.translatable("coverheated.blowing_engine.heat").append(easyFloat(lastHeatReading)).withStyle(ChatFormatting.RED)));
         if (currentTemp != 0f){
             tempAndCoolInfo(tooltip);
@@ -238,7 +209,6 @@ public class BlowingEngineBlockEntity extends SmartMachineBlockEntity implements
             tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.crouch_for_more_info"),1));
         }
 
-
-        return IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        return true;
     }
 }

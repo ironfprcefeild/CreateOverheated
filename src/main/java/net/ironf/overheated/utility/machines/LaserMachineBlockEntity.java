@@ -1,18 +1,19 @@
-package net.ironf.overheated.utility;
+package net.ironf.overheated.utility.machines;
 
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.laserOptics.backend.ILaserAbsorber;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
 
-public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEntity implements ILaserAbsorber {
-    public SmartLaserMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+public abstract class LaserMachineBlockEntity extends CooledMachineBlockEntity implements ILaserAbsorber {
+    public LaserMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
@@ -45,8 +46,8 @@ public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEnti
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries,clientPacket);
         totalLaserHeat = HeatData.readTag(tag,"total_laser_heat");
         laserHeats.clear(); laserTimers.clear();
         for (Direction d : Iterate.directions){
@@ -56,8 +57,8 @@ public abstract class SmartLaserMachineBlockEntity extends SmartMachineBlockEnti
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
         totalLaserHeat.writeTag(tag,"total_laser_heat");
         for (Direction d : Iterate.directions){
             tag.putInt(d.name()+"_laser_timer", laserTimers.getOrDefault(d,0));

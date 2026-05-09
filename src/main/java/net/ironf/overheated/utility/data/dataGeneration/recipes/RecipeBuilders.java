@@ -3,7 +3,6 @@ package net.ironf.overheated.utility.data.dataGeneration.recipes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.simibubi.create.AllRecipeTypes;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.utility.registration.BlastFurnaceStatus;
@@ -12,14 +11,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeBuilders {
 
     public static FinishedRecipe getPouringRecipe(ResourceLocation id,
-                                           FluidStack input, ItemStack itemInput,
-                                           ItemStack output){
+                                                  FluidStack input, ItemStack itemInput,
+                                                  ItemStack output){
         return new FinishedRecipe() {
             @Override
             public void serializeRecipeData(JsonObject j) {

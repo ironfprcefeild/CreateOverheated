@@ -8,7 +8,7 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.utility.SmartLaserMachineBlockEntity;
+import net.ironf.overheated.utility.machines.LaserMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,11 +23,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -39,7 +36,7 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 import static net.minecraft.ChatFormatting.WHITE;
 
-public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity implements IHaveGoggleInformation, IGasPlacer {
+public class ImpactDrillBlockEntity extends LaserMachineBlockEntity implements IHaveGoggleInformation, IGasPlacer {
     public ImpactDrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -47,33 +44,9 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
     //Setting up item / fluid handling
 
 
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
-
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 600));
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyFluidHandler.invalidate();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
+    public int getFluidCapacity() {
+        return 600;
     }
 
     //Doing stuff
@@ -102,7 +75,7 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
     private void extractionTick() {
 
         //Get some stuff
-        FluidStack contained = tank.getPrimaryHandler().getFluid();
+        FluidStack contained = Tank().getFluid();
         if (contained.getAmount() < 300) {
             return;
         }
@@ -111,13 +84,13 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
         //Ask if fluid is usable
         if (pressure > 0 ) {
             //Drain some stuff
-            tank.getPrimaryHandler().drain(300, IFluidHandler.FluidAction.EXECUTE);
+            Tank().drain(300, IFluidHandler.FluidAction.EXECUTE);
 
             //Update some values
             currentTorque += (pressure * 2 * torqueMultiplier());
             currentTorque = Math.min(currentTorque, torqueLimit());
 
-            makeSound(SoundEvents.ARMOR_EQUIP_IRON,2f,0.75f);
+            makeSound(SoundEvents.ARMOR_EQUIP_IRON.value(),2f,0.75f);
             makeSound(AllSoundEvents.STEAM,2f,0.75f);
             particles(output == null ? getBlockPos() : output,level,false);
 
@@ -138,7 +111,7 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
 
                     currentTorque = currentTorque - recipe.getTorqueImpact();
                     addTemp(recipe.getTorqueImpact());
-                    placeGasBlock(output,recipe.getOutput(),level);
+                    placeGasFluid(output,recipe.getOutput(),level);
 
                     headPosition = 1f;
                     particles(output,level,true);
@@ -272,7 +245,7 @@ public class ImpactDrillBlockEntity extends SmartLaserMachineBlockEntity impleme
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.torque").append(easyFloat(currentTorque)).withStyle(WHITE)));
         tooltip.add(addIndent(Component.translatable("coverheated.impact_drill.heat").append(easyFloat(currentHeating)).withStyle(ChatFormatting.RED)));
 

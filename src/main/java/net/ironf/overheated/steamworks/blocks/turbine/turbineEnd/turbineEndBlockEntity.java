@@ -14,16 +14,14 @@ import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -230,16 +228,16 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
+        super.read(tag, r, clientPacket);
         this.thisSpinsDrain = tag.getInt("recent_drain");
         this.recentLength = tag.getInt("recent_length");
         this.recentRadius = tag.getInt("recent_radius");
 
     }
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
+        super.write(tag, r, clientPacket);
         tag.putInt("recent_drain",this.thisSpinsDrain);
         tag.putInt("recent_length",this.recentLength);
         tag.putInt("recent_radius",this.recentRadius);

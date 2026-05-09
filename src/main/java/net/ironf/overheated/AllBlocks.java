@@ -210,8 +210,8 @@ public class AllBlocks {
                     .register();
 
     //TODO make it render properly
-    public static final BlockEntry<GlassBlock> BLAZEGLASS  =
-            REGISTRATE.block("blazeglass", GlassBlock::new)
+    public static final BlockEntry<Block> BLAZEGLASS  =
+            REGISTRATE.block("blazeglass", Block::new)
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.mapColor(MapColor.COLOR_ORANGE).strength(1.5f))
                     .blockstate(simpleCubeAll("blazeglass"))

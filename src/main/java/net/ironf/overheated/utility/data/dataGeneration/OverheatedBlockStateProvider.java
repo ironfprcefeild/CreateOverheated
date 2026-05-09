@@ -2,32 +2,33 @@ package net.ironf.overheated.utility.data.dataGeneration;
 
 import net.ironf.overheated.Overheated;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class OverheatedBlockStateProvider extends BlockStateProvider {
 
 
-    public Collection<RegistryObject<Block>> blocks;
-    public HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems;
-    public HashMap<RegistryObject<? extends Block>,ResourceLocation> modelOverride;
-    public ArrayList<RegistryObject<? extends Block>> TintedBlocks;
+    public Collection<DeferredHolder<Block, ? extends Block>> blocks;
+    public HashMap<Supplier<? extends Block>,Boolean> makeBlockItems;
+    public HashMap<Supplier<? extends Block>,ResourceLocation> modelOverride;
+    public ArrayList<DeferredHolder<Block,? extends Block>> TintedBlocks;
 
     public OverheatedBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper,
-                                        Collection<RegistryObject<Block>> Blocks,
-                                        HashMap<RegistryObject<? extends Block>,Boolean> MakeBlockItems,
-                                        HashMap<RegistryObject<? extends  Block>,ResourceLocation> ModelOverride,
-                                        ArrayList<RegistryObject<? extends Block>> tintedBlocks) {
+                                        Collection<DeferredHolder<Block, ? extends Block>> Blocks,
+                                        HashMap<Supplier<? extends Block>,Boolean> MakeBlockItems,
+                                        HashMap<Supplier<? extends  Block>,ResourceLocation> ModelOverride,
+                                        ArrayList<DeferredHolder<Block,? extends Block>> tintedBlocks) {
         super(output, Overheated.MODID, exFileHelper);
         blocks = Blocks;
         makeBlockItems = MakeBlockItems;
@@ -39,7 +40,7 @@ public class OverheatedBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         ModelFile model;
-        for (RegistryObject<Block> b : blocks) {
+        for (DeferredHolder<Block, ? extends Block> b : blocks) {
             String faceLocation = (modelOverride.containsKey(b) ?  modelOverride.get(b).toString() : "block/"+name(b.get()));
             if (TintedBlocks.contains(b)){
                 model = models().getBuilder(name(b.get()))
@@ -88,7 +89,7 @@ public class OverheatedBlockStateProvider extends BlockStateProvider {
     }
 
     private ResourceLocation key(Block block) {
-        return ForgeRegistries.BLOCKS.getKey(block);
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     private String name(Block block) {

@@ -14,7 +14,7 @@ public class GeothermalVentBlock extends MagmaBlock {
         super(p_54800_);
     }
     public void stepOn(@NotNull Level p_153777_, @NotNull BlockPos p_153778_, @NotNull BlockState p_153779_, Entity p_153780_) {
-        if (!p_153780_.isSteppingCarefully() && p_153780_ instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)p_153780_)) {
+        if (!p_153780_.isSteppingCarefully() && p_153780_ instanceof LivingEntity) {
             p_153780_.hurt(p_153777_.damageSources().hotFloor(), 4.0F);
         }
 

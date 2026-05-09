@@ -43,10 +43,6 @@ public class turbineEndBlock extends DirectionalKineticBlock implements IBE<turb
     public boolean hideStressImpact() {
         return true;
     }
-
-    @Override
-    public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {return false;}
-
     @Override
     public Class<turbineEndBlockEntity> getBlockEntityClass() {
         return turbineEndBlockEntity.class;
