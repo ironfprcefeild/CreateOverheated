@@ -52,12 +52,16 @@ public class OverheatedRecipeProvider extends RecipeProvider {
         /// Misc Metal Works
 
         //Copper nugget Melting
+        //TODO fix copper nugget melting after reworking IBF
+        /*
         writer.accept(getMeltingRecipe(
                 Overheated.asResource("copper_nugget_melting"),
                 AllItems.COPPER_NUGGET.asStack(),
                 new FluidStack[]{new FluidStack(net.ironf.overheated.AllItems.COPPER_METALWORKS.molten.SOURCE.get().getSource(), mbPerIngot / 9)},
                 OverheatedRegistrate.defaultMeltingRequirement.changeSteamAmount(mbPerIngot / 9 * 2),
                 OverheatedRegistrate.meltTimePerIngot / 9));
+
+         */
 
         //Gold Cast
         writer.accept(getPouringRecipe(

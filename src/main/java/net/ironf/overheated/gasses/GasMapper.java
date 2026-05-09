@@ -18,8 +18,6 @@ public class GasMapper {
     public static HashMap<OverheatedRegistrate.FluidRegistration,RegistryObject<? extends GasBlock>> InvGasMap = new HashMap<>();
     public static HashMap<FluidType,RegistryObject<? extends GasBlock>> InvFluidGasMap = new HashMap<>();
 
-    public static ArrayList<FluidType> lightGasses = new ArrayList<>();
-
     public static ArrayList<RegistryObject<?extends GasBlock>> nonCapturableGases = new ArrayList<>();
 
     public static void prepareGasBlockInfo(){

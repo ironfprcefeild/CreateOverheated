@@ -80,8 +80,8 @@ public class AllSteamFluids {
                         .shiftChance(4)
                         .tickDelays(2,8)
                         .defaultFlow(Direction.UP)
-                        .explosionRisk(9 - (HeatRating))
                         .overrideTexturing("block/hot_air")
+                        .explosionRisk(0)
                         .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));

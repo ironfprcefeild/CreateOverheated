@@ -35,6 +35,7 @@ public class HeatedBlock extends Block {
         return super.getStateForPlacement(context).setValue(TEMPERATURE,0).setValue(HEATLEVEL,1);
     }
 
+    //TODO add to insulator list: Hot Airs, Bricks, Iron Blocks, Thermometer
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         //Schedule next tick

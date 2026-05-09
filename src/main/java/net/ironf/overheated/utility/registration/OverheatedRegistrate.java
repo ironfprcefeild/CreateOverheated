@@ -24,7 +24,6 @@ import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
 import net.ironf.overheated.metalWorking.metalCasting.GoldenCastItem;
 import net.ironf.overheated.ponder.OverheatedPonderPlugin;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
@@ -279,7 +278,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         .save(writer, parentRL.withSuffix("_ingot_from_block"));
             }
 
+            //TODO fix melting recipes
             //Melting
+            /*
             writer.accept(getMeltingRecipe(
                     parentRL.withSuffix("_nugget_melting"),
                     nugget.asStack(1),
@@ -298,6 +299,8 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot*9)},
                     meltingRequirement.changeSteamAmount(mbPerIngot*9*2),
                     meltTimePerIngot*9));
+
+             */
 
             //Casts
             writer.accept(getPouringRecipe(
@@ -333,7 +336,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             .viscosity(200)
             .canConvertToSource(false)
             .temperature(200));
-    public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(2,1000);
+    public static BlastFurnaceStatus defaultMeltingRequirement = null; //new BlastFurnaceStatus(2,1000);
     //This one includes generic molten fluid properties
     public MetallicSet MakeMetallicSet(String name, int tintColor, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
         return MakeMetallicSet(name,bProperties, defaultMoltenProperties,tintColor,defaultMeltingRequirement,null,null,null);
@@ -378,21 +381,28 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         public void buildRecipes(Consumer<FinishedRecipe> writer) {
             ResourceLocation parentRL = Overheated.asResource(id);
+            //TODO add back melting recipes
             if (nugget != null) {
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_nugget_melting"),
                         nugget.getDefaultInstance(),
                         new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot / 9)},
                         meltingRequirement.changeSteamAmount(mbPerIngot / 9 * 2),
                         meltTimePerIngot / 9));
+
+                 */
             }
             if (ingot != null) {
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_ingot_melting"),
                         ingot.getDefaultInstance(),
                         new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot)},
                         meltingRequirement.changeSteamAmount(mbPerIngot * 2),
                         meltTimePerIngot));
+
+                 */
 
                 //Casts
 
@@ -412,12 +422,16 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         .save(writer,parentRL.withSuffix("_cast_removal"));
             }
             if (block != null) {
+                //TODO add back melting recipes
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_block_melting"),
                         block.getDefaultInstance(),
                         new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot * 9)},
                         meltingRequirement.changeSteamAmount(mbPerIngot * 9 * 2),
                         meltTimePerIngot * 9));
+
+                 */
             }
         }
     }

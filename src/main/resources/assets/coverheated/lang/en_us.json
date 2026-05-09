@@ -56,14 +56,14 @@
   "coverheated.cooling_tower.invalid_3": "Because of this, it will not provide any cooling",
 
   "coverheated.thermometer.total_sunken_heat": "Cooling Units on thermometer",
+  "coverheated.thermometer.heated_block.direction.north": "Showing Temperature of North Block",
+  "coverheated.thermometer.heated_block.direction.south": "Showing Temperature of South Block",
+  "coverheated.thermometer.heated_block.direction.east": "Showing Temperature of East Block",
+  "coverheated.thermometer.heated_block.direction.west": "Showing Temperature of West Block",
 
   "coverheated.chill_channel.core.scroll": "Channel Capacity",
   "coverheated.chill_channel.expeller.scroll": "Cooling into faced block",
-  "coverheated.chill_channel.wrench.bound_initial": "Selected Block to Draw From",
-  "coverheated.chill_channel.wrench.bound_hook": "Set Block to Draw From previous Block",
-  "coverheated.chill_channel.wrench.cleared": "Cleared Draw From selection",
   "coverheated.chill_channel.node.draws_from": "Draws From: ",
-  "coverheated.chill_channel.node.unset": "Is not connected to a network, use a Channel Adjuster",
   "coverheated.chill_channel.cooling_units": "Cooling Units on network: ",
   "coverheated.chill_channel.eff": "Network Efficiency: ",
   "coverheated.chill_channel.mintemp": "Network Minimum Temperature: ",

@@ -6,7 +6,7 @@ import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.recipes.AllRecipes;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
+import net.ironf.overheated.utility.registration.BlastFurnaceStatus;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +67,8 @@ public class RecipeBuilders {
                 }
                 j.add("results",results);
 
-                j.add("status",requirements.toJson());
+                //TODO fix melting recipes after IBF rework
+                //j.add("status",requirements.toJson());
 
                 j.addProperty("duration",duration);
             }
@@ -77,9 +78,12 @@ public class RecipeBuilders {
                 return id;
             }
 
+
+            //TODO fix serializer once reworked
             @Override
             public RecipeSerializer<?> getType() {
-                return AllRecipes.INDUSTRIAL_MELTING.get();
+                return null;
+                //return AllRecipes.INDUSTRIAL_MELTING.get();
             }
 
             @Override
