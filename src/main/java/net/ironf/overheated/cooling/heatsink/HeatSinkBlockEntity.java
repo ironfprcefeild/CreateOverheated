@@ -7,6 +7,7 @@ import net.ironf.overheated.AllBlockEntities;
 import net.ironf.overheated.cooling.IAirCurrentReader;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.machines.MachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
 
-public class HeatSinkBlockEntity extends SmartBlockEntity implements IAirCurrentReader, ICoolingBlockEntity, IHaveGoggleInformation {
+public class HeatSinkBlockEntity extends MachineBlockEntity implements IAirCurrentReader, ICoolingBlockEntity, IHaveGoggleInformation {
     public HeatSinkBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }

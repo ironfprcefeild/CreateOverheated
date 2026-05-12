@@ -12,6 +12,8 @@ import net.ironf.overheated.gasses.AllGasses;
 import net.ironf.overheated.gasses.IGasPlacer;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
+import net.ironf.overheated.utility.machines.MachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,23 +24,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public class CoolingTowerBlockEntity extends SmartBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation, IGasPlacer {
+public class CoolingTowerBlockEntity extends MachineBlockEntity implements ICoolingBlockEntity, IAirCurrentReader, IHaveGoggleInformation, IGasPlacer {
 
     public CoolingTowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-
-    }
-
 
     ////Doing Stuff
     int fanTimer = 5;

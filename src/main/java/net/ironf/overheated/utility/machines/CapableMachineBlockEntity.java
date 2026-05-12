@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.SmartInventory;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -39,28 +40,28 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
 
     }
     /// Capabilities
-    public static void registerCapabilities(RegisterCapabilitiesEvent event, BlockEntityEntry<? extends CapableMachineBlockEntity> me, int TankCount, int InvCount) {
-        if (TankCount > 0) {
-            for (int i = 0; i < TankCount; i++) {
-                int finalI = i;
-                event.registerBlockEntity(
-                        Capabilities.FluidHandler.BLOCK,
-                        me.get(),
-                        (be, context) -> be.getTank(finalI));
-            }
+    public static void registerCapabilities(RegisterCapabilitiesEvent event, BlockEntityEntry<? extends CapableMachineBlockEntity> me, boolean fluids, boolean items) {
+        if (fluids) {
+            event.registerBlockEntity(
+                    Capabilities.FluidHandler.BLOCK,
+                    me.get(),
+                    CapableMachineBlockEntity::getTank);
         }
-        if (InvCount > 0){
-            for (int i = 0; i < InvCount; i++) {
-                int finalI = i;
-                event.registerBlockEntity(
-                        Capabilities.ItemHandler.BLOCK,
-                        me.get(),
-                        (be, context) -> be.getInventory(finalI));
-            }
+        if (items) {
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    me.get(),
+                    CapableMachineBlockEntity::getInventory);
         }
-
     }
-
+    /// Mapping
+    //This should be overridden for blocks with sided inputs.
+    public int itemOrdinalForSide(Direction side){
+        return 0;
+    }
+    public int tankOrdinalForSide(Direction side){
+        return 0;
+    }
 
     /// Fluids
     public int getFluidCapacity(){
@@ -74,17 +75,16 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
     public ArrayList<SmartFluidTank> tanks;
 
     public SmartFluidTank getTank(int i){
-        return tanks.get(i);
+        return i == -1 ? null : tanks.get(i);
     }
+    public SmartFluidTank getTank(Direction side){
+        return getTank(tankOrdinalForSide(side));
+    }
+
     public SmartFluidTank Tank(){
-        return tanks.get(0);
+        return tanks.getFirst();
     }
-    public SmartFluidTank inputTank(){
-        return getTank(0);
-    }
-    public SmartFluidTank outputTank(){
-        return getTank(1);
-    }
+
     protected SmartFluidTank createInventory() {
         return new SmartFluidTank(getFluidCapacity(), this::onFluidStackChanged) {};
     }
@@ -122,13 +122,10 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
     }
 
     public SmartInventory getInventory(int i ){
-        return inventories.get(i);
+        return i == -1 ? null : inventories.get(i);
     }
-    public SmartInventory inputInventory(){
-        return getInventory(0);
-    }
-    public SmartInventory outputInventory(){
-        return getInventory(1);
+    public SmartInventory getInventory(Direction d){
+        return getInventory(itemOrdinalForSide(d));
     }
 
     @Override
@@ -180,6 +177,7 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
                 containedFluidTooltip(tooltip, isPlayerSneaking, fluidCapabilities.get(i));
             }
         }
-        return IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        return true;
     }
+
 }

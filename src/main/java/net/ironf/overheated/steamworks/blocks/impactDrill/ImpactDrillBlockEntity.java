@@ -41,9 +41,7 @@ public class ImpactDrillBlockEntity extends LaserMachineBlockEntity implements I
         super(type, pos, state);
     }
 
-    //Setting up item / fluid handling
-
-
+    //Fluid Handling
     @Override
     public int getFluidCapacity() {
         return 600;

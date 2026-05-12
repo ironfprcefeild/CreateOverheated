@@ -10,6 +10,7 @@ import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.utility.machines.MachineBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -21,14 +22,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Objects;
 
 
-public class BlazeCrucibleBlockEntity extends SmartBlockEntity {
+public class BlazeCrucibleBlockEntity extends MachineBlockEntity {
 
     public int timeHeated = 0;
     public int heatLevel = 0;

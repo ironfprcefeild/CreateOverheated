@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.OverheatedDistExecutor;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.client.Minecraft;
@@ -24,7 +25,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -71,7 +71,7 @@ public class AllCreativeModeTabs {
 
         static {
             MutableObject<Predicate<Item>> isItem3d = new MutableObject<>(item -> false);
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            OverheatedDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 isItem3d.setValue(item -> {
                     ItemRenderer itemRenderer = Minecraft.getInstance()
                             .getItemRenderer();

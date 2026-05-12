@@ -2,15 +2,13 @@ package net.ironf.overheated.cooling.chillChannel.core;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.flywheel.FlywheelBlockEntity;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.createmod.catnip.outliner.Outliner;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.chillChannel.ChannelBlockEntity;
 import net.ironf.overheated.cooling.chillChannel.MutableDirection;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,17 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class ChannelCoreBlockEntity extends CapableMachineBlockEntity implements IHaveGoggleInformation {
     public ChannelCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -69,6 +62,14 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         tag.putString("error",errorMessage);
     }
 
+
+    //Fluids
+    @Override
+    public int getFluidCapacity() {
+        return 8000;
+    }
+
+    //Doing stuff
     @Override
     public void tick() {
         super.tick();
@@ -79,7 +80,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             tickTimer = active ? 80 : 20;
             if (active){
                 //We are active, so we can drain coolant
-                tank.getPrimaryHandler().drain((flywheelPower / 10), IFluidHandler.FluidAction.EXECUTE);
+                Tank().drain((flywheelPower / 10), IFluidHandler.FluidAction.EXECUTE);
             }
         }
     }
@@ -104,8 +105,8 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
         }
 
         //Validate Coolant
-        Fluid fluidContained = tank.getPrimaryHandler().getFluid().getFluid();
-        if (!CoolingHandler.minTempHandler.containsKey(fluidContained) || tank.getPrimaryHandler().getFluidAmount() < flywheelPower){
+        Fluid fluidContained = Tank().getFluid().getFluid();
+        if (!CoolingHandler.minTempHandler.containsKey(fluidContained) || Tank().getFluidAmount() < flywheelPower){
             disable("no_coolant");
             return;
         }
@@ -171,38 +172,6 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
     public boolean compareBlockPos(BlockPos a, BlockPos b){
         return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
     }
-    ///Fluid Handling
-    //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 8000).allowExtraction().allowInsertion());
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyFluidHandler.invalidate();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
-
-
 
     ///Goggles
     @Override
@@ -215,7 +184,7 @@ public class ChannelCoreBlockEntity extends SmartBlockEntity implements IHaveGog
             }
 
         }
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.network_status").withStyle(ChatFormatting.WHITE)));
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(coolingUnits.usedCooling) + "/" + GoggleHelper.easyFloat(coolingUnits.maximumCooling)).withStyle(coolingUnits.getDelta() >= 0 ? ChatFormatting.AQUA : ChatFormatting.RED),1));
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.chill_channel.mintemp").withStyle(ChatFormatting.WHITE)));

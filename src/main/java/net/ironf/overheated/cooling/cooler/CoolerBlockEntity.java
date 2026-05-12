@@ -20,10 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -36,37 +33,13 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
     }
 
     //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
-
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 1000).allowExtraction().allowInsertion());
+    public int getFluidCapacity() {
+        return 1000;
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyFluidHandler.invalidate();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
 
     //Cooling
-
     //We pass on all of the cooling data from adjacent cooling sources, with the efficiency of the stored coolant
     @Override
     public boolean doCooling() {
@@ -97,7 +70,7 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
         ArrayList<Direction> directions = (new ArrayList<>(List.of(Iterate.directions)));
         CoolingData toReturn = getCoolingData(myPos, level, directions.toArray(Direction[]::new));
 
-        Fluid coolant = tank.getPrimaryHandler().getFluid().getFluid();
+        Fluid coolant = Tank().getFluid().getFluid();
 
         toReturn.minTemp = CoolingHandler.minTempHandler.getOrDefault(coolant,-10f);
         toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
@@ -117,8 +90,8 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
         super.tick();
         if (tickTimer-- == 0){
             tickTimer = 75;
-            tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
-            effTracker = !tank.isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(tank.getPrimaryHandler().getFluid().getFluid(),1f) : 1f;
+            Tank().drain(1, IFluidHandler.FluidAction.EXECUTE);
+            effTracker = !Tank().isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(Tank().getFluid().getFluid(),1f) : 1f;
         }
     }
 
@@ -141,7 +114,7 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        super.addToGoggleTooltip(tooltip,isPlayerSneaking);
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.cooler.header").withStyle(ChatFormatting.WHITE)));
 
         CoolingData cooled = collectCooling(getBlockPos(),getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));

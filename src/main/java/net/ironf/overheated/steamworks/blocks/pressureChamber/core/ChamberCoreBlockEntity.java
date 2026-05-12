@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -37,14 +38,10 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
         super(type, pos, state);
     }
 
+    /// Handling
     @Override
     public int getFluidCapacity() {
         return 10000;
-    }
-
-    @Override
-    public int getFluidTankCount() {
-        return 2;
     }
 
     @Override
@@ -56,6 +53,24 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
     public int getItemStackCapacity() {
         return 16;
     }
+
+    @Override
+    public int itemOrdinalForSide(Direction side) {
+        return switch (side){
+            case UP -> 0; //input handler
+            case DOWN -> 1; //output handler
+            default -> -1; // none
+        };
+    }
+
+    public IItemHandler outputInventory() {
+        return getInventory(1);
+    }
+
+    public IItemHandler inputInventory() {
+        return getInventory(0);
+    }
+
 
 
     /*
@@ -87,6 +102,7 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
         }
         return true;
     }
+
 
 
     public int validTimer = 10;
@@ -157,9 +173,9 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
     }
 
     private void handleSteam(){
-        currentPressure = AllSteamFluids.getSteamPressure(inputTank().getFluid());
+        currentPressure = AllSteamFluids.getSteamPressure(Tank().getFluid());
         if (currentPressure > 0) {
-            inputTank().drain(1, IFluidHandler.FluidAction.EXECUTE);
+            Tank().drain(1, IFluidHandler.FluidAction.EXECUTE);
         }
         if (combustionTimer > 0){
             combustionTimer--;
@@ -190,24 +206,24 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
             isSwapped = true;
             for (CombustionRecipe recipe : level.getRecipeManager().getAllRecipesFor(CombustionRecipe.Type.INSTANCE)){
                 if ((testCombustion(inputA,inputB,recipe) || testCombustion(inputB,inputA,recipe))
-                    && inputTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
+                    && Tank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
                 ) {
                     //We're good to go
                     if (buildCombustion){
                         combustionTimer += recipe.getCombustionTime();
                     } else {
-                        inputTank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                        Tank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
                         combustionTimer = recipe.getCombustionTime();
                     }
                     CombustionVentBlockEntity ventA = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(0));
                     CombustionVentBlockEntity ventB = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(1));
 
                     if (isSwapped){
-                        ventB.tank.getPrimaryHandler().drain(recipe.getInputFluidA().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
-                        ventA.tank.getPrimaryHandler().drain(recipe.getInputFluidB().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventB.Tank().drain(recipe.getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventA.Tank().drain(recipe.getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
                     } else {
-                        ventA.tank.getPrimaryHandler().drain(recipe.getInputFluidA().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
-                        ventB.tank.getPrimaryHandler().drain(recipe.getInputFluidB().getRequiredAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventA.Tank().drain(recipe.getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventB.Tank().drain(recipe.getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
                     }
 
                     currentPressure = 0;
@@ -284,7 +300,7 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
 
     private void causeExplode() {
         BlockPos pos = getBlockPos();
-        currentPressure = 1 + AllSteamFluids.getSteamPressure(inputTank().getFluid());
+        currentPressure = 1 + AllSteamFluids.getSteamPressure(Tank().getFluid());
         level.explode(null,pos.getX(),pos.getY(),pos.getZ(),5f * currentPressure, Level.ExplosionInteraction.TNT);
     }
 

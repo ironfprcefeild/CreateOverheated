@@ -22,12 +22,11 @@ public class fluidRenderHelperMixin {
 
 
          */
-        builder.vertex(peek.pose(), x, y, z)
-                .color(color)
-                .uv(u, v)
+        builder.addVertex(peek.pose(), x, y, z)
+                .setColor(color)
+                .setUv(u, v)
                 //.overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(light)
-                .normal(peek.normal(), normal.getX(), normal.getY(), normal.getZ())
-                .endVertex();
+                .setUv2(light,light)
+                .setNormal(peek, normal.getX(), normal.getY(), normal.getZ());
     }
 }
