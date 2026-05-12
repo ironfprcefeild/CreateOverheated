@@ -221,12 +221,5 @@ public class AllBlockEntities {
 
     }
 
-    //TODO put all capabale BE's here
-    public static void RegisterAllCapabilities(RegisterCapabilitiesEvent event){
-        Overheated.LOGGER.info("O: Registering Capabilities on all Block Entities");
-        steamVentBlockEntity.registerCapabilities(event,STEAM_VENT,true,false);
-        CoolerBlockEntity.registerCapabilities(event,COOLER,true,false);
-        ChannelCoreBlockEntity.registerCapabilities(event,CHANNEL_CORE,true,false);
 
-    }
 }

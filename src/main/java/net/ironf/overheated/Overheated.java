@@ -119,7 +119,7 @@ public class Overheated
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        AllBlockEntities.RegisterAllCapabilities(event);
+        AllCapabilities.RegisterAllCapabilities(event);
     }
 
 

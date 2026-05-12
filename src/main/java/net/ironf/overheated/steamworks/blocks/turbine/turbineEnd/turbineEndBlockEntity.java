@@ -5,12 +5,15 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,6 +23,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +39,39 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
     public turbineEndBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         setLazyTickRate(300);
+        tank = createInventory();
+        capability = tank;
+
     }
+
+    //Fluids
+    IFluidHandler capability;
+    SmartFluidTank tank;
+    protected SmartFluidTank createInventory() {
+        return new SmartFluidTank(8000, this::onFluidStackChanged) {};
+    }
+
+    private void onFluidStackChanged(FluidStack fluidStack) {
+        setChanged();
+        sendData();
+    }
+    public static void registerCapabilities(RegisterCapabilitiesEvent event, BlockEntityEntry<? extends turbineEndBlockEntity> me) {
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                me.get(),
+                turbineEndBlockEntity::getTank);
+
+    }
+    public SmartFluidTank getTank(Object c){
+        return tank;
+    }
+    public void setFluid(FluidStack stack) {
+        this.tank.setFluid(stack);
+    }
+    public FluidStack getFluidStack() {
+        return this.tank.getFluid();
+    }
+
 
     //Kinetics
     @Override
@@ -126,7 +163,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                    } else if(1 > pressureLevel){
                         //The pressure of the fluid in the intake is not high enough to run a turbine
                        turbineIntakePressureLow = true;
-                   } else if (capacity - tank.getPrimaryHandler().getFluid().getAmount() < drain){
+                   } else if (capacity - tank.getFluid().getAmount() < drain){
                         //The outtakes tank is full and cannot accept more
                         outtakeFull = true;
                    } else {
@@ -134,7 +171,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
                         intakeTank.getTankInventory().drain(drain, IFluidHandler.FluidAction.EXECUTE);
                         //Fill this tank
                         int heatLevel = AllSteamFluids.getSteamHeat(intakeTank.getTankInventory().getFluid());
-                        tank.getPrimaryHandler().setFluid(AllSteamFluids.getSteamFromValues(pressureLevel - 1, heatLevel,getFluidStack().getAmount() + drain));
+                        tank.setFluid(AllSteamFluids.getSteamFromValues(pressureLevel - 1, heatLevel,getFluidStack().getAmount() + drain));
                         //Update Drain value
                         thisSpinsDrain = drain;
                         //Indicate to reactivate
@@ -233,7 +270,7 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         this.thisSpinsDrain = tag.getInt("recent_drain");
         this.recentLength = tag.getInt("recent_length");
         this.recentRadius = tag.getInt("recent_radius");
-
+        tank.readFromNBT(r,tag.getCompound("tank"));
     }
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
@@ -241,51 +278,17 @@ public class turbineEndBlockEntity extends GeneratingKineticBlockEntity implemen
         tag.putInt("recent_drain",this.thisSpinsDrain);
         tag.putInt("recent_length",this.recentLength);
         tag.putInt("recent_radius",this.recentRadius);
+        tag.put("tank",tank.writeToNBT(r,tag));
 
     }
 
-    //Fluid Handling
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
-
-    public static int capacity = 8000;
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, capacity));
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.lazyFluidHandler.invalidate();
-    }
-
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
-    public void setFluid(FluidStack stack) {
-        this.tank.getPrimaryHandler().setFluid(stack);
-    }
-    public FluidStack getFluidStack() {
-        return this.tank.getPrimaryHandler().getFluid();
-    }
 
     //Goggles
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip,isPlayerSneaking);
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        containedFluidTooltip(tooltip,isPlayerSneaking,tank);
         if (isFan){
             if (turbineTooSmall){
                 tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.turbine.too_small")));
