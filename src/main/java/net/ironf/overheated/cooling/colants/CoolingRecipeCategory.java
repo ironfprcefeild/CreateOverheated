@@ -58,7 +58,7 @@ public class CoolingRecipeCategory implements IRecipeCategory<CoolantRecipe> {
     public void setRecipe(IRecipeLayoutBuilder builder, CoolantRecipe recipe, IFocusGroup focuses) {
         builder
                 .addSlot(RecipeIngredientRole.INPUT,25 , (int) (getHeight() * 0.5) -20)
-                .addFluidStack(recipe.getInput().getMatchingFluidStacks().get(0).getFluid(),1000)
+                .addFluidStack(recipe.getInputFluid().getStacks()[0].getFluid(),1000)
                 .setBackground(getRenderedSlot(),-1,-1);
     }
 

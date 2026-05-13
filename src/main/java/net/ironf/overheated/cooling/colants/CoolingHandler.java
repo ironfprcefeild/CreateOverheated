@@ -1,11 +1,13 @@
 package net.ironf.overheated.cooling.colants;
 
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +30,18 @@ public class CoolingHandler implements ResourceManagerReloadListener {
         }
         Overheated.LOGGER.info("SO: Generating Coolant Recipe Helper");
         heatHandler.clear();
-        List<CoolantRecipe> recipeList = createRecipeCollection();
-        for (CoolantRecipe r : recipeList){
-            for (FluidStack f : r.getInput().getMatchingFluidStacks()){
-                heatHandler.put(f.getFluid(),r.getHeat());
-                efficiencyHandler.put(f.getFluid(),r.getEfficiency());
-                minTempHandler.put(f.getFluid(),-Math.abs(r.getMinTemp()));
+        List<RecipeHolder<CoolantRecipe>> recipeList = createRecipeCollection();
+        for (RecipeHolder<CoolantRecipe> r : recipeList){
+            for (FluidStack f : r.value().getInputFluid().getStacks()){
+                heatHandler.put(f.getFluid(),r.value().getHeat());
+                efficiencyHandler.put(f.getFluid(),r.value().getEfficiency());
+                minTempHandler.put(f.getFluid(),-Math.abs(r.value().getMinTemp()));
             }
         }
     }
 
-    public static List<CoolantRecipe> createRecipeCollection(){
-        return level.getRecipeManager().getAllRecipesFor(CoolantRecipe.Type.INSTANCE);
+    public static List<RecipeHolder<CoolantRecipe>> createRecipeCollection(){
+        return level.getRecipeManager().getAllRecipesFor(AllRecipes.COOLANT.TYPE.get());
     }
 
 
