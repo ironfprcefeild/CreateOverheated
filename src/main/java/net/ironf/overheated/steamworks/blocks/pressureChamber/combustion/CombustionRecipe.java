@@ -1,13 +1,13 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber.combustion;
 
-import com.google.gson.JsonObject;
-import net.ironf.overheated.Overheated;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.ironf.overheated.recipes.AllRecipes;
+import net.ironf.overheated.recipes.DummyRecipeInput;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -16,74 +16,40 @@ import net.minecraft.world.level.Level;
 
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-import org.jetbrains.annotations.Nullable;
 
-public class CombustionRecipe implements Recipe<SimpleContainer> {
+import static com.mojang.serialization.Codec.FLOAT;
+import static com.mojang.serialization.Codec.INT;
 
-
-    /// Dummy Methods
-    @Override
-    public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(SimpleContainer simpleContainer, HolderLookup.Provider provider) {
-        return ItemStack.EMPTY;
-    }
-
-
-    @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return ItemStack.EMPTY;
-    }
-
+public class CombustionRecipe implements Recipe<DummyRecipeInput> {
 
     /// Actual Recipe Time
-    private final ResourceLocation id;
-
-
     private final FluidIngredient inputFluidA;
     private final FluidIngredient inputFluidB;
-
-    public FluidIngredient getInputFluidA() {
-        return inputFluidA;
-    }
-
-    public FluidIngredient getInputFluidB() {
-        return inputFluidB;
-    }
-
     private final FluidStack outputFluid;
-
-    public net.neoforged.neoforge.fluids.FluidStack getOutputFluid() {
-        return outputFluid;
-    }
-
     private final Integer combustionTime;
-
-    public Integer getCombustionTime() {
-        return combustionTime;
-    }
-
     private final float laserHeat;
     private final int heatRating;
 
     public float getLaserHeat() {
         return laserHeat;
     }
-
     public int getHeatRating() {
         return heatRating;
     }
+    public Integer getCombustionTime() {
+        return combustionTime;
+    }
+    public FluidStack getOutputFluid() {
+        return outputFluid;
+    }
+    public FluidIngredient getInputFluidA() {
+        return inputFluidA;
+    }
+    public FluidIngredient getInputFluidB() {
+        return inputFluidB;
+    }
 
-    public CombustionRecipe(ResourceLocation id, FluidIngredient inputFluidA, FluidIngredient inputFluidB, FluidStack outputFluid, Integer combustionTime, float laserHeat, int heatRating) {
-        this.id = id;
+    public CombustionRecipe(FluidIngredient inputFluidA, FluidIngredient inputFluidB, FluidStack outputFluid, Integer combustionTime, float laserHeat, int heatRating) {
         this.inputFluidA = inputFluidA;
         this.inputFluidB = inputFluidB;
         this.outputFluid = outputFluid;
@@ -92,7 +58,54 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
         this.heatRating = heatRating;
     }
 
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return AllRecipes.COMBUSTION.SERIALIZER.get();
+    }
 
+    @Override
+    public RecipeType<?> getType() {
+        return AllRecipes.COMBUSTION.TYPE.get();
+    }
+    
+    /// Serializing
+    public static class CombustionRecipeSerializer implements RecipeSerializer<CombustionRecipe> {
+        public static final MapCodec<CombustionRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+                FluidIngredient.CODEC.fieldOf("input_a").forGetter(CombustionRecipe::getInputFluidA),
+                FluidIngredient.CODEC.fieldOf("input_b").forGetter(CombustionRecipe::getInputFluidB),
+                FluidStack.CODEC.fieldOf("output").forGetter(CombustionRecipe::getOutputFluid),
+                INT.fieldOf("time").forGetter(CombustionRecipe::getCombustionTime),
+                FLOAT.fieldOf("laser_heat").forGetter(CombustionRecipe::getLaserHeat),
+                INT.fieldOf("heat_rating").forGetter(CombustionRecipe::getHeatRating)
+        ).apply(inst, CombustionRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, CombustionRecipe> STREAM_CODEC =
+                StreamCodec.composite(
+                        FluidIngredient.STREAM_CODEC,CombustionRecipe::getInputFluidA,
+                        FluidIngredient.STREAM_CODEC,CombustionRecipe::getInputFluidB,
+                        FluidStack.STREAM_CODEC,CombustionRecipe::getOutputFluid,
+                        ByteBufCodecs.INT, CombustionRecipe::getCombustionTime,
+                        ByteBufCodecs.FLOAT, CombustionRecipe::getLaserHeat,
+                        ByteBufCodecs.INT, CombustionRecipe::getHeatRating,
+                        CombustionRecipe::new
+                );
+
+        // Return our map codec.
+        @Override
+        public MapCodec<CombustionRecipe> codec() {
+            return CODEC;
+        }
+
+        // Return our stream codec.
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, CombustionRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    }
+    
+
+
+    /*
     public static class Type implements RecipeType<CombustionRecipe> {
         private Type() {
         }
@@ -128,13 +141,6 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
                     GsonHelper.getAsInt(j, "time"),laserHeat,minHeatRate);
         }
 
-        /*
-        Order:
-            InputA
-            InputB
-            Output
-            Time
-         */
         @Override
         public @Nullable CombustionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             return new CombustionRecipe(
@@ -158,4 +164,26 @@ public class CombustionRecipe implements Recipe<SimpleContainer> {
             buf.writeFloat(recipe.heatRating);
         }
     }
+    
+     */
+    /// Dummy Methods
+    @Override
+    public boolean matches(DummyRecipeInput dummyRecipeInput, Level level) {
+        return false;
+    }
+    @Override
+    public ItemStack assemble(DummyRecipeInput dummyRecipeInput, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+    @Override
+    public boolean canCraftInDimensions(int p1, int p2) {
+        return true;
+    }
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+
+
 }

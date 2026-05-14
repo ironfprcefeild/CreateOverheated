@@ -1,45 +1,75 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
+import com.mojang.serialization.MapEncoder;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.createmod.catnip.data.Iterate;
-import net.ironf.overheated.Overheated;
+import net.ironf.overheated.cooling.colants.CoolantRecipe;
+import net.ironf.overheated.recipes.AllRecipes;
+import net.ironf.overheated.recipes.DummyRecipeInput;
+import net.ironf.overheated.recipes.OverheatedCodecs;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PressureChamberRecipe implements Recipe<SimpleContainer> {
+import static com.mojang.serialization.Codec.*;
 
+public class PressureChamberRecipe implements Recipe<DummyRecipeInput> {
+    private final int SteamPressure;
+    private final float laserHeat;
+    private final float heatAdded;
+    private final int ticksTaken;
+    private final int minimumHeatRating;
+    private final boolean combustion;
+    private final NonNullList<Ingredient> inputs;
+    private final NonNullList<ItemStack> outputs;
 
-    @Override
-    public boolean matches(SimpleContainer container, Level level) {
-
-        return false;
+    public Float getLaserHeat() {
+        return laserHeat;
     }
+    public Integer getSteamPressure() {
+        return SteamPressure;
+    }
+    public NonNullList<ItemStack> getOutputs() {
+        return outputs;
+    }
+    public NonNullList<Ingredient> getInputs() {
+        return inputs;
+    }
+    public Integer getTicksTaken() {return ticksTaken;}
+    public Float getHeatAdded() {
+        return heatAdded;
+    }
+    public Boolean isCombustion() {
+        return combustion;
+    }
+    public Integer getMinimumHeatRating() {return minimumHeatRating;}
 
-    @Override
-    public ItemStack assemble(SimpleContainer simpleContainer, HolderLookup.Provider provider) {
-        return null;
+    public PressureChamberRecipe(int steamPressure, float laserHeat, float heatAdded, int ticksTaken, int minimumHeatRating, List<Ingredient> inputs, List<ItemStack> outputs, boolean combustion) {
+        this.SteamPressure = steamPressure;
+        this.laserHeat = laserHeat;
+        this.heatAdded = heatAdded;
+        this.ticksTaken = ticksTaken;
+        this.minimumHeatRating = minimumHeatRating;
+        this.inputs = NonNullList.copyOf(inputs);
+        this.outputs = NonNullList.copyOf(outputs);
+        this.combustion = combustion;
     }
 
     //IF simulate is true, returns true if recipe is valid for the chamber
@@ -53,7 +83,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
 
         //Check if pressure is high enough and enough steam is in the chamber
         int chamberPressure = chamber.getPressure();
-       if((combustion && chamber.combustionTimer < ticksTaken && !fullSimulate) || (!combustion && !(chamberPressure >= SteamPressure && chamber.inputTank().getFluid().getAmount() >= ticksTaken))) {
+       if((combustion && chamber.combustionTimer < ticksTaken && !fullSimulate) || (!combustion && !(chamberPressure >= SteamPressure && chamber.Tank().getFluid().getAmount() >= ticksTaken))) {
             return false;
         }
 
@@ -134,86 +164,55 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return inputs;
-    }
-
-    //This method should not be used for this multi-output recipe
-
-    @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return null;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
-        return PressureChamberRecipe.Serializer.INSTANCE;
-    }
-    public static class Type implements RecipeType<PressureChamberRecipe> {
-        private Type() {}
-
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "pressure_chamber";
+        return AllRecipes.PRESSURE_CHAMBER.SERIALIZER.get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return Type.INSTANCE;
+        return AllRecipes.PRESSURE_CHAMBER.TYPE.get();
     }
 
-    private final ResourceLocation id;
-    private final int SteamPressure;
-    private final float laserHeat;
-    private final float heatAdded;
-    private final int ticksTaken;
-    private final int minimumHeatRating;
-    private final boolean combustion;
-    private final NonNullList<Ingredient> inputs;
-    private final NonNullList<ItemStack> outputs;
+    //Serializing
+    public static class PressureChamberRecipeSerializer implements RecipeSerializer<PressureChamberRecipe> {
+        public static final MapCodec<PressureChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+                INT.fieldOf("pressure").forGetter(PressureChamberRecipe::getSteamPressure),
+                FLOAT.fieldOf("laser_heat").forGetter(PressureChamberRecipe::getLaserHeat),
+                FLOAT.fieldOf("heat_added").forGetter(PressureChamberRecipe::getHeatAdded),
+                INT.fieldOf("ticks_taken").forGetter(PressureChamberRecipe::getTicksTaken),
+                INT.fieldOf("heat_rating").forGetter(PressureChamberRecipe::getMinimumHeatRating),
+                Ingredient.LIST_CODEC.fieldOf("inputs").forGetter(PressureChamberRecipe::getInputs),
+                ItemStack.CODEC.listOf().fieldOf("outputs").forGetter(PressureChamberRecipe::getOutputs),
+                BOOL.fieldOf("combustion").forGetter(PressureChamberRecipe::isCombustion)
+            ).apply(inst, PressureChamberRecipe::new));
 
-    public float getLaserHeat() {
-        return laserHeat;
+        public static final StreamCodec<RegistryFriendlyByteBuf, PressureChamberRecipe> STREAM_CODEC =
+            OverheatedCodecs.fatComposite(
+                    ByteBufCodecs.INT, PressureChamberRecipe::getSteamPressure,
+                    ByteBufCodecs.FLOAT,PressureChamberRecipe::getLaserHeat,
+                    ByteBufCodecs.FLOAT,PressureChamberRecipe::getHeatAdded,
+                    ByteBufCodecs.INT, PressureChamberRecipe::getTicksTaken,
+                    ByteBufCodecs.INT, PressureChamberRecipe::getMinimumHeatRating,
+                    OverheatedCodecs.STREAM_ING_LIST, PressureChamberRecipe::getInputs,
+                    OverheatedCodecs.STREAM_STACK_LIST, PressureChamberRecipe::getOutputs,
+                    ByteBufCodecs.BOOL, PressureChamberRecipe::isCombustion,
+                    PressureChamberRecipe::new
+            );
+
+        // Return our map codec.
+        @Override
+        public MapCodec<PressureChamberRecipe> codec() {
+            return CODEC;
+        }
+
+        // Return our stream codec.
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, PressureChamberRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
     }
 
-    public int getSteamPressure() {
-        return SteamPressure;
-    }
-    public NonNullList<ItemStack> getOutputs() {
-        return outputs;
-    }
-
-    public int getTicksTaken() {return ticksTaken;}
-
-    public float getHeatAdded() {
-        return heatAdded;
-    }
-
-    public boolean isCombustion() {
-        return combustion;
-    }
-
-    public PressureChamberRecipe(ResourceLocation id, int steamPressure, float laserHeat, float heatAdded, int ticksTaken, int minimumHeatRating, NonNullList<Ingredient> inputs, NonNullList<ItemStack> outputs, boolean combustion) {
-        this.id = id;
-        this.SteamPressure = steamPressure;
-        this.laserHeat = laserHeat;
-        this.heatAdded = heatAdded;
-        this.ticksTaken = ticksTaken;
-        this.minimumHeatRating = minimumHeatRating;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.combustion = combustion;
-    }
-
+    /*
     public static class Serializer implements RecipeSerializer<PressureChamberRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
@@ -263,7 +262,7 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             8     Ticks Taken
             9     Heat Rate
             10    Combustion
-         */
+
         @Override
         public @Nullable PressureChamberRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
@@ -305,6 +304,36 @@ public class PressureChamberRecipe implements Recipe<SimpleContainer> {
             return null;
         }
     }
+
+     */
+
+
+    //Dummy Methods
+    @Override
+    public boolean matches(DummyRecipeInput pressureChamberInput, Level level) {
+        return false;
+    }
+
+    @Override
+    public ItemStack assemble(DummyRecipeInput dummyRecipeInput, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int i, int i1) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return null;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return inputs;
+    }
+
 
 
 }

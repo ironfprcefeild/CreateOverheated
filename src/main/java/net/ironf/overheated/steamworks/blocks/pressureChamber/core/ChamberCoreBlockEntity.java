@@ -1,11 +1,10 @@
 package net.ironf.overheated.steamworks.blocks.pressureChamber.core;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.AllTags;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.AllSteamFluids;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionRecipe;
@@ -19,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +27,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,7 +184,7 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
             if (combustionTimer == 0 && recipeTimer > 0){
                 level.getRecipeManager().byKey(currentRecipe).ifPresent(
                         recipe -> {
-                            if (((PressureChamberRecipe) recipe).isCombustion()){
+                            if (((PressureChamberRecipe) (recipe.value())).isCombustion()){
                                 cancelRecipe();
                             }
                         });
@@ -204,31 +203,31 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
                 return;
             }
             isSwapped = true;
-            for (CombustionRecipe recipe : level.getRecipeManager().getAllRecipesFor(CombustionRecipe.Type.INSTANCE)){
-                if ((testCombustion(inputA,inputB,recipe) || testCombustion(inputB,inputA,recipe))
-                    && Tank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.getOutputFluid().getAmount()
+            for (RecipeHolder<CombustionRecipe> recipe : level.getRecipeManager().getAllRecipesFor(AllRecipes.COMBUSTION.TYPE.get())){
+                if ((testCombustion(inputA,inputB,recipe.value()) || testCombustion(inputB,inputA,recipe.value()))
+                    && Tank().fill(recipe.value().getOutputFluid(), IFluidHandler.FluidAction.SIMULATE) == recipe.value().getOutputFluid().getAmount()
                 ) {
                     //We're good to go
                     if (buildCombustion){
-                        combustionTimer += recipe.getCombustionTime();
+                        combustionTimer += recipe.value().getCombustionTime();
                     } else {
-                        Tank().fill(recipe.getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
-                        combustionTimer = recipe.getCombustionTime();
+                        Tank().fill(recipe.value().getOutputFluid(), IFluidHandler.FluidAction.EXECUTE);
+                        combustionTimer = recipe.value().getCombustionTime();
                     }
                     CombustionVentBlockEntity ventA = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(0));
                     CombustionVentBlockEntity ventB = (CombustionVentBlockEntity) level.getBlockEntity(ventLocations.get(1));
 
                     if (isSwapped){
-                        ventB.Tank().drain(recipe.getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                        ventA.Tank().drain(recipe.getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventB.Tank().drain(recipe.value().getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventA.Tank().drain(recipe.value().getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
                     } else {
-                        ventA.Tank().drain(recipe.getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                        ventB.Tank().drain(recipe.getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventA.Tank().drain(recipe.value().getInputFluidA().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                        ventB.Tank().drain(recipe.value().getInputFluidB().getStacks()[0].getAmount(), IFluidHandler.FluidAction.EXECUTE);
                     }
 
                     currentPressure = 0;
 
-                    addHeat((float) (double) (recipe.getOutputFluid().getAmount() * (recipe.getLaserHeat()+1) / 16));
+                    addHeat((float) (double) (recipe.value().getOutputFluid().getAmount() * (recipe.value().getLaserHeat()+1) / 16));
                 }
             }
         }
@@ -242,7 +241,7 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
 
     public FluidStack getFromCombustionVent(BlockPos pos){
         if (level.getBlockEntity(pos) instanceof CombustionVentBlockEntity CVBE){
-            return CVBE.tank.getPrimaryHandler().getFluid();
+            return CVBE.Tank().getFluid();
         } else {
             return FluidStack.EMPTY;
         }
@@ -253,7 +252,7 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
             return;
         level.getRecipeManager().byKey(currentRecipe).ifPresent(
                 recipe -> {
-                    ((PressureChamberRecipe) recipe).testRecipe(this, false, false);
+                    ((PressureChamberRecipe) (recipe.value())).testRecipe(this, false, false);
                     currentRecipe = null;});
         //Trigger another validity check, possible starting another recipe if the recipe delay is shorter than the validity check delay
         validTimer = 0;
@@ -261,9 +260,9 @@ public class ChamberCoreBlockEntity extends LaserMachineBlockEntity implements I
 
     public ResourceLocation currentRecipe;
     private void startNewRecipe() {
-        for (PressureChamberRecipe r : level.getRecipeManager().getAllRecipesFor(PressureChamberRecipe.Type.INSTANCE)){
-            if(r.testRecipe(this,true,true)){
-                currentRecipe = r.getId();
+        for (RecipeHolder<PressureChamberRecipe> r : level.getRecipeManager().getAllRecipesFor(AllRecipes.PRESSURE_CHAMBER.TYPE.get())){
+            if(r.value().testRecipe(this,true,true)){
+                currentRecipe = r.id();
                 return;
             }
         }

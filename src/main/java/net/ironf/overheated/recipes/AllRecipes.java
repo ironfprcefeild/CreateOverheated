@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
+import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,8 +28,13 @@ public class AllRecipes {
             DeferredRegister.create(Registries.RECIPE_TYPE, Overheated.MODID);
 
     /// Entries
-    public static final RecipeRegistration<CoolantRecipe> COOLANT = new RecipeRegistration<CoolantRecipe>(
+    public static final RecipeRegistration<CoolantRecipe> COOLANT = new RecipeRegistration<>(
             "coolant", CoolantRecipe.CoolantRecipeSerializer.CODEC, CoolantRecipe.CoolantRecipeSerializer.STREAM_CODEC);
+    public static final RecipeRegistration<PressureChamberRecipe> PRESSURE_CHAMBER = new RecipeRegistration<>(
+            "pressure_chamber", PressureChamberRecipe.PressureChamberRecipeSerializer.CODEC, PressureChamberRecipe.PressureChamberRecipeSerializer.STREAM_CODEC);
+    public static final RecipeRegistration<CombustionRecipe> COMBUSTION = new RecipeRegistration<>(
+            "combustion", CombustionRecipe.CombustionRecipeSerializer.CODEC, CombustionRecipe.CombustionRecipeSerializer.STREAM_CODEC);
+
 
     /// Helpers
     public static class RecipeRegistration<T extends Recipe<?>> {
@@ -55,12 +62,7 @@ public class AllRecipes {
     }
 
     /*
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CoolantRecipe>> COOLANT =
-            SERIALIZERS.register("cooling", () -> CoolantRecipe.Serializer.INSTANCE);
 
-
-    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<PressureChamberRecipe>> PRESSURE_CHAMBER =
-            SERIALIZERS.register("pressure_chamber", () -> PressureChamberRecipe.Serializer.INSTANCE);
     public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ImpactDrillRecipe>> IMPACT_DRILL =
             SERIALIZERS.register("impact_drilling", () -> ImpactDrillRecipe.Serializer.INSTANCE);
     public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<CondenserRecipe>> CONDENSER =
