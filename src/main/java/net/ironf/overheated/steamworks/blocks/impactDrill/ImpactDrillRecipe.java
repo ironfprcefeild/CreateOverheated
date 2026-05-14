@@ -1,111 +1,57 @@
 package net.ironf.overheated.steamworks.blocks.impactDrill;
 
-import com.google.gson.JsonObject;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
-import net.ironf.overheated.Overheated;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.ironf.overheated.recipes.AllRecipes;
+import net.ironf.overheated.recipes.DummyRecipeInput;
+import net.ironf.overheated.recipes.OverheatedCodecs;
+import net.ironf.overheated.recipes.SimpleItemInput;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.fluids.FluidStack;
 
-public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
+import static com.mojang.serialization.Codec.FLOAT;
+import static com.mojang.serialization.Codec.INT;
 
-
-
-
-    @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
-        if(pLevel.isClientSide()) {
-            return false;
-        }
-
-        return input.test(pContainer.getItem(0));
-    }
-
-    @Override
-    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return Id;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
-    }
-    public static class Type implements RecipeType<ImpactDrillRecipe> {
-        private Type() {
-        }
-
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "impact_drilling";
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return Type.INSTANCE;
-    }
-
-    private final ResourceLocation Id;
+public class ImpactDrillRecipe implements Recipe<SimpleItemInput> {
+    
     private final float torqueNeeded;
     private final float heatNeeded;
     private final float torqueImpact;
     private final int minPressure;
     private final FluidStack output;
     private final Ingredient input;
-
     private final float destructionChance;
 
     public float getTorqueNeeded() {
         return torqueNeeded;
     }
-
     public float getHeatNeeded() {
         return heatNeeded;
     }
-
     public FluidStack getOutput() {
         return output;
     }
-
     public Ingredient getInput() {
         return input;
     }
-
     public float getTorqueImpact() {
         return torqueImpact;
     }
-
     public float getDestructionChance() {return destructionChance;}
-
     public int getMinPressure() {
         return minPressure;
     }
 
-    public ImpactDrillRecipe(ResourceLocation id, float torqueNeeded, float heatNeeded, float torqueImpact, int minPressure, FluidStack output, Ingredient input, float destructionChance) {
-        Id = id;
+    public ImpactDrillRecipe(float torqueNeeded, float torqueImpact, float heatNeeded, int minPressure, FluidStack output, Ingredient input, float destructionChance) {
         this.torqueNeeded = torqueNeeded;
         this.heatNeeded = heatNeeded;
         this.torqueImpact = torqueImpact;
@@ -114,6 +60,77 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
         this.input = input;
         this.destructionChance = destructionChance;
     }
+    
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return AllRecipes.IMPACT_DRILLING.SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return AllRecipes.IMPACT_DRILLING.TYPE.get();
+    }
+    
+    /// Serializing
+    public static class ImpactDrillSerializer implements RecipeSerializer<ImpactDrillRecipe> {
+        public static final MapCodec<ImpactDrillRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+                FLOAT.fieldOf("minimum_torque").forGetter(ImpactDrillRecipe::getTorqueNeeded),
+                FLOAT.fieldOf("torque_impact").forGetter(ImpactDrillRecipe::getTorqueImpact),
+                FLOAT.fieldOf("heat").forGetter(ImpactDrillRecipe::getHeatNeeded),
+                INT.fieldOf("minPressure").forGetter(ImpactDrillRecipe::getMinPressure),
+                FluidStack.CODEC.fieldOf("output").forGetter(ImpactDrillRecipe::getOutput),
+                Ingredient.CODEC.fieldOf("input").forGetter(ImpactDrillRecipe::getInput),
+                FLOAT.fieldOf("destroy_chance").forGetter(ImpactDrillRecipe::getDestructionChance)
+            ).apply(inst, ImpactDrillRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, ImpactDrillRecipe> STREAM_CODEC =
+                OverheatedCodecs.fatComposite(
+                        ByteBufCodecs.FLOAT, ImpactDrillRecipe::getTorqueNeeded,
+                        ByteBufCodecs.FLOAT, ImpactDrillRecipe::getTorqueImpact,
+                        ByteBufCodecs.FLOAT, ImpactDrillRecipe::getHeatNeeded,
+                        ByteBufCodecs.INT, ImpactDrillRecipe::getMinPressure,
+                        FluidStack.STREAM_CODEC,ImpactDrillRecipe::getOutput,
+                        Ingredient.CONTENTS_STREAM_CODEC, ImpactDrillRecipe::getInput,
+                        ByteBufCodecs.FLOAT, ImpactDrillRecipe::getDestructionChance,
+                        ImpactDrillRecipe::new
+                );
+
+        // Return our map codec.
+        @Override
+        public MapCodec<ImpactDrillRecipe> codec() {
+            return CODEC;
+        }
+
+        // Return our stream codec.
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, ImpactDrillRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    }
+    
+    /// Dummy Methods
+    @Override
+    public boolean matches(SimpleItemInput input, Level level) {
+        return getInput().test(input.input());
+    }
+
+    @Override
+    public ItemStack assemble(SimpleItemInput input, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int i, int i1) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+ 
+    /*
     public static class Serializer implements RecipeSerializer<ImpactDrillRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
@@ -145,7 +162,7 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
             5. output
             6. input
             7. Destruction Chance
-         */
+         
 
 
 
@@ -173,4 +190,6 @@ public class ImpactDrillRecipe implements Recipe<SimpleContainer> {
         }
 
     }
+    
+     */
 }
