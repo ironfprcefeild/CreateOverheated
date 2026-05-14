@@ -18,7 +18,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import static com.simibubi.create.compat.jei.category.CreateRecipeCategory.getRenderedSlot;
 
@@ -59,7 +59,7 @@ public class CondensingRecipeCategory implements IRecipeCategory<CondenserRecipe
         FluidStack output = recipe.getOutput();
         builder
                 .addSlot(RecipeIngredientRole.INPUT,120 , 25)
-                .addFluidStack(recipe.getInput().getMatchingFluidStacks().get(0).getFluid(),1000 / output.getAmount())
+                .addFluidStack(recipe.getInput().getStacks()[0].getFluid(),1000 / output.getAmount())
                 .setBackground(getRenderedSlot(),-1,-1);
         builder
                 .addSlot(RecipeIngredientRole.OUTPUT,120 , 65)

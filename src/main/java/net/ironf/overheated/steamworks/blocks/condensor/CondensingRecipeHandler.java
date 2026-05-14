@@ -1,8 +1,10 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,17 +26,18 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         }
         Overheated.LOGGER.info("SO: Generating Condensing Handler");
         condensingHandler.clear();
-        List<CondenserRecipe> recipeList = createRecipeCollection();
-        for (CondenserRecipe r : recipeList){
-            for (FluidStack f : r.getInput().getMatchingFluidStacks()){
+        List<RecipeHolder<CondenserRecipe>> recipeList = createRecipeCollection();
+        for (RecipeHolder<CondenserRecipe> R : recipeList){
+            CondenserRecipe r = R.value();
+            for (FluidStack f : r.getInput().getStacks()){
                 condensingHandler.put(f.getFluid(),new CondensingOutputBundle(r.getOutput(),r.getMinTemp(),r.getAddTemp(),r.getGeneratedHeat()));
             }
         }
     }
 
 
-    public static List<CondenserRecipe> createRecipeCollection(){
-        return level.getRecipeManager().getAllRecipesFor(CondenserRecipe.Type.INSTANCE);
+    public static List<RecipeHolder<CondenserRecipe>> createRecipeCollection(){
+        return level.getRecipeManager().getAllRecipesFor(AllRecipes.CONDENSING.TYPE.get());
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
+import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionRecipe;
@@ -36,7 +37,10 @@ public class AllRecipes {
     public static final RecipeRegistration<CombustionRecipe> COMBUSTION = new RecipeRegistration<>(
             "combustion", CombustionRecipe.CombustionRecipeSerializer.CODEC, CombustionRecipe.CombustionRecipeSerializer.STREAM_CODEC);
     public static final RecipeRegistration<ImpactDrillRecipe> IMPACT_DRILLING = new RecipeRegistration<>(
-            "impact_drill", ImpactDrillRecipe.ImpactDrillSerializer.CODEC, ImpactDrillRecipe.ImpactDrillSerializer.STREAM_CODEC);
+            "impact_drilling", ImpactDrillRecipe.ImpactDrillSerializer.CODEC, ImpactDrillRecipe.ImpactDrillSerializer.STREAM_CODEC);
+    public static final RecipeRegistration<CondenserRecipe> CONDENSING = new RecipeRegistration<>(
+            "condensing", CondenserRecipe.CondenserSerializer.CODEC, CondenserRecipe.CondenserSerializer.STREAM_CODEC);
+
 
 
     /// Helpers
@@ -66,8 +70,6 @@ public class AllRecipes {
 
     /*
 
-    public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ImpactDrillRecipe>> IMPACT_DRILL =
-            SERIALIZERS.register("impact_drilling", () -> ImpactDrillRecipe.Serializer.INSTANCE);
     public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<CondenserRecipe>> CONDENSER =
             SERIALIZERS.register("condensing", () -> CondenserRecipe.Serializer.INSTANCE);
 

@@ -1,11 +1,8 @@
 package net.ironf.overheated.recipes;
 
-import com.mojang.datafixers.util.Function6;
 import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Function8;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.codecs.PrimitiveCodec;
+import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -57,6 +54,21 @@ public class OverheatedCodecs {
             }
         }
     };
+
+
+    /// HeatData Codecs
+    public static final StreamCodec<RegistryFriendlyByteBuf, HeatData> HEAT_DATA = new StreamCodec<>() {
+        public HeatData decode(RegistryFriendlyByteBuf buf) {
+            return new HeatData(buf.readFloat(),buf.readFloat(),buf.readFloat());
+        }
+
+        public void encode(RegistryFriendlyByteBuf buf, HeatData hd) {
+            buf.writeFloat(hd.Heat);
+            buf.writeFloat(hd.SuperHeat);
+            buf.writeFloat(hd.OverHeat);
+        }
+    };
+
 
     /// Fatty mc fat face composites
     //(theese are just composite stream codecs with more than 6 options)

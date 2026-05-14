@@ -1,97 +1,50 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
-import com.google.gson.JsonObject;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
-import net.ironf.overheated.Overheated;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import net.ironf.overheated.recipes.AllRecipes;
+import net.ironf.overheated.recipes.OverheatedCodecs;
+import net.ironf.overheated.recipes.SimpleFluidInput;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
-public class CondenserRecipe implements Recipe<SimpleContainer> {
+import static com.mojang.serialization.Codec.FLOAT;
 
-
-    @Override
-    public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int p_43999_, int p_44000_) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return ItemStack.EMPTY;
-    }
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
-    }
-
-    public FluidStack getOutput() {
-        return output;
-    }
-
-    public Float getAddTemp() {
-        return addTemp;
-    }
-
-    public Float getMinTemp() {
-        return minTemp;
-    }
-
-    public HeatData getGeneratedHeat() {
-        return generatedHeat;
-    }
-
-    public static class Type implements RecipeType<CondenserRecipe> {
-        private Type() {
-        }
-
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "condensing";
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return Type.INSTANCE;
-    }
-
-    public FluidIngredient getInput() {
-        return input;
-    }
-
-    private final ResourceLocation id;
+public class CondenserRecipe implements Recipe<SimpleFluidInput> {
 
     private final FluidIngredient input;
-
     private final FluidStack output;
     private final Float minTemp;
     private final Float addTemp;
     private final HeatData generatedHeat;
 
-    public CondenserRecipe(ResourceLocation id, FluidIngredient input, FluidStack output, Float minTemp, Float addTemp, HeatData generatedHeat) {
-        this.id = id;
+    public FluidStack getOutput() {
+        return output;
+    }
+    public Float getAddTemp() {
+        return addTemp;
+    }
+    public Float getMinTemp() {
+        return minTemp;
+    }
+    public HeatData getGeneratedHeat() {
+        return generatedHeat;
+    }
+    public FluidIngredient getInput() {
+        return input;
+    }
+
+    public CondenserRecipe(FluidIngredient input, FluidStack output, Float minTemp, Float addTemp, HeatData generatedHeat) {
         this.input = input;
         this.output = output;
         this.minTemp = minTemp;
@@ -99,8 +52,87 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
         this.generatedHeat = generatedHeat;
     }
 
+    public CondenserRecipe(FluidIngredient input, FluidStack output, Float minTemp, Float addTemp, Float heat, Float superHeat, Float overheat) {
+        this.input = input;
+        this.output = output;
+        this.minTemp = minTemp;
+        this.addTemp = addTemp;
+        this.generatedHeat = new HeatData(heat,superHeat,overheat);
+    }
 
 
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return AllRecipes.CONDENSING.SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return AllRecipes.CONDENSING.TYPE.get();
+    }
+
+    /// Serializing
+    public static class CondenserSerializer implements RecipeSerializer<CondenserRecipe> {
+        public static final MapCodec<CondenserRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+            FluidIngredient.CODEC.fieldOf("input").forGetter(CondenserRecipe::getInput),
+            FluidStack.CODEC.fieldOf("output").forGetter(CondenserRecipe::getOutput),
+            FLOAT.fieldOf("minTemp").forGetter(CondenserRecipe::getMinTemp),
+            FLOAT.fieldOf("addTemp").forGetter(CondenserRecipe::getAddTemp),
+            FLOAT.fieldOf("heat").forGetter((O) -> O.getGeneratedHeat().Heat),
+            FLOAT.fieldOf("superHeat").forGetter((O) -> O.getGeneratedHeat().SuperHeat),
+            FLOAT.fieldOf("overHeat").forGetter((O) -> O.getGeneratedHeat().OverHeat)
+        ).apply(inst, CondenserRecipe::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, CondenserRecipe> STREAM_CODEC =
+                StreamCodec.composite(
+                        FluidIngredient.STREAM_CODEC, CondenserRecipe::getInput,
+                        FluidStack.STREAM_CODEC, CondenserRecipe::getOutput,
+                        ByteBufCodecs.FLOAT, CondenserRecipe::getMinTemp,
+                        ByteBufCodecs.FLOAT, CondenserRecipe::getAddTemp,
+                        OverheatedCodecs.HEAT_DATA, CondenserRecipe::getGeneratedHeat,
+                        CondenserRecipe::new
+                );
+
+        // Return our map codec.
+        @Override
+        public MapCodec<CondenserRecipe> codec() {
+            return CODEC;
+        }
+
+        // Return our stream codec.
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, CondenserRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+    }
+
+    /// Dummy Methods
+    @Override
+    public boolean matches(SimpleFluidInput simpleFluidInput, Level level) {
+        return input.test(simpleFluidInput.fluid());
+    }
+
+    @Override
+    public ItemStack assemble(SimpleFluidInput simpleFluidInput, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int i, int i1) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+
+
+
+
+
+/*
     public static class Serializer implements RecipeSerializer<CondenserRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
@@ -126,15 +158,6 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             return new CondenserRecipe(id,fluid,output, minTemp, GsonHelper.getAsFloat(pSerializedRecipe,"addTemp"), heat);
         }
 
-        /*
-            Read/Write Order
-            1. Fluid Ingredeint
-            2. Fluidstack Output
-            3. minTemp
-            4. addTemp
-            5. Heatlevel
-            6. Heat amount
-        */
 
         @Override
         public CondenserRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
@@ -158,4 +181,16 @@ public class CondenserRecipe implements Recipe<SimpleContainer> {
             buf.writeInt((int) recipe.generatedHeat.getHeatOfLevel(heatLevel));
         }
     }
+
+        /*
+    public static class Type implements RecipeType<CondenserRecipe> {
+        private Type() {
+        }
+
+        public static final Type INSTANCE = new Type();
+        public static final String ID = "condensing";
+    }
+
+     */
+
 }
