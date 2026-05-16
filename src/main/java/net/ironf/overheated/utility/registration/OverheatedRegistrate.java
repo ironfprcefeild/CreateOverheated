@@ -13,13 +13,11 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.ponder.foundation.PonderIndex;
-import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.ExplodingGasBlock;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
-import net.ironf.overheated.metalWorking.metalCasting.GoldenCastItem;
 import net.ironf.overheated.ponder.OverheatedPonderPlugin;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
@@ -37,6 +35,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -89,7 +88,6 @@ import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasNa
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.*;
-import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getPouringRecipe;
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class OverheatedRegistrate extends CreateRegistrate {
@@ -167,8 +165,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     itemModelOverride));
 
             generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
-                    packOutput));
-
+                    packOutput, event.getLookupProvider()));
 
             //Ponder Lang
             REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
@@ -176,9 +173,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
                 PonderIndex.addPlugin(new OverheatedPonderPlugin());
                 PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
             });
-
-
-
         }
     }
 
@@ -198,7 +192,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final ItemEntry<Item> nugget;
         public final BlockEntry<Block> block;
         public final OverheatedRegistrate.FluidRegistration molten;
-        public final ItemEntry<GoldenCastItem> castedIngot;
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
@@ -232,9 +225,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             } else {
                 this.ingot = ingotOverride; this.nugget = nuggetOverride; this.block = blockOverride;
             }
-            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
-                    .lang(name + " Ingot in Cast")
-                    .register();
+
             this.meltingRequirement = meltingRequirement;
 
             molten = REGISTRATE.SimpleFluid("molten_"+id)
@@ -249,7 +240,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             OverheatedRecipeProvider.metallicSets.add(this);
         }
 
-        public void buildRecipes(Consumer<FinishedRecipe> writer){
+        public void buildRecipes(RecipeOutput writer){
             ResourceLocation parentRL = Overheated.asResource(id);
             if (!existingMetal) {
                 //nugget -> ingot
@@ -298,22 +289,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
              */
 
-            //Casts
-            writer.accept(getPouringRecipe(
-                    parentRL.withSuffix("_sand_casting"),
-                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                    AllItems.EMPTY_SAND_CAST.asStack(1),
-                    ingot.asStack(1)));
-            writer.accept(getPouringRecipe(
-                    parentRL.withSuffix("_gold_casting"),
-                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                    AllItems.EMPTY_GOLD_CAST.asStack(1),
-                    castedIngot.asStack(1)));
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
-                    .requires(castedIngot)
-                    .unlockedBy(getHasName(castedIngot),has(castedIngot))
-                    .save(writer,parentRL.withSuffix("_cast_removal"));
-
         }
 
     }
@@ -344,7 +319,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final Item nugget;
         public final Item block;
         public final OverheatedRegistrate.FluidRegistration molten;
-        public final ItemEntry<GoldenCastItem> castedIngot;
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
@@ -358,9 +332,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
             this.name = ""+name;
             id = name.toLowerCase().replace(" ","_");
 
-            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
-                    .lang(name + " Ingot Casted")
-                    .register();
             molten = REGISTRATE.SimpleFluid("molten_"+id)
                     .overrideTexture("block/fluids/molten")
                     .tintColor(tintColor)
@@ -375,7 +346,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             OverheatedRecipeProvider.vanillaMetallicSets.add(this);
         }
 
-        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+        public void buildRecipes(RecipeOutput writer) {
             ResourceLocation parentRL = Overheated.asResource(id);
             //TODO add back melting recipes
             if (nugget != null) {
@@ -402,20 +373,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
                 //Casts
 
-                writer.accept(getPouringRecipe(
-                        parentRL.withSuffix("_sand_casting"),
-                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                        AllItems.EMPTY_SAND_CAST.asStack(1),
-                        ingot.getDefaultInstance()));
-                writer.accept(getPouringRecipe(
-                        parentRL.withSuffix("_gold_casting"),
-                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                        AllItems.EMPTY_GOLD_CAST.asStack(1),
-                        castedIngot.asStack(1)));
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
-                        .requires(castedIngot)
-                        .unlockedBy(getHasName(castedIngot),has(castedIngot))
-                        .save(writer,parentRL.withSuffix("_cast_removal"));
             }
             if (block != null) {
                 //TODO add back melting recipes
@@ -493,7 +450,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
         @SuppressWarnings("unchecked")
-        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+        public void buildRecipes(RecipeOutput writer) {
             ResourceLocation parentRL = Overheated.asResource(id);
             Item ingot = ingotRegistrated ? ((ItemEntry<Item>) this.ingot).get() : ((Item) this.ingot);
             Item handle = handleRegistrated ? ((ItemEntry<Item>) this.handle).get() : ((Item) this.handle);
@@ -611,7 +568,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public String BucketModelLocation = null;
         public boolean putBucketInSteamTab = false;
 
-        public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
+        public BlockBehaviour.Properties block_properties = Blocks.WATER.properties();
 
         ResourceLocation textureOverride = null;
 
