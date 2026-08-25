@@ -1,7 +1,6 @@
 package net.ironf.overheated.recipes.JEI;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
 import net.createmod.catnip.gui.UIRenderHelper;
@@ -30,13 +29,9 @@ public class SimpleAnimatedRecipeItem extends AnimatedKinetics {
                 .scale(scale)
                 .render(guiGraphics);
 
-        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance()
-                .getBuilder());
         PoseStack ms = new PoseStack();
         UIRenderHelper.flipForGuiRender(ms);
         ms.scale(scale, scale, scale);
-        float from = 2/16f;
-        buffer.endBatch();
 
         matrixStack.popPose();
     }

@@ -25,7 +25,7 @@ public class OverheatedPonderPlugin implements PonderPlugin {
     @Override
     public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderPlugin.super.registerScenes(helper);
-        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        PonderSceneRegistrationHelper<ItemProviderEntry<?,?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
         HELPER.forComponents(AllBlocks.STEAM_VENT)
                 .addStoryBoard("steam_vent", SteamVentScene::mainScene, BOILER_ATTACHMENTS);
         HELPER.forComponents(AllBlocks.SOLAR_PANEL,AllBlocks.BLAZE_ABSORBER)
@@ -40,10 +40,7 @@ public class OverheatedPonderPlugin implements PonderPlugin {
     public void registerTags(PonderTagRegistrationHelper<ResourceLocation> helper) {
         PonderPlugin.super.registerTags(helper);
 
-        PonderTagRegistrationHelper<RegistryEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
-
-        PonderTagRegistrationHelper<ItemLike> itemHelper = helper.withKeyFunction(
-                CatnipServices.REGISTRIES::getKeyOrThrow);
+        PonderTagRegistrationHelper<RegistryEntry<?,?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
 
         helper.registerTag(BOILER_ATTACHMENTS)

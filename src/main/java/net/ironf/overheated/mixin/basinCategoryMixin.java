@@ -34,7 +34,7 @@ public class basinCategoryMixin {
         AllGuiTextures shadow = noHeat ? AllGuiTextures.JEI_SHADOW : AllGuiTextures.JEI_LIGHT;
         shadow.render(graphics, 81, 58 + (noHeat ? 10 : 30));
 
-        if (ReinforcementHandler.requiresReinforcement.contains(recipe.getId().getPath())){
+        if (ReinforcementHandler.reinforcedRecipe(recipe)){
             graphics.drawString(Minecraft.getInstance().font,
                     Component.translatable("coverheated.jei.reinforcement") ,
                             9, 71, requiredHeat.getColor(), false);
