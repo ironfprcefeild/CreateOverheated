@@ -2,6 +2,7 @@ package net.ironf.overheated.utility.registration;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -142,6 +143,17 @@ public class OverheatedRegistrate extends CreateRegistrate {
     @EventBusSubscriber(modid = Overheated.MODID)
     public class DataGenerators {
 
+        public static void gatherDataHighPriority(GatherDataEvent event) {
+            if (event.getMods().contains(Overheated.MODID)) {
+                //Ponder Lang
+                REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+                    BiConsumer<String, String> langConsumer = provider::add;
+                    PonderIndex.addPlugin(new OverheatedPonderPlugin());
+                    PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
+                });
+            }
+        }
+
         @SubscribeEvent
         public static void gatherData(GatherDataEvent event) {
             Overheated.LOGGER.info("CO: Overheated Gathering Data");
@@ -167,12 +179,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
                     packOutput, event.getLookupProvider()));
 
-            //Ponder Lang
-            REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
-                BiConsumer<String, String> langConsumer = provider::add;
-                PonderIndex.addPlugin(new OverheatedPonderPlugin());
-                PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
-            });
+
         }
     }
 

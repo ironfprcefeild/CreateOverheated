@@ -128,7 +128,7 @@ public class AllSteamFluids {
     public static @NonnullType Fluid[] HotAirs;
 
     public static void prepareSteamArray() {
-        Overheated.LOGGER.info("O: Preparing Steam Utility Array");
+        Overheated.LOGGER.info("CO: Preparing Steam Utility Array");
         Steams = new Fluid[][]{
                 {DISTILLED_WATER.SOURCE.get(), HEATED_STEAM_SUPERLOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_SUPERLOW.SOURCE.get().getSource(), OVERHEATED_STEAM_SUPERLOW.SOURCE.get().getSource()},
                 {STEAM_LOW.SOURCE.get().getSource(), HEATED_STEAM_LOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_LOW.SOURCE.get().getSource(), OVERHEATED_STEAM_LOW.SOURCE.get().getSource()},
@@ -136,7 +136,7 @@ public class AllSteamFluids {
                 {STEAM_HIGH.SOURCE.get().getSource(), HEATED_STEAM_HIGH.SOURCE.get().getSource(), SUPERHEATED_STEAM_HIGH.SOURCE.get().getSource(), OVERHEATED_STEAM_HIGH.SOURCE.get().getSource()},
                 {STEAM_INSANE.SOURCE.get().getSource(), HEATED_STEAM_INSANE.SOURCE.get().getSource(), SUPERHEATED_STEAM_INSANE.SOURCE.get().getSource(), OVERHEATED_STEAM_INSANE.SOURCE.get().getSource()}
         };
-        Overheated.LOGGER.info("O: Preparing Hot Air Utility Array");
+        Overheated.LOGGER.info("CO: Preparing Hot Air Utility Array");
         HotAirs = new Fluid[]{
                 HEATED_HOT_AIR.SOURCE.get().getSource(),SUPERHEATED_HOT_AIR.SOURCE.get().getSource(),OVERHEATED_HOT_AIR.SOURCE.get().getSource()
         };
@@ -145,7 +145,7 @@ public class AllSteamFluids {
 
 
     public static void register(){
-        Overheated.LOGGER.info("O: Overheated is Registering Steams, Hot Airs, and Distilled Water");
+        Overheated.LOGGER.info("CO: Overheated is Registering Steams, Hot Airs, and Distilled Water");
     }
 
 

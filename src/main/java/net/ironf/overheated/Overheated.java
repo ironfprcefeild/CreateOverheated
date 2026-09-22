@@ -51,7 +51,6 @@ public class Overheated
         modEventBus.addListener(Overheated::init);
         REGISTRATE.registerEventListeners(modEventBus);
 
-
         //CTOR
         AllTags.init();
         AllFluids.register();

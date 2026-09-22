@@ -69,12 +69,18 @@ public class OverheatedRecipeProvider extends RecipeProvider {
             int h = 0;
             //loop over heat levels
             for (Fluid steam : AllSteamFluids.Steams[p]){
+                Overheated.LOGGER.info("CO: Trying to make condensing recipe: h = " + h + " p = " + p);
+                if (h == 0 && p == 0){
+                    h++;
+                    continue;
+                }
                 new OverheatedRecipeBuilder<>(new CondenserRecipe(
                     FluidIngredient.of(new FluidStack(steam, 1)),
                     /*The pressure of the steam is 0 always if the heat is 0, making distilled water
                       If the steam is heated, it looses its heat and retains its pressure.
                       Only when the heat is 0, (when making distilled water), do we apply the p*5 term on the amount of distilled water output
                      */
+
                     AllSteamFluids.getSteamFromValues((h == 0) ? 0 : p, 0, (h == 0) ? p * 5 : 1),
                     0f,
                     (h == 0) ? (p * 3) : ((float) Math.floor(Math.pow(3, h + 1))),

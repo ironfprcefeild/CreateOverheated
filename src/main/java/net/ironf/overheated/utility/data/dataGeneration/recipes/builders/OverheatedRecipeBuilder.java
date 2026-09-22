@@ -35,6 +35,6 @@ public class OverheatedRecipeBuilder<T extends Recipe<?>> extends SimpleRecipeBu
         this.criteria.forEach(advancement::addCriterion);
 
         // Pass the id, the recipe, and the recipe advancement into the RecipeOutput.
-        output.accept(key, recipe, advancement.build(key.withPrefix("recipes/")));
+        output.accept(key, recipe, advancement.build(key.withPrefix("recipe/")));
     }
 }

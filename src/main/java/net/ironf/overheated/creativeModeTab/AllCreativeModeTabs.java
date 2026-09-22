@@ -25,6 +25,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -53,19 +54,15 @@ public class AllCreativeModeTabs {
                     .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
                     .displayItems(new RegistrateDisplayItemsGenerator(false, AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB,OverheatedRegistrate.allSteamBuckets))
                     .build());
-    
 
+
+    @ApiStatus.Internal
     public static void register(IEventBus modEventBus) {
-        REGISTER.register(modEventBus);
+        //REGISTER.register(modEventBus);
     }
 
-    /*
-    All Used static objects are marked with !!!!
 
-    This is ripped from creates Display Items Generator. Because im a lazy coward.
-    Ive changed what it does to certain items though obviously.
 
-     */
     private static class RegistrateDisplayItemsGenerator implements CreativeModeTab.DisplayItemsGenerator {
         private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
@@ -82,15 +79,6 @@ public class AllCreativeModeTabs {
             IS_ITEM_3D_PREDICATE = isItem3d.getValue();
         }
 
-        @OnlyIn(Dist.CLIENT)
-        private static Predicate<Item> makeClient3dItemPredicate() {
-            return item -> {
-                ItemRenderer itemRenderer = Minecraft.getInstance()
-                        .getItemRenderer();
-                BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
-                return model.isGui3d();
-            };
-        }
 
         private final boolean addItems;
         private final DeferredHolder<CreativeModeTab, CreativeModeTab> tabFilter;
@@ -226,11 +214,9 @@ public class AllCreativeModeTabs {
 
             List<Item> items = new LinkedList<>();
             if (addItems) {
-                items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
-
-                items.addAll(collectBlocks(exclusionPredicate));
-
-                items.addAll(collectItems(exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
+                items.addAll(collectItems(items,exclusionPredicate.or(IS_ITEM_3D_PREDICATE.negate())));
+                items.addAll(collectBlocks(items,exclusionPredicate));
+                items.addAll(collectItems(items,exclusionPredicate.or(IS_ITEM_3D_PREDICATE)));
             }
 
             if (extraItems != null) {
@@ -243,14 +229,14 @@ public class AllCreativeModeTabs {
             outputAll(output, items, stackFunc, visibilityFunc);
         }
 
-        private List<Item> collectBlocks(Predicate<Item> exclusionPredicate) {
+        private List<Item> collectBlocks(List<Item> existing,Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
             for (RegistryEntry<Block, ? extends Block> entry : Overheated.REGISTRATE.getAll(Registries.BLOCK)) {
                 if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
                     continue;
                 Item item = entry.get()
                         .asItem();
-                if (item == Items.AIR)
+                if (item == Items.AIR || existing.contains(item))
                     continue;
                 if (!exclusionPredicate.test(item))
                     items.add(item);
@@ -259,13 +245,13 @@ public class AllCreativeModeTabs {
             return items;
         }
 
-        private List<Item> collectItems(Predicate<Item> exclusionPredicate) {
+        private List<Item> collectItems(List<Item> existing, Predicate<Item> exclusionPredicate) {
             List<Item> items = new ReferenceArrayList<>();
             for (RegistryEntry<Item, ? extends Item> entry : Overheated.REGISTRATE.getAll(Registries.ITEM)) {
                 if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
                     continue;
                 Item item = entry.get();
-                if (item instanceof BlockItem)
+                if (item instanceof BlockItem || existing.contains(item))
                     continue;
                 if (!exclusionPredicate.test(item))
                     items.add(item);
