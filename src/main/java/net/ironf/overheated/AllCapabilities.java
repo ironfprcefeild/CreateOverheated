@@ -12,13 +12,16 @@ import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBl
 import net.ironf.overheated.steamworks.blocks.pressureHeater.PressureHeaterBlockEntity;
 import net.ironf.overheated.steamworks.blocks.steamVent.steamVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import static net.ironf.overheated.AllBlockEntities.*;
 
 public class AllCapabilities {
 
-    public static void RegisterAllCapabilities(RegisterCapabilitiesEvent event){
+
+    @SubscribeEvent
+    public static void registerCapabilities(RegisterCapabilitiesEvent event){
         Overheated.LOGGER.info("O: Registering Capabilities on all Block Entities");
         //? extends CapableMachineBlockEntity
         steamVentBlockEntity.registerCapabilities(event,STEAM_VENT,true,false);
@@ -30,8 +33,6 @@ public class AllCapabilities {
         CombustionVentBlockEntity.registerCapabilities(event,COMBUSTION_VENT,true,false);
         BlowingEngineBlockEntity.registerCapabilities(event,BLOWING_ENGINE,true,false);
         RadiolyzerBlockEntity.registerCapabilities(event,RADIOLYZER,true,false);
-
-
 
         //Others
         turbineEndBlockEntity.registerCapabilities(event,TURBINE_END);

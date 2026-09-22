@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+logoFile="logo.png"
+
+[[mods]]
+modId="coverheated"
+version="0.0.3"
+displayName="Create: Overheated"
+authors="Ironforcefeild"
+description='''Create's Late game expansion mod'''
+
+[[mixins]]
+config="overheated.mixins.json"
+
+[[dependencies.coverheated]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.coverheated]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.coverheated]]
+modId="create"
+type="required"
+versionRange="${create_version_range}"
+ordering="NONE"
+side="BOTH"

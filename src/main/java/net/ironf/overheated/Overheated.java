@@ -1,10 +1,8 @@
 package net.ironf.overheated;
 
 import com.mojang.logging.LogUtils;
-import com.tterrag.registrate.util.RegistrateDistExecutor;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
@@ -19,31 +17,22 @@ import net.ironf.overheated.utility.TranslucencyHandler;
 import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.world.level.block.Block;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.slf4j.Logger;
 
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Overheated.MODID)
-@EventBusSubscriber
 public class Overheated
 {
     public static final String MODID = "coverheated";
@@ -51,22 +40,19 @@ public class Overheated
 
     public static final OverheatedRegistrate REGISTRATE = new OverheatedRegistrate(MODID);
 
-
-    public Overheated()
+    public Overheated(IEventBus modEventBus, ModContainer container)
     {
-        //Theee Errors are just here cause of deprecation
-        //If anyone knows what I'm supposed to do please tell me.
-        ModLoadingContext modLoadingContext = ModLoadingContext.get();
-        IEventBus modEventBus = ModLoadingContext.get()
-                .getActiveContainer().getEventBus();
-        IEventBus forgeEventBus = NeoForge.EVENT_BUS;
+        Overheated.LOGGER.info("Overheated Class Method Accessed");
 
         //Events
         NeoForge.EVENT_BUS.register(this);
         RadiationMap.subscribeEvents(NeoForge.EVENT_BUS);
+        modEventBus.register(AllCapabilities.class);
+        modEventBus.addListener(Overheated::init);
+        REGISTRATE.registerEventListeners(modEventBus);
+
 
         //CTOR
-        REGISTRATE.registerEventListeners(modEventBus);
         AllTags.init();
         AllFluids.register();
         AllBlocks.register();
@@ -75,8 +61,8 @@ public class Overheated
         AllRecipes.register(modEventBus);
         AllFeatures.register();
         AllCreativeModeTabs.register(modEventBus);
-        modEventBus.addListener(Overheated::init);
-        OverheatedDistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
+
+
 
 
     }
@@ -86,17 +72,19 @@ public class Overheated
         LOGGER.info("...OVERHEATING...");
         LOGGER.info("Thank you for choosing Create: Overheated!");
         LOGGER.info("\"O\" indicates a log message from Overheated");
-        GasMapper.prepareGasBlockInfo();
-        AllSteamFluids.prepareSteamArray();
-        BlazeCrucibleBlockEntity.addToBoilerHeaters();
-        BlazeAbsorberBlockEntity.addToBoilerHeaters();
-        DiodeHeaters.registerDefaults();
-        mirrorRegister.registerDefaults();
-        ControlRodsRegister.registerDefaults();
-        TranslucencyHandler.addRenderLayers();
+        event.enqueueWork(() -> {
+            GasMapper.prepareGasBlockInfo();
+            AllSteamFluids.prepareSteamArray();
+            BlazeCrucibleBlockEntity.addToBoilerHeaters();
+            BlazeAbsorberBlockEntity.addToBoilerHeaters();
+            DiodeHeaters.registerDefaults();
+            mirrorRegister.registerDefaults();
+            ControlRodsRegister.registerDefaults();
+            TranslucencyHandler.addRenderLayers();
 
-        //(Un)Mysterious Conversion
-        OverheatedRecipeProvider.addMysteriousConversion();
+            //(Un)Mysterious Conversion
+            OverheatedRecipeProvider.addMysteriousConversion();
+        });
     }
 
     @SubscribeEvent
@@ -117,13 +105,10 @@ public class Overheated
         RadiationMap.RadiationHashMap.clear();
     }
 
-    @SubscribeEvent
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        AllCapabilities.RegisterAllCapabilities(event);
-    }
 
 
 
+/*
         // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
     public static class ClientModEvents
@@ -147,6 +132,8 @@ public class Overheated
         }
 
     }
+
+ */
 
     public static ResourceLocation asResource(String path) {
         return fromNamespaceAndPath(MODID, path);
