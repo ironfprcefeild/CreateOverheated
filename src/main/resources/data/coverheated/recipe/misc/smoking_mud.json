@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "minecraft:mud"
   },
-  "result": "minecraft:dirt",
+  "result": { "id": "minecraft:dirt"},
   "experience": 0,
   "cookingtime": 100
 }

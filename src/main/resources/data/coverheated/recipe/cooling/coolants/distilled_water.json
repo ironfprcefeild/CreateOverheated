@@ -2,7 +2,8 @@
   "type": "coverheated:cooling",
   "input_fluid": {
     "fluid": "coverheated:distilled_water",
-    "amount": 1
+    "amount": 1,
+    "type": "neoforge:single"
   },
   "heat": 15,
   "min_temp": 20,

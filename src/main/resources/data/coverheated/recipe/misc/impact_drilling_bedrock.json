@@ -4,7 +4,7 @@
       "item": "minecraft:bedrock"
     },
   "output": {
-    "fluid": "coverheated:water_vapor",
+    "id": "coverheated:water_vapor",
     "amount": 1
   },
   "minimum_torque": 50,

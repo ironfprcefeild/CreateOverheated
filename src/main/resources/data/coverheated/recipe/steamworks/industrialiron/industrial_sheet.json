@@ -7,11 +7,11 @@
   "results": [
     {
       "chance": 25.0,
-      "item": "coverheated:industrial_sheet"
+      "id": "coverheated:industrial_sheet"
     },
     {
       "chance": 75.0,
-      "item": "minecraft:iron_nugget"
+      "id": "minecraft:iron_nugget"
     }
   ],
   "sequence": [
@@ -29,7 +29,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_industrial_sheet"
+          "id": "coverheated:incomplete_industrial_sheet"
         }
       ]
     },
@@ -42,7 +42,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_industrial_sheet"
+          "id": "coverheated:incomplete_industrial_sheet"
         }
       ]
     },
@@ -55,12 +55,12 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_industrial_sheet"
+          "id": "coverheated:incomplete_industrial_sheet"
         }
       ]
     }
   ],
   "transitionalItem": {
-    "item": "coverheated:incomplete_industrial_sheet"
+    "id": "coverheated:incomplete_industrial_sheet"
   }
 }

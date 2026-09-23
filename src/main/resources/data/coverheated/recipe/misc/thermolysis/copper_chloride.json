@@ -20,10 +20,10 @@
   ],
   "results": [
     {
-      "item": "coverheated:copper_chloride"
+      "id": "coverheated:copper_chloride"
     },
     {
-      "fluid": "coverheated:hydrogen",
+      "id": "coverheated:hydrogen",
       "amount": 80
     }
   ]

@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "coverheated:diode_junction",
+    "id": "coverheated:diode_junction",
     "count": 1
   }
 }

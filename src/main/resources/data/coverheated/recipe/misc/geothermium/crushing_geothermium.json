@@ -9,11 +9,11 @@
   "results": [
     {
       "chance": 0.50,
-      "item": "create:ochrum"
+      "id": "create:ochrum"
     },
     {
       "chance": 0.75,
-      "item": "coverheated:geothermium_powders"
+      "id": "coverheated:geothermium_powders"
     }
   ]
 }

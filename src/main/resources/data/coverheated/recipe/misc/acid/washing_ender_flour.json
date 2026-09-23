@@ -8,12 +8,12 @@
   "processingTime": 100,
   "results": [
     {
-      "item": "coverheated:asurine_powders",
+      "id": "coverheated:asurine_powders",
       "count": 1
     },
     {
       "chance": 0.25,
-      "item": "coverheated:asurine_powders",
+      "id": "coverheated:asurine_powders",
       "count": 1
     }
   ]

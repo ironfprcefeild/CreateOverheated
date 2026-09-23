@@ -5,13 +5,14 @@
       "item": "minecraft:coarse_dirt"
     },
     {
+      "type": "neoforge:single",
       "fluid": "minecraft:water",
       "amount": 500
     }
   ],
   "results": [
     {
-      "item": "minecraft:mud"
+      "id": "minecraft:mud"
     }
   ]
 }

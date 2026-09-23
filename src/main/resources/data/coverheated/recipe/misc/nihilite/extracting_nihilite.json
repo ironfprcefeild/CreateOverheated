@@ -4,6 +4,7 @@
       "item": "coverheated:nihilite_deposit"
     },
   "output": {
+    "type": "neoforge:single",
     "fluid": "coverheated:nihilite_gas",
     "amount": 1
   },

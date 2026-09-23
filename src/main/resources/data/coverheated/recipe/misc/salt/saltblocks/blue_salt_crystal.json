@@ -9,16 +9,16 @@
   "results": [
     {
       "count": 3,
-      "item": "coverheated:blue_halite"
+      "id": "coverheated:blue_halite"
     },
     {
       "chance": 0.5,
-      "item": "coverheated:blue_halite",
+      "id": "coverheated:blue_halite",
       "count": 2
     },
     {
       "chance": 0.5,
-      "item": "coverheated:table_salt",
+      "id": "coverheated:table_salt",
       "count": 2
     }
   ]

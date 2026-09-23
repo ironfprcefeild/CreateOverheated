@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "coverheated:overheat_dimmer",
+    "id": "coverheated:overheat_dimmer",
     "count": 1
   }
 }

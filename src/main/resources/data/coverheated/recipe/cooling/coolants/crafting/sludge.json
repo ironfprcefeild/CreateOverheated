@@ -5,6 +5,7 @@
       "item": "minecraft:slime_ball"
     },
     {
+      "type": "neoforge:single",
       "amount": 500,
       "fluid": "coverheated:distilled_water"
     }
@@ -12,7 +13,7 @@
   "results": [
     {
       "amount": 500,
-      "fluid": "coverheated:sludge"
+      "id": "coverheated:sludge"
     }
   ]
 }

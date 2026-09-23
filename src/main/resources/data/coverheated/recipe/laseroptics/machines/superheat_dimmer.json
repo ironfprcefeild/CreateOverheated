@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "coverheated:superheat_dimmer",
+    "id": "coverheated:superheat_dimmer",
     "count": 1
   }
 }

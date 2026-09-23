@@ -3,8 +3,9 @@
   "heatRequirement": "heated",
   "ingredients": [
     {
-    "fluid": "coverheated:cinderfume",
-    "amount": 200
+      "type": "neoforge:single",
+      "fluid": "coverheated:cinderfume",
+      "amount": 200
     }
   ],
   "results": [
@@ -12,7 +13,7 @@
       "item": "coverheated:cinder_globule"
     },
     {
-      "fluid": "minecraft:lava",
+      "id": "minecraft:lava",
       "amount": 10
     }
   ]

@@ -2,15 +2,17 @@
   "type": "coverheated:combustion",
   "input_a": {
     "amount": 100,
+    "type": "neoforge:single",
     "fluid": "coverheated:carbon_dioxide"
   },
   "input_b": {
     "amount": 100,
+    "type": "neoforge:single",
     "fluid": "coverheated:oxygen"
   },
   "output": {
     "amount": 100,
-    "fluid": "coverheated:akrycite"
+    "id": "coverheated:akrycite"
   },
   "time": 300
 }

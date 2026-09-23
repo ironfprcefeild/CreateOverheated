@@ -9,11 +9,11 @@
   "results": [
     {
       "chance": 0.25,
-      "item": "coverheated:nihilite_globule"
+      "id": "coverheated:nihilite_globule"
     },
     {
       "chance": 0.2,
-      "item": "minecraft:lapis_lazuli"
+      "id": "minecraft:lapis_lazuli"
     }
   ]
 }

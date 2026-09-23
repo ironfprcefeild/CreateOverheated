@@ -11,13 +11,14 @@
       "item": "minecraft:blue_ice"
     },
     {
+      "type": "neoforge:single",
       "fluid": "coverheated:stray_sauce",
       "amount": 1000
     }
   ],
   "results": [
     {
-      "item": "coverheated:ice_diamond",
+      "id": "coverheated:ice_diamond",
       "count": 8
     }
   ]

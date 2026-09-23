@@ -2,6 +2,7 @@
   "type": "coverheated:cooling",
   "input_fluid": {
     "fluid": "coverheated:nitrogen",
+    "type": "neoforge:single",
     "amount": 1
   },
   "heat": 20,

@@ -12,7 +12,7 @@
   ],
   "outputs": [
     {
-      "item": "coverheated:redstonite_crystal",
+      "id": "coverheated:redstonite_crystal",
       "count": 1
     }
   ],

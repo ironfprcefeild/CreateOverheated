@@ -9,27 +9,27 @@
   "results": [
     {
       "chance": 0.50,
-      "item": "create:ochrum"
+      "id": "create:ochrum"
     },
     {
       "chance": 0.75,
-      "item": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
     {
       "chance": 0.75,
-      "item": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
     {
       "chance": 0.75,
-      "item": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
     {
       "chance": 0.15,
-      "item": "create:asurine"
+      "id": "create:asurine"
     },
     {
       "chance": 0.15,
-      "item": "create:crimsite"
+      "id": "create:crimsite"
     }
   ]
 }

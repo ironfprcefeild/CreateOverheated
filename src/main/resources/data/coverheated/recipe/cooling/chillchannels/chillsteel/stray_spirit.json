@@ -11,6 +11,7 @@
       "item": "minecraft:snow_block"
     },
     {
+      "type": "neoforge:single",
       "fluid": "create:honey",
       "amount": 250
     }
@@ -18,7 +19,7 @@
   "results": [
     {
       "amount": 500,
-      "fluid": "coverheated:stray_spirit"
+      "id": "coverheated:stray_spirit"
     }
   ]
 }

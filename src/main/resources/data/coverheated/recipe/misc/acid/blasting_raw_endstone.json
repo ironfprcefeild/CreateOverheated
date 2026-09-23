@@ -5,5 +5,8 @@
   "ingredient": {
     "item": "coverheated:raw_endstone"
   },
-  "result": "minecraft:end_stone"
+  "result": {
+    "id": "minecraft:end_stone",
+    "count": 1
+  }
 }

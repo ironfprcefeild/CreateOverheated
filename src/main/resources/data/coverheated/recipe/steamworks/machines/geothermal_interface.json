@@ -18,6 +18,6 @@
     "p p"
   ],
   "result": {
-    "item": "coverheated:geothermal_interface"
+    "id": "coverheated:geothermal_interface"
   }
 }

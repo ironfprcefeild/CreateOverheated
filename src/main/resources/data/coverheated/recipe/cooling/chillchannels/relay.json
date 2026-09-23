@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "coverheated:chill_channel_relay",
+    "id": "coverheated:chill_channel_relay",
     "count": 8
   }
 }

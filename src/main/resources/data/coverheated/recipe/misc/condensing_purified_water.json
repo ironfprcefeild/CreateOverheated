@@ -5,7 +5,7 @@
     "amount": 1
   },
   "output": {
-    "fluid": "coverheated:distilled_water",
+    "id": "coverheated:distilled_water",
     "amount": 1
   },
   "minTemp": 0,

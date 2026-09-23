@@ -10,11 +10,11 @@
   ],
   "results": [
     {
-      "item": "coverheated:empty_sand_cast",
+      "id": "coverheated:empty_sand_cast",
       "count": 4
     },
     {
-      "item": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     }
   ]
 }

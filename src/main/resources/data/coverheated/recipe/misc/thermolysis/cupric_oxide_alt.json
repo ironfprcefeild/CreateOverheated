@@ -6,16 +6,17 @@
       "item": "coverheated:copper_chloride"
     },
     {
+      "type": "neoforge:single",
       "fluid": "coverheated:purified_water",
       "amount": 120
     }
   ],
   "results": [
     {
-      "item": "coverheated:cupric_oxide"
+      "id": "coverheated:cupric_oxide"
     },
     {
-      "item": "coverheated:chlorine_crystal"
+      "id": "coverheated:chlorine_crystal"
     }
   ]
 }

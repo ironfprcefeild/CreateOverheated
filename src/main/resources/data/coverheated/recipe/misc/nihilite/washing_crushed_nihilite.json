@@ -8,11 +8,11 @@
   "results": [
     {
       "count": 9,
-      "item": "coverheated:nihilite_nugget"
+      "id": "coverheated:nihilite_nugget"
     },
     {
       "chance": 0.25,
-      "item": "minecraft:lapis_lazuli"
+      "id": "minecraft:lapis_lazuli"
     }
   ]
 }

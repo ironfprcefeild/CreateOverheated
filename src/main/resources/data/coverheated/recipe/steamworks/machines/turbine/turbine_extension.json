@@ -18,7 +18,7 @@
     "pcp"
   ],
   "result": {
-    "item": "coverheated:turbine_extension",
+    "id": "coverheated:turbine_extension",
     "count": 6
   }
 }

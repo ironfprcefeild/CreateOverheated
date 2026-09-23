@@ -8,7 +8,7 @@
   ],
   "outputs": [
     {
-      "item": "coverheated:nether_geothermium_chunk",
+      "id": "coverheated:nether_geothermium_chunk",
       "count": 1
     }
   ],

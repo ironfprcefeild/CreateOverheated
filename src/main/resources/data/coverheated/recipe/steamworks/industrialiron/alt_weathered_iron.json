@@ -4,7 +4,7 @@
     {
       "amount": 50,
       "fluid": "coverheated:heated_air",
-      "nbt": {}
+      "type": "neoforge:single"
     },
     {
       "item": "create:iron_sheet"
@@ -12,7 +12,7 @@
   ],
   "results": [
     {
-      "item": "create:weathered_iron_block",
+      "id": "create:weathered_iron_block",
       "count": 4
     }
   ]

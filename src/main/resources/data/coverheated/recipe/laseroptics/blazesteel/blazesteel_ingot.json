@@ -7,12 +7,12 @@
     {
       "amount": 250,
       "fluid": "coverheated:blaze_nectar",
-      "nbt": {}
+      "type": "neoforge:single"
     }
   ],
   "results": [
     {
-      "item": "coverheated:blazesteel_ingot"
+      "id": "coverheated:blazesteel_ingot"
     }
   ]
 }

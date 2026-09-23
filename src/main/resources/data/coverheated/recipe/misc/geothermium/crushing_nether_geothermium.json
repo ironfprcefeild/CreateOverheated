@@ -11,15 +11,15 @@
     {
 
       "chance": 0.75,
-      "item": "minecraft:basalt"
+      "id": "minecraft:basalt"
     },
     {
       "chance": 0.75,
-      "item": "minecraft:nether_gold_ore"
+      "id": "minecraft:nether_gold_ore"
     },
     {
       "chance": 0.75,
-      "item": "coverheated:nether_geothermium_powders"
+      "id": "coverheated:nether_geothermium_powders"
     }
   ]
 }

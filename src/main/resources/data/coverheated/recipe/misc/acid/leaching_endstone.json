@@ -7,12 +7,12 @@
     {
       "amount": 100,
       "fluid": "coverheated:akrycitic_acid",
-      "nbt": {}
+      "type": "neoforge:single"
     }
   ],
   "results": [
     {
-      "item": "coverheated:leached_endstone"
+      "id": "coverheated:leached_endstone"
     }
   ]
 }

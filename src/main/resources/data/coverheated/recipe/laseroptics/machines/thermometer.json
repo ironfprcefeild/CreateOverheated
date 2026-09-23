@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "coverheated:thermometer",
+    "id": "coverheated:thermometer",
     "count": 1
   }
 }

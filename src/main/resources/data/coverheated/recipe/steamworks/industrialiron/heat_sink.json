@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "coverheated:heat_sink",
+    "id": "coverheated:heat_sink",
     "count": 4
   }
 }

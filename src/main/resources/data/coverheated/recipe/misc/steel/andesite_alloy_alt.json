@@ -13,11 +13,11 @@
   ],
   "results": [
     {
-      "item": "create:andesite_alloy",
+      "id": "create:andesite_alloy",
       "count": 6
     },
     {
-      "item": "create:andesite_alloy",
+      "id": "create:andesite_alloy",
       "count": 3,
       "chance": 0.1
     }

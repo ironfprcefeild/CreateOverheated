@@ -5,7 +5,8 @@
   "ingredients": [
     {
       "amount": 50,
-      "fluid": "coverheated:steam_mid"
+      "fluid": "coverheated:steam_mid",
+      "type": "neoforge:single"
     },
     {
       "item": "minecraft:beef"
@@ -13,7 +14,7 @@
   ],
   "results": [
     {
-      "item": "coverheated:steamed_ham"
+      "id": "coverheated:steamed_ham"
     }
   ]
 }

@@ -1,6 +1,7 @@
 {
   "type": "coverheated:cooling",
   "input_fluid": {
+    "type": "neoforge:single",
     "fluid": "coverheated:sludge",
     "amount": 1
   },

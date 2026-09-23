@@ -7,7 +7,7 @@
   "loops": 1,
   "results": [
     {
-      "item": "coverheated:laser_casing"
+      "id": "coverheated:laser_casing"
     }
   ],
   "sequence": [
@@ -23,7 +23,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_laser_casing"
+          "id": "coverheated:incomplete_laser_casing"
         }
       ]
     },
@@ -39,7 +39,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_laser_casing"
+          "id": "coverheated:incomplete_laser_casing"
         }
       ]
     },
@@ -55,7 +55,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_laser_casing"
+          "id": "coverheated:incomplete_laser_casing"
         }
       ]
     },
@@ -68,12 +68,12 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_laser_casing"
+          "id": "coverheated:incomplete_laser_casing"
         }
       ]
     }
   ],
   "transitionalItem": {
-    "item": "coverheated:incomplete_laser_casing"
+    "id": "coverheated:incomplete_laser_casing"
   }
 }

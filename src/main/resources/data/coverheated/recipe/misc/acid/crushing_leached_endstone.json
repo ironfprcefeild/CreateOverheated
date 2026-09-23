@@ -9,17 +9,17 @@
   "results": [
     {
       "chance": 1,
-      "item": "coverheated:ender_flour",
+      "id": "coverheated:ender_flour",
       "count": 4
     },
     {
       "chance": 0.2,
-      "item": "coverheated:ender_flour",
+      "id": "coverheated:ender_flour",
       "count": 1
     },
     {
       "chance": 0.1,
-      "item": "coverheated:ender_flour",
+      "id": "coverheated:ender_flour",
       "count": 1
     }
 

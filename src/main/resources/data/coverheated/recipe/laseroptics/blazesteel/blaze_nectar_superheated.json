@@ -6,9 +6,11 @@
       "item": "minecraft:honey_bottle"
     },
     {
+
       "item": "minecraft:blaze_powder"
     },
     {
+      "type": "neoforge:single",
       "fluid": "minecraft:lava",
       "amount": 200
     }
@@ -16,7 +18,7 @@
   "results": [
     {
       "amount": 200,
-      "fluid": "coverheated:blaze_nectar"
+      "id": "coverheated:blaze_nectar"
     }
   ]
 }

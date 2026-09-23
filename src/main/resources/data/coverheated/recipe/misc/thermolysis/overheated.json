@@ -3,17 +3,18 @@
   "heatRequirement": "superheated",
   "ingredients": [
     {
+      "type": "neoforge:single",
       "fluid": "coverheated:overheated_steam_low",
       "amount": 1000
     }
   ],
   "results": [
     {
-      "fluid": "coverheated:oxygen",
+      "id": "coverheated:oxygen",
       "amount": 200
     },
     {
-      "fluid": "coverheated:hydrogen",
+      "id": "coverheated:hydrogen",
       "amount": 400
     }
   ]

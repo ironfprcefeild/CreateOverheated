@@ -8,11 +8,11 @@
   ],
   "results": [
     {
-      "fluid": "coverheated:oxygen",
+      "id": "coverheated:oxygen",
       "amount": 40
     },
     {
-      "item": "create:copper_nugget",
+      "id": "create:copper_nugget",
       "count": 4
     }
   ]

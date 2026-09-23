@@ -10,31 +10,31 @@
   "results": [
     {
       "chance": 0.75,
-      "item": "minecraft:basalt"
+      "id": "minecraft:basalt"
     },
     {
       "chance": 0.75,
-      "item": "minecraft:nether_gold_ore"
+      "id": "minecraft:nether_gold_ore"
     },
     {
       "chance": 0.25,
-      "item": "create:crimsite"
+      "id": "create:crimsite"
     },
     {
       "chance": 0.25,
-      "item": "create:scoria"
+      "id": "create:scoria"
     },
     {
       "chance": 0.10,
-      "item": "minecraft:blaze_rod"
+      "id": "minecraft:blaze_rod"
     },
     {
       "chance": 0.10,
-      "item": "minecraft:blaze_rod"
+      "id": "minecraft:blaze_rod"
     },
     {
       "chance": 0.10,
-      "item": "coverheated:geothermium_powders"
+      "id": "coverheated:geothermium_powders"
     }
   ]
 }

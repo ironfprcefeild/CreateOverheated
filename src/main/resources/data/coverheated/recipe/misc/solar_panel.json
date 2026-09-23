@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "coverheated:solar_panel",
+    "id": "coverheated:solar_panel",
     "count": 4
   }
 }

@@ -24,6 +24,6 @@
     "ccc"
   ],
   "result": {
-    "item": "coverheated:pressure_heater"
+    "id": "coverheated:pressure_heater"
   }
 }

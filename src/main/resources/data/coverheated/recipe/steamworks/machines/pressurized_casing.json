@@ -6,7 +6,7 @@
   "loops": 1,
   "results": [
     {
-      "item": "coverheated:pressurized_casing"
+      "id": "coverheated:pressurized_casing"
     }
   ],
   "sequence": [
@@ -19,12 +19,12 @@
         {
           "amount": 500,
           "fluid": "coverheated:purified_water",
-          "nbt": {}
+          "type": "neoforge:single"
         }
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     },
@@ -40,7 +40,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     },
@@ -56,7 +56,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     },
@@ -72,7 +72,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     },
@@ -88,7 +88,7 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     },
@@ -101,12 +101,12 @@
       ],
       "results": [
         {
-          "item": "coverheated:incomplete_pressurized_casing"
+          "id": "coverheated:incomplete_pressurized_casing"
         }
       ]
     }
   ],
   "transitionalItem": {
-    "item": "coverheated:incomplete_pressurized_casing"
+    "id": "coverheated:incomplete_pressurized_casing"
   }
 }

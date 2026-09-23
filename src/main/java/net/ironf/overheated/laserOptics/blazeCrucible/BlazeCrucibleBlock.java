@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 public class BlazeCrucibleBlock extends Block implements IBE<BlazeCrucibleBlockEntity> {
     //Alot of this code is ripped straight from the blaze burner because of how the heat level system is setup (poorly to be honest)
 
+    /// TODO fix render crash
+    /// TODO rename channel relay properly
     public static final EnumProperty<BlazeBurnerBlock.HeatLevel> HEAT_LEVEL = EnumProperty.create("blaze", BlazeBurnerBlock.HeatLevel.class);
 
     @Override
@@ -52,6 +54,8 @@ public class BlazeCrucibleBlock extends Block implements IBE<BlazeCrucibleBlockE
 
     public BlazeCrucibleBlock(Properties p_49795_) {
         super(p_49795_);
+        registerDefaultState(defaultBlockState().setValue(HEAT_LEVEL, BlazeBurnerBlock.HeatLevel.SMOULDERING));
+
     }
 
     @Override

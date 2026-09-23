@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "coverheated:channel_core",
+    "id": "coverheated:channel_core",
     "count": 1
   }
 }

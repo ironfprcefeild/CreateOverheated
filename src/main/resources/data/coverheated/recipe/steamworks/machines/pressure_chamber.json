@@ -32,6 +32,6 @@
   ],
   "result": {
     "count": 1,
-    "item": "coverheated:pressure_chamber_core"
+    "id": "coverheated:pressure_chamber_core"
   }
 }

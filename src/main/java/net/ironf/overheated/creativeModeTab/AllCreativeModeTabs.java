@@ -36,14 +36,104 @@ import java.util.function.Predicate;
 
 public class AllCreativeModeTabs {
 
+
+    /// TODO remove log messages
+    public static void register(IEventBus modEventBus) {
+        REGISTER.register(modEventBus);
+    }
+
+
     private static final DeferredRegister<CreativeModeTab> REGISTER =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Overheated.MODID);
+
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OVERHEATED_TAB = REGISTER.register("overheatedtab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(AllBlocks.DIODE::asStack)
+                    .icon(AllBlocks.STEAM_VENT::asStack)
+                    .displayItems((parameters, output) -> {
+                        output.acceptAll(collectItems());
+                        output.acceptAll(collectBlocks());
+                    })
+                    .build());
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OVERHEATED_STEAM_BUCKETS_TAB = REGISTER.register("steambuckettab",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.overheated.steam_bucket_tab"))
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+                    .icon(() -> new ItemStack(AllSteamFluids.STEAM_INSANE.BUCKET.get(),1))
+                    .displayItems(((itemDisplayParameters, output) -> {
+                        output.acceptAll(collectBucketItems());
+                    }))
+                    .build());
+
+
+    public static List<ItemStack> collectBlocks() {
+        Overheated.LOGGER.info("CO: Collecting Blocks");
+
+        List<ItemStack> items = new ReferenceArrayList<>();
+        for (RegistryEntry<Block, ? extends Block> entry : Overheated.REGISTRATE.getAll(Registries.BLOCK)) {
+            Item item = entry.get()
+                    .asItem();
+            if (item == Items.AIR  || OVERHEATED_TAB.get().contains(item.getDefaultInstance()))
+                continue;
+            Overheated.LOGGER.info("Adding to tab:"  + item);
+            items.add(item.getDefaultInstance());
+        }
+        for (DeferredHolder<Item, ? extends Item> entry : OverheatedRegistrate.items_for_tab){
+            Item item = entry.get();
+            if (!(item instanceof BlockItem)  || OVERHEATED_TAB.get().contains(item.getDefaultInstance()))
+                continue;
+            Overheated.LOGGER.info("Adding to tab:"  + item);
+            items.add(item.getDefaultInstance());
+        }
+        return items;
+    }
+
+    public static List<ItemStack> collectItems() {
+        Overheated.LOGGER.info("CO: Collecting Items");
+
+        List<ItemStack> items = new ReferenceArrayList<>();
+        for (RegistryEntry<Item, ? extends Item> entry : Overheated.REGISTRATE.getAll(Registries.ITEM)) {
+            Item item = entry.get();
+            if (item instanceof BlockItem || OVERHEATED_TAB.get().contains(item.getDefaultInstance()))
+                continue;
+            Overheated.LOGGER.info("Adding to tab:"  + item);
+            items.add(item.getDefaultInstance());
+
+        }
+        for (DeferredHolder<Item, ? extends Item> entry : OverheatedRegistrate.items_for_tab){
+            Item item = entry.get();
+            if (item instanceof BlockItem || OVERHEATED_TAB.get().contains(item.getDefaultInstance()))
+                continue;
+            Overheated.LOGGER.info("Adding to tab:"  + item);
+
+
+            items.add(item.getDefaultInstance());
+
+        }
+        return items;
+    }
+
+
+    public static List<ItemStack> collectBucketItems() {
+        Overheated.LOGGER.info("CO: Collecting Buckets");
+        List<ItemStack> items = new ReferenceArrayList<>();
+        for (DeferredHolder<Item, ? extends Item> entry : OverheatedRegistrate.allSteamBuckets){
+            Item item = entry.get();
+            if (item instanceof BlockItem)
+                continue;
+            items.add(item.getDefaultInstance());
+        }
+        return items;
+    }
+
+    /*
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OVERHEATED_TAB = REGISTER.register("overheatedtab",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.overheated.base"))
+                    .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+                    .icon(AllBlocks.STEAM_VENT::asStack)
                     .displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.OVERHEATED_TAB,OverheatedRegistrate.items_for_tab))
                     .build());
 
@@ -56,10 +146,6 @@ public class AllCreativeModeTabs {
                     .build());
 
 
-    @ApiStatus.Internal
-    public static void register(IEventBus modEventBus) {
-        //REGISTER.register(modEventBus);
-    }
 
 
 
@@ -229,37 +315,7 @@ public class AllCreativeModeTabs {
             outputAll(output, items, stackFunc, visibilityFunc);
         }
 
-        private List<Item> collectBlocks(List<Item> existing,Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Block, ? extends Block> entry : Overheated.REGISTRATE.getAll(Registries.BLOCK)) {
-                if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
-                    continue;
-                Item item = entry.get()
-                        .asItem();
-                if (item == Items.AIR || existing.contains(item))
-                    continue;
-                if (!exclusionPredicate.test(item))
-                    items.add(item);
-            }
-            items = new ReferenceArrayList<>(new ReferenceLinkedOpenHashSet<>(items));
-            return items;
-        }
 
-        private List<Item> collectItems(List<Item> existing, Predicate<Item> exclusionPredicate) {
-            List<Item> items = new ReferenceArrayList<>();
-            for (RegistryEntry<Item, ? extends Item> entry : Overheated.REGISTRATE.getAll(Registries.ITEM)) {
-                if (!OverheatedRegistrate.isInCreativeTab(entry, tabFilter))
-                    continue;
-                Item item = entry.get();
-                if (item instanceof BlockItem || existing.contains(item))
-                    continue;
-                if (!exclusionPredicate.test(item))
-                    items.add(item);
-            }
-
-
-            return items;
-        }
 
         private static void applyOrderings(List<Item> items, List<RegistrateDisplayItemsGenerator.ItemOrdering> orderings) {
             for (RegistrateDisplayItemsGenerator.ItemOrdering ordering : orderings) {
@@ -303,4 +359,6 @@ public class AllCreativeModeTabs {
             }
         }
     }
+
+     */
 }

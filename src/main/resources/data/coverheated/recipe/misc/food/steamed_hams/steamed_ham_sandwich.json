@@ -14,7 +14,7 @@
         }
     },
     "result": {
-        "item": "coverheated:steamed_ham_sandwich",
+        "id": "coverheated:steamed_ham_sandwich",
         "count": 1
     }
 }

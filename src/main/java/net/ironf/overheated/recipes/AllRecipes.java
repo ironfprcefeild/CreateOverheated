@@ -31,7 +31,7 @@ public class AllRecipes {
 
     /// Entries
     public static final RecipeRegistration<CoolantRecipe> COOLANT = new RecipeRegistration<>(
-            "coolant", CoolantRecipe.CoolantRecipeSerializer.CODEC, CoolantRecipe.CoolantRecipeSerializer.STREAM_CODEC);
+            "cooling", CoolantRecipe.CoolantRecipeSerializer.CODEC, CoolantRecipe.CoolantRecipeSerializer.STREAM_CODEC);
     public static final RecipeRegistration<PressureChamberRecipe> PRESSURE_CHAMBER = new RecipeRegistration<>(
             "pressure_chamber", PressureChamberRecipe.PressureChamberRecipeSerializer.CODEC, PressureChamberRecipe.PressureChamberRecipeSerializer.STREAM_CODEC);
     public static final RecipeRegistration<CombustionRecipe> COMBUSTION = new RecipeRegistration<>(

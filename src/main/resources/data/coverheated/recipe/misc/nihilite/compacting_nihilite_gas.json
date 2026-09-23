@@ -4,16 +4,16 @@
     {
       "amount": 1000,
       "fluid": "coverheated:nihilite_gas",
-      "nbt": {}
+      "type": "neoforge:single"
     }
   ],
   "results": [
     {
-      "item": "coverheated:nihilite_globule"
+      "id": "coverheated:nihilite_globule"
     },
     {
       "amount": 50,
-      "fluid": "coverheated:ammonia"
+      "id": "coverheated:ammonia"
     }
   ]
 }

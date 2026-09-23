@@ -7,12 +7,12 @@
     {
       "amount": 250,
       "fluid": "coverheated:stray_spirit",
-      "nbt": {}
+      "type": "neoforge:single"
     }
   ],
   "results": [
     {
-      "item": "coverheated:chillsteel_ingot"
+      "id": "coverheated:chillsteel_ingot"
     }
   ]
 }

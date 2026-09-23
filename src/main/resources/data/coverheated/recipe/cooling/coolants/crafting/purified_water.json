@@ -5,6 +5,7 @@
       "item": "coverheated:chlorine_crystal"
     },
     {
+      "type": "neoforge:single",
       "amount": 250,
       "fluid": "coverheated:distilled_water"
     }
@@ -16,7 +17,7 @@
     },
     {
       "amount": 250,
-      "fluid": "coverheated:purified_water"
+      "id": "coverheated:purified_water"
     }
   ]
 }

@@ -4,16 +4,18 @@
   "ingredients": [
     {
       "fluid": "coverheated:hydrogen",
-      "amount": 4
+      "amount": 4,
+      "type": "neoforge:single"
     },
     {
+      "type": "neoforge:single",
       "fluid": "coverheated:nitrogen",
       "amount": 1
     }
   ],
   "results": [
     {
-      "fluid": "coverheated:ammonia",
+      "id": "coverheated:ammonia",
       "amount": 5
     }
   ]
