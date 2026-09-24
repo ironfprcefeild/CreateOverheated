@@ -18,6 +18,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @Mod(value = Overheated.MODID, dist = Dist.CLIENT)
 public class OverheatedClient {
 
+    public OverheatedClient(IEventBus modEventBus){
+        onCtorClient(modEventBus);
+    }
+
     public static void onCtorClient(IEventBus modEventBus) {
         modEventBus.addListener(OverheatedClient::clientInit);
     }

@@ -1,6 +1,6 @@
 {
   "type": "coverheated:pressure_chamber",
-  "ingredients": [
+  "inputs": [
     {
       "item": "coverheated:nihilite_globule",
       "count": 2
@@ -15,5 +15,7 @@
   "heat_added": 32,
   "ticks_taken": 80,
   "pressure": 1,
-  "combustion": false
+  "combustion": false,
+  "heat_rating": 0,
+  "laser_heat": 0
 }

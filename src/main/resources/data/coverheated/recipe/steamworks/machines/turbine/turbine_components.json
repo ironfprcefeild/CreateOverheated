@@ -19,6 +19,7 @@
     " pcp ",
     "  c  "
   ],
+  "accept_mirrored": "true",
   "result": {
     "count": 2,
     "id": "coverheated:turbine_components"

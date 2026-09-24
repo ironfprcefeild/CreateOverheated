@@ -1,6 +1,6 @@
 {
   "type": "coverheated:pressure_chamber",
-  "ingredients": [
+  "inputs": [
     {
       "item": "create:zinc_ingot",
       "count": 4
@@ -20,5 +20,6 @@
   "ticks_taken": 200,
   "pressure": 3,
   "laser_heat": 4,
+  "heat_rating": 0,
   "combustion": false
 }

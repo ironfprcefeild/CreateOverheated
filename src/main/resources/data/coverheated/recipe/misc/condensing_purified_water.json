@@ -9,5 +9,7 @@
     "amount": 1
   },
   "minTemp": 0,
-  "addTemp": 4
+  "addTemp": 4,
+  "overHeat": 0.0,
+  "superHeat": 0.0
 }

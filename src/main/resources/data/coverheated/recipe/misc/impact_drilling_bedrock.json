@@ -4,10 +4,12 @@
       "item": "minecraft:bedrock"
     },
   "output": {
-    "id": "coverheated:water_vapor",
+    "id": "coverheated:ammonia",
     "amount": 1
   },
   "minimum_torque": 50,
   "torque_impact": 10,
-  "destroy_chance": 0.01
+  "destroy_chance": 0.01,
+  "min_pressure": 3,
+  "heat": 12
 }

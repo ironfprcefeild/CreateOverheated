@@ -24,7 +24,7 @@ public class CondensingRecipeHandler implements ResourceManagerReloadListener {
         if (level == null){
             return;
         }
-        Overheated.LOGGER.info("SO: Generating Condensing Handler");
+        Overheated.LOGGER.info("CO: Generating Condensing Handler");
         condensingHandler.clear();
         List<RecipeHolder<CondenserRecipe>> recipeList = createRecipeCollection();
         for (RecipeHolder<CondenserRecipe> R : recipeList){

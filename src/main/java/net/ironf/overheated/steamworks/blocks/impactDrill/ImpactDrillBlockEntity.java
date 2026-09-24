@@ -44,6 +44,8 @@ public class ImpactDrillBlockEntity extends LaserMachineBlockEntity implements I
         return 600;
     }
 
+
+
     //Doing stuff
     float headPosition = 0;
         //0 = Fully Retracted, 1 = Fully Extended

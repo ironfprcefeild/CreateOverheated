@@ -28,11 +28,12 @@ public class CoolingHandler implements ResourceManagerReloadListener {
         if (level == null){
             return;
         }
-        Overheated.LOGGER.info("SO: Generating Coolant Recipe Helper");
+        Overheated.LOGGER.info("CO: Generating Coolant Recipe Helper");
         heatHandler.clear();
         List<RecipeHolder<CoolantRecipe>> recipeList = createRecipeCollection();
         for (RecipeHolder<CoolantRecipe> r : recipeList){
             for (FluidStack f : r.value().getInputFluid().getStacks()){
+                Overheated.LOGGER.info("CO: Adding: " + f.getFluid() + " H: " + r.value().getHeat() + " Eff: " + r.value().getEfficiency() + " MT: " + r.value().getMinTemp());
                 heatHandler.put(f.getFluid(),r.value().getHeat());
                 efficiencyHandler.put(f.getFluid(),r.value().getEfficiency());
                 minTempHandler.put(f.getFluid(),-Math.abs(r.value().getMinTemp()));

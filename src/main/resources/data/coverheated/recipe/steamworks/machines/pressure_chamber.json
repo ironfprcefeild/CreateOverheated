@@ -30,6 +30,7 @@
     "hctch",
     "ncccn"
   ],
+  "accept_mirrored": "true",
   "result": {
     "count": 1,
     "id": "coverheated:pressure_chamber_core"

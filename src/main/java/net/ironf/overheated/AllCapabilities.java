@@ -22,7 +22,7 @@ public class AllCapabilities {
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event){
-        Overheated.LOGGER.info("O: Registering Capabilities on all Block Entities");
+        Overheated.LOGGER.info("CO: Registering Capabilities on all Block Entities");
         //? extends CapableMachineBlockEntity
         steamVentBlockEntity.registerCapabilities(event,STEAM_VENT,true,false);
         CoolerBlockEntity.registerCapabilities(event,COOLER,true,false);

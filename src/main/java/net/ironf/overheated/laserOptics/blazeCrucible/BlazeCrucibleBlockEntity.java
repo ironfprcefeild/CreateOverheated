@@ -121,7 +121,7 @@ public class BlazeCrucibleBlockEntity extends MachineBlockEntity {
     }
 
     public static void addToBoilerHeaters(){
-        Overheated.LOGGER.info("O: Adding the Blaze Crucible to Boiler Heaters");
+        Overheated.LOGGER.info("CO: Adding the Blaze Crucible to Boiler Heaters");
         BoilerHeater.REGISTRY.register(AllBlocks.BLAZE_CRUCIBLE.get(), (level, pos, state) -> {
             try {
                 BlazeCrucibleBlockEntity crucible = ((BlazeCrucibleBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos)));
@@ -135,7 +135,7 @@ public class BlazeCrucibleBlockEntity extends MachineBlockEntity {
                 return -1;
             }
         });
-        Overheated.LOGGER.info("O: Adding Laser Casing to Boiler Heaters");
+        Overheated.LOGGER.info("CO: Adding Laser Casing to Boiler Heaters");
         BoilerHeater.REGISTRY.register(AllBlocks.LASER_CASING.get(), (level, pos, state) -> BoilerHeater.findHeat(level,pos.below(),level.getBlockState(pos.below())));
     }
 

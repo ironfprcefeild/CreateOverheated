@@ -3,6 +3,9 @@
   "ingredient": {
     "item": "create:copper_casing"
   },
+  "transitionalItem": {
+    "id": "coverheated:incomplete_pressurized_casing"
+  },
   "loops": 1,
   "results": [
     {

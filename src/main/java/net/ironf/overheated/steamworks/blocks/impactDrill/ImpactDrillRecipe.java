@@ -77,7 +77,7 @@ public class ImpactDrillRecipe implements Recipe<SimpleItemInput> {
                 FLOAT.fieldOf("minimum_torque").forGetter(ImpactDrillRecipe::getTorqueNeeded),
                 FLOAT.fieldOf("torque_impact").forGetter(ImpactDrillRecipe::getTorqueImpact),
                 FLOAT.fieldOf("heat").forGetter(ImpactDrillRecipe::getHeatNeeded),
-                INT.fieldOf("minPressure").forGetter(ImpactDrillRecipe::getMinPressure),
+                INT.fieldOf("min_pressure").forGetter(ImpactDrillRecipe::getMinPressure),
                 FluidStack.CODEC.fieldOf("output").forGetter(ImpactDrillRecipe::getOutput),
                 Ingredient.CODEC.fieldOf("input").forGetter(ImpactDrillRecipe::getInput),
                 FLOAT.fieldOf("destroy_chance").forGetter(ImpactDrillRecipe::getDestructionChance)

@@ -1,10 +1,12 @@
 package net.ironf.overheated.utility.machines;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.SmartInventory;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+import net.ironf.overheated.Overheated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -23,23 +25,35 @@ import java.util.List;
 public abstract class CapableMachineBlockEntity extends MachineBlockEntity implements IHaveGoggleInformation {
     public CapableMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-
+        Overheated.LOGGER.info("CO: A capable machine has been instantiated");
         if (getFluidCapacity() > 0) {
-            for (int i = 0; i < getInventoryCount(); i++) {
-                tanks.set(i,createInventory());
-                fluidCapabilities.set(i,tanks.get(i));
+            Overheated.LOGGER.info("    It has fluids: " + getFluidTankCount());
+            tanks = new ArrayList<SmartFluidTank>(getFluidTankCount());
+            fluidCapabilities = new ArrayList<IFluidHandler>(getFluidTankCount());
+            for (int i = 0; i < getFluidTankCount(); i++) {
+                tanks.add(createInventory());
+                fluidCapabilities.add(tanks.get(i));
             }
         }
 
         if (getItemStackCapacity() > 0){
+            Overheated.LOGGER.info("    It has items");
+            inventories = new ArrayList<SmartInventory>(getInventoryCount());
             for (int i = 0; i < getInventoryCount(); i++) {
-                inventories.set(i, new SmartInventory(1, this)
+                inventories.add(new SmartInventory(1, this)
                         .whenContentsChanged(k -> this.onItemContentsChanged()));
             }
         }
 
     }
+
+
     /// Capabilities
+    /// Call this method on the register capabilities event.
+    ///     Event - The event item passed
+    ///     me - The Block entity entry for which capabilities are to be registered
+    ///     fluids - if this has fluids
+    ///     items -  if this has items
     public static void registerCapabilities(RegisterCapabilitiesEvent event, BlockEntityEntry<? extends CapableMachineBlockEntity> me, boolean fluids, boolean items) {
         if (fluids) {
             event.registerBlockEntity(
@@ -55,7 +69,7 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
         }
     }
     /// Mapping
-    //This should be overridden for blocks with sided inputs.
+    //Override these methods for blocks with sided inputs, the returned integer references the tank or inventory in that position of the list
     public int itemOrdinalForSide(Direction side){
         return 0;
     }
@@ -64,9 +78,11 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
     }
 
     /// Fluids
+    //How much each tank on this BE holds
     public int getFluidCapacity(){
         return 0;
     }
+    //How many tanks are in this BE, each tank holds 1 fluid. Defaults to 1 for BEs with a fluid capacity
     public int getFluidTankCount(){
         return getFluidCapacity() > 0 ? 1 : 0;
     }
@@ -74,6 +90,7 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
     protected ArrayList<IFluidHandler> fluidCapabilities;
     public ArrayList<SmartFluidTank> tanks;
 
+    //Get the tank in the list at position i or direction
     public SmartFluidTank getTank(int i){
         return i == -1 ? null : tanks.get(i);
     }

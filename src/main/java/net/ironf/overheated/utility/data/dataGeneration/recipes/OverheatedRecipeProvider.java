@@ -69,7 +69,6 @@ public class OverheatedRecipeProvider extends RecipeProvider {
             int h = 0;
             //loop over heat levels
             for (Fluid steam : AllSteamFluids.Steams[p]){
-                Overheated.LOGGER.info("CO: Trying to make condensing recipe: h = " + h + " p = " + p);
                 if (h == 0 && p == 0){
                     h++;
                     continue;

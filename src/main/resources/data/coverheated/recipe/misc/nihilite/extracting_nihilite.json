@@ -2,12 +2,15 @@
   "type": "coverheated:impact_drilling",
   "input": {
       "item": "coverheated:nihilite_deposit"
-    },
+  },
   "output": {
     "type": "neoforge:single",
-    "fluid": "coverheated:nihilite_gas",
+    "id": "coverheated:nihilite_gas",
     "amount": 1
   },
-  "minimum_torque": 35,
-  "torque_impact": 22
+  "minimum_torque": 32,
+  "torque_impact": 22,
+  "destroy_chance": 0,
+  "min_pressure": 1,
+  "heat": 0
 }

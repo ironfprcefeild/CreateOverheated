@@ -42,7 +42,6 @@ public class Overheated
 
     public Overheated(IEventBus modEventBus, ModContainer container)
     {
-        Overheated.LOGGER.info("Overheated Class Method Accessed");
 
         //Events
         NeoForge.EVENT_BUS.register(this);
@@ -70,7 +69,7 @@ public class Overheated
     {
         LOGGER.info("...OVERHEATING...");
         LOGGER.info("Thank you for choosing Create: Overheated!");
-        LOGGER.info("\"O\" indicates a log message from Overheated");
+        LOGGER.info("\"CO\" indicates a log message from Overheated");
         event.enqueueWork(() -> {
             GasMapper.prepareGasBlockInfo();
             AllSteamFluids.prepareSteamArray();
