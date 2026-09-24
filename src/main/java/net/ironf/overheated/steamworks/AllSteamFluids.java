@@ -7,7 +7,7 @@ import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -80,8 +80,8 @@ public class AllSteamFluids {
                         .shiftChance(4)
                         .tickDelays(2,8)
                         .defaultFlow(Direction.UP)
-                        .explosionRisk(9 - (HeatRating))
                         .overrideTexturing("block/hot_air")
+                        .explosionRisk(0)
                         .passThroughPredicate(state -> state.isAir() || state.is(DISTILLED_WATER.FLUID_BLOCK.get()))
                         .register())
                 .Register(p -> p.supportsBoating(false).viscosity(0).density(-1));
@@ -128,7 +128,7 @@ public class AllSteamFluids {
     public static @NonnullType Fluid[] HotAirs;
 
     public static void prepareSteamArray() {
-        Overheated.LOGGER.info("O: Preparing Steam Utility Array");
+        Overheated.LOGGER.info("CO: Preparing Steam Utility Array");
         Steams = new Fluid[][]{
                 {DISTILLED_WATER.SOURCE.get(), HEATED_STEAM_SUPERLOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_SUPERLOW.SOURCE.get().getSource(), OVERHEATED_STEAM_SUPERLOW.SOURCE.get().getSource()},
                 {STEAM_LOW.SOURCE.get().getSource(), HEATED_STEAM_LOW.SOURCE.get().getSource(), SUPERHEATED_STEAM_LOW.SOURCE.get().getSource(), OVERHEATED_STEAM_LOW.SOURCE.get().getSource()},
@@ -136,7 +136,7 @@ public class AllSteamFluids {
                 {STEAM_HIGH.SOURCE.get().getSource(), HEATED_STEAM_HIGH.SOURCE.get().getSource(), SUPERHEATED_STEAM_HIGH.SOURCE.get().getSource(), OVERHEATED_STEAM_HIGH.SOURCE.get().getSource()},
                 {STEAM_INSANE.SOURCE.get().getSource(), HEATED_STEAM_INSANE.SOURCE.get().getSource(), SUPERHEATED_STEAM_INSANE.SOURCE.get().getSource(), OVERHEATED_STEAM_INSANE.SOURCE.get().getSource()}
         };
-        Overheated.LOGGER.info("O: Preparing Hot Air Utility Array");
+        Overheated.LOGGER.info("CO: Preparing Hot Air Utility Array");
         HotAirs = new Fluid[]{
                 HEATED_HOT_AIR.SOURCE.get().getSource(),SUPERHEATED_HOT_AIR.SOURCE.get().getSource(),OVERHEATED_HOT_AIR.SOURCE.get().getSource()
         };
@@ -145,7 +145,7 @@ public class AllSteamFluids {
 
 
     public static void register(){
-        Overheated.LOGGER.info("O: Overheated is Registering Steams, Hot Airs, and Distilled Water");
+        Overheated.LOGGER.info("CO: Overheated is Registering Steams, Hot Airs, and Distilled Water");
     }
 
 

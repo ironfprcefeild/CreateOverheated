@@ -1,0 +1,79 @@
+
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "coverheated:reinforced_industrial_iron"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "id": "coverheated:laser_casing"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_laser_casing"
+        },
+        {
+          "item": "coverheated:blazesteel_ingot"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_laser_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_laser_casing"
+        },
+        {
+          "item": "create:sturdy_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_laser_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_laser_casing"
+        },
+        {
+          "item": "minecraft:glowstone_dust"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_laser_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_laser_casing"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_laser_casing"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "id": "coverheated:incomplete_laser_casing"
+  }
+}

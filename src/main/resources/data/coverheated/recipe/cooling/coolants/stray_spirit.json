@@ -1,0 +1,11 @@
+{
+  "type": "coverheated:cooling",
+  "input_fluid": {
+    "type": "neoforge:single",
+    "fluid": "coverheated:stray_spirit",
+    "amount": 1
+  },
+  "heat": 64,
+  "min_temp": 40,
+  "efficiency": 0.5
+}

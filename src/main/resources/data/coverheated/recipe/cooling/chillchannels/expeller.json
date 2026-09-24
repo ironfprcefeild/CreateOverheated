@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "idi",
+    "cac"
+  ],
+  "key": {
+    "c": {
+      "item": "coverheated:chill_channel"
+    },
+    "a": {
+      "item": "create:copper_casing"
+    },
+    "i": {
+      "item": "coverheated:chillsteel_ingot"
+    },
+    "d": {
+      "item": "coverheated:ice_diamond"
+    }
+  },
+  "result": {
+    "id": "coverheated:channel_expeller",
+    "count": 1
+  }
+}

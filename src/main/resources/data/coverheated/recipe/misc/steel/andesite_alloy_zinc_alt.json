@@ -1,0 +1,31 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "coverheated:steel_nugget"
+    },
+    {
+      "item": "create:zinc_nugget"
+    },
+    {
+      "item": "minecraft:andesite"
+    },
+    {
+      "item": "minecraft:andesite"
+    },
+    {
+      "item": "minecraft:andesite"
+    }
+  ],
+  "results": [
+    {
+      "id": "create:andesite_alloy",
+      "count": 12
+    },
+    {
+      "id": "create:andesite_alloy",
+      "count": 3,
+      "chance": 0.25
+    }
+  ]
+}

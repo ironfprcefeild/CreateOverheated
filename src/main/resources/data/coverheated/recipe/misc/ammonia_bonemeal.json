@@ -1,0 +1,20 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:oxygen",
+      "amount": 2
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:ammonia",
+      "amount": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:bone_meal"
+    }
+  ]
+}

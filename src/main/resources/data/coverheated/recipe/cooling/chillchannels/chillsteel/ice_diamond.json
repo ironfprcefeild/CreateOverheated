@@ -1,0 +1,25 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:blue_ice"
+    },
+    {
+      "item": "minecraft:blue_ice"
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:stray_sauce",
+      "amount": 1000
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:ice_diamond",
+      "count": 8
+    }
+  ]
+}

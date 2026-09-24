@@ -1,8 +1,6 @@
 package net.ironf.overheated.steamworks.blocks.turbine.turbineFan;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
@@ -13,12 +11,9 @@ import net.ironf.overheated.AllPartialModels;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.checkerframework.checker.units.qual.A;
 
 public class turbineFanRenderer extends SafeBlockEntityRenderer<turbineFanBlockEntity> {
     public turbineFanRenderer(BlockEntityRendererProvider.Context context) {}

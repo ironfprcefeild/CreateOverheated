@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:smoking",
-  "ingredient": {
-    "item": "create:weathered_iron_block"
-  },
-  "result": "create:industrial_iron_block",
-  "experience": 0,
-  "cookingtime": 100
-}

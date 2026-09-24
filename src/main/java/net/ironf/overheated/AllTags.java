@@ -1,6 +1,8 @@
 package net.ironf.overheated;
 
 import net.createmod.catnip.lang.Lang;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -10,8 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.IRegistryExtension;
 
 import java.util.Collections;
 
@@ -19,25 +20,9 @@ import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 
 public class AllTags {
-    //The majority of this boilerplate comes from create
-    public static <T> TagKey<T> optionalTag(IForgeRegistry<T> registry, ResourceLocation id) {
-        return registry.tags().createOptionalTagKey(id, Collections.emptySet());
-    }
 
-    public static <T> TagKey<T> forgeTag(IForgeRegistry<T> registry, String path) {
-        return optionalTag(registry, fromNamespaceAndPath("forge", path));
-    }
-
-    public static TagKey<Block> forgeBlockTag(String path) {
-        return forgeTag(ForgeRegistries.BLOCKS, path);
-    }
-
-    public static TagKey<Item> forgeItemTag(String path) {
-        return forgeTag(ForgeRegistries.ITEMS, path);
-    }
-
-    public static TagKey<Fluid> forgeFluidTag(String path) {
-        return forgeTag(ForgeRegistries.FLUIDS, path);
+    public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {
+        return TagKey.create(registry.key(), id);
     }
 
     public enum NameSpace {
@@ -65,10 +50,7 @@ public class AllTags {
         COOLING_TOWER_BORDER,
         DRILL_SCAFFOLD,
 
-        IBF_VALID,
-        IBF_SERVANT,
-        IBF_SERVANT_TOP,
-        IBF_SERVANT_BOTTOM
+        INSULATOR
         ;
         public final TagKey<Block> tag;
         public final boolean alwaysDatagen;
@@ -92,7 +74,7 @@ public class AllTags {
         AllBlockTags(NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
             ResourceLocation id = fromNamespaceAndPath(namespace.id, path == null ? Lang.asId(name()) : path);
             if (optional) {
-                tag = optionalTag(ForgeRegistries.BLOCKS, id);
+                tag = optionalTag(BuiltInRegistries.BLOCK, id);
             } else {
                 tag = BlockTags.create(id);
             }

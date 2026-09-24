@@ -10,11 +10,13 @@ import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
 import net.ironf.overheated.cooling.colants.CoolingRecipeCategory;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.List;
@@ -45,11 +47,15 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-        List<CoolantRecipe> recipesLaserCooling = rm.getAllRecipesFor(CoolantRecipe.Type.INSTANCE);
+        /*
+        List<RecipeHolder<CoolantRecipe>> recipesLaserCooling = rm.getAllRecipesFor(AllRecipes.COOLANT.TYPE.get());
         registration.addRecipes(COOLING_TYPE, recipesLaserCooling);
+
 
         List<CondenserRecipe> recipesCondensing = rm.getAllRecipesFor(CondenserRecipe.Type.INSTANCE);
         registration.addRecipes(CONDENSING_TYPE, recipesCondensing);
+
+         */
 
 
     }

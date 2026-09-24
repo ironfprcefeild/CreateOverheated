@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "coverheated:combustion_vent"
+    },
+    "n": {
+      "item": "create:nozzle"
+    },
+    "p": {
+      "item": "create:propeller"
+    }
+  },
+  "pattern": [
+    "n  ",
+    "c  ",
+    "p  "
+  ],
+  "result": {
+    "id": "coverheated:combustion_regulator"
+  }
+}

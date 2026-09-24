@@ -1,0 +1,21 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "inputs": [
+    {
+      "item": "coverheated:nihilite_globule",
+      "count": 2
+    }
+  ],
+  "outputs": [
+    {
+      "id": "coverheated:nihilistone",
+      "count": 16
+    }
+  ],
+  "heat_added": 32,
+  "ticks_taken": 80,
+  "pressure": 1,
+  "combustion": false,
+  "heat_rating": 0,
+  "laser_heat": 0
+}

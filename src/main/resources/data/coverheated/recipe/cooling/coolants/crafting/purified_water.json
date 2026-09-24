@@ -1,0 +1,23 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "coverheated:chlorine_crystal"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "coverheated:distilled_water"
+    }
+  ],
+  "results": [
+    {
+      "item": "coverheated:chlorine_crystal",
+      "chance": 0.25
+    },
+    {
+      "amount": 250,
+      "id": "coverheated:purified_water"
+    }
+  ]
+}

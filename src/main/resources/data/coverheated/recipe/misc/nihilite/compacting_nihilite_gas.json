@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "amount": 1000,
+      "fluid": "coverheated:nihilite_gas",
+      "type": "neoforge:single"
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:nihilite_globule"
+    },
+    {
+      "amount": 50,
+      "id": "coverheated:ammonia"
+    }
+  ]
+}

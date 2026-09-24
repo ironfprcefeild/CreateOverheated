@@ -1,0 +1,20 @@
+{
+  "type": "create:splashing",
+  "ingredients": [
+    {
+      "item": "coverheated:ender_flour"
+    }
+  ],
+  "processingTime": 100,
+  "results": [
+    {
+      "id": "coverheated:asurine_powders",
+      "count": 1
+    },
+    {
+      "chance": 0.25,
+      "id": "coverheated:asurine_powders",
+      "count": 1
+    }
+  ]
+}

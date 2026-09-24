@@ -1,0 +1,23 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "coverheated:copper_chloride"
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:distilled_water",
+      "amount": 120
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:cupric_oxide"
+    },
+    {
+      "id": "coverheated:chlorine_crystal",
+      "chance": 0.95
+    }
+  ]
+}

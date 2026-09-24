@@ -1,0 +1,27 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:leached_endstone"
+    }
+  ],
+  "processingTime": 100,
+  "results": [
+    {
+      "chance": 1,
+      "id": "coverheated:ender_flour",
+      "count": 4
+    },
+    {
+      "chance": 0.2,
+      "id": "coverheated:ender_flour",
+      "count": 1
+    },
+    {
+      "chance": 0.1,
+      "id": "coverheated:ender_flour",
+      "count": 1
+    }
+
+  ]
+}

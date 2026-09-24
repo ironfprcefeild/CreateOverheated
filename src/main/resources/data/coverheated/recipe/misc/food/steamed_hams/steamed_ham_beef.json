@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "amount": 100,
+      "fluid": "coverheated:steam_low",
+      "type": "neoforge:single"
+    },
+    {
+      "item": "minecraft:beef"
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:steamed_ham"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "type": "neoforge:single",
+    "fluid": "coverheated:akrycite",
+    "amount": 1
+  },
+  "output": {
+    "id": "coverheated:akrycitic_acid",
+    "amount": 2
+  },
+  "minTemp": -40,
+  "addTemp": 10
+}

@@ -1,0 +1,27 @@
+{
+  "type": "create:mechanical_crafting",
+  "acceptMirrored": false,
+  "key": {
+    "f": {
+      "item": "create:flywheel"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "p": {
+      "item": "create:propeller"
+    }
+  },
+  "pattern": [
+    "  c  ",
+    " pcp ",
+    "ccfcc",
+    " pcp ",
+    "  c  "
+  ],
+  "accept_mirrored": "true",
+  "result": {
+    "count": 2,
+    "id": "coverheated:turbine_components"
+  }
+}

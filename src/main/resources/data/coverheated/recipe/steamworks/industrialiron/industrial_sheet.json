@@ -1,0 +1,66 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "create:industrial_iron_block"
+  },
+  "loops": 2,
+  "results": [
+    {
+      "chance": 25.0,
+      "id": "coverheated:industrial_sheet"
+    },
+    {
+      "chance": 75.0,
+      "id": "minecraft:iron_nugget"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_industrial_sheet"
+        },
+        {
+          "amount": 50,
+          "fluid": "coverheated:distilled_water",
+          "nbt": {}
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_industrial_sheet"
+        }
+      ]
+    },
+    {
+      "type": "create:cutting",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_industrial_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_industrial_sheet"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_industrial_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_industrial_sheet"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "id": "coverheated:incomplete_industrial_sheet"
+  }
+}

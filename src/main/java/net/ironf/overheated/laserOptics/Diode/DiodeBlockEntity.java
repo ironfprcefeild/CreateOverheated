@@ -3,15 +3,16 @@ package net.ironf.overheated.laserOptics.Diode;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
+import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import net.ironf.overheated.AllBlockEntities;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
+import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -19,14 +20,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
@@ -34,8 +32,37 @@ import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, IWrenchable,ILaserEmitter {
     public DiodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        tank = createInventory();
+        capability = tank;
     }
 
+    //Fluids
+    IFluidHandler capability;
+    SmartFluidTank tank;
+    protected SmartFluidTank createInventory() {
+        return new SmartFluidTank(8000, this::onFluidStackChanged) {};
+    }
+
+    private void onFluidStackChanged(FluidStack fluidStack) {
+        setChanged();
+        sendData();
+    }
+    public static void registerCapabilities(RegisterCapabilitiesEvent event, BlockEntityEntry<? extends DiodeBlockEntity> me) {
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                me.get(),
+                DiodeBlockEntity::getTank);
+
+    }
+    public SmartFluidTank getTank(Object c){
+        return tank;
+    }
+    public void setFluid(FluidStack stack) {
+        this.tank.setFluid(stack);
+    }
+    public FluidStack getFluidStack() {
+        return this.tank.getFluid();
+    }
 
     //Doing stuff
     public boolean hasClearance = false;
@@ -61,7 +88,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
         //This should drain fluid based on the speed
         if (Math.abs(getSpeed()) > coolantConsumptionTicks){
             coolantConsumptionTicks = 256;
-            tank.getPrimaryHandler().drain(1, IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(1, IFluidHandler.FluidAction.EXECUTE);
         } else {
             coolantConsumptionTicks--;
         }
@@ -167,25 +194,29 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
     //Data Writing
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    protected void read(CompoundTag tag,  HolderLookup.Provider r, boolean clientPacket) {
+        super.read(tag, r, clientPacket);
         hasClearance = tag.getBoolean("has_clearance");
         activeInefficiency = tag.getBoolean("inefficient");
         heatToLow = tag.getBoolean("heat_too_low");
         coolantConsumptionTicks = tag.getInt("consumption_ticks");
         breakingCounter = tag.getDouble("break_counter");
         timer = tag.getInt("timer");
+        tank.readFromNBT(r,tag.getCompound("tank"));
+
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
+    protected void write(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
+        super.write(tag, r, clientPacket);
         tag.putBoolean("has_clearance",hasClearance);
         tag.putBoolean("inefficient",activeInefficiency);
         tag.putBoolean("heat_too_low",heatToLow);
         tag.putInt("consumption_ticks",coolantConsumptionTicks);
         tag.putDouble("break_counter",breakingCounter);
         tag.putInt("timer",timer);
+        tag.put("tank",tank.writeToNBT(r,tag));
+
     }
 
     //Goggles
@@ -213,47 +244,11 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             heatDisplay = false;
         }
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        containedFluidTooltip(tooltip,isPlayerSneaking,lazyFluidHandler);
+        containedFluidTooltip(tooltip,isPlayerSneaking,tank);
         GoggleHelper.heatTooltip(tooltip,heatDisplay ? recentHeat : HeatData.empty(), HeatDisplayType.EMIT);
         return true;
     }
 
-
-
-
-    //Fluids
-    public LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
-    public SmartFluidTankBehaviour tank;
-
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        behaviours.add(tank = SmartFluidTankBehaviour.single(this, 6000));
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        this.lazyFluidHandler = LazyOptional.of(() -> this.tank.getPrimaryHandler());
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        this.lazyFluidHandler.invalidate();
-    }
-
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return tank.getCapability().cast();
-        }
-        return super.getCapability(cap, side);
-    }
-    public void setFluid(FluidStack stack) {
-        this.tank.getPrimaryHandler().setFluid(stack);
-    }
-    public FluidStack getFluidStack() {
-        return this.tank.getPrimaryHandler().getFluid();
-    }
 
     //Kinetics
 

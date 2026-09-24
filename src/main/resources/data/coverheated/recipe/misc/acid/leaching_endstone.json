@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:end_stone"
+    },
+    {
+      "amount": 100,
+      "fluid": "coverheated:akrycitic_acid",
+      "type": "neoforge:single"
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:leached_endstone"
+    }
+  ]
+}

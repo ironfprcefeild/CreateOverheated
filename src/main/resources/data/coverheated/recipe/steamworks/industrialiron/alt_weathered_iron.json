@@ -1,0 +1,19 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "amount": 50,
+      "fluid": "coverheated:heated_air",
+      "type": "neoforge:single"
+    },
+    {
+      "item": "create:iron_sheet"
+    }
+  ],
+  "results": [
+    {
+      "id": "create:weathered_iron_block",
+      "count": 4
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 package net.ironf.overheated.steamworks.blocks.condensor;
 
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CondensingOutputBundle {
     FluidStack output;

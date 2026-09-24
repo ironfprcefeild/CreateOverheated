@@ -1,0 +1,26 @@
+{
+  "type": "coverheated:pressure_chamber",
+  "inputs": [
+    {
+      "item": "coverheated:cinder_globule",
+      "count": 1
+    },
+    {
+      "item": "minecraft:granite",
+      "count": 8
+    }
+  ],
+  "outputs": [
+    {
+      "id": "minecraft:netherrack",
+      "count": 8
+    }
+  ],
+  "heat_added": 8,
+  "ticks_taken": 80,
+  "heat_rating": 0,
+  "pressure": 3,
+  "laser_heat": 0,
+  "combustion": false
+
+}

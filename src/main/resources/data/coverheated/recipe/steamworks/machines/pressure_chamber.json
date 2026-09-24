@@ -1,0 +1,38 @@
+{
+  "type": "create:mechanical_crafting",
+  "key": {
+    "v": {
+      "item": "create:item_vault"
+    },
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "t": {
+      "item": "create:fluid_tank"
+    },
+    "h": {
+      "item": "coverheated:heat_sink"
+    },
+    "n": {
+      "item": "create:portable_fluid_interface"
+    },
+    "i": {
+      "item": "create:portable_storage_interface"
+    },
+    "b": {
+      "item": "coverheated:blowing_engine"
+    }
+  },
+  "pattern": [
+    "i b i",
+    "hcvch",
+    "ct vc",
+    "hctch",
+    "ncccn"
+  ],
+  "accept_mirrored": "true",
+  "result": {
+    "count": 1,
+    "id": "coverheated:pressure_chamber_core"
+  }
+}

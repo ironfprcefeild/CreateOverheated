@@ -3,7 +3,8 @@ package net.ironf.overheated.worldgen;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.worldgen.bedrockDeposits.BedrockDepositFeature;
 import net.ironf.overheated.worldgen.saltCaves.SaltCaveFeature;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -13,7 +14,7 @@ public class AllFeatures {
     }
 
     //This is a placeholder registration
-    public static final RegistryObject<BedrockDepositFeature> morkite = REGISTRATE.depositFeature("morkite_deposit")
+    public static final DeferredHolder<Feature<?>, BedrockDepositFeature> morkite = REGISTRATE.depositFeature("morkite_deposit")
             .Frequency(300)
             .Size(10,20)
             .BorderSize(3)
@@ -21,7 +22,7 @@ public class AllFeatures {
             .makeEncasedBlock(com.simibubi.create.AllBlocks.DEEPSLATE_ZINC_ORE).register();
 
     //Deposits
-    public static final RegistryObject<BedrockDepositFeature> nihilite = REGISTRATE.depositFeature("nihilite_deposit")
+    public static final DeferredHolder<Feature<?>,BedrockDepositFeature> nihilite = REGISTRATE.depositFeature("nihilite_deposit")
             .Frequency(300)
             .Size(10,22)
             .BorderSize(4)
@@ -29,7 +30,7 @@ public class AllFeatures {
             .makeEncasedBlock(AllBlocks.NIHBOROCK).register();
 
     //Geothermal Vent
-    public static final RegistryObject<BedrockDepositFeature> heated_geothermal = REGISTRATE.depositFeature("heated_geothermal_vent")
+    public static final DeferredHolder<Feature<?>,BedrockDepositFeature> heated_geothermal = REGISTRATE.depositFeature("heated_geothermal_vent")
             .Frequency(300)
             .Size(15,25)
             .BorderSize(4)
@@ -38,7 +39,7 @@ public class AllFeatures {
 
 
     //Superheated Geothermal Vent
-    public static final RegistryObject<BedrockDepositFeature> superheated_geothermal = REGISTRATE.depositFeature("superheated_geothermal_vent")
+    public static final DeferredHolder<Feature<?>,BedrockDepositFeature> superheated_geothermal = REGISTRATE.depositFeature("superheated_geothermal_vent")
             .Frequency(384)
             .Size(15,25)
             .BorderSize(4)
@@ -47,7 +48,7 @@ public class AllFeatures {
 
 
     //Salt Caves
-    public static final RegistryObject<SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
+    public static final DeferredHolder<Feature<?>,SaltCaveFeature> pureSaltCave = REGISTRATE.saltCaveFeature("pure_salt_cave")
             .Frequency(256)
             .Size(40,60)
             .shellHeight(12)
@@ -56,7 +57,7 @@ public class AllFeatures {
             .crystalFrequency(0.1f)
             .crystalSizes(3,9)
             .register();
-    public static final RegistryObject<SaltCaveFeature> redSaltCave = REGISTRATE.saltCaveFeature("red_salt_cave")
+    public static final DeferredHolder<Feature<?>,SaltCaveFeature> redSaltCave = REGISTRATE.saltCaveFeature("red_salt_cave")
             .Frequency(512)
             .Size(40,60)
             .shellHeight(13)
@@ -65,7 +66,7 @@ public class AllFeatures {
             .crystalFrequency(0.1f)
             .crystalSizes(3,9)
             .register();
-    public static final RegistryObject<SaltCaveFeature> blueSaltCave = REGISTRATE.saltCaveFeature("blue_salt_cave")
+    public static final DeferredHolder<Feature<?>,SaltCaveFeature> blueSaltCave = REGISTRATE.saltCaveFeature("blue_salt_cave")
             .Frequency(512)
             .Size(40,60)
             .shellHeight(12)

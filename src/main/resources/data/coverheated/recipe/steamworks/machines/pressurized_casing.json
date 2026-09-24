@@ -1,0 +1,115 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "create:copper_casing"
+  },
+  "transitionalItem": {
+    "id": "coverheated:incomplete_pressurized_casing"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "id": "coverheated:pressurized_casing"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "amount": 500,
+          "fluid": "coverheated:purified_water",
+          "type": "neoforge:single"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "create:sturdy_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "minecraft:gunpowder"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "create:copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        },
+        {
+          "item": "coverheated:industrial_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "coverheated:incomplete_pressurized_casing"
+        }
+      ],
+      "results": [
+        {
+          "id": "coverheated:incomplete_pressurized_casing"
+        }
+      ]
+    }
+  ],
+  "transitionalItem": {
+    "id": "coverheated:incomplete_pressurized_casing"
+  }
+}

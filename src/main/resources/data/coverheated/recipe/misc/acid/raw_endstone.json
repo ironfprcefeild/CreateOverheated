@@ -1,0 +1,22 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "coverheated:ender_flour",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:dirt",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:stone",
+      "amount": 2
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:raw_endstone"
+    }
+  ]
+}

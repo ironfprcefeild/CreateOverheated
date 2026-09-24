@@ -39,7 +39,7 @@ public class DiodeHeaters {
     }
 
     public static void registerDefaults() {
-        Overheated.LOGGER.info("O: Registering Default Diode Heaters");
+        Overheated.LOGGER.info("CO: Registering Default Diode Heaters");
         registerHeater(AllBlocks.BLAZE_BURNER.get(), (level, pos, state) -> {
             BlazeBurnerBlock.HeatLevel value = state.getValue(BlazeBurnerBlock.HEAT_LEVEL);
             if (value == BlazeBurnerBlock.HeatLevel.NONE) {

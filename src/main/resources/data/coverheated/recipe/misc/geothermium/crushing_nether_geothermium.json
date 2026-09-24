@@ -1,0 +1,25 @@
+
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:nether_geothermium"
+    }
+  ],
+  "processingTime": 185,
+  "results": [
+    {
+
+      "chance": 0.75,
+      "id": "minecraft:basalt"
+    },
+    {
+      "chance": 0.75,
+      "id": "minecraft:nether_gold_ore"
+    },
+    {
+      "chance": 0.75,
+      "id": "coverheated:nether_geothermium_powders"
+    }
+  ]
+}

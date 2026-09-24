@@ -3,7 +3,6 @@ package net.ironf.overheated;
 import com.mojang.logging.LogUtils;
 import net.ironf.overheated.cooling.colants.CoolingHandler;
 import net.ironf.overheated.creativeModeTab.AllCreativeModeTabs;
-import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasMapper;
 import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
@@ -18,27 +17,21 @@ import net.ironf.overheated.utility.TranslucencyHandler;
 import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
 import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.ironf.overheated.worldgen.AllFeatures;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Overheated.MODID)
 public class Overheated
 {
@@ -47,22 +40,17 @@ public class Overheated
 
     public static final OverheatedRegistrate REGISTRATE = new OverheatedRegistrate(MODID);
 
-
-    public Overheated()
+    public Overheated(IEventBus modEventBus, ModContainer container)
     {
-        //Theee Errors are just here cause of deprecation
-        //If anyone knows what I'm supposed to do please tell me.
-        ModLoadingContext modLoadingContext = ModLoadingContext.get();
-        IEventBus modEventBus = FMLJavaModLoadingContext.get()
-                .getModEventBus();
-        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
         //Events
-        MinecraftForge.EVENT_BUS.register(this);
-        RadiationMap.subscribeEvents(MinecraftForge.EVENT_BUS);
+        NeoForge.EVENT_BUS.register(this);
+        RadiationMap.subscribeEvents(NeoForge.EVENT_BUS);
+        modEventBus.register(AllCapabilities.class);
+        modEventBus.addListener(Overheated::init);
+        REGISTRATE.registerEventListeners(modEventBus);
 
         //CTOR
-        REGISTRATE.registerEventListeners(modEventBus);
         AllTags.init();
         AllFluids.register();
         AllBlocks.register();
@@ -71,8 +59,8 @@ public class Overheated
         AllRecipes.register(modEventBus);
         AllFeatures.register();
         AllCreativeModeTabs.register(modEventBus);
-        modEventBus.addListener(Overheated::init);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> OverheatedClient.onCtorClient(modEventBus, forgeEventBus));
+
+
 
 
     }
@@ -81,18 +69,20 @@ public class Overheated
     {
         LOGGER.info("...OVERHEATING...");
         LOGGER.info("Thank you for choosing Create: Overheated!");
-        LOGGER.info("\"O\" indicates a log message from Overheated");
-        GasMapper.prepareGasBlockInfo();
-        AllSteamFluids.prepareSteamArray();
-        BlazeCrucibleBlockEntity.addToBoilerHeaters();
-        BlazeAbsorberBlockEntity.addToBoilerHeaters();
-        DiodeHeaters.registerDefaults();
-        mirrorRegister.registerDefaults();
-        ControlRodsRegister.registerDefaults();
-        TranslucencyHandler.addRenderLayers();
+        LOGGER.info("\"CO\" indicates a log message from Overheated");
+        event.enqueueWork(() -> {
+            GasMapper.prepareGasBlockInfo();
+            AllSteamFluids.prepareSteamArray();
+            BlazeCrucibleBlockEntity.addToBoilerHeaters();
+            BlazeAbsorberBlockEntity.addToBoilerHeaters();
+            DiodeHeaters.registerDefaults();
+            mirrorRegister.registerDefaults();
+            ControlRodsRegister.registerDefaults();
+            TranslucencyHandler.addRenderLayers();
 
-        //(Un)Mysterious Conversion
-        OverheatedRecipeProvider.addMysteriousConversion();
+            //(Un)Mysterious Conversion
+            OverheatedRecipeProvider.addMysteriousConversion();
+        });
     }
 
     @SubscribeEvent
@@ -113,8 +103,12 @@ public class Overheated
         RadiationMap.RadiationHashMap.clear();
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+
+
+
+/*
+        // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
     public static class ClientModEvents
     {
         @SubscribeEvent
@@ -126,7 +120,7 @@ public class Overheated
 
         @SubscribeEvent
         public static void registerBlockColors(RegisterColorHandlersEvent.Block event){
-            for (RegistryObject<GasBlock> gb : OverheatedRegistrate.blockTintColors.keySet()){
+            for (DeferredHolder<Block, ? extends GasBlock> gb : OverheatedRegistrate.blockTintColors.keySet()){
                 event.register(getBlockColor(OverheatedRegistrate.blockTintColors.get(gb)),gb.get());
             }
         }
@@ -136,6 +130,8 @@ public class Overheated
         }
 
     }
+
+ */
 
     public static ResourceLocation asResource(String path) {
         return fromNamespaceAndPath(MODID, path);

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "coverheated:pressurized_casing"
+    },
+    "p": {
+      "item": "create:mechanical_pump"
+    },
+    "m": {
+      "item": "create:mechanical_press"
+    },
+    "d": {
+      "item": "create:mechanical_drill"
+    },
+    "b": {
+      "item": "coverheated:blowing_engine"
+    }
+  },
+  "pattern": [
+    "cbc",
+    "cmc",
+    "pdp"
+  ],
+  "result": {
+    "id": "coverheated:impact_drill"
+  }
+}

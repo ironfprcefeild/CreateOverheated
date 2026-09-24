@@ -1,9 +1,12 @@
 package net.ironf.overheated.steamworks.blocks.turbine.turbineFan;
 
+import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.kinetics.fan.EncasedFanBlockEntity;
+import com.simibubi.create.content.logistics.crate.CrateBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.createmod.catnip.levelWrappers.WrappedLevel;
 import net.ironf.overheated.AllBlockEntities;
+import net.ironf.overheated.utility.SmartDirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,25 +26,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class turbineFanBlock extends DirectionalBlock implements IBE<turbineFanBlockEntity> {
+public class turbineFanBlock extends SmartDirectionalBlock implements IBE<turbineFanBlockEntity> {
     public turbineFanBlock(Properties p_52591_) {
         super(p_52591_);
     }
-
-
-    //Block State
-    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(FACING));
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite());
-    }
-
 
     //BE
     @Override

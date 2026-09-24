@@ -6,9 +6,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.ponder.CreatePonderPlugin;
 import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -16,15 +14,12 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.ponder.foundation.PonderIndex;
-import net.ironf.overheated.AllItems;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.ExplodingGasBlock;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
-import net.ironf.overheated.metalWorking.metalCasting.GoldenCastItem;
 import net.ironf.overheated.ponder.OverheatedPonderPlugin;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.BlastFurnaceStatus;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
 import net.ironf.overheated.utility.data.dataGeneration.recipes.OverheatedRecipeProvider;
@@ -37,10 +32,11 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -60,23 +56,23 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.ticks.TickPriority;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -93,8 +89,6 @@ import static com.tterrag.registrate.providers.RegistrateRecipeProvider.getHasNa
 import static com.tterrag.registrate.providers.RegistrateRecipeProvider.has;
 import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.gasses.GasMapper.*;
-import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getMeltingRecipe;
-import static net.ironf.overheated.utility.data.dataGeneration.recipes.RecipeBuilders.getPouringRecipe;
 import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
 
 public class OverheatedRegistrate extends CreateRegistrate {
@@ -108,16 +102,16 @@ public class OverheatedRegistrate extends CreateRegistrate {
     }
 
 
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Overheated.MODID);
+    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(BuiltInRegistries.FEATURE, Overheated.MODID);
 
-    public static final DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,Overheated.MODID);
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES,Overheated.MODID);
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,Overheated.MODID);
+    public static final DeferredRegister<Block> FLUID_BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK,Overheated.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES,Overheated.MODID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID,Overheated.MODID);
 
-    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Overheated.MODID);
+    public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Overheated.MODID);
 
-    public static final DeferredRegister<Item> GENERAL_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,Overheated.MODID);
-    public static List<RegistryObject<? extends Item>> items_for_tab = new ReferenceArrayList<>();
+    public static final DeferredRegister<Item> GENERAL_ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM,Overheated.MODID);
+    public static List<DeferredHolder<Item,? extends Item>> items_for_tab = new ReferenceArrayList<>();
 
 
     @Override
@@ -142,12 +136,23 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
 
     ///Datagen
-    public static HashMap<RegistryObject<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
-    public static HashMap<RegistryObject<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
-    public static HashMap<RegistryObject<? extends Item>,String> itemModelOverride = new HashMap<>();
+    public static HashMap<Supplier<? extends Block>,Boolean> makeBlockItems = new HashMap<>();
+    public static HashMap<Supplier<? extends Block>,ResourceLocation> blockModelOverride = new HashMap<>();
+    public static HashMap<Supplier<? extends Item>,String> itemModelOverride = new HashMap<>();
 
-    @Mod.EventBusSubscriber(modid = Overheated.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = Overheated.MODID)
     public class DataGenerators {
+
+        public static void gatherDataHighPriority(GatherDataEvent event) {
+            if (event.getMods().contains(Overheated.MODID)) {
+                //Ponder Lang
+                REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+                    BiConsumer<String, String> langConsumer = provider::add;
+                    PonderIndex.addPlugin(new OverheatedPonderPlugin());
+                    PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
+                });
+            }
+        }
 
         @SubscribeEvent
         public static void gatherData(GatherDataEvent event) {
@@ -156,7 +161,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             PackOutput packOutput = generator.getPackOutput();
             ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-            Collection<RegistryObject<Block>> Blocks = GAS_BLOCKS.getEntries();
+            Collection<DeferredHolder<Block, ? extends Block>> Blocks = GAS_BLOCKS.getEntries();
             generator.addProvider(event.includeClient(), new OverheatedBlockStateProvider(
                     packOutput,
                     existingFileHelper,
@@ -172,16 +177,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     itemModelOverride));
 
             generator.addProvider(event.includeClient(), new OverheatedRecipeProvider(
-                    packOutput));
-
-
-            //Ponder Lang
-            REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
-                BiConsumer<String, String> langConsumer = provider::add;
-                PonderIndex.addPlugin(new OverheatedPonderPlugin());
-                PonderIndex.getLangAccess().provideLang(Overheated.MODID, langConsumer);
-            });
-
+                    packOutput, event.getLookupProvider()));
 
 
         }
@@ -203,7 +199,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final ItemEntry<Item> nugget;
         public final BlockEntry<Block> block;
         public final OverheatedRegistrate.FluidRegistration molten;
-        public final ItemEntry<GoldenCastItem> castedIngot;
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
@@ -237,9 +232,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             } else {
                 this.ingot = ingotOverride; this.nugget = nuggetOverride; this.block = blockOverride;
             }
-            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
-                    .lang(name + " Ingot in Cast")
-                    .register();
+
             this.meltingRequirement = meltingRequirement;
 
             molten = REGISTRATE.SimpleFluid("molten_"+id)
@@ -254,7 +247,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             OverheatedRecipeProvider.metallicSets.add(this);
         }
 
-        public void buildRecipes(Consumer<FinishedRecipe> writer){
+        public void buildRecipes(RecipeOutput writer){
             ResourceLocation parentRL = Overheated.asResource(id);
             if (!existingMetal) {
                 //nugget -> ingot
@@ -279,7 +272,9 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         .save(writer, parentRL.withSuffix("_ingot_from_block"));
             }
 
+            //TODO fix melting recipes
             //Melting
+            /*
             writer.accept(getMeltingRecipe(
                     parentRL.withSuffix("_nugget_melting"),
                     nugget.asStack(1),
@@ -299,21 +294,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     meltingRequirement.changeSteamAmount(mbPerIngot*9*2),
                     meltTimePerIngot*9));
 
-            //Casts
-            writer.accept(getPouringRecipe(
-                    parentRL.withSuffix("_sand_casting"),
-                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                    AllItems.EMPTY_SAND_CAST.asStack(1),
-                    ingot.asStack(1)));
-            writer.accept(getPouringRecipe(
-                    parentRL.withSuffix("_gold_casting"),
-                    new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                    AllItems.EMPTY_GOLD_CAST.asStack(1),
-                    castedIngot.asStack(1)));
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
-                    .requires(castedIngot)
-                    .unlockedBy(getHasName(castedIngot),has(castedIngot))
-                    .save(writer,parentRL.withSuffix("_cast_removal"));
+             */
 
         }
 
@@ -333,7 +314,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             .viscosity(200)
             .canConvertToSource(false)
             .temperature(200));
-    public static BlastFurnaceStatus defaultMeltingRequirement = new BlastFurnaceStatus(2,1000);
+    public static BlastFurnaceStatus defaultMeltingRequirement = null; //new BlastFurnaceStatus(2,1000);
     //This one includes generic molten fluid properties
     public MetallicSet MakeMetallicSet(String name, int tintColor, NonNullUnaryOperator<BlockBehaviour.Properties> bProperties){
         return MakeMetallicSet(name,bProperties, defaultMoltenProperties,tintColor,defaultMeltingRequirement,null,null,null);
@@ -345,7 +326,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public final Item nugget;
         public final Item block;
         public final OverheatedRegistrate.FluidRegistration molten;
-        public final ItemEntry<GoldenCastItem> castedIngot;
 
         public final BlastFurnaceStatus meltingRequirement;
         public final String id;
@@ -359,9 +339,6 @@ public class OverheatedRegistrate extends CreateRegistrate {
             this.name = ""+name;
             id = name.toLowerCase().replace(" ","_");
 
-            this.castedIngot = item(id + "_casted_ingot", GoldenCastItem::new)
-                    .lang(name + " Ingot Casted")
-                    .register();
             molten = REGISTRATE.SimpleFluid("molten_"+id)
                     .overrideTexture("block/fluids/molten")
                     .tintColor(tintColor)
@@ -376,17 +353,22 @@ public class OverheatedRegistrate extends CreateRegistrate {
             OverheatedRecipeProvider.vanillaMetallicSets.add(this);
         }
 
-        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+        public void buildRecipes(RecipeOutput writer) {
             ResourceLocation parentRL = Overheated.asResource(id);
+            //TODO add back melting recipes
             if (nugget != null) {
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_nugget_melting"),
                         nugget.getDefaultInstance(),
                         new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot / 9)},
                         meltingRequirement.changeSteamAmount(mbPerIngot / 9 * 2),
                         meltTimePerIngot / 9));
+
+                 */
             }
             if (ingot != null) {
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_ingot_melting"),
                         ingot.getDefaultInstance(),
@@ -394,30 +376,22 @@ public class OverheatedRegistrate extends CreateRegistrate {
                         meltingRequirement.changeSteamAmount(mbPerIngot * 2),
                         meltTimePerIngot));
 
+                 */
+
                 //Casts
 
-                writer.accept(getPouringRecipe(
-                        parentRL.withSuffix("_sand_casting"),
-                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                        AllItems.EMPTY_SAND_CAST.asStack(1),
-                        ingot.getDefaultInstance()));
-                writer.accept(getPouringRecipe(
-                        parentRL.withSuffix("_gold_casting"),
-                        new FluidStack(molten.SOURCE.get().getSource(),mbPerIngot),
-                        AllItems.EMPTY_GOLD_CAST.asStack(1),
-                        castedIngot.asStack(1)));
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ingot)
-                        .requires(castedIngot)
-                        .unlockedBy(getHasName(castedIngot),has(castedIngot))
-                        .save(writer,parentRL.withSuffix("_cast_removal"));
             }
             if (block != null) {
+                //TODO add back melting recipes
+                /*
                 writer.accept(getMeltingRecipe(
                         parentRL.withSuffix("_block_melting"),
                         block.getDefaultInstance(),
                         new FluidStack[]{new FluidStack(molten.SOURCE.get().getSource(), mbPerIngot * 9)},
                         meltingRequirement.changeSteamAmount(mbPerIngot * 9 * 2),
                         meltTimePerIngot * 9));
+
+                 */
             }
         }
     }
@@ -431,11 +405,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     /// Tool sets
     public class toolSet{
-        public final RegistryObject<Item> sword;
-        public final RegistryObject<Item> axe;
-        public final RegistryObject<Item> shovel;
-        public final RegistryObject<Item> pickaxe;
-        public final RegistryObject<Item> hoe;
+        public final DeferredHolder<Item, ? extends Item>  sword;
+        public final DeferredHolder<Item, ? extends Item>  axe;
+        public final DeferredHolder<Item, ? extends Item>  shovel;
+        public final DeferredHolder<Item, ? extends Item>  pickaxe;
+        public final DeferredHolder<Item, ? extends Item>  hoe;
         public final String id;
 
         public Object ingot;
@@ -446,11 +420,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         public toolSet(String name, ItemEntry<Item> ingot, ItemEntry<Item> handle, Tier tier, float propertyTier){
             id = name.toLowerCase().replace(" ","_");
-            this.sword = GENERAL_ITEMS.register(id+"_sword",() -> new SwordItem(tier,3,-2.4f,new Item.Properties()));
-            this.axe = GENERAL_ITEMS.register(id+"_axe", () -> new AxeItem(tier,7.0f-(propertyTier/2f),-3.0f,new Item.Properties()));
-            this.shovel = GENERAL_ITEMS.register(id+"_shovel", () -> new ShovelItem(tier,1.5f,-3.0f,new Item.Properties()));
-            this.pickaxe = GENERAL_ITEMS.register(id+"_pickaxe", () -> new PickaxeItem(tier,1,-2.8f,new Item.Properties()));
-            this.hoe = GENERAL_ITEMS.register(id+"_hoe", () -> new HoeItem(tier, (int) -propertyTier,Math.max(-propertyTier,0.0f),new Item.Properties()));
+            this.sword = GENERAL_ITEMS.register(id+"_sword",() -> new SwordItem(tier,new Item.Properties()));
+            this.axe = GENERAL_ITEMS.register(id+"_axe", () -> new AxeItem(tier,new Item.Properties()));
+            this.shovel = GENERAL_ITEMS.register(id+"_shovel", () -> new ShovelItem(tier,new Item.Properties()));
+            this.pickaxe = GENERAL_ITEMS.register(id+"_pickaxe", () -> new PickaxeItem(tier,new Item.Properties()));
+            this.hoe = GENERAL_ITEMS.register(id+"_hoe", () -> new HoeItem(tier,new Item.Properties()));
             items_for_tab.add(this.sword);
             items_for_tab.add(this.axe);
             items_for_tab.add(this.shovel);
@@ -483,7 +457,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         }
 
         @SuppressWarnings("unchecked")
-        public void buildRecipes(Consumer<FinishedRecipe> writer) {
+        public void buildRecipes(RecipeOutput writer) {
             ResourceLocation parentRL = Overheated.asResource(id);
             Item ingot = ingotRegistrated ? ((ItemEntry<Item>) this.ingot).get() : ((Item) this.ingot);
             Item handle = handleRegistrated ? ((ItemEntry<Item>) this.handle).get() : ((Item) this.handle);
@@ -566,14 +540,14 @@ public class OverheatedRegistrate extends CreateRegistrate {
     public FluidRegistration SimpleFluid(String name){
         return new FluidRegistration(this,name);
     }
-    public static List<RegistryObject<? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
-    public static List<RegistryObject<GasBlock>> transparentGasses = new ReferenceArrayList<>();
-    public static HashMap<RegistryObject<GasBlock>,Integer> blockTintColors = new HashMap<>();
-    public static ArrayList<RegistryObject<? extends Block>> TintedBlocks = new ArrayList<>();
+    public static List<DeferredHolder<Item,? extends Item>> allSteamBuckets = new ReferenceArrayList<>();
+    public static List<DeferredHolder<Block, ? extends GasBlock>> transparentGasses = new ReferenceArrayList<>();
+    public static HashMap<DeferredHolder<Block, ? extends GasBlock>,Integer> blockTintColors = new HashMap<>();
+    public static ArrayList<DeferredHolder<Block,? extends Block>> TintedBlocks = new ArrayList<>();
 
 
     public static void applyGasTransparency(){
-        for (RegistryObject<GasBlock> gas : transparentGasses) {
+        for (DeferredHolder<Block, ? extends GasBlock> gas : transparentGasses) {
             ItemBlockRenderTypes.setRenderLayer(gas.get(), RenderType.translucent());
         }
     }
@@ -581,13 +555,13 @@ public class OverheatedRegistrate extends CreateRegistrate {
         OverheatedRegistrate Parent;
         String name;
 
-        public RegistryObject<FlowingFluid> FLOWING;
-        public RegistryObject<FlowingFluid> SOURCE;
-        public ForgeFlowingFluid.Properties FLUID_PROPERTIES;
-        public RegistryObject<FluidType> FLUID_TYPE;
+        public DeferredHolder<Fluid, ? extends BaseFlowingFluid.Flowing> FLOWING;
+        public DeferredHolder<Fluid, ? extends BaseFlowingFluid.Source> SOURCE;
+        public BaseFlowingFluid.Properties FLUID_PROPERTIES;
+        public DeferredHolder<FluidType, ? extends FluidType> FLUID_TYPE;
 
-        public RegistryObject<BucketItem> BUCKET;
-        public RegistryObject<LiquidBlock> FLUID_BLOCK;
+        public DeferredHolder<Item, ? extends BucketItem> BUCKET;
+        public DeferredHolder<Block, ? extends LiquidBlock> FLUID_BLOCK;
 
         int tintColor = 0xFFFFFFFF;
         boolean hasFlowingTexture = false;
@@ -601,7 +575,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
         public String BucketModelLocation = null;
         public boolean putBucketInSteamTab = false;
 
-        public BlockBehaviour.Properties block_properties = BlockBehaviour.Properties.copy(Blocks.WATER);
+        public BlockBehaviour.Properties block_properties = Blocks.WATER.properties();
 
         ResourceLocation textureOverride = null;
 
@@ -667,11 +641,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
         //Gas Stuff
         public boolean isGas = false;
-        public RegistryObject<GasBlock> gb = null;
+        public DeferredHolder<Block, ? extends GasBlock> gb = null;
         public boolean gasHoodCapturable = true;
 
 
-        public FluidRegistration setGas(RegistryObject<GasBlock> gasBlock){
+        public FluidRegistration setGas(DeferredHolder<Block, ? extends GasBlock> gasBlock){
             gb = gasBlock;
             isGas = true;
             return this;
@@ -699,12 +673,12 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     textureLocation, //still
                     tintColor,gb);
 
-            FLOWING = FLUIDS.register("flowing_" + name, () -> new ForgeFlowingFluid.Flowing(FLUID_PROPERTIES));
+            FLOWING = FLUIDS.register("flowing_" + name, () -> new BaseFlowingFluid.Flowing(FLUID_PROPERTIES));
 
             if (isGas){
                 SOURCE = FLUIDS.register(name, () -> new GasFluidSource(FLUID_PROPERTIES));
             } else {
-                SOURCE = FLUIDS.register(name, () -> new ForgeFlowingFluid.Source(FLUID_PROPERTIES));
+                SOURCE = FLUIDS.register(name, () -> new BaseFlowingFluid.Source(FLUID_PROPERTIES));
             }
 
             BUCKET = registerBucket(
@@ -713,11 +687,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     putBucketInSteamTab);
 
             FLUID_BLOCK = FLUID_BLOCKS.register(name + "_fluid_block",
-                    () -> new LiquidBlock(SOURCE, block_properties));
+                    () -> new LiquidBlock(SOURCE.get(), block_properties));
 
 
 
-            FLUID_PROPERTIES = new ForgeFlowingFluid
+            FLUID_PROPERTIES = new BaseFlowingFluid
                     .Properties(FLUID_TYPE, SOURCE, FLOWING)
                     .explosionResistance(explosionResistance).tickRate(tickRate).slopeFindDistance(slopeFindDistance).levelDecreasePerBlock(levelDecreasePerBlock)
                     .block(FLUID_BLOCK).bucket(BUCKET);
@@ -738,10 +712,10 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public static RegistryObject<BucketItem> registerBucket(String fluidName, RegistryObject<FlowingFluid> fluid, String bucketModelLocation, boolean addToSteamTab){
-            RegistryObject<BucketItem> toReturn = GENERAL_ITEMS.register(
+        public static DeferredHolder<Item, ? extends BucketItem> registerBucket(String fluidName, DeferredHolder<Fluid, ? extends BaseFlowingFluid.Source> fluid, String bucketModelLocation, boolean addToSteamTab){
+            DeferredHolder<Item, ? extends BucketItem> toReturn = GENERAL_ITEMS.register(
                     fluidName + "_bucket",
-                    () -> new BucketItem(fluid,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+                    () -> new BucketItem(fluid.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
             if (addToSteamTab){
                 allSteamBuckets.add(toReturn);
             } else {
@@ -752,7 +726,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             }
             return toReturn;
         }
-        public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color) {
+        public static DeferredHolder<FluidType, ? extends FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color) {
 
             return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(FluidType.Properties.create())) {
 
@@ -811,7 +785,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             });
         }
         //If GB is not null, this registers a gas instead
-        public static RegistryObject<FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color,RegistryObject<GasBlock> gb) {
+        public static DeferredHolder<FluidType, ? extends FluidType> registerFluidType(String name, UnaryOperator<FluidType.Properties> operator, ResourceLocation Still_RL, ResourceLocation Flowing_RL, ResourceLocation Overlay_RL, int Tint_Color,DeferredHolder<Block, ? extends GasBlock> gb) {
             if (gb == null){
                 return registerFluidType(name,operator,Still_RL,Flowing_RL,Overlay_RL,Tint_Color);
             }
@@ -822,7 +796,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                 private final ResourceLocation overlayTexture = Overlay_RL;
 
                 private final int tintColor = Tint_Color;
-                public final RegistryObject<? extends GasBlock> createdBlock = gb;
+                public final DeferredHolder<Block,? extends GasBlock> createdBlock = gb;
 
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -973,7 +947,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public RegistryObject<GasBlock> register(){
+        public DeferredHolder<Block, ? extends GasBlock> register(){
             if (gfg == null){
                 if (shiftChance == 0){
                     gfg = (randomSource,pos,world) -> pos.relative(direction);
@@ -987,7 +961,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             if (passThroughPredicate == null){
                 passThroughPredicate = BlockBehaviour.BlockStateBase::isAir;
             }
-            RegistryObject<GasBlock> toReturn = GAS_BLOCKS.register(
+            DeferredHolder<Block, ? extends GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? (altFactory) :
                         (explosionChance == -1 ?
@@ -1101,7 +1075,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public RegistryObject<BedrockDepositFeature> register(){
+        public DeferredHolder<Feature<?>, BedrockDepositFeature> register(){
             return FEATURES.register(Name,() -> new BedrockDepositFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, getter, borderSize, Block, EncasedBlock));
         }
 
@@ -1178,7 +1152,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             return this;
         }
 
-        public RegistryObject<SaltCaveFeature> register(){
+        public DeferredHolder<Feature<?>,SaltCaveFeature> register(){
             return FEATURES.register(Name,() -> new SaltCaveFeature(NoneFeatureConfiguration.CODEC, sizeLower, sizeUpper, frequency, crystalFrequency, shellHeight, crystalSizeUpper, crystalSizeLower, CrystalBlock, Block));
         }
 

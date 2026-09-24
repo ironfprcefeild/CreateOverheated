@@ -1,0 +1,21 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:hydrogen",
+      "amount": 200
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:oxygen",
+      "amount": 400
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:purified_water",
+      "amount": 600
+    }
+  ]
+}

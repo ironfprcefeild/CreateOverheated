@@ -37,7 +37,7 @@ public class ControlRodsRegister {
     }
 
     public static void registerDefaults(){
-        Overheated.LOGGER.info("O: Registering Default Control and Fuel Rods");
+        Overheated.LOGGER.info("CO: Registering Default Control and Fuel Rods");
         registerBERegulator(AllBlocks.URANIUM_FUEL_ROD.get());
         registerBERegulator(AllBlocks.CONTROL_ROD.get());
         registerBERegulator(AllBlocks.RADIOLYZER.get());

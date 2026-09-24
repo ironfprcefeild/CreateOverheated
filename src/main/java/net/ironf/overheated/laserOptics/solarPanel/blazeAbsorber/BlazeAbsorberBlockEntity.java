@@ -11,6 +11,7 @@ import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.solarPanel.SolarPanelBlockEntity;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.ironf.overheated.utility.HeatDisplayType;
+import net.ironf.overheated.utility.machines.MachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,15 +21,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Objects;
 
-public class BlazeAbsorberBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class BlazeAbsorberBlockEntity extends MachineBlockEntity implements IHaveGoggleInformation {
     public BlazeAbsorberBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 
-    }
 
 
     float heatAmount;

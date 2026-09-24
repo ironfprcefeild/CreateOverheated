@@ -1,0 +1,29 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "coverheated:raw_salt"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 25,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:chlorine_crystal"
+    },
+    {
+      "id": "coverheated:chlorine_crystal",
+      "count": 2,
+      "chance": 0.25
+    },
+    {
+      "id": "coverheated:table_salt",
+      "count": 3,
+      "chance": 0.5
+    }
+  ]
+}

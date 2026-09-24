@@ -1,36 +1,43 @@
 package net.ironf.overheated.steamworks;
 
 import com.google.gson.JsonObject;
-import com.simibubi.create.foundation.fluid.FluidIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredientType;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SteamFluidIngredient extends FluidIngredient {
 
     @Override
-    protected boolean testInternal(FluidStack t) {return AllSteamFluids.isSteam(t);}
-    @Override
-    protected void readInternal(FriendlyByteBuf buffer) {}
-    @Override
-    protected void writeInternal(FriendlyByteBuf buffer) {}
-    @Override
-    protected void readInternal(JsonObject json) {}
-    @Override
-    protected void writeInternal(JsonObject json) {}
-
-    @Override
-    protected List<FluidStack> determineMatchingFluidStacks() {
-        return List.of();
-    }
-
-    public SteamFluidIngredient(int amount){
-        this.amountRequired = amount;
-    }
-
-    @Override
     public boolean test(FluidStack t) {
         return AllSteamFluids.isSteam(t);
+    }
+
+    @Override
+    protected Stream<FluidStack> generateStacks() {
+        return Stream.empty();
+    }
+
+    @Override
+    public boolean isSimple() {
+        return false;
+    }
+
+    @Override
+    public FluidIngredientType<?> getType() {
+        return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return false;
     }
 }

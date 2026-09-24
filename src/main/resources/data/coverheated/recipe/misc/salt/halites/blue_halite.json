@@ -1,0 +1,30 @@
+{
+  "type": "create:splashing",
+  "ingredients": [
+    {
+      "item": "coverheated:blue_halite"
+    }
+  ],
+  "processingTime": 75,
+  "results": [
+    {
+      "id": "coverheated:raw_salt",
+      "count": 1
+    },
+    {
+      "chance": 0.25,
+      "id": "coverheated:raw_salt",
+      "count": 1
+    },
+    {
+      "chance": 0.35,
+      "id": "coverheated:table_salt",
+      "count": 1
+    },
+    {
+      "chance": 0.25,
+      "id": "minecraft:lapis_lazuli",
+      "count": 4
+    }
+  ]
+}

@@ -28,9 +28,6 @@ import net.ironf.overheated.steamworks.blocks.condensor.CondenserBlockEntity;
 import net.ironf.overheated.steamworks.blocks.geothermals.GeothermalInterfaceBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillBlockEntity;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRenderer;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.block.BlastFurnaceControllerBlockEntity;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.ItemDuct.ItemDuctBlockEntity;
-import net.ironf.overheated.steamworks.blocks.industrialBlastFurnace.servants.fluidDuct.FluidDuctBlockEntity;
 import net.ironf.overheated.steamworks.blocks.meterExtender.MeterExtenderBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.combustion.CombustionVentBlockEntity;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.core.ChamberCoreBlockEntity;
@@ -40,6 +37,8 @@ import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndBlock
 import net.ironf.overheated.steamworks.blocks.turbine.turbineEnd.turbineEndRenderer;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanBlockEntity;
 import net.ironf.overheated.steamworks.blocks.turbine.turbineFan.turbineFanRenderer;
+import net.ironf.overheated.utility.machines.CapableMachineBlockEntity;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 
@@ -198,19 +197,6 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.BELLOW)
             .renderer(() -> BellowBlockEntityRenderer::new)
             .register();
-    //IBF!
-    public static final BlockEntityEntry<BlastFurnaceControllerBlockEntity> BLAST_FURNACE_CONTROLLER = REGISTRATE
-            .blockEntity("blast_furnace_controller", BlastFurnaceControllerBlockEntity::new)
-            .validBlocks(AllBlocks.INDUSTRIAL_BLAST_FURNACE_CONTROLLER)
-            .register();
-    public static final BlockEntityEntry<FluidDuctBlockEntity> FLUID_DUCT = REGISTRATE
-            .blockEntity("fluid_duct", FluidDuctBlockEntity::new)
-            .validBlocks(AllBlocks.FLUID_DUCT)
-            .register();
-    public static final BlockEntityEntry<ItemDuctBlockEntity> ITEM_DUCT = REGISTRATE
-            .blockEntity("item_duct", ItemDuctBlockEntity::new)
-            .validBlocks(AllBlocks.ITEM_DUCT)
-            .register();
 
     //Fuel Rod
     public static final BlockEntityEntry<FuelRodBlockEntity> FUEL_ROD = REGISTRATE
@@ -231,8 +217,9 @@ public class AllBlockEntities {
             .validBlocks(AllBlocks.RADIOLYZER)
             .register();
 
-
     public static void register(){
 
     }
+
+
 }

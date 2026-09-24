@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "coverheated:combustion_regulator"
+    },
+    "n": {
+      "item": "create:steam_engine"
+    },
+    "t": {
+      "item": "coverheated:turbine_components"
+    }
+  },
+  "pattern": [
+    "n  ",
+    "c  ",
+    "t  "
+  ],
+  "result": {
+    "id": "coverheated:combustion_engine"
+  }
+}

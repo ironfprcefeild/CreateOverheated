@@ -11,8 +11,6 @@
     "boilerDataMixin",
     "airCurrentMixin",
     "flywheelMixin",
-    "basinRecipeMixin",
-    "basinCategoryMixin",
     "fluidRenderHelperMixin",
     "strayMixin",
     "mysteriousConversionMixin"

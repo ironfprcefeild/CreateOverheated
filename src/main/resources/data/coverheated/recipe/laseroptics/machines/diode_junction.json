@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " m ",
+    "mcf",
+    " f "
+  ],
+  "key": {
+    "f": {
+      "item": "coverheated:blazeglass_fixture"
+    },
+    "c": {
+      "item": "coverheated:laser_casing"
+    },
+    "m": {
+      "item": "coverheated:basic_mirror"
+    }
+  },
+  "result": {
+    "id": "coverheated:diode_junction",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:geothermium"
+    }
+  ],
+  "processingTime": 125,
+  "results": [
+    {
+      "chance": 0.50,
+      "id": "create:ochrum"
+    },
+    {
+      "chance": 0.75,
+      "id": "coverheated:geothermium_powders"
+    }
+  ]
+}

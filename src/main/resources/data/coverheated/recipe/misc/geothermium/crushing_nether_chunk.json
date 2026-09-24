@@ -1,0 +1,40 @@
+
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "coverheated:nether_geothermium_chunk"
+    }
+  ],
+  "processingTime": 185,
+  "results": [
+    {
+      "chance": 0.75,
+      "id": "minecraft:basalt"
+    },
+    {
+      "chance": 0.75,
+      "id": "minecraft:nether_gold_ore"
+    },
+    {
+      "chance": 0.25,
+      "id": "create:crimsite"
+    },
+    {
+      "chance": 0.25,
+      "id": "create:scoria"
+    },
+    {
+      "chance": 0.10,
+      "id": "minecraft:blaze_rod"
+    },
+    {
+      "chance": 0.10,
+      "id": "minecraft:blaze_rod"
+    },
+    {
+      "chance": 0.10,
+      "id": "coverheated:geothermium_powders"
+    }
+  ]
+}

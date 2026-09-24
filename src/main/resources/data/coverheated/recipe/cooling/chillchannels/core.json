@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cdc",
+    "ere",
+    "pdp"
+  ],
+  "key": {
+    "e": {
+      "item": "minecraft:end_rod"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "p": {
+      "item": "coverheated:channel_expeller"
+    },
+    "c": {
+      "item": "coverheated:chill_channel"
+    },
+    "r": {
+      "item": "coverheated:chill_channel_relay"
+    }
+  },
+  "result": {
+    "id": "coverheated:channel_core",
+    "count": 1
+  }
+}

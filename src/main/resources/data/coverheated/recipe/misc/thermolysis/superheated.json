@@ -1,0 +1,21 @@
+{
+  "type": "create:compacting",
+  "heatRequirement": "superheated",
+  "ingredients": [
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:superheated_steam_low",
+      "amount": 1000
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:oxygen",
+      "amount": 10
+    },
+    {
+      "id": "coverheated:hydrogen",
+      "amount": 20
+    }
+  ]
+}

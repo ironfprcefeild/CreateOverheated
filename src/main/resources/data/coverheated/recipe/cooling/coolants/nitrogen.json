@@ -1,0 +1,11 @@
+{
+  "type": "coverheated:cooling",
+  "input_fluid": {
+    "fluid": "coverheated:nitrogen",
+    "type": "neoforge:single",
+    "amount": 1
+  },
+  "heat": 20,
+  "min_temp": 50,
+  "efficiency": 2.0
+}

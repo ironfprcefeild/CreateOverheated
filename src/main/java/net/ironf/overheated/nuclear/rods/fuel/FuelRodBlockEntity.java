@@ -1,7 +1,6 @@
 package net.ironf.overheated.nuclear.rods.fuel;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.createmod.catnip.data.Iterate;
 import net.ironf.overheated.AllBlocks;
@@ -11,6 +10,7 @@ import net.ironf.overheated.nuclear.radiation.RadiationMap;
 import net.ironf.overheated.nuclear.rods.ControlRodsRegister;
 import net.ironf.overheated.nuclear.rods.IMakeNeutrinos;
 import net.ironf.overheated.steamworks.AllSteamFluids;
+import net.ironf.overheated.utility.machines.MachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,13 +18,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
 
-public class FuelRodBlockEntity extends SmartBlockEntity implements
+public class FuelRodBlockEntity extends MachineBlockEntity implements
         IMakeNeutrinos, ControlRodsRegister.IControlRod, IGasPlacer, IHaveGoggleInformation {
     public FuelRodBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -91,7 +91,7 @@ public class FuelRodBlockEntity extends SmartBlockEntity implements
                         BlockPos checked = getBlockPos().relative(Iterate.horizontalDirections[directionChecked]);
                         if (level.getFluidState(checked) == (AllSteamFluids.DISTILLED_WATER.SOURCE.get().getSource(false))){
                             steamCount--;
-                            placeGasBlock(checked,steamCreated,level);
+                            placeGasFluid(checked,steamCreated,level);
                             if (steamCount == 0){
                                 Heat = 0;
                                 break;

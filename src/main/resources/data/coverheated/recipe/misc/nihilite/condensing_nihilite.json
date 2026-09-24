@@ -1,0 +1,14 @@
+{
+  "type": "coverheated:condensing",
+  "input": {
+    "fluid": "coverheated:nihilite_gas",
+    "amount": 1,
+    "type": "neoforge:single"
+  },
+  "output": {
+    "id": "coverheated:liquid_nihilite",
+    "amount": 2
+  },
+  "minTemp": -20,
+  "addTemp": 100
+}

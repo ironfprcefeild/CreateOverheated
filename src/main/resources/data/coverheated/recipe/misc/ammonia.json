@@ -1,0 +1,22 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "fluid": "coverheated:hydrogen",
+      "amount": 4,
+      "type": "neoforge:single"
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "coverheated:nitrogen",
+      "amount": 1
+    }
+  ],
+  "results": [
+    {
+      "id": "coverheated:ammonia",
+      "amount": 5
+    }
+  ]
+}

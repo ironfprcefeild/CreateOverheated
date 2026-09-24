@@ -19,11 +19,8 @@ public class ExplodingGasBlock extends GasBlock{
 
     public int explosionChance;
 
-    //TODO hydrogen shouldn't explode while moving through anything but air
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        BlockPos target = (gasFlowGetter.flowGas(randomSource,pos,world));
-
+    public void flowInto(BlockPos target, @NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
         if (world.isInWorldBounds(target)) {
             BlockState targetState = world.getBlockState(target);
             if (flowThroughTest.test(targetState)) {
