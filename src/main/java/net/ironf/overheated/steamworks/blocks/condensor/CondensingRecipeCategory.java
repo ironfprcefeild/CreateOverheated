@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
+import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.recipes.JEI.JEIAssistant;
 import net.ironf.overheated.recipes.JEI.JEIPlugin;
 import net.minecraft.ChatFormatting;
@@ -25,7 +26,6 @@ import static com.simibubi.create.compat.jei.category.CreateRecipeCategory.getRe
 public class CondensingRecipeCategory implements IRecipeCategory<CondenserRecipe> {
 
     private final IGuiHelper helper;
-    public final static ResourceLocation UID = Overheated.asResource("laser_cooling");
     public CondensingRecipeCategory(IGuiHelper helper) {
         this.helper = helper;
     }
@@ -37,7 +37,7 @@ public class CondensingRecipeCategory implements IRecipeCategory<CondenserRecipe
 
     @Override
     public RecipeType<CondenserRecipe> getRecipeType() {
-        return JEIPlugin.CONDENSING_TYPE;
+        return AllRecipes.CONDENSING.JEIType;
     }
 
     @Override

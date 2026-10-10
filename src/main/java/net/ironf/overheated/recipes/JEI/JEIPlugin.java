@@ -1,5 +1,6 @@
 package net.ironf.overheated.recipes.JEI;
 
+import com.mojang.datafixers.TypeRewriteRule;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -14,13 +15,16 @@ import net.ironf.overheated.recipes.AllRecipes;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondensingRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -28,12 +32,6 @@ public class JEIPlugin implements IModPlugin {
     public ResourceLocation getPluginUid() {
         return Overheated.asResource("jei_plugin");
     }
-
-
-    public static RecipeType<CoolantRecipe> COOLING_TYPE =
-            new RecipeType<>(Overheated.asResource( "cooling"), CoolantRecipe.class);
-    public static RecipeType<CondenserRecipe> CONDENSING_TYPE =
-            new RecipeType<>(Overheated.asResource( "condensing"), CondenserRecipe.class);
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
@@ -47,27 +45,21 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-        /*
-        List<RecipeHolder<CoolantRecipe>> recipesLaserCooling = rm.getAllRecipesFor(AllRecipes.COOLANT.TYPE.get());
-        registration.addRecipes(COOLING_TYPE, recipesLaserCooling);
 
-
-        List<CondenserRecipe> recipesCondensing = rm.getAllRecipesFor(CondenserRecipe.Type.INSTANCE);
-        registration.addRecipes(CONDENSING_TYPE, recipesCondensing);
-
-         */
-
+        AllRecipes.COOLANT.JEIRegisterRecipes(rm,registration);
+        AllRecipes.CONDENSING.JEIRegisterRecipes(rm,registration);
 
     }
+
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         IModPlugin.super.registerRecipeCatalysts(registration);
-        registration.addRecipeCatalyst(new ItemStack(AllBlocks.DIODE.get().asItem()), COOLING_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), COOLING_TYPE);
-        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), CONDENSING_TYPE);
-
+        registration.addRecipeCatalyst(new ItemStack(AllBlocks.DIODE.get().asItem()), AllRecipes.COOLANT.JEIType);
+        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), AllRecipes.COOLANT.JEIType);
+        registration.addRecipeCatalyst(new ItemStack(AllBlocks.CONDENSER.get().asItem()), AllRecipes.CONDENSING.JEIType);
     }
+
 
 
 
