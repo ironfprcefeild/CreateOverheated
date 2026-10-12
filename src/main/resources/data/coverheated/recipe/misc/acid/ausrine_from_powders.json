@@ -1,6 +1,6 @@
 {
   "type": "coverheated:pressure_chamber",
-  "ingredients": [
+  "inputs": [
     {
       "item": "minecraft:gunpowder",
       "count": 1

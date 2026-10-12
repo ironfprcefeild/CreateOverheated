@@ -10,5 +10,8 @@
     "amount": 2
   },
   "minTemp": -40,
-  "addTemp": 10
+  "addTemp": 10,
+  "overheat": 0,
+  "superheat": 0,
+  "heat": 0
 }

@@ -14,5 +14,6 @@
     "amount": 150,
     "id": "coverheated:purified_water"
   },
-  "time": 500
+  "time": 500,
+  "heat_rating": 1
 }

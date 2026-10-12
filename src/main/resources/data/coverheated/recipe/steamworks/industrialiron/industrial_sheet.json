@@ -24,7 +24,7 @@
         {
           "amount": 50,
           "fluid": "coverheated:distilled_water",
-          "nbt": {}
+          "type": "neoforge:single"
         }
       ],
       "results": [

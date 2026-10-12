@@ -73,7 +73,7 @@
       ]
     }
   ],
-  "transitionalItem": {
-    "id": "coverheated:incomplete_laser_casing"
+  "transitional_item": {
+    "item": "coverheated:incomplete_laser_casing"
   }
 }

@@ -14,5 +14,6 @@
     "amount": 100,
     "id": "coverheated:akrycite"
   },
-  "time": 300
+  "time": 300,
+  "heat_rating": 1
 }

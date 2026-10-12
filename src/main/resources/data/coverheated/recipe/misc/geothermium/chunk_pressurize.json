@@ -1,6 +1,6 @@
 {
   "type": "coverheated:pressure_chamber",
-  "ingredients": [
+  "inputs": [
     {
       "item": "coverheated:geothermium_powders",
       "count": 1
