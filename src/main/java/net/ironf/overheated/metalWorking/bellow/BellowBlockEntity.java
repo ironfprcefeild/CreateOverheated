@@ -89,13 +89,16 @@ public class BellowBlockEntity extends KineticBlockEntity implements IHaveGoggle
     protected void read(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
         super.read(tag, r, clientPacket);
         processingTicks = tag.getFloat("timer");
-        tank.readFromNBT(r,tag.getCompound("tank"));
+        tank.readFromNBT(r,tag.getCompound("tankContent"));
+        tank.readFromNBT(r, tag.getCompound("tankContent"));
+
     }
 
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider r, boolean clientPacket) {
         super.write(tag, r, clientPacket);
         tag.putFloat("timer",processingTicks);
-        tag.put("tank",tank.writeToNBT(r,tag));
+        tag.put("tankContent", tank.writeToNBT(r, new CompoundTag()));
+
     }
 }

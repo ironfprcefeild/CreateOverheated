@@ -98,7 +98,7 @@ public class CondenserBlockEntity extends CooledMachineBlockEntity implements IH
     public boolean hasPassiveCooling() {return true;}
     @Override
     public CoolingData getPassiveCooling() {
-        return new CoolingData(4,-10);
+        return new CoolingData(0,-10);
     }
 
     @Override

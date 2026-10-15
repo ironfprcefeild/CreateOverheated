@@ -20,7 +20,7 @@ public class AllSteamFluids {
 
     //I declare creative tabs twice so that distilled water doesn't end up in the steam buckets tab
     static {
-        Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
+        REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_TAB);
     }
 
 
@@ -39,7 +39,7 @@ public class AllSteamFluids {
 
 
     static {
-        Overheated.REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB);
+        REGISTRATE.setCreativeTab(AllCreativeModeTabs.OVERHEATED_STEAM_BUCKETS_TAB);
     }
 
 
@@ -71,6 +71,7 @@ public class AllSteamFluids {
 
         REGISTRATE.addLang("fluid",Overheated.asResource(id),name);
         REGISTRATE.addLang("item", Overheated.asResource(id).withSuffix("_bucket"),name + " Bucket");
+
 
         return REGISTRATE.SimpleFluid(id)
                 .overrideTexture("block/hot_air")

@@ -212,11 +212,6 @@ public class ImpactDrillBlockEntity extends LaserMachineBlockEntity implements I
         return true;
     }
 
-    @Override
-    public CoolingData getPassiveCooling() {
-        return new CoolingData(4,0);
-    }
-
     //Read / Writes
 
     @Override

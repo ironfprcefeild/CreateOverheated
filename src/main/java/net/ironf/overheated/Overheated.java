@@ -8,6 +8,7 @@ import net.ironf.overheated.laserOptics.Diode.DiodeHeaters;
 import net.ironf.overheated.laserOptics.blazeCrucible.BlazeCrucibleBlockEntity;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
 import net.ironf.overheated.laserOptics.solarPanel.blazeAbsorber.BlazeAbsorberBlockEntity;
+import net.ironf.overheated.metalWorking.TemperatureTransformHandler;
 import net.ironf.overheated.nuclear.radiation.RadiationMap;
 import net.ironf.overheated.nuclear.rods.ControlRodsRegister;
 import net.ironf.overheated.recipes.AllRecipes;
@@ -24,7 +25,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -94,6 +94,8 @@ public class Overheated
         CoolingHandler.generateHandler();
         CondensingRecipeHandler.setLevel(event.getServer().overworld());
         CondensingRecipeHandler.generateHandler();
+        TemperatureTransformHandler.setLevel(event.getServer().overworld());
+        TemperatureTransformHandler.generateHandlers();
         RadiationMap.RadiationHashMap.clear();
     }
 

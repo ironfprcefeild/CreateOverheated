@@ -19,6 +19,7 @@ import net.ironf.overheated.gasses.ExplodingGasBlock;
 import net.ironf.overheated.gasses.GasBlock;
 import net.ironf.overheated.gasses.GasFlowGetter;
 import net.ironf.overheated.gasses.GasFluidSource;
+import net.ironf.overheated.metalWorking.TemperatureTransformHandler;
 import net.ironf.overheated.ponder.OverheatedPonderPlugin;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedBlockStateProvider;
 import net.ironf.overheated.utility.data.dataGeneration.OverheatedItemModelProvider;
@@ -73,6 +74,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -110,7 +112,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
 
     public static final DeferredRegister<Block> GAS_BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, Overheated.MODID);
 
-    public static final DeferredRegister<Item> GENERAL_ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM,Overheated.MODID);
+    public static final DeferredRegister.Items GENERAL_ITEMS = DeferredRegister.createItems(Overheated.MODID);
     public static List<DeferredHolder<Item,? extends Item>> items_for_tab = new ReferenceArrayList<>();
 
 
@@ -707,6 +709,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
                     blockTintColors.put(gb,tintColor);
                     TintedBlocks.add(gb);
                 }
+
             }
 
             return this;
@@ -961,6 +964,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             if (passThroughPredicate == null){
                 passThroughPredicate = BlockBehaviour.BlockStateBase::isAir;
             }
+
             DeferredHolder<Block, ? extends GasBlock> toReturn = GAS_BLOCKS.register(
                     Name,
                     useAlt ? (altFactory) :
@@ -990,7 +994,11 @@ public class OverheatedRegistrate extends CreateRegistrate {
                                         .noLootTable(),
                                 gfg, passThroughPredicate,explosionChance ,lowerTickDelay,upperTickDelay))));
 
-            makeBlockItems.put(toReturn,false);
+            makeBlockItems.put(toReturn,true);
+
+            GENERAL_ITEMS.registerSimpleBlockItem(toReturn);
+
+
             if (textureOver != null){
                 blockModelOverride.put(toReturn,fromNamespaceAndPath(Parent.getModid(),textureOver));
             }
@@ -998,6 +1006,7 @@ public class OverheatedRegistrate extends CreateRegistrate {
             if (seeThrough){
                 transparentGasses.add(toReturn);
             }
+
 
             return toReturn;
 

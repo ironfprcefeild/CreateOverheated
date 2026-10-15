@@ -51,7 +51,7 @@ public class AllCreativeModeTabs {
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.overheated.base"))
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-                    .icon(AllBlocks.STEAM_VENT::asStack)
+                    .icon(() -> new ItemStack(AllBlocks.STEAM_VENT.asItem(),1))
                     .displayItems((parameters, output) -> {
                         output.acceptAll(collectItems());
                         output.acceptAll(collectBlocks());

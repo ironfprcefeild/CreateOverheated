@@ -1,10 +1,5 @@
 {
   "values": [
-    "minecraft:bricks",
-    "coverheated:air_gas",
-    "coverheated:heated_air",
-    "coverheated:superheated_air",
-    "coverheated:overheated_air"
-
+    "minecraft:bricks"
   ]
 }

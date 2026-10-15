@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.colants.CoolantRecipe;
+import net.ironf.overheated.metalWorking.TemperatureTransformRecipe;
 import net.ironf.overheated.steamworks.blocks.condensor.CondenserRecipe;
 import net.ironf.overheated.steamworks.blocks.impactDrill.ImpactDrillRecipe;
 import net.ironf.overheated.steamworks.blocks.pressureChamber.PressureChamberRecipe;
@@ -53,6 +54,12 @@ public class AllRecipes {
             CondenserRecipe.CondenserSerializer.CODEC,
             CondenserRecipe.CondenserSerializer.STREAM_CODEC,
             CondenserRecipe.class);
+    public static final RecipeRegistration<DummyRecipeInput, TemperatureTransformRecipe> TEMPERATURE_TRANSFORM = new RecipeRegistration<>(
+            "phase_transition",
+            TemperatureTransformRecipe.TemperatureTransformSerializer.CODEC,
+            TemperatureTransformRecipe.TemperatureTransformSerializer.STREAM_CODEC,
+            TemperatureTransformRecipe.class);
+
 
 
 

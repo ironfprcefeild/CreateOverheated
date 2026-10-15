@@ -2,8 +2,13 @@ package net.ironf.overheated.utility.machines;
 
 import com.simibubi.create.AllSoundEvents;
 import net.createmod.catnip.data.Iterate;
+import net.ironf.overheated.AllTags;
+import net.ironf.overheated.Overheated;
 import net.ironf.overheated.cooling.CoolingData;
 import net.ironf.overheated.cooling.ICoolingBlockEntity;
+import net.ironf.overheated.metalWorking.ThermalInformationBundle;
+import net.ironf.overheated.metalWorking.UniversalState;
+import net.ironf.overheated.recipes.OverheatedCodecs;
 import net.ironf.overheated.utility.GoggleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -20,6 +25,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+
+import static net.ironf.overheated.metalWorking.TemperatureTransformHandler.PhaseTransitionMap;
 
 
 public abstract class CooledMachineBlockEntity extends CapableMachineBlockEntity {
@@ -99,15 +106,55 @@ public abstract class CooledMachineBlockEntity extends CapableMachineBlockEntity
         return null;
     }
     public float getCooledDifficulty(){
-        return (float) Math.pow(Math.abs(currentTemp),2);
+        return (float) Math.pow(Math.abs(currentTemp - airTemp) * 0.25,2);
     }
+
+    //Thermal Coeff of a minecraft block is Change in temperature / (Block * difference in temperature * Cooling Step)
+    public float getThermalCoeff(){return 0.05f;}
+    public static float airTemp = 15;
+    public static float airCoeff = 0.01f;
+
+
     public void coolingStep(){
+        //Apply Cooling
         CoolingData cooling = getCoolingData(getBlockPos(),level);
         if (currentTemp > cooling.minTemp){
             coolingProgress += cooling.coolingUnits;
             while(coolingProgress >= getCooledDifficulty()) {
                 coolingProgress = coolingProgress - getCooledDifficulty();
                 currentTemp--;
+            }
+        }
+        for (Direction d : Iterate.directions){
+            BlockPos at = getBlockPos().relative(d);
+            BlockState atState = level.getBlockState(at);
+
+            //If we are at an empty face, equalize with air
+            if (atState.isAir()){
+                currentTemp += (airTemp - currentTemp) * getThermalCoeff() * airCoeff;
+                continue;
+            }
+            //If we are at an insulator, continue through the loop
+            if (AllTags.AllBlockTags.INSULATOR.matches(atState)){
+                continue;
+            }
+            //If we are at a Cooled Machine, equalize temperatures
+            if (level.getBlockEntity(at) instanceof CooledMachineBlockEntity otherBE){
+                currentTemp += (otherBE.currentTemp - currentTemp) * 0.5f * (getThermalCoeff() + otherBE.getThermalCoeff());
+                continue;
+            }
+            //If we are at a passively temped block, equalize temperature
+            UniversalState UState = UniversalState.stateAt(level,at);
+            Overheated.LOGGER.info("Attempting to perform passive cooling on" + UState);
+            if (PhaseTransitionMap.containsKey(UState)){
+                Overheated.LOGGER.info("Passive Temping is occuring!");
+                ThermalInformationBundle tiBundle = PhaseTransitionMap.get(UState);
+                float tempChange = (tiBundle.passiveTemp - currentTemp) * 0.5f * (tiBundle.thermalProperty + getThermalCoeff());
+                //A phase transition could occur
+                if (tempChange * tiBundle.decayChance > level.random.nextIntBetweenInclusive(0,10)){
+                    tiBundle.phases.transformationFromTemp(currentTemp).set(level,at,3);
+                }
+                currentTemp += tempChange;
             }
         }
     }
@@ -120,7 +167,7 @@ public abstract class CooledMachineBlockEntity extends CapableMachineBlockEntity
         tooltip.add(GoggleHelper.addIndent(Component.literal(GoggleHelper.easyFloat(currentTemp)).withStyle(ChatFormatting.AQUA), 1));
 
         tooltip.add(GoggleHelper.addIndent(Component.translatable("coverheated.tooltip.cooling.cooling_units").withStyle(ChatFormatting.WHITE)));
-        if (hasPassiveCooling()){
+        if (hasPassiveCooling() && getPassiveCooling().coolingUnits != 0){
             CoolingData passiveCooling = getPassiveCooling();
             tooltip.add(GoggleHelper.addIndent(
                     Component.translatable("coverheated.tooltip.cooling.outside")

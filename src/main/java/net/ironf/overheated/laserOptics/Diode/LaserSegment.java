@@ -2,8 +2,6 @@ package net.ironf.overheated.laserOptics.Diode;
 
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.ironf.overheated.laserOptics.mirrors.mirrorRegister;
-import net.ironf.overheated.metalWorking.HeatedBlock;
-import net.ironf.overheated.metalWorking.TemperatureHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -82,22 +80,15 @@ public class LaserSegment {
                 if (!mirrorRegister.isMirror(hitState) && hitState.getBlock().defaultDestroyTime() >= 0) {
                     //Non-Mirror or breakable block.
                     breakingCounter = (breakingCounter + (laserHeat.getTotalHeat()*volatility));
-                    if (hitState.hasProperty(HeatedBlock.TEMPERATURE)){
-                        //Heated Block
-                        if (breakingCounter >= 64){
-                            breakingCounter = 0;
-                            TemperatureHandler.changeTempAt(level,continueAt,1,laserHeat.getHeatLevelOfHighest());
-                        }
-                    } else {
-                        double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
-                        if (counterNeeded < breakingCounter) {
-                            //break, lower counter, and pass to test for additional break
-                            level.destroyBlock(continueAt, true);
-                            breakingCounter = breakingCounter - counterNeeded;
-                            continue;
-                        }
-                        break;
+                    double counterNeeded = hitState.getBlock().defaultDestroyTime() * 7.5;
+                    //Make the laser heat shit up TODO
+                    if (counterNeeded < breakingCounter) {
+                        //break, lower counter, and pass to test for additional break
+                        level.destroyBlock(continueAt, true);
+                        breakingCounter = breakingCounter - counterNeeded;
+                        continue;
                     }
+                    break;
                 } else {
                     //Mirror or unbreakable block
 

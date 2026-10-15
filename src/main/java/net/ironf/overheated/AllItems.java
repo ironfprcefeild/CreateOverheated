@@ -9,11 +9,15 @@ import net.ironf.overheated.utility.registration.OverheatedRegistrate;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
+
+import java.util.function.Supplier;
 
 import static net.ironf.overheated.Overheated.REGISTRATE;
 import static net.ironf.overheated.utility.registration.OverheatedRegistrate.defaultMeltingRequirement;

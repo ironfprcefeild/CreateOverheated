@@ -2,13 +2,19 @@ package net.ironf.overheated.recipes;
 
 import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Function8;
+import com.mojang.serialization.Codec;
 import net.ironf.overheated.laserOptics.backend.heatUtil.HeatData;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class OverheatedCodecs {
@@ -55,7 +61,49 @@ public class OverheatedCodecs {
         }
     };
 
+    //Float List
+    public static final Codec<List<Float>> FLOAT_LIST = Codec.FLOAT.listOf();
 
+    public static final StreamCodec<RegistryFriendlyByteBuf,List<Float>> STREAM_FLOAT_LIST = new StreamCodec<>() {
+        @Override
+        public List<Float> decode(RegistryFriendlyByteBuf buf) {
+            int size = buf.readInt();
+            NonNullList<Float> output = NonNullList.withSize(size, 0f);
+            for (int i = 0; i < size; i++) {
+                output.set(i, buf.readFloat());
+            }
+            return output;
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, List<Float> floats) {
+            buf.writeInt(floats.size());
+            for (Float f : floats) {
+                buf.writeFloat(f);
+            }
+        }
+    };
+
+    //Blockstate list
+    public static final StreamCodec<RegistryFriendlyByteBuf, NonNullList<BlockState>> STREAM_BLOCKSTATE_LIST = new StreamCodec<>() {
+        public NonNullList<BlockState> decode(RegistryFriendlyByteBuf buf) {
+            int size = buf.readInt();
+            NonNullList<BlockState> output = NonNullList.withSize(size, Blocks.AIR.defaultBlockState());
+            for (int i = 0; i < size; i++) {
+                output.set(i, ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY).decode(buf));
+            }
+            return output;
+        }
+
+        public void encode(RegistryFriendlyByteBuf buf, NonNullList<BlockState> list) {
+            //Size
+            buf.writeInt(list.size());
+            //Entries
+            for (BlockState state : list){
+                ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY).encode(buf,state);
+            }
+        }
+    };
     /// HeatData Codecs
     public static final StreamCodec<RegistryFriendlyByteBuf, HeatData> HEAT_DATA = new StreamCodec<>() {
         public HeatData decode(RegistryFriendlyByteBuf buf) {
