@@ -75,8 +75,8 @@ public class CombustionRecipe implements Recipe<DummyRecipeInput> {
                 FluidIngredient.CODEC.fieldOf("input_b").forGetter(CombustionRecipe::getInputFluidB),
                 FluidStack.CODEC.fieldOf("output").forGetter(CombustionRecipe::getOutputFluid),
                 INT.fieldOf("time").forGetter(CombustionRecipe::getCombustionTime),
-                FLOAT.fieldOf("laser_heat").forGetter(CombustionRecipe::getLaserHeat),
-                INT.fieldOf("heat_rating").forGetter(CombustionRecipe::getHeatRating)
+                FLOAT.optionalFieldOf("laser_heat",0f).forGetter(CombustionRecipe::getLaserHeat),
+                INT.optionalFieldOf("heat_rating",0).forGetter(CombustionRecipe::getHeatRating)
         ).apply(inst, CombustionRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, CombustionRecipe> STREAM_CODEC =

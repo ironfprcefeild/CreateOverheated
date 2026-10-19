@@ -78,9 +78,9 @@ public class CondenserRecipe implements Recipe<SimpleFluidInput> {
             FluidStack.CODEC.fieldOf("output").forGetter(CondenserRecipe::getOutput),
             FLOAT.fieldOf("minTemp").forGetter(CondenserRecipe::getMinTemp),
             FLOAT.fieldOf("addTemp").forGetter(CondenserRecipe::getAddTemp),
-            FLOAT.fieldOf("heat").forGetter((O) -> O.getGeneratedHeat().Heat),
-            FLOAT.fieldOf("superHeat").forGetter((O) -> O.getGeneratedHeat().SuperHeat),
-            FLOAT.fieldOf("overHeat").forGetter((O) -> O.getGeneratedHeat().OverHeat)
+            FLOAT.optionalFieldOf("heat",0f).forGetter((O) -> O.getGeneratedHeat().Heat),
+            FLOAT.optionalFieldOf("superHeat",0f).forGetter((O) -> O.getGeneratedHeat().SuperHeat),
+            FLOAT.optionalFieldOf("overHeat",0f).forGetter((O) -> O.getGeneratedHeat().OverHeat)
         ).apply(inst, CondenserRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, CondenserRecipe> STREAM_CODEC =

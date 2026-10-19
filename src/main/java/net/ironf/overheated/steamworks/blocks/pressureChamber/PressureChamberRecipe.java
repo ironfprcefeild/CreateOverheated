@@ -177,13 +177,13 @@ public class PressureChamberRecipe implements Recipe<DummyRecipeInput> {
     public static class PressureChamberRecipeSerializer implements RecipeSerializer<PressureChamberRecipe> {
         public static final MapCodec<PressureChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 INT.fieldOf("pressure").forGetter(PressureChamberRecipe::getSteamPressure),
-                FLOAT.fieldOf("laser_heat").forGetter(PressureChamberRecipe::getLaserHeat),
+                FLOAT.optionalFieldOf("laser_heat",0f).forGetter(PressureChamberRecipe::getLaserHeat),
                 FLOAT.fieldOf("heat_added").forGetter(PressureChamberRecipe::getHeatAdded),
-                INT.fieldOf("ticks_taken").forGetter(PressureChamberRecipe::getTicksTaken),
-                INT.fieldOf("heat_rating").forGetter(PressureChamberRecipe::getMinimumHeatRating),
+                INT.optionalFieldOf("ticks_taken",60).forGetter(PressureChamberRecipe::getTicksTaken),
+                INT.optionalFieldOf("heat_rating",0).forGetter(PressureChamberRecipe::getMinimumHeatRating),
                 Ingredient.LIST_CODEC.fieldOf("inputs").forGetter(PressureChamberRecipe::getInputs),
                 ItemStack.CODEC.listOf().fieldOf("outputs").forGetter(PressureChamberRecipe::getOutputs),
-                BOOL.fieldOf("combustion").forGetter(PressureChamberRecipe::isCombustion)
+                BOOL.optionalFieldOf("combustion",false).forGetter(PressureChamberRecipe::isCombustion)
             ).apply(inst, PressureChamberRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, PressureChamberRecipe> STREAM_CODEC =

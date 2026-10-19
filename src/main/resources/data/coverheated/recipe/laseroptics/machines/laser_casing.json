@@ -74,6 +74,6 @@
     }
   ],
   "transitional_item": {
-    "item": "coverheated:incomplete_laser_casing"
+    "id": "coverheated:incomplete_laser_casing"
   }
 }
