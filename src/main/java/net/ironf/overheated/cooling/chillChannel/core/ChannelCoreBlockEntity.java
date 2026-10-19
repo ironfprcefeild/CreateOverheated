@@ -106,14 +106,14 @@ public class ChannelCoreBlockEntity extends CapableMachineBlockEntity implements
 
         //Validate Coolant
         Fluid fluidContained = Tank().getFluid().getFluid();
-        if (!CoolingHandler.minTempHandler.containsKey(fluidContained) || Tank().getFluidAmount() < flywheelPower){
+        if (!CoolingHandler.minTempHandler.containsKey(String.valueOf(fluidContained)) || Tank().getFluidAmount() < flywheelPower){
             disable("no_coolant");
             return;
         }
 
         //Find Min Temp and Efficiency
-        float minTemp = CoolingHandler.minTempHandler.get(fluidContained);
-        float networkEff = CoolingHandler.efficiencyHandler.get(fluidContained);
+        float minTemp = CoolingHandler.minTempHandler.get(String.valueOf(fluidContained));
+        float networkEff = CoolingHandler.efficiencyHandler.get(String.valueOf(fluidContained));
 
         //Prep Network Info
         coolingUnits.reset();
@@ -131,7 +131,6 @@ public class ChannelCoreBlockEntity extends CapableMachineBlockEntity implements
                 currentPos = CBE.propagateChannel(coolingUnits,networkEff,minTemp,channelMovingIn);
                 if (currentPos == null || !level.isInWorldBounds(currentPos)){
                     //Failure!
-                    Overheated.LOGGER.info("Error 1");
                     disable("incomplete_loop");
                     break;
                 }

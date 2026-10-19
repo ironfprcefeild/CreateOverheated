@@ -70,7 +70,7 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
         ArrayList<Direction> directions = (new ArrayList<>(List.of(Iterate.directions)));
         CoolingData toReturn = getCoolingData(myPos, level, directions.toArray(Direction[]::new));
 
-        Fluid coolant = Tank().getFluid().getFluid();
+        String coolant = String.valueOf(Tank().getFluid().getFluid());
 
         toReturn.minTemp = CoolingHandler.minTempHandler.getOrDefault(coolant,-10f);
         toReturn.coolingUnits = effTracker * toReturn.coolingUnits;
@@ -91,7 +91,7 @@ public class CoolerBlockEntity extends CooledMachineBlockEntity implements ICool
         if (tickTimer-- == 0){
             tickTimer = 75;
             Tank().drain(1, IFluidHandler.FluidAction.EXECUTE);
-            effTracker = !Tank().isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(Tank().getFluid().getFluid(),1f) : 1f;
+            effTracker = !Tank().isEmpty() ? CoolingHandler.efficiencyHandler.getOrDefault(String.valueOf(Tank().getFluid().getFluid()),1f) : 1f;
         }
     }
 

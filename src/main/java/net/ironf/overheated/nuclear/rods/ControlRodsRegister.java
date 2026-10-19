@@ -28,9 +28,7 @@ public class ControlRodsRegister {
             return be.regulate(amount,dir,pos,state,level);
         });
     }
-    public static void registerSimpleRegulator(Block block, int alwaysReturn){
-        registerRegulator(block, (n,d,pos,state,level) -> alwaysReturn);
-    }
+
     public static Integer doRegulation(int incomingNeutrinos, Direction incoming, Level level, BlockPos pos, BlockState state) {
         IControlRod rod = REGULATORS.get(state.getBlock());
         return rod != null ? rod.regulate(incomingNeutrinos,incoming,pos,state,level) : incomingNeutrinos;
@@ -41,7 +39,6 @@ public class ControlRodsRegister {
         registerBERegulator(AllBlocks.URANIUM_FUEL_ROD.get());
         registerBERegulator(AllBlocks.CONTROL_ROD.get());
         registerBERegulator(AllBlocks.RADIOLYZER.get());
-        registerSimpleRegulator(AllBlocks.NUCLEAR_CASING.get(),0);
     }
 
 }

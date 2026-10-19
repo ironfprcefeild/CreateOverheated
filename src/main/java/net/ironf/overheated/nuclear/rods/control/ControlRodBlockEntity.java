@@ -25,7 +25,7 @@ public class ControlRodBlockEntity extends SmartBlockEntity implements ControlRo
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         gateScrollWheel =
                 new ScrollValueBehaviour(Component.translatable("coverheated.control_rod.scroll"), this, new ChannelSlotBox())
-                        .between(0,16)
+                        .between(0,4096)
                         .withCallback( i -> {propagateScrollValue(i,Direction.UP);
                                                     propagateScrollValue(i,Direction.DOWN);});
 

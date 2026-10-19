@@ -27,7 +27,7 @@ public class FuelRodBlockEntity extends CooledMachineBlockEntity implements
     }
 
     public Integer neutrinosStored = 0;
-    public Integer neutrinoQueue = 0;
+    public Integer neutrinoQueue = 100;
     public Integer saturationLimit = getInitialSaturationLimit();
 
     private Integer getInitialSaturationLimit() {
@@ -38,7 +38,7 @@ public class FuelRodBlockEntity extends CooledMachineBlockEntity implements
     public void fifthTick() {
         super.fifthTick();
         neutrinosStored = Math.min(neutrinoQueue, saturationLimit);
-        if (neutrinosStored != 0) {
+        if (neutrinosStored > 0) {
             fireNeutrinosOrthogonally(neutrinosStored, getBlockPos(), level);
         }
         neutrinoQueue = 0;

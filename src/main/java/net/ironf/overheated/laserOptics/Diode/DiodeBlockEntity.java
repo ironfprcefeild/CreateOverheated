@@ -101,10 +101,10 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
 
         //Cap heat based on RPM. The boolean is used to determine goggle display
         FluidStack fluids = getFluidStack();
-        if (!fluids.isEmpty() && CoolingHandler.heatHandler.containsKey(fluids.getFluid())) {
+        if (!fluids.isEmpty() && CoolingHandler.heatHandler.containsKey(String.valueOf(fluids.getFluid()))) {
             noCoolant = false;
             HeatData laserHeat = findHeat();
-            float heatCap = Math.min(Math.abs(getSpeed()), CoolingHandler.heatHandler.get(fluids.getFluid()));
+            float heatCap = Math.min(Math.abs(getSpeed()), CoolingHandler.heatHandler.get(String.valueOf(fluids.getFluid())));
             if (laserHeat.getTotalHeat() > heatCap) {
                 activeInefficiency = true;
                 laserHeat.capHeat(heatCap);
@@ -125,7 +125,7 @@ public class DiodeBlockEntity extends KineticBlockEntity implements IHaveGoggleI
             LS.updateLaserEmission(
                     recentHeat,
                     (int) (recentHeat.getTotalHeat() + 16),
-                    CoolingHandler.efficiencyHandler.get(fluids.getFluid()),
+                    CoolingHandler.efficiencyHandler.get(String.valueOf(fluids.getFluid())),
                     level.getBlockState(getBlockPos()).getValue(BlockStateProperties.FACING));
             LS.tickAffectedEntities();
 

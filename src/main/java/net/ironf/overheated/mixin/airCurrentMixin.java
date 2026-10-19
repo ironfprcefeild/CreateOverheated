@@ -59,9 +59,12 @@ public class airCurrentMixin {
         }
         while (!gassesToPush.empty()){
             BlockPos gasAt = gassesToPush.pop();
+            /*
             source.getAirCurrentWorld().setBlockAndUpdate(gasAt,
                 source.getAirCurrentWorld().getBlockState(gasAt)
                 .setValue(GasBlock.FORCEDMOVEMENT,source.getAirFlowDirection().ordinal()+1));
+
+             */
         }
     }
     //This injection lets us tick our affected BEs

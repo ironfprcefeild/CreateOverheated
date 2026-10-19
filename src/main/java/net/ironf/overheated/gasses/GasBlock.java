@@ -34,41 +34,18 @@ public class GasBlock extends TintedGlassBlock {
     protected final int upperTickDelay;
     protected final int lowerTickDelay;
 
-    public static final IntegerProperty FORCEDMOVEMENT =
-            IntegerProperty.create("forcedmovement",0,6);
-
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(FORCEDMOVEMENT));
-    }
-
-    @Override
-    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        return super.getStateForPlacement(context).setValue(FORCEDMOVEMENT,0);
-    }
 
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState other_state, boolean bool) {
         super.onPlace(state, level, pos, other_state, bool);
-        if (level.random.nextIntBetweenInclusive(1,8) == 8){
-            level.setBlock(pos,state.setValue(FORCEDMOVEMENT,0),3);
-        }
         level.scheduleTick(pos, this,level.random.nextIntBetweenInclusive(lowerTickDelay,upperTickDelay));
     }
 
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource) {
-        if (state.getValue(FORCEDMOVEMENT) == 0){
-            flowInto(gasFlowGetter.flowGas(randomSource,pos,world),state,world,pos,randomSource);
-        } else {
-            int forcedMove = state.getValue(FORCEDMOVEMENT);
-            BlockPos target = pos.relative(Iterate.directions[forcedMove-1]);
-            flowInto(target,state,world,pos,randomSource);
-            world.scheduleTick(target,this,AllConfigs.server().kinetics.fanBlockCheckRate.get());
-        }
+        flowInto(gasFlowGetter.flowGas(randomSource,pos,world),state,world,pos,randomSource);
     }
 
     public void flowInto(BlockPos target, @NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource randomSource){
