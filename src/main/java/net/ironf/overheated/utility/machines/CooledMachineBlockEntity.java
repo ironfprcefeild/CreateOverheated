@@ -120,11 +120,13 @@ public abstract class CooledMachineBlockEntity extends CapableMachineBlockEntity
         CoolingData cooling = getCoolingData(getBlockPos(),level);
         if (currentTemp > cooling.minTemp){
             coolingProgress += cooling.coolingUnits;
-            while(coolingProgress >= getCooledDifficulty()) {
+            while(coolingProgress >= getCooledDifficulty() && currentTemp > cooling.minTemp) {
                 coolingProgress = coolingProgress - getCooledDifficulty();
                 currentTemp--;
             }
         }
+
+
         for (Direction d : Iterate.directions){
             BlockPos at = getBlockPos().relative(d);
             BlockState atState = level.getBlockState(at);
@@ -145,18 +147,17 @@ public abstract class CooledMachineBlockEntity extends CapableMachineBlockEntity
             }
             //If we are at a passively temped block, equalize temperature
             UniversalState UState = UniversalState.stateAt(level,at);
-            Overheated.LOGGER.info("Attempting to perform passive cooling on" + UState);
             if (PhaseTransitionMap.containsKey(UState)){
-                Overheated.LOGGER.info("Passive Temping is occuring!");
                 ThermalInformationBundle tiBundle = PhaseTransitionMap.get(UState);
-                float tempChange = (tiBundle.passiveTemp - currentTemp) * 0.5f * (tiBundle.thermalProperty + getThermalCoeff());
+                currentTemp += (tiBundle.passiveTemp - currentTemp) * 0.5f * (tiBundle.thermalProperty + getThermalCoeff());
                 //A phase transition could occur
-                if (tempChange * tiBundle.decayChance > level.random.nextIntBetweenInclusive(0,10)){
-                    tiBundle.phases.transformationFromTemp(currentTemp).set(level,at,3);
+                if ((tiBundle.decayChance > level.random.nextInt())) {
+                    tiBundle.phases.executeTransformation(currentTemp, at, level);
                 }
-                currentTemp += tempChange;
             }
         }
+
+
     }
 
     public void tempAndCoolInfo(List<Component> tooltip){

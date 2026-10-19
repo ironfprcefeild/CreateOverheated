@@ -42,11 +42,13 @@ public class TemperatureTransformHandler implements ResourceManagerReloadListene
             }
 
         }
-        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.HEATED_HOT_AIR.gb.get()), UniversalState.empty,1000,1f,0.08f);
-        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.SUPERHEATED_HOT_AIR.gb.get()), UniversalState.empty,2000,4f,0.04f);
-        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.OVERHEATED_HOT_AIR.gb.get()), UniversalState.empty,10000,8f,0.002f);
+        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.HEATED_HOT_AIR.gb.get()), UniversalState.empty,1000,0.5f,0.8f);
+        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.SUPERHEATED_HOT_AIR.gb.get()), UniversalState.empty,2000,0.8f,0.4f);
+        addConservedEnergyBlock(UniversalState.of(AllSteamFluids.OVERHEATED_HOT_AIR.gb.get()), UniversalState.empty,10000,1f,0.2f);
         addConservedEnergyBlock(UniversalState.of(Blocks.IRON_BLOCK), UniversalState.empty,100000,16f,0.0008f);
-
+        for (UniversalState uState : PhaseTransitionMap.keySet()){
+            Overheated.LOGGER.info("CO: Confirmed Addition of Phase Transition for: " + uState);
+        }
     }
 
     public static void addConservedEnergyBlock(UniversalState block, UniversalState decayState, float passiveTemp, float thermalProperty, float decayChance){

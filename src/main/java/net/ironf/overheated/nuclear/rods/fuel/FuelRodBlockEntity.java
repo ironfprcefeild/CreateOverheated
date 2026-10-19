@@ -2,15 +2,11 @@ package net.ironf.overheated.nuclear.rods.fuel;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import net.createmod.catnip.data.Iterate;
-import net.ironf.overheated.AllBlocks;
 import net.ironf.overheated.Overheated;
 import net.ironf.overheated.gasses.IGasPlacer;
-import net.ironf.overheated.nuclear.radiation.RadiationMap;
 import net.ironf.overheated.nuclear.rods.ControlRodsRegister;
 import net.ironf.overheated.nuclear.rods.IMakeNeutrinos;
-import net.ironf.overheated.steamworks.AllSteamFluids;
-import net.ironf.overheated.utility.machines.MachineBlockEntity;
+import net.ironf.overheated.utility.machines.CooledMachineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,157 +14,92 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
 import static net.ironf.overheated.utility.GoggleHelper.addIndent;
+import static net.ironf.overheated.utility.GoggleHelper.easyFloat;
 
-public class FuelRodBlockEntity extends MachineBlockEntity implements
+public class FuelRodBlockEntity extends CooledMachineBlockEntity implements
         IMakeNeutrinos, ControlRodsRegister.IControlRod, IGasPlacer, IHaveGoggleInformation {
     public FuelRodBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public Integer neutrinosStored = 0;
+    public Integer neutrinoQueue = 0;
+    public Integer saturationLimit = getInitialSaturationLimit();
 
+    private Integer getInitialSaturationLimit() {
+        return 8192;
     }
 
-    int tickTimer = 20;
-    int dischargeTimer = 4;
-
-    int decay = 0;
-    int decayTimer = 16;
-    int Heat = 0;
-    int neutrinos = 1;
-
-    int directionChecked = 0;
-
-
-    //TODO make fuel rods turn into decayed ones
-    //TODO make fuel rods retain their decay when mined (blockstate BS)
     @Override
-    public void tick() {
-        super.tick();
-        if (tickTimer-- <= 0){
-            tickTimer = 80;
-
-            //Fire Neutrinos (every 4 seconds)
-            if (neutrinos > 0){
-                fireNeutrinosOrthogonally(neutrinos,getBlockPos(),level);
-                neutrinos = 0;
-            } else {
-                Heat = Math.max(Heat-1,0);
-            }
-
-            //Make Steam or explode (every 16 seconds)
-            if (dischargeTimer-- <= 0){
-                dischargeTimer = 4;
-
-                if (Heat > 64) {
-                    //Let's blow tf up >:)
-                    causeMeltdown(Heat,getBlockPos());
-                } else if (Heat > 0) {
-                    decayTimer--;
-                    if (decayTimer == 0){
-                        decayTimer = 16;
-                        decay++;
-                    }
-                    //Let's emit some steam :D
-                    //Steam Values: 1-8 = unheated low, 9-16 = heated low, 17-24 = superheated mid, 25-32 = overheated mid, 33-40 = 2x Overheated mid, 41-48 = x3 Overheated High, 49-64 = x4 Overheated High
-                    int steamPressure = Math.floorDiv(Heat, 16) + 1;
-                    int steamHeating = Math.min(3, Math.floorDiv(Heat, 8));
-                    int steamCount = Heat > 32
-                            ? (Heat > 40
-                                ? (Heat > 48 ? 4 : 3)
-                                : 2)
-                            : 1;
-                    FluidStack steamCreated = AllSteamFluids.getSteamFromValues(steamPressure, steamHeating, 1);
-
-                    directionChecked = (directionChecked+1)%4;
-                    while (true){
-                        BlockPos checked = getBlockPos().relative(Iterate.horizontalDirections[directionChecked]);
-                        if (level.getFluidState(checked) == (AllSteamFluids.DISTILLED_WATER.SOURCE.get().getSource(false))){
-                            steamCount--;
-                            placeGasFluid(checked,steamCreated,level);
-                            if (steamCount == 0){
-                                Heat = 0;
-                                break;
-                            }
-                        }
-                        directionChecked++;
-                        if (directionChecked >= 4){
-                            break;
-                        }
-                    }
-                }
-            }
+    public void fifthTick() {
+        super.fifthTick();
+        neutrinosStored = Math.min(neutrinoQueue, saturationLimit);
+        if (neutrinosStored != 0) {
+            fireNeutrinosOrthogonally(neutrinosStored, getBlockPos(), level);
         }
+        neutrinoQueue = 0;
+        /*
+        if (currentTemp >= getMeltDownLimit()){
+            fireNeutrinosOrthogonally((int) currentTemp,getBlockPos(),level);
+        }
+        //TODO Add meltdown logic, should explode, place a block of corium, and create a bunch of radiation
+         */
+    }
+
+    public float getMeltDownLimit() {
+        return 10000;
+    }
+
+    @Override
+    public boolean doCooling() {
+        return true;
     }
 
     @Override
     public Integer regulate(int incomingNeutrinos, Direction direction, BlockPos pos, BlockState state, Level level) {
-        neutrinos += incomingNeutrinos;
-        Heat += incomingNeutrinos;
-        propagateNeutrino(incomingNeutrinos,Direction.UP,1);
-        propagateNeutrino(incomingNeutrinos,Direction.DOWN,1);
+        Overheated.LOGGER.info("Regulating Neutrinos");
+        neutrinoQueue += incomingNeutrinos;
+        currentTemp += incomingNeutrinos;
+        if (neutrinoQueue >= level.random.nextIntBetweenInclusive(0,neutrinosStored)* getLifeTimeCoefficient()){
+            saturationLimit--;
+        }
         return 0;
     }
 
-    public void propagateNeutrino(int amount, Direction d, int offset){
-        if (level.getBlockEntity(getBlockPos().relative(d,offset)) instanceof FuelRodBlockEntity FRBE){
-            //Spread impact to the above fuel rod
-            FRBE.neutrinos += amount;
-            FRBE.Heat += amount;
-            FRBE.propagateNeutrino(amount,d,1);
-        } else if (level.getBlockState(getBlockPos().relative(d,offset)).is(AllBlocks.NUCLEAR_CASING.get())){
-            //No 0fuel rod, but casing, so we call this again with more offset (until we find a rod or other)
-            propagateNeutrino(amount,d,offset+1);
-        }
-    }
-
-
-    public void causeMeltdown(int Heat, BlockPos pos){
-        fireNeutrinosOrthogonally(Heat,pos,level);
-        //Explosions seem to be desynced on client/server
-        Overheated.LOGGER.info("Blowing up on client?" + level.isClientSide);
-        RadiationMap.pulseRadiation(level, pos,5);
-        //level.explode(null,pos.getX(),pos.getY(),pos.getZ(),Math.min(Heat/2,64),Level.ExplosionInteraction.BLOCK);
+    public float getLifeTimeCoefficient() {
+        return 0.5f;
     }
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
         super.read(tag, clientPacket);
-        Heat = tag.getInt("heat");
-        neutrinos = tag.getInt("neutrinos");
-        tickTimer = tag.getInt("timer");
-        dischargeTimer = tag.getInt("dischargetimer");
-        directionChecked = tag.getInt("directionChecked");
-        decay = tag.getInt("decay");
-        decayTimer = tag.getInt("decay_timer");
+        neutrinoQueue = tag.getInt("n_queue");
+        neutrinosStored = tag.getInt("n_stored");
+        saturationLimit = tag.getInt("n_limit");
 
     }
 
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
-        tag.putInt("heat",Heat);
-        tag.putInt("neutrinos",neutrinos);
-        tag.putInt("timer",tickTimer);
-        tag.putInt("dischargetimer",dischargeTimer);
-        tag.putInt("directionChecked",directionChecked);
-        tag.putInt("decay",decay);
-        tag.putInt("decay_timer",decayTimer);
+        tag.putInt("n_queue",neutrinoQueue);
+        tag.putInt("n_stored",neutrinosStored);
+        tag.putInt("n_limit",saturationLimit);
 
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(addIndent(Component.literal("Heat:" + Heat)));
-        tooltip.add(addIndent(Component.literal("Neu:" + neutrinos)));
-        tooltip.add(addIndent(Component.literal("Decay:" + decay)));
+        tempAndCoolInfo(tooltip);
+        tooltip.add(Component.translatable("overheated.fuel_rod.neutrinos").append(String.valueOf(neutrinosStored)));
+        tooltip.add(Component.translatable("overheated.fuel_rod.saturation_limit").append(String.valueOf(saturationLimit)));
 
         return true;
     }
+
+
 }

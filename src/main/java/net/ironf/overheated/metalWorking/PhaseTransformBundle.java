@@ -1,6 +1,8 @@
 package net.ironf.overheated.metalWorking;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,16 +33,23 @@ public class PhaseTransformBundle {
         decayingPhase = false;
     }
 
+    public void executeTransformation(Float temp, BlockPos at, Level level){
+        if (decayingPhase){
+            createdStates.getFirst().set(level,at,3,true);
+        } else {
+            UniversalState transitionState = transformationFromTemp(temp);
+            if (transitionState != UniversalState.stateAt(level, at)) {
+                transitionState.set(level, at, 3);
+            }
+        }
+    }
+
     public UniversalState transformationFromTemp(Float temp){
         for (int i = 0; i < criticalPoints.size(); i++) {
             if (temp <= criticalPoints.get(i)){
                 return createdStates.get(i);
             }
         }
-        if (decayingPhase){
-            return createdStates.getFirst();
-        } else {
-            return createdStates.getLast();
-        }
+        return createdStates.getFirst();
     }
 }

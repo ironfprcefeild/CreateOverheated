@@ -16,6 +16,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.Objects;
+
 public class UniversalState {
     public final BlockState blockState;
     public final FluidState fluidState;
@@ -65,8 +67,12 @@ public class UniversalState {
                 && fluidState == compare.fluidState;
     }
 
-    public void set(Level level, BlockPos at, int flags){
-        if (blockState != Blocks.AIR.defaultBlockState()){
+    public void set(Level level, BlockPos at, int flags) {
+        set(level,at,flags,false);
+    }
+
+    public void set(Level level, BlockPos at, int flags, boolean allowSetToAir){
+        if (blockState != Blocks.AIR.defaultBlockState() || allowSetToAir){
             level.setBlock(at, blockState,flags);
         } else if (fluidState != Fluids.EMPTY.defaultFluidState()){
             level.setBlock(at, fluidState.createLegacyBlock(),flags);
@@ -125,6 +131,19 @@ public class UniversalState {
     @Override
     public String toString() {
         return "[vBlockState: [" + blockState + "] FluidState: [" + fluidState + "]]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UniversalState otherState){
+            return otherState.blockState == blockState && otherState.fluidState == fluidState;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(blockState, fluidState);
     }
 }
 

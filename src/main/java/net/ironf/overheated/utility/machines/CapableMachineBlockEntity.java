@@ -25,9 +25,7 @@ import java.util.List;
 public abstract class CapableMachineBlockEntity extends MachineBlockEntity implements IHaveGoggleInformation {
     public CapableMachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        Overheated.LOGGER.info("CO: A capable machine has been instantiated");
         if (getFluidCapacity() > 0) {
-            Overheated.LOGGER.info("    It has fluids: " + getFluidTankCount());
             tanks = new ArrayList<SmartFluidTank>(getFluidTankCount());
             fluidCapabilities = new ArrayList<IFluidHandler>(getFluidTankCount());
             for (int i = 0; i < getFluidTankCount(); i++) {
@@ -37,7 +35,6 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
         }
 
         if (getItemStackCapacity() > 0){
-            Overheated.LOGGER.info("    It has items");
             inventories = new ArrayList<SmartInventory>(getInventoryCount());
             for (int i = 0; i < getInventoryCount(); i++) {
                 inventories.add(new SmartInventory(1, this)
@@ -50,7 +47,7 @@ public abstract class CapableMachineBlockEntity extends MachineBlockEntity imple
 
     /// Capabilities
     /// Call this method on the register capabilities event.
-    ///     Event - The event item passed
+    ///     Event - The event object passed
     ///     me - The Block entity entry for which capabilities are to be registered
     ///     fluids - if this has fluids
     ///     items -  if this has items

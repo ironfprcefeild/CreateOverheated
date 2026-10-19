@@ -3,46 +3,46 @@
   "critical_points":      [-100,-50,0,100,800,2500,10000],
   "passive_temperatures": [-50, -25,0,15,500, 1650, 6250, 12000],
   "thermal_properties"  : [0.01, 0.02, 0.03, 10, 0.05, 0.06, 0.07, 0.08],
-  "decay_chance": 0.05,
+  "decay_chance": 0.85,
   "phases": [
     {
       "blockstate":{
-        "name":"minecraft:blue_ice"
+        "Name":"minecraft:blue_ice"
       }
     },
     {
       "blockstate":{
-        "name":"minecraft:packed_ice"
+        "Name":"minecraft:packed_ice"
       }
     },
     {
       "blockstate":{
-        "name":"minecraft:ice"
+        "Name":"minecraft:ice"
       }
     },
     {
       "fluidstate":{
-        "name":"minecraft:water"
+        "Name":"minecraft:water"
       }
     },
     {
       "blockstate":{
-        "name":"coverheated:steam_superlow"
+        "Name":"coverheated:steam_low_block"
       }
     },
     {
       "blockstate":{
-        "name":"coverheated:heated_steam_low"
+        "Name":"coverheated:heated_steam_low_block"
       }
     },
     {
       "blockstate":{
-        "name":"coverheated:superheated_steam_mid"
+        "Name":"coverheated:superheated_steam_mid_block"
       }
     },
     {
       "blockstate":{
-        "name":"coverheated:overheated_steam_high"
+        "Name":"coverheated:overheated_steam_high_block"
       }
     }
   ]
